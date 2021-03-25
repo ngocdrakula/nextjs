@@ -1,7 +1,7 @@
 module.exports = {
     env: {
-        HOST: 'product',
-        // HOST: 'localhost',
+        HOST_NAME: 'production',
+        // HOST_NAME: 'localhost',
         MONGODB_URL: "mongodb+srv://Trang8:AdminTrang8@trang8-cepg4.mongodb.net/test?retryWrites=true&w=majority&useNewUrlParser=true&useUnifiedTopology=true",
         // MONGODB_URL: "mongodb://localhost:27017/visualizer",
         API_URL: 'http://localhost:3000/api/',
