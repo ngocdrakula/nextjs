@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { PI } from '../utils/helper';
 
 
 class CanvasContainer extends Component {
@@ -11,6 +12,8 @@ class CanvasContainer extends Component {
         this.mesh = null;
         this.floorWidth = 1000;
         this.floorHeight = 1000;
+        this.width = 600;
+        this.height = 600;
     }
     componentDidMount() {
         this.handleInit()
@@ -60,32 +63,33 @@ class CanvasContainer extends Component {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
     handleLoader = () => {
-        this.canvas.width = this.width + this.grout;
-        this.canvas.height = this.height + this.grout;
+        const { grout } = this.props;
+        this.canvas.width = this.width + grout;
+        this.canvas.height = this.height + grout;
 
         this.ctx.fillStyle = this.color || "#FFFFFF";
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        const that = this;
         this.image.onload = (e) => {
-            that.scene.remove(that.mesh)
-            that.ctx.drawImage(this, that.grout / 2, that.grout / 2, that.width, that.height);
-            const imageGrout = ctx.getImageData(0, 0, that.canvas.width, that.canvas.height);
+            console.log(e, this)
+            this.scene.remove(this.mesh)
+            this.ctx.drawImage(this.image, grout / 2, grout / 2, this.width, this.height);
+            const imageGrout = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
             const groundTexture = new THREE.Texture(imageGrout);
             groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
             groundTexture.needsUpdate = true;
-            groundTexture.repeat.set(that.floorWidth / that.canvas.width, that.floorHeight / that.canvas.height);
+            groundTexture.repeat.set(this.floorWidth / this.canvas.width, this.floorHeight / this.canvas.height);
             groundTexture.anisotropy = 32;
             groundTexture.encoding = THREE.sRGBEncoding;
             const groundMaterial = new THREE.MeshStandardMaterial({
                 map: groundTexture,
                 roughness: .5
             });
-            that.mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(20, 20, 5, 5), groundMaterial);
-            // that.mesh.position.y = 0;
-            that.mesh.receiveShadow = true;
-            that.mesh.rotation.set(-PI / 3, 0, 0);
-            that.scene.add(that.mesh);
-            console.log(that.scene.children);
+            this.mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(20, 20, 5, 5), groundMaterial);
+            // this.mesh.position.y = 0;
+            this.mesh.receiveShadow = true;
+            this.mesh.rotation.set(-PI / 3, 0, 0);
+            this.scene.add(this.mesh);
+            console.log(this.scene.children);
             this.handleRender();
         };
         this.image.src = "/icons/square.png";
@@ -113,9 +117,6 @@ class CanvasContainer extends Component {
         )
     }
 }
-const mStP = ({ app: { areas, grout, layoutSelected } }) => ({
-    areas: areas || [],
-    grout: grout || 2
-})
+const mStP = ({ app: { areas = [], grout = 2, layoutSelected } }) => ({ areas, grout, layoutSelected });
 
 export default connect(mStP)(CanvasContainer)
