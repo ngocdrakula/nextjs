@@ -45,7 +45,7 @@ class Filter extends Component {
                                 <input
                                     id={"filterFront_" + front._id}
                                     type="checkbox"
-                                    checked={size.uncheck ? "" : "checked"}
+                                    checked={front.uncheck ? "" : "checked"}
                                     onChange={() => dispatch({ type: types.FRONTS_SELECT_ONE, payload: index })}
                                 />
                                 <label htmlFor={"filterFront_" + front._id}>{front.name}</label>
