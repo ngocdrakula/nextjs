@@ -66,7 +66,7 @@ class Filter extends Component {
                                 <input
                                     id={"filteLocation_" + location._id}
                                     type="checkbox"
-                                    checked={size.uncheck ? "" : "checked"}
+                                    checked={location.uncheck ? "" : "checked"}
                                     onChange={() => dispatch({ type: types.LOCATIONS_SELECT_ONE, payload: index })}
                                 />
                                 <label htmlFor={"filteLocation_" + location._id}>{location.name}</label>

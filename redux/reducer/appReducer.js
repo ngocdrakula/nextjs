@@ -119,7 +119,7 @@ const appReducer = (state = initState, action) => {
             return {
                 ...state,
                 layouts: data,
-                layoutSelected: data[0],
+                layoutSelected: data[0] || null,
                 areas: data[0] && data[0].areas || []
             };
         }
