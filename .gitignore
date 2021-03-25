@@ -34,8 +34,10 @@ yarn-error.log*
 .vercel
 
 #image
-/upload/images
-/upload/origins
+
+/uploads/images
+/uploads/origins
+
 
 #temp
 /temp
