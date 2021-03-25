@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 
 export default async function images(req, res) {
-    if (process.env.HOST == 'localhost') {
+    if (process.env.HOST_NAME == 'localhost') {
         try {
             const file = fs.readFileSync(process.env.FOLDER_UPLOAD + "/" + req.query.name);
             return res.end(file, 'binary');
