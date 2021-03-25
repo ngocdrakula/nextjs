@@ -32,3 +32,10 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+#image
+/upload/images
+/upload/origins
+
+#temp
+/temp

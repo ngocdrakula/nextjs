@@ -1,16 +1,11 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+html, body {
+  font-family: Helvetica, sans-serif;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.top-panel {
+  transition: right .5s;
 }
 
-* {
-  box-sizing: border-box;
+button, button:active{
+  outline: none;
 }
