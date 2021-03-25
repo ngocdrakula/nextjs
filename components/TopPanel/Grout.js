@@ -8,10 +8,13 @@ const colors = ["#ffe6a6", "#98745e", "#e5d9cd", "#bfbfbf"];
 class Grout extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            currentGrout: 2
+        };
     }
 
     render() {
+        const { currentGrout } = this.state;
         const { active, dispatch, grout, groutColor } = this.props;
         return (
             <div className="top-panel-option-box" style={!active ? { display: 'none' } : {}}>
@@ -22,9 +25,10 @@ class Grout extends Component {
                         type="range"
                         min={0} max={24}
                         defaultValue={grout}
-                        onChange={e => dispatch({ type: types.CHANGE_GROUT, payload: e.target.value })}
+                        onChange={e => this.setState({ currentGrout: e.target.value })}
+                        onMouseUp={e => dispatch({ type: types.CHANGE_GROUT, payload: e.target.value })}
                     />
-                    <span id="topPanelGroutSizeText" className="top-panel-label stiled-checkbox-text">{grout} mm</span>
+                    <span id="topPanelGroutSizeText" className="top-panel-label stiled-checkbox-text">{currentGrout} mm</span>
                 </div>
                 <div className="top-panel-box">
                     <span className="top-panel-label stiled-checkbox-text">Màu mạch</span>
