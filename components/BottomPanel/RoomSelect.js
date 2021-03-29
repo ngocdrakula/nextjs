@@ -55,7 +55,7 @@ class RoomSelect extends Component {
                                                 return (
                                                     <a key={layout._id} href={`/?layout=${layout._id}`} title={layout.name} className="room-select-link">
                                                         <div className="room-image-holder">
-                                                            <img src={layout.images[0]} alt={layout.name} />
+                                                            <img src={"/api/images/" + layout.images[0]} alt={layout.name} />
                                                             <img src="/icons/2d.png" alt="" width={32} className="room-image-engine-icon" />
                                                         </div>
                                                         <p>{layout.name}</p>

@@ -35,7 +35,7 @@ const handler = async (req, res) => {
         query.outSide = (!outSide || outSide === 'false') ? false : true;
       }
       const total = await productController.getlist(query).countDocuments();
-      const list = await productController.getlist(query).skip(skip).limit(limit).populate('size');
+      const list = await productController.getlist(query).skip(skip).limit(limit).populate('size').populate('front');
       return res.status(200).send({
         success: true,
         data: list,
@@ -57,18 +57,17 @@ const handler = async (req, res) => {
       const contentType = req.headers['content-type'];
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' })
-      if (!contentType || contentType.indexOf('multipart/form-data')==-1)
+      if (!contentType || contentType.indexOf('multipart/form-data') == -1)
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
       if (!user || !user._id) throw ({ ...user, path: 'token' });
-      const { body: { name, code, sizeId, frontId, outSide }, files, err } = await uploader(req);
+      const { body: { name, code, sizeId, frontId, outSide }, files, err } = await uploader(req); 
       if (err || !files.length) throw ({ path: 'files' });
-      if (!name || !code || !sizeId || !frontId || outSide===undefined) {
+      if (!name || !code || !sizeId || !frontId) {
         if (!name) throw ({ path: 'name', files })
         if (!code) throw ({ path: 'code', files })
         if (!sizeId) throw ({ path: 'sizeId', files })
-        if (!frontId) throw ({ path: 'frontId', files })
-        throw ({ path: 'outSide', files })
+        throw ({ path: 'frontId', files })
       }
       try {
         const size = await sizeController.get(sizeId);
@@ -86,7 +85,7 @@ const handler = async (req, res) => {
       }
       const matchProduct = await productController.find({ name, code }).populate('size').populate('front');
       if (matchProduct) throw ({ path: 'product', files, matchProduct })
-      const productCreated = await (await productController.create({ name, code, size: sizeId, front: frontId, images: files, outSide })).populate('size').execPopulate();
+      const productCreated = await (await productController.create({ name, code, size: sizeId, front: frontId, image: files[0], outSide: !([undefined, false, "0", "false", "null"].indexOf(outSide) + 1) })).populate('size').populate('front').execPopulate();
       return res.status(201).send({
         success: true,
         data: productCreated,
@@ -206,7 +205,7 @@ const handler = async (req, res) => {
         success: false,
         message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
-        error: e.err,
+        error: e,
       });
     }
   } else {

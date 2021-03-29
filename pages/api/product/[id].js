@@ -37,7 +37,7 @@ const handler = async (req, res) => {
       const contentType = req.headers['content-type'];
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' });
-      if (!contentType || contentType.indexOf('multipart/form-data')==-1)
+      if (!contentType || contentType.indexOf('multipart/form-data') == -1)
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
       if (!user || !user._id) throw ({ ...user, path: 'token' });
@@ -78,7 +78,7 @@ const handler = async (req, res) => {
           }
         }
         if (outSide !== undefined) {
-          currentProduct.outSide = outSide;
+          currentProduct.outSide = !([undefined, false, "0", "false", "null"].indexOf(outSide) + 1);
         }
         if (files.length) {
           await cleanFiles([currentProduct.image]);
@@ -117,7 +117,7 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           headerContentType: false,
-          contentType,
+          contentType: e.contentType,
           aceptedOnly: 'multipart/form-data',
           message: 'Header không được chấp nhận',
           messages: lang?.message?.error?.header_not_acepted
