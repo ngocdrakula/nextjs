@@ -212,10 +212,10 @@ const appReducer = (state = initState, action) => {
             };
         }
         case types.SELECT_PRODUCT: {
-            state.areas[state.areaIndex] = {
-                ...state.areas[state.areaIndex],
-                products: [action.payload, ...state.areas[state.areaIndex].products].splice(2)
-            };
+            // state.areas[state.areaIndex] = {
+            //     ...state.areas[state.areaIndex],
+            //     products: [action.payload, ...state.areas[state.areaIndex].products].splice(2)
+            // };
 
             return {
                 ...state,
@@ -223,29 +223,29 @@ const appReducer = (state = initState, action) => {
             };
         }
         case types.SELECT_FIRST_PRODUCT: {
-            state.areas[state.areaIndex].products[0] = { ...action.payload };
-            state.areas[state.areaIndex] = {
-                ...state.areas[state.areaIndex],
-                products: [...state.areas[state.areaIndex].products]
-            };
+            // state.areas[state.areaIndex].products[0] = { ...action.payload };
+            // state.areas[state.areaIndex] = {
+            //     ...state.areas[state.areaIndex],
+            //     products: [...state.areas[state.areaIndex].products]
+            // };
             return {
                 ...state,
                 areas: [...state.areas]
             };
         }
         case types.SELECT_SECOND_PRODUCT: {
-            if (state.areas.length < 2) {
-                state.areas[state.areaIndex] = {
-                    ...state.areas[state.areaIndex],
-                    products: [...state.areas[state.areaIndex].products, { ...action.payload }]
-                };
-            } else {
-                state.areas[state.areaIndex].products[1] = { ...action.payload };
-                state.areas[state.areaIndex] = {
-                    ...state.areas[state.areaIndex],
-                    products: [...state.areas[state.areaIndex].products]
-                };
-            }
+            // if (state.areas.length < 2) {
+            //     state.areas[state.areaIndex] = {
+            //         ...state.areas[state.areaIndex],
+            //         products: [...state.areas[state.areaIndex].products, { ...action.payload }]
+            //     };
+            // } else {
+            //     state.areas[state.areaIndex].products[1] = { ...action.payload };
+            //     state.areas[state.areaIndex] = {
+            //         ...state.areas[state.areaIndex],
+            //         products: [...state.areas[state.areaIndex].products]
+            //     };
+            // }
             return {
                 ...state,
                 areas: [...state.areas]

@@ -10,7 +10,6 @@ class CanvasContainer extends Component {
     }
     render() {
         const { loading } = this.props;
-        console.log('render index')
         return (
             <div id="container" className="room-canvas-container" style={{}}>
                 <canvas id="roomCanvas" className="room-canvas" style={{ cursor: 'unset', background: '#dddddd' }} />

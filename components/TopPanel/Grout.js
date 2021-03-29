@@ -26,7 +26,7 @@ class Grout extends Component {
                         min={0} max={24}
                         defaultValue={grout}
                         onChange={e => this.setState({ currentGrout: e.target.value })}
-                        onMouseUp={e => dispatch({ type: types.CHANGE_GROUT, payload: e.target.value })}
+                        onMouseUp={e => dispatch({ type: types.CHANGE_GROUT, payload: Number(e.target.value) })}
                     />
                     <span id="topPanelGroutSizeText" className="top-panel-label stiled-checkbox-text">{currentGrout} mm</span>
                 </div>

@@ -34,10 +34,18 @@ yarn-error.log*
 .vercel
 
 #image
-
 /upload/images
 /upload/origins
 
-
 #temp
 /temp
+
+#config
+next.config.js
+
+
+#fakedata
+/datas
+
+#temp public
+/public/temps

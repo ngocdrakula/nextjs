@@ -20,7 +20,7 @@ class ProductInfoPanel extends Component {
                                     return (
                                         <div key={product._id} className="top-panel-content-tiles-list-item">
                                             <div className="tile-list-thumbnail-image-holder">
-                                                <img src={product.image} className="tile-list-thumbnail" />
+                                                <img src={"/api/images/" + product.image} className="tile-list-thumbnail" />
                                             </div>
                                             <div className="tile-list-text">
                                                 <p className="-caption">{product.code}</p>
