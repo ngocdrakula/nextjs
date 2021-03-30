@@ -48,4 +48,4 @@ next.config.js
 # /datas
 
 #temp public
-/public/temps
+# /public/temps
