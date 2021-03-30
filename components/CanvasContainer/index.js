@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ThreeJS from './ThreeJS';
+import room1 from '../../datas/room1';
+import product1 from '../../datas/product1';
+import { PI, sin, tanD } from '../../utils/helper';
+import areas from '../../datas/areas';
+const hpw = 9 / 16;
 
 
 class CanvasContainer extends Component {
@@ -179,7 +183,6 @@ class CanvasContainer extends Component {
                         </span>
                     </div>
                 </div>
-                <ThreeJS />
             </div>
         )
     }
