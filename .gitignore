@@ -45,7 +45,7 @@ next.config.js
 
 
 #fakedata
-/datas
+# /datas
 
 #temp public
 /public/temps
