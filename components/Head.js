@@ -11,6 +11,7 @@ export default function Head() {
             <link rel="stylesheet" href="/css/app.css" />
             <link rel="stylesheet" href="/css/color-picker.min.css" />
             <script src="/js/three.js"></script>
+            <script src="/js/dat.gui.js"></script>
         </NextHead>
     )
 }
