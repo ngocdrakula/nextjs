@@ -136,4 +136,15 @@ const areas = {
     viewVerticalOffset: -163,
     viewHorizontalOffset: 0
 }
+
+const co = {
+    w: 13.9,
+    h: 13.9,
+    x: 0,
+    y: 10.3,
+    z: 12.8,
+    _x: 0,
+    _y: 0,
+    _z: 0
+};
 export default areas
