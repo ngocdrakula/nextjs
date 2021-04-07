@@ -9,11 +9,17 @@ const co = {
     w: 13.9,
     h: 13.9,
     x: 0,
-    y: 10.3,
-    z: 12.8,
-    _x: 0,
+    y: 2.8,
+    z: 21,
+    _x: -84,
     _y: 0,
-    _z: 0
+    _z: 0,
+    cx: 0,
+    cy: 5,
+    cz: 30,
+    _cx: 0,
+    _cy: 5,
+    _cz: 0
 };
 
 class CanvasContainer extends Component {
@@ -110,11 +116,11 @@ class CanvasContainer extends Component {
             width.onChange(this.handleLoader);
             const height = gui.add(co, 'h', 10.0, 50.0);
             height.onChange(this.handleLoader);
-            const x = gui.add(co, 'x', -100.0, 100.0);
+            const x = gui.add(co, 'x', -50.0, 50.0);
             x.onChange(this.handleLoader);
-            const y = gui.add(co, 'y', -100.0, 100.0);
+            const y = gui.add(co, 'y', -50.0, 50.0);
             y.onChange(this.handleLoader);
-            const z = gui.add(co, 'z', -100.0, 100.0);
+            const z = gui.add(co, 'z', -50.0, 50.0);
             z.onChange(this.handleLoader);
             const _x = gui.add(co, '_x', -180, 180);
             _x.onChange(this.handleLoader);
@@ -122,6 +128,12 @@ class CanvasContainer extends Component {
             _y.onChange(this.handleLoader);
             const _z = gui.add(co, '_z', -180, 180);
             _z.onChange(this.handleLoader);
+            const cy = gui.add(co, 'cy', -50.0, 50.0);
+            cy.onChange(this.handleLoader);
+            const cz = gui.add(co, 'cz', -50.0, 50.0);
+            cz.onChange(this.handleLoader);
+            const _cz = gui.add(co, '_cz', -50.0, 50.0);
+            _cz.onChange(this.handleLoader);
         }
     }
     handleResize = () => {
@@ -131,6 +143,8 @@ class CanvasContainer extends Component {
         this.handleLoader();
     }
     handleLoader = () => {
+        this.camera.position.set(co.cx, co.cy, co.cz);
+        this.camera.lookAt(new THREE.Vector3(co._cx, co.cy, co._cz));
         const { grout, groutColor } = this.props;
         this.canvas.width = product1.width + grout;
         this.canvas.height = product1.height + grout;
@@ -151,7 +165,7 @@ class CanvasContainer extends Component {
             if (!this.mesh) {
                 this.material = new THREE.MeshBasicMaterial({
                     map: this.texture,
-                    opacity: 0.4,
+                    // opacity: 0.4,
                     transparent: true,
                 });
                 this.material.needsUpdate = true;
