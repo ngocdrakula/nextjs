@@ -41,7 +41,7 @@ yarn-error.log*
 /temp
 
 #config
-next.config.js
+# next.config.js
 
 
 #fakedata
