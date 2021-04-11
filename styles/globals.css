@@ -417,3 +417,11 @@ button, button:active {
 .dg .c .slider:hover .slider-fg {
   background: #44abda
 }
+
+#fps {
+  position: fixed;
+  top: 5px;
+  left: 10px;
+  color: red;
+  font-size: 18px;
+}

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import types from '../../redux/types';
 
 
 class RoomSelect extends Component {
@@ -10,8 +11,15 @@ class RoomSelect extends Component {
         }
     }
     componentDidMount() {
-        const { rooms } = this.props;
-        this.setState({ selected: rooms.length && rooms[0]._id })
+        const { layouts, dispatch, rooms } = this.props;
+        this.setState({ selected: rooms[0]?._id });
+        
+        const _id = 1;
+        const layout = layouts.find(l => l._id === _id) || layouts[0];
+        dispatch({
+            type: types.SELECT_LAYOUT,
+            payload: layout
+        });
     }
 
     handleSelectRoom = (selected) => {
@@ -37,7 +45,7 @@ class RoomSelect extends Component {
                         <div className="modal-body">
                             <div className="modal-body">
                                 <ul className="nav nav-tabs">
-                                    {rooms.map(room => {
+                                    {rooms.map((room, index) => {
                                         return (
                                             <li key={room._id} className={"rooms-types" + (room._id === selected ? " active" : "")}>
                                                 <a href="#" onClick={() => this.setState({ selected: room._id })}>{room.name}</a>

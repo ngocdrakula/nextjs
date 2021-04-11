@@ -12,10 +12,20 @@ class Grout extends Component {
             currentGrout: 2
         };
     }
+    componentDidUpdate(prevProps) {
+        if (this.props.areaIndex !== prevProps.areaIndex) {
+            const { layout, areaIndex } = this.props;
+            const area = layout?.areas[areaIndex] || {};
+            const { grout } = area;
+            this.setState({ currentGrout: grout || 2 })
+        }
+    }
 
     render() {
         const { currentGrout } = this.state;
-        const { active, dispatch, grout, groutColor } = this.props;
+        const { active, dispatch, layout, areaIndex } = this.props;
+        const area = layout?.areas[areaIndex] || {};
+        const { grout, color } = area;
         return (
             <div className="top-panel-option-box" style={!active ? { display: 'none' } : {}}>
                 <div id="topPanelContentSurfaceTabGroutSizeBody" className="top-panel-box">
@@ -24,7 +34,7 @@ class Grout extends Component {
                         id="topPanelGroutSizeRange"
                         type="range"
                         min={0} max={24}
-                        defaultValue={grout}
+                        value={currentGrout}
                         onChange={e => this.setState({ currentGrout: e.target.value })}
                         onMouseUp={e => dispatch({ type: types.CHANGE_GROUT, payload: Number(e.target.value) })}
                     />
@@ -32,7 +42,7 @@ class Grout extends Component {
                 </div>
                 <div className="top-panel-box">
                     <span className="top-panel-label stiled-checkbox-text">Màu mạch</span>
-                    <div id="grout-color-picker" className="top-panel-select-color" title="Grout Color" style={{ backgroundColor: groutColor }}>
+                    <div id="grout-color-picker" className="top-panel-select-color" title="Grout Color" style={{ backgroundColor: color }}>
                     </div>
                     <div id="grout-predefined-color">
                         {colors.map((color, index) => {
@@ -52,4 +62,4 @@ class Grout extends Component {
     }
 }
 
-export default connect(({ app: { grout = 2, groutColor = '#FFF' } }) => ({ grout, groutColor }))(Grout)
+export default connect(({ app: { layout, areaIndex } }) => ({ layout, areaIndex }))(Grout)

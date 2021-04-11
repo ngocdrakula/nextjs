@@ -10,6 +10,10 @@ const size = new Schema({
         type: Number,
         required: true
     },
+    enabled: {
+        type: Boolean,
+        default: true
+    }
 }); 
 
 export default size;

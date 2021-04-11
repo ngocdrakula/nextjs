@@ -1,4 +1,4 @@
-const product1 =
+const product2 =
 {
     id: 3950,
     name: "6251",
@@ -7,7 +7,7 @@ const product1 =
     height: 1000,
     surface: "floor",
     finish: "glossy",
-    file: "/temps/p4.file.jpeg",
+    file: "/temps/p3.file.jpeg",
     grout: 1,
     url: null,
     price: null,
@@ -19,4 +19,4 @@ const product1 =
     access_level: 0,
     icon: "/temps/p1.icon.jpeg"
 };
-export default product1
+export default product2

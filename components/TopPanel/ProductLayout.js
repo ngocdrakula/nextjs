@@ -26,8 +26,10 @@ class ProductLayout extends Component {
     handleCustom = (e) => this.setState({ [e.target.name]: !!e.target.checked });
 
     render() {
-        const { dispatch, active, skewType, skewValue } = this.props;
         const { custom, rotate } = this.state;
+        const { active, dispatch, layout, areaIndex } = this.props;
+        const area = layout?.areas[areaIndex] || {};
+        const { skewType, skewValue } = area;
         return (
             <div className="top-panel-option-box top-panel-box-overflow-y" style={!active ? { display: 'none' } : {}}>
                 <div id="topPanelContentFreeDesign" className="top-panel-box">
@@ -87,4 +89,4 @@ class ProductLayout extends Component {
     }
 }
 
-export default connect(({ app: { skewType = 0, skewValue = 0 } }) => ({ skewType, skewValue }))(ProductLayout)
+export default connect(({ app: { layout, areaIndex } }) => ({ layout, areaIndex }))(ProductLayout)

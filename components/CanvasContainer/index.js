@@ -9,11 +9,15 @@ class CanvasContainer extends Component {
             loading: true
         };
     }
+
+    handleLoading = (loading) => this.setState({ loading });
+
     render() {
-        const { loading } = this.props;
+        const { loading } = this.state;
+        const { layout } = this.props;
         return (
             <div id="container" className="room-canvas-container" style={{}}>
-                <ThreeJS />
+                {layout ? <ThreeJS handleLoading={this.handleLoading} /> : ''}
                 <div id="loadAnimationContainer" style={!loading ? { display: 'none' } : {}}>
                     <p>Applying Tiles</p>
                     <div className="circles marginLeft">
@@ -29,4 +33,4 @@ class CanvasContainer extends Component {
         )
     }
 }
-export default connect(() => ({}))(CanvasContainer)
+export default connect(({ app: { layout } }) => ({ layout }))(CanvasContainer)

@@ -1,6 +1,7 @@
 import connectDB from '../../../middleware/mongodb';
 import frontController from '../../../controllers/front';
 import lang, { langConcat } from '../../../lang.config';
+import jwt from '../../../middleware/jwt';
 
 const handler = async (req, res) => {
   if (req.method === 'GET') {
@@ -30,15 +31,19 @@ const handler = async (req, res) => {
   } else if (req.method === 'PUT') {
     try {
       const bearerToken = req.headers['authorization'];
-      if (!bearerToken) throw ({ path: 'token', });
+      if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
       if (!user || !user._id) throw ({ ...user, path: 'token' });
-      const { name } = req.body;
-      if (!name) throw ({ path: 'name' })
+      const { name, rate } = req.body;
       try {
-        const matchFront = await frontController.find({ name });
-        if (matchFront) throw ({ path: 'name', matchFront })
-        const currentFront = await frontController.update(req.query.id, { name });
+        if (name) {
+          const matchFront = await frontController.find({ name });
+          if (matchFront) throw ({ path: 'name', matchFront });
+        }
+        const params = {};
+        if (name) params.name = name;
+        if (rate !== undefined) params.rate = Number(rate) || 0;
+        const currentFront = await frontController.update(req.query.id, params);
         return res.status(200).send({
           success: true,
           data: currentFront,
@@ -66,20 +71,12 @@ const handler = async (req, res) => {
         });
       }
       if (e.path === 'name') {
-        if (e.currentFront)
-          return res.status(400).send({
-            success: false,
-            exist: true,
-            current: e.matchFront,
-            message: "Tên bề mặt đã tồn tại",
-            messages: langConcat(lang?.resources?.frontName, lang?.message?.error?.validation?.exist),
-          });
         return res.status(400).send({
           success: false,
-          validation: false,
-          field: 'name',
-          message: 'Tên bề mặt không được để trống',
-          messages: langConcat(lang?.resources?.frontName, lang?.message?.error?.validation?.required),
+          exist: true,
+          current: e.matchFront,
+          message: "Tên bề mặt đã tồn tại",
+          messages: langConcat(lang?.resources?.frontName, lang?.message?.error?.validation?.exist),
         });
       }
       if (e.path === '_id') {

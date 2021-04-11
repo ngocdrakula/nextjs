@@ -17,9 +17,9 @@ class Product extends Component {
     }
 
     render() {
-        const { dispatch, products, areas, areaIndex, sizes, fronts, locations } = this.props;
-        const currentArea = areas[areaIndex];
-        const selecteds = currentArea && currentArea.products || [];
+        const { dispatch, products, layout, areaIndex, sizes, fronts, locations } = this.props;
+        const area = layout?.areas[areaIndex] || {};
+        const selecteds = area.products || [];
         return (
             <div id="topPanelTilesListBox" className="top-panel-box">
                 <div id="loadTilesAnimationContainer" style={products.length ? { display: 'none' } : {}}>
@@ -74,12 +74,12 @@ class Product extends Component {
 const mStP = ({
     app: {
         products = [],
-        areas = [],
-        areaIndex = 0,
+        layout,
+        areaIndex,
         sizes = [],
         fronts = [],
         locations = []
     }
-}) => ({ products, areas, areaIndex, sizes, fronts, locations });
+}) => ({ products, layout, areaIndex, sizes, fronts, locations });
 
 export default connect(mStP)(Product)

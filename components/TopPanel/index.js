@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import dynamic from 'next/dynamic';
+import types from '../../redux/types';
 
 const Filter = dynamic(() => import('./Filter'));
 const Grout = dynamic(() => import('./Grout'));
@@ -18,8 +19,8 @@ class TopPanel extends Component {
         }
     }
     handleToggle = () => {
-        const { visible } = this.state;
-        this.setState({ visible: !visible });
+        const { dispatch } = this.props;
+        dispatch({ type: types.HIDE_TOPPANEL })
     }
     handleSelect = (panel) => { this.setState({ panel }) }
     handleChange = (e) => this.setState({ search: e.target.value });
@@ -29,10 +30,14 @@ class TopPanel extends Component {
     }
 
     render() {
-        const { visible, panel, search } = this.state;
+        const { panel, search } = this.state;
+        const { visible } = this.props;
         return (
             <div className="top-panel" style={{ display: 'flex', right: visible ? 0 : -400 }}>
-                <div className="top-panel-hide-button" onClick={this.handleToggle}>
+                <div className="top-panel-hide-button"
+                    onClick={this.handleToggle}
+                    style={visible === undefined ? { display: 'none' } : {}}
+                >
                     <span className={"glyphicon glyphicon-triangle-" + (visible ? "right" : "left")} aria-hidden="true">
                     </span>
                 </div>
@@ -62,4 +67,4 @@ class TopPanel extends Component {
 
 
 
-export default connect(() => ({}))(TopPanel)
+export default connect(({ app: { visible } }) => ({ visible }))(TopPanel)

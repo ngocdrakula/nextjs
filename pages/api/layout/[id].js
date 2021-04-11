@@ -40,7 +40,8 @@ const handler = async (req, res) => {
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
       if (!user || !user._id) throw ({ ...user, path: 'token' });
-      const { body: { name, roomId, images }, files, err } = await uploader(req);
+      const { body, files, err } = await uploader(req);
+      const { name, images, roomId, vertical, horizontal, cameraFov, areas, enabled } = body;
       if (err) throw ({ path: 'files' });
       try {
         const currentLayout = await layoutController.get(req.query.id);
@@ -62,7 +63,19 @@ const handler = async (req, res) => {
           }
           else currentLayout.name = name;
         }
-        if (files.length && images) {
+        if (vertical) currentLayout.vertical = Number(vertical);
+        if (horizontal) currentLayout.horizontal = Number(horizontal);
+        if (cameraFov) currentLayout.cameraFov = Number(cameraFov);
+        if (areas) {
+          try {
+            currentLayout.areas = JSON.parse(areas);
+          }
+          catch (e) {
+            throw ({ path: 'areas' })
+          }
+        };
+        if (enabled !== undefined) currentLayout.enabled = !(enabled !== 'false');
+        if (images) {
           let imagesParser = [];
           try {
             imagesParser = JSON.parse(images);
@@ -160,6 +173,14 @@ const handler = async (req, res) => {
           current: e.matchLayout,
           message: "Tên kiểu bố trí đã tồn tại",
           messages: langConcat(lang?.resources?.layoutName, lang?.message?.error?.validation?.exist),
+        });
+      }
+      if (e.path === 'areas') {
+        return res.status(400).send({
+          success: false,
+          validation: false,
+          field: 'areas',
+          message: 'Danh sách các mặt không phải là mảng',
         });
       }
       if (e.path === 'images') {
