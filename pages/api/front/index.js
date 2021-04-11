@@ -32,12 +32,12 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
       if (!user || !user._id) throw ({ ...user, path: 'token' });
-      const { name } = req.body;
+      const { name, rate } = req.body;
       if (!name) throw ({ path: 'name' })
       try {
         const matchFront = await frontController.find({ name });
         if (matchFront) throw ({ path: 'front', matchFront });
-        const frontCreated = await frontController.create({ name });
+        const frontCreated = await frontController.create({ name, rate: Number(rate) || 0 });
         return res.status(201).send({
           success: true,
           data: frontCreated,

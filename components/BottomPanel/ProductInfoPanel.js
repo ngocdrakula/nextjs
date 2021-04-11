@@ -7,16 +7,18 @@ class ProductInfoPanel extends Component {
         this.state = {};
     }
     render() {
-        const { visible, handleToggle, areas } = this.props;
+        const { visible, handleToggle, layout } = this.props;
+        const areas = layout?.areas || [];
         return (
             <div id="productInfoPanel" className="top-panel" style={{ display: visible ? 'flex' : 'none' }} onClick={handleToggle}>
                 <div className="top-panel-header">Thông tin sản phẩm</div>
                 <div id="productInfoTilesList" className="top-panel-box">
                     {areas.map((area, index) => {
+                        const products = area.products || [];
                         return (
                             <React.Fragment key={index}>
                                 <p className="top-panel-label">{area.name}</p>
-                                {area.products.map(product => {
+                                {products.map(product => {
                                     return (
                                         <div key={product._id} className="top-panel-content-tiles-list-item">
                                             <div className="tile-list-thumbnail-image-holder">
@@ -41,4 +43,4 @@ class ProductInfoPanel extends Component {
     }
 }
 
-export default connect(({ app: { areas = [] } }) => ({ areas }))(ProductInfoPanel)
+export default connect(({ app: { layout } }) => ({ layout }))(ProductInfoPanel)

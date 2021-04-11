@@ -7,6 +7,10 @@ const room = new Schema({
         required: true,
         unquie: true
     },
+    enabled: {
+        type: Boolean,
+        default: true
+    }
 });
 
 

@@ -28,6 +28,10 @@ const product = new Schema({
     outSide: {
         type: Boolean,
         default: false
+    },
+    enabled: {
+        type: Boolean,
+        default: true
     }
 }, {
     timestamps: { createdAt: 'createdAt' }

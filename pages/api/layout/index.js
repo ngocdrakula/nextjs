@@ -38,15 +38,31 @@ const handler = async (req, res) => {
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
       if (!user || !user._id) throw ({ ...user, path: 'token' });
-      const { body: { name, roomId }, files, err } = await uploader(req);
+      const { body, files, err } = await uploader(req);
+      const { name, roomId, vertical, horizontal, cameraFov, areas } = body;
       if (err || !files.length) throw ({ path: 'files' })
-      if (!name || !roomId) throw ({ path: !name ? 'name' : 'roomId', files })
+      if (!name || !roomId) throw ({ path: !name ? 'name' : 'roomId', files });
+      try {
+        JSON.parse(areas);
+      }
+      catch (e) {
+        throw ({ path: 'areas' })
+      }
       try {
         const room = await roomController.get(roomId);
         if (!room) throw ({ path: '_id', files })
         const matchLayout = await layoutController.find({ name }).populate('room');
         if (matchLayout) throw ({ path: 'layout', files, matchLayout })
-        const layoutCreated = await (await layoutController.create({ name, room: roomId, images: files })).populate('room').execPopulate();
+        const params = {
+          name,
+          room: roomId,
+          images: files,
+          vertical: Number(vertical) || 0,
+          horizontal: Number(horizontal) || 0,
+          cameraFov: Number(cameraFov) || 0,
+          areas: JSON.stringify(areas)
+        }
+        const layoutCreated = await (await layoutController.create(params)).populate('room').execPopulate();
         return res.status(201).send({
           success: true,
           data: layoutCreated,
@@ -110,6 +126,14 @@ const handler = async (req, res) => {
           field: 'roomId',
           message: 'Id không gian không được để trống',
           messages: langConcat(lang?.resources?.roomId, lang?.message?.error?.validation?.required)
+        });
+      }
+      if (e.path === 'areas') {
+        return res.status(400).send({
+          success: false,
+          validation: false,
+          field: 'areas',
+          message: 'Danh sách các mặt không phải là mảng',
         });
       }
       if (e.path === 'room') {

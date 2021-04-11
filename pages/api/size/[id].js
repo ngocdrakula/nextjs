@@ -1,6 +1,7 @@
 import connectDB from '../../../middleware/mongodb';
 import sizeController from '../../../controllers/size';
 import lang, { langConcat } from '../../../lang.config';
+import jwt from '../../../middleware/jwt'
 
 const handler = async (req, res) => {
   if (req.method === 'GET') {
@@ -39,8 +40,12 @@ const handler = async (req, res) => {
       if (!width || !height) throw ({ path: !width ? 'width' : 'height', required: true });
       if (!(width > 0) || !(height > 0)) throw ({ path: !(width > 0) ? 'width' : 'height' })
       const size = { width: Number(width), height: Number(height) };
-      const matchSize = await sizeController.find(size);
-      if (matchSize) throw ({ path: 'size', matchSize })
+      try {
+        const matchSize = await sizeController.find(size);
+        if (matchSize) throw ({ path: 'size', matchSize })
+      } catch (e) {
+        throw e
+      }
       const currentSize = await sizeController.update(id, size);
       return res.status(200).send({
         success: true,
@@ -92,7 +97,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.size, lang?.message?.error?.validation?.exist),
         });
       }
-      if (error.path === "_id")
+      if (e.path === "_id")
         return res.status(400).send({
           success: false,
           exist: false,

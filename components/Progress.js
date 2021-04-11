@@ -4,7 +4,7 @@ export default class Process extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loaded: 0
+            loaded: 100
         }
         this.interval = null;
     }
@@ -13,7 +13,7 @@ export default class Process extends Component {
             const { loaded } = this.state;
             if (loaded >= 100) clearInterval(this.interval);
             else {
-                const radom = Math.floor(Math.random() * 5) + 5;
+                const radom = Math.floor(Math.random() * 5) + 15;
                 this.setState({ loaded: Math.min(loaded + radom, 100) });
             }
         }, 100);

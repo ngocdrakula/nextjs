@@ -7,18 +7,11 @@ export const initState = {
     total: 0,
     rooms: [],
     layouts: [],
-    layoutSelected: null,
     sizes: [],
     fronts: [],
     locations: [{ _id: 0, name: 'Phòng khách', outSide: false }, { _id: 1, name: 'Khác', outSide: true }],
-    areas: [],
+    layout: null,
     areaIndex: 0,
-    grout: 2,
-    groutColor: '#FFF',
-    skewType: 0,
-    skewValue: 0,
-    rotate: 0,
-    sortType: 2,
 
 }
 const appReducer = (state = initState, action) => {
@@ -119,8 +112,6 @@ const appReducer = (state = initState, action) => {
             return {
                 ...state,
                 layouts: data,
-                layoutSelected: data[0] || null,
-                areas: data[0] && data[0].areas || []
             };
         }
         case types.GET_LOCATIONS_SUCCESS: {
@@ -155,36 +146,6 @@ const appReducer = (state = initState, action) => {
                 locations: state.locations.map(location => ({ ...location, uncheck: !location.uncheck })),
             };
         }
-        case types.CHANGE_GROUT: {
-            return {
-                ...state,
-                grout: action.payload,
-            };
-        }
-        case types.CHANGE_COLOR: {
-            return {
-                ...state,
-                groutColor: action.payload,
-            };
-        }
-        case types.CHANGE_SKEW_TYPE: {
-            return {
-                ...state,
-                skewType: action.payload,
-            };
-        }
-        case types.CHANGE_SKEW_VALUE: {
-            return {
-                ...state,
-                skewValue: action.payload,
-            };
-        }
-        case types.CHANGE_ROTATE: {
-            return {
-                ...state,
-                rotate: action.payload,
-            };
-        }
         case types.CHANGE_SORT: {
             return {
                 ...state,
@@ -198,28 +159,35 @@ const appReducer = (state = initState, action) => {
             };
         }
 
+        case types.HIDE_TOPPANEL: {
+            return {
+                ...state,
+                visible: !state.visible,
+            };
+        }
         case types.SELECT_LAYOUT: {
             return {
                 ...state,
-                layoutSelected: action.payload,
-                areas: action.payload.areas || []
+                layout: action.payload,
             };
         }
+
         case types.SELECT_AREA: {
             return {
                 ...state,
-                areaIndex: action.payload
+                areaIndex: action.payload,
+                visible: true
             };
         }
         case types.SELECT_PRODUCT: {
-            // state.areas[state.areaIndex] = {
-            //     ...state.areas[state.areaIndex],
-            //     products: [action.payload, ...state.areas[state.areaIndex].products].splice(2)
-            // };
-
+            const { areaIndex, layout } = state;
+            if (areaIndex + 1) {
+                layout.areas[areaIndex].products = [action.payload];
+            }
             return {
                 ...state,
-                areas: [...state.areas]
+                layout: { ...layout },
+                visible: false
             };
         }
         case types.SELECT_FIRST_PRODUCT: {
@@ -230,7 +198,8 @@ const appReducer = (state = initState, action) => {
             // };
             return {
                 ...state,
-                areas: [...state.areas]
+                layout: { ...layout },
+                visible: false
             };
         }
         case types.SELECT_SECOND_PRODUCT: {
@@ -248,10 +217,60 @@ const appReducer = (state = initState, action) => {
             // }
             return {
                 ...state,
-                areas: [...state.areas]
+                layout: { ...layout },
+                visible: false
             };
         }
-
+        case types.CHANGE_GROUT: {
+            const { areaIndex, layout } = state;
+            if (areaIndex + 1) {
+                layout.areas[areaIndex].grout = action.payload;
+            }
+            return {
+                ...state,
+                layout: { ...layout }
+            };
+        }
+        case types.CHANGE_COLOR: {
+            const { areaIndex, layout } = state;
+            if (areaIndex + 1) {
+                layout.areas[areaIndex].color = action.payload;
+            }
+            return {
+                ...state,
+                layout: { ...layout }
+            };
+        }
+        case types.CHANGE_SKEW_TYPE: {
+            const { areaIndex, layout } = state;
+            if (areaIndex + 1) {
+                layout.areas[areaIndex].skewType = action.payload;
+            }
+            return {
+                ...state,
+                layout: { ...layout }
+            };
+        }
+        case types.CHANGE_SKEW_VALUE: {
+            const { areaIndex, layout } = state;
+            if (areaIndex + 1) {
+                layout.areas[areaIndex].skewValue = action.payload;
+            }
+            return {
+                ...state,
+                layout: { ...layout }
+            };
+        }
+        case types.CHANGE_ROTATE: {
+            const { areaIndex, layout } = state;
+            if (areaIndex + 1) {
+                layout.areas[areaIndex].rotate = action.payload;
+            }
+            return {
+                ...state,
+                layout: { ...layout }
+            };
+        }
         default: {
             return state;
         }

@@ -10985,7 +10985,8 @@
 		var currentTonemapping = null;
 
 		function render(renderList, scene, camera, forceClear) {
-			var background = scene.isScene === true ? scene.background : null;
+			console.log(renderList, scene, camera, forceClear)
+			 var background = scene.isScene === true ? scene.background : null;
 
 			if (background && background.isTexture) {
 				background = cubemaps.get(background);

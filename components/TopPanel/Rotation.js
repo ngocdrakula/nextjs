@@ -17,8 +17,9 @@ class Rotation extends Component {
     handleSelect = e => this.setState({ selected: e.target.value })
 
     render() {
-        const { dispatch, rotate } = this.props;
-        const { } = this.state;
+        const { dispatch, layout, areaIndex } = this.props;
+        const area = layout?.areas[areaIndex] || {};
+        const { rotate } = area;
         return (
             <div className="top-panel-box radio-surface-rotation">
                 <span className="top-panel-label">Xoay góc ốp/lát:</span>
@@ -41,4 +42,4 @@ class Rotation extends Component {
     }
 }
 
-export default connect(({ app: { rotate = 0 } }) => ({ rotate }))(Rotation)
+export default connect(({ app: { layout, areaIndex } }) => ({ layout, areaIndex }))(Rotation)
