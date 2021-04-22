@@ -55,3 +55,6 @@ export const CHANGE_ROTATE = 'CHANGE_ROTATE';
 export const CHANGE_SORT = 'CHANGE_SORT';
 
 export const PROGRESS_UPDATE = 'PROGRESS_UPDATE';
+
+//error
+export const NO_TITLE_SELECTED = 'NO_TITLE_SELECTED';

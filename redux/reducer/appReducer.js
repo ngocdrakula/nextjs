@@ -184,7 +184,12 @@ const appReducer = (state = initState, action) => {
             if (areaIndex + 1) {
                 layout.areas = [...layout.areas];
                 layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
-                layout.areas[areaIndex].products = [action.payload];
+                if (layout.areas[areaIndex].custom || layout.areas[areaIndex].customRotate) {
+                    layout.areas[areaIndex].product = action.payload;
+                }
+                else {
+                    layout.areas[areaIndex].products = [action.payload];
+                }
             }
             return {
                 ...state,
