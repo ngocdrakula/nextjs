@@ -23,31 +23,36 @@ class ThreeJS extends Component {
         window.removeEventListener('resize', this.handleResize);
     }
     componentDidUpdate(prevProps) {
-        const { layout, areaIndex } = this.props;
+        const { layout, areaIndex, handleLoading } = this.props;
         const { layout: prevLayout } = prevProps;
         const { areas } = layout;
         const { areas: prevAreas } = prevLayout;
-        if (areaIndex < areas.length) {
+        if (areaIndex + 1 && areaIndex < areas.length) {
             const currentArea = areas[areaIndex];
             const prevArea = prevAreas[areaIndex];
             if (currentArea.products) {
-                this.props.handleLoading(true);
                 if (currentArea.products !== prevArea.products) {
+                    handleLoading(true);
                     this.handleLoader(areaIndex);
                 }
                 else if (currentArea.grout !== prevArea.grout) {
+                    handleLoading(true);
                     this.handleLoader(areaIndex);
                 }
                 else if (currentArea.skewType !== prevArea.skewType) {
+                    handleLoading(true);
                     this.handleLoader(areaIndex);
                 }
                 else if (currentArea.skewValue !== prevArea.skewValue) {
+                    handleLoading(true);
                     this.handleLoader(areaIndex);
                 }
                 else if (currentArea.color !== prevArea.color) {
+                    handleLoading(true);
                     this.changeColor(areaIndex, currentArea.color);
                 }
                 else if (currentArea.rotate !== prevArea.rotate) {
+                    handleLoading(true);
                     this.changeRotate(areaIndex, currentArea.rotate);
                 }
             }
@@ -71,13 +76,13 @@ class ThreeJS extends Component {
         this.transparent.onload = () => { count++; if (count > 2) onload() };
         this.matt.onload = () => { count++; if (count > 2) onload() };
         const onload = () => {
-            this.rate = (window.innerWidth - (window.innerHeight + 16 >= window.innerWidth * hpw ? 0 : 16)) / 1600;
+            this.rate = (window.innerWidth - (window.innerHeight + 16 >= window.innerWidth * hpw ? 0 : 16)) / WIDTH;
 
-            const aspect = (1600 - horizontal * 2) / (900 - vertical * 2);
+            const aspect = (WIDTH - horizontal * 2) / (HEIGHT - vertical * 2);
             this.areas = areas.map((area, index) => {
                 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
                 renderer.setClearColor(0xffffff, 1);
-                renderer.setSize(1600 * this.rate, 900 * this.rate);
+                renderer.setSize(WIDTH * this.rate, HEIGHT * this.rate);
                 renderer.shadowMap.enabled = false;
                 renderer.shadowMapSoft = false;
                 const scene = new THREE.Scene();
@@ -85,12 +90,12 @@ class ThreeJS extends Component {
                 camera.focus = 10;
                 camera.position.set(0, 0, 100);
                 camera.setViewOffset(
-                    1600 - horizontal * 2,
-                    900 - vertical * 2,
+                    WIDTH - horizontal * 2,
+                    HEIGHT - vertical * 2,
                     -horizontal * 2,
                     -vertical * 2,
-                    1600,
-                    900
+                    WIDTH,
+                    HEIGHT
                 );
                 const { x, y, z, _x, _y, _z, scaleX, scaleY, hoverArea } = area;
                 const areaGroup = new THREE.Group();
@@ -194,7 +199,6 @@ class ThreeJS extends Component {
         }
     }
     handleLoader = (index) => {
-        console.log(index)
         const { layout } = this.props;
         const { areas } = layout;
         const { renderer, group } = this.areas[index];
@@ -241,14 +245,14 @@ class ThreeJS extends Component {
             });
             const mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1), material);
             mesh.scale.set(productWidth, productHeight);
-            mesh.product = p1;
+            mesh.userData.product = p1;
             const groupTitle = new THREE.Group();
             groupTitle.add(mesh);
 
             const material2 = new THREE.MeshBasicMaterial(texture2 ? { map: texture2 } : { color: new THREE.Color(color) });
             const mesh2 = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1), material2);
             mesh2.scale.set(productWidth, productHeight);
-            mesh2.product = p1;
+            mesh2.product = p2;
             const groupTitle2 = new THREE.Group();
             groupTitle2.add(mesh2);
 
@@ -277,7 +281,6 @@ class ThreeJS extends Component {
                 }
                 i = !i;
             };
-            console.log(group);
             this.handleDraw(index);
             this.handleRender();
         }
@@ -317,18 +320,17 @@ class ThreeJS extends Component {
             if (areas[index].products) {
                 this.ctx.drawImage(canvas, 0, 0, WIDTH, HEIGHT);
                 const type = areas[index].products[0].front.type;
-                console.log(type)
                 if (type === 1) this.ctx.drawImage(mattCanvas, 0, 0, WIDTH, HEIGHT);
                 if (type === 2) this.ctx.drawImage(smoothCanvas, 0, 0, WIDTH, HEIGHT);
                 if (type === 3) this.ctx.drawImage(surfCanvas, 0, 0, WIDTH, HEIGHT);
             }
-            if (hover) this.ctx.drawImage(hoverCanvas, 0, 0, WIDTH, HEIGHT);
+            if (hover && !areas[index].custom && !areas[index].customRotate) this.ctx.drawImage(hoverCanvas, 0, 0, WIDTH, HEIGHT);
         });
         this.ctx.drawImage(this.transparent, 0, 0, WIDTH, HEIGHT);
         this.props.handleLoading(false);
     }
     handleResize = () => {
-        this.rate = (window.innerWidth - (window.innerHeight + 16 >= window.innerWidth * hpw ? 0 : 16)) / 1600;
+        this.rate = (window.innerWidth - (window.innerHeight + 16 >= window.innerWidth * hpw ? 0 : 16)) / WIDTH;
         this.handleRender();
     }
     onMouseMove = (e) => {
@@ -357,7 +359,7 @@ class ThreeJS extends Component {
             this.areas.map(area => area.hover = false);
             this.handleRender();
         }
-        // this.handleRenderInfo({ x, y, i });
+        this.handleRenderInfo({ x, y, i });
     }
     onMouseLeave = (e) => {
         e.target.style.cursor = 'unset';
@@ -386,8 +388,11 @@ class ThreeJS extends Component {
         } else if (this.index === areaIndex) {
             const { layout } = this.props;
             const area = layout?.areas[this.index];
-            this.mouse.x = e.pageX, this.mouse.y = e.pageY;
-            if (area && area.customRotate || area.custom) {
+            const rect = this.appCanvas.getBoundingClientRect();
+            this.mouse.x = ((e.clientX - rect.left) / (rect.right - rect.left)) * 2 - 1;
+            this.mouse.y = - ((e.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1;
+
+            if (area && (area.customRotate || area.custom)) {
                 this.handleCustom(area.customRotate, area.custom);
             }
             else {
@@ -398,9 +403,49 @@ class ThreeJS extends Component {
             }
         }
     }
-    handleCustom = () => {
+    handleCustom = (customRotate, custom) => {
         if (this.areas[this.index]) {
             const { group, camera } = this.areas[this.index];
+            this.raycaster.setFromCamera(this.mouse, camera);
+            const intersects = this.raycaster.intersectObjects(group.children, true);
+            const mesh = intersects[0]?.object;
+            if (mesh) {
+                const { layout: { areas } } = this.props;
+                const area = areas[this.index];
+                if (area && area.product) {
+                    if (custom && area.product._id !== mesh.userData.product?._id) {
+                        mesh.userData.oldProduct = mesh.userData.product;
+                        mesh.userData.product = area.product
+                        mesh.material = mesh.material.clone();
+                        // const productWidth = mesh.userData.product.size.width;
+                        // const productHeight = mesh.userData.product.size.height;
+                        // mesh.scale.set(productWidth, productHeight);
+                        // mesh.position.z = -0.01;
+                        mesh.material.map = new THREE.TextureLoader().load("/api/images/" + mesh.userData.product.image, () => { this.handleDraw(this.index) });
+                    }
+                    else if (customRotate) {
+                        mesh.rotation.set(0, 0, mesh.rotation.z + deg(90));
+                    }
+                    else if (custom && mesh.userData.oldProduct) {
+                        mesh.userData.product = mesh.userData.oldProduct;
+                        mesh.userData.oldProduct = area.product
+                        mesh.material = mesh.material.clone();
+                        // const productWidth = mesh.userData.product.size.width;
+                        // const productHeight = mesh.userData.product.size.height;
+                        // mesh.scale.set(productWidth, productHeight);
+                        // mesh.position.z = 0;
+                        mesh.material.map = new THREE.TextureLoader().load("/api/images/" + mesh.userData.product.image, () => { this.handleDraw(this.index) });
+                    }
+                }
+                else if (customRotate) {
+                    mesh.rotation.set(0, 0, mesh.rotation.z + deg(90));
+                    this.handleDraw(this.index)
+                }
+                else {
+                    const { dispatch } = this.props;
+                    dispatch({ type: types.NO_TITLE_SELECTED });
+                }
+            }
         }
     }
     handleRotateItem = () => {
@@ -423,8 +468,8 @@ class ThreeJS extends Component {
                 id="roomCanvas"
                 className="room-canvas"
                 style={{ cursor: 'unset' }}
-                width={1600}
-                height={900}
+                width={WIDTH}
+                height={HEIGHT}
                 onMouseMove={this.onMouseMove}
                 onMouseLeave={this.onMouseLeave}
                 onClick={this.onSelect}
