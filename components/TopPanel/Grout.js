@@ -25,7 +25,7 @@ class Grout extends Component {
         const { currentGrout } = this.state;
         const { active, dispatch, layout, areaIndex } = this.props;
         const area = layout?.areas[areaIndex] || {};
-        const { grout, color } = area;
+        const { color = '#FFFFFF' } = area;
         return (
             <div className="top-panel-option-box" style={!active ? { display: 'none' } : {}}>
                 <div id="topPanelContentSurfaceTabGroutSizeBody" className="top-panel-box">

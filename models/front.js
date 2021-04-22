@@ -13,7 +13,7 @@ const front = new Schema({
     },
     rate: {
         type: Number,
-        default: 0
+        default: 1
     }
 });
 

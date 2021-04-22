@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import types from '../../redux/types';
-import product1 from '../../datas/product1';
 import { deg, PI, sin, tanD } from '../../utils/helper';
-import areas from '../../datas/areas';
-import product2 from '../../datas/product2';
 const hpw = 9 / 16;
-const infinitWidth = 50000, infinitHeight = 50000;
+const infinitWidth = 200000, infinitHeight = 200000;
+const WIDTH = 1600, HEIGHT = 900;
 
 class ThreeJS extends Component {
     constructor(props) {
@@ -15,6 +13,7 @@ class ThreeJS extends Component {
             loading: true
         };
         this.areas = [];
+        this.mouse = {};
     }
     componentDidMount() {
         this.handleInit();
@@ -23,32 +22,61 @@ class ThreeJS extends Component {
     componentWillUnmount() {
         window.removeEventListener('resize', this.handleResize);
     }
-    componentDidUpdate() {
-        this.props.handleLoading(true);
-        this.handleLoader();
+    componentDidUpdate(prevProps) {
+        const { layout, areaIndex } = this.props;
+        const { layout: prevLayout } = prevProps;
+        const { areas } = layout;
+        const { areas: prevAreas } = prevLayout;
+        if (areaIndex < areas.length) {
+            const currentArea = areas[areaIndex];
+            const prevArea = prevAreas[areaIndex];
+            if (currentArea.products) {
+                this.props.handleLoading(true);
+                if (currentArea.products !== prevArea.products) {
+                    this.handleLoader(areaIndex);
+                }
+                else if (currentArea.grout !== prevArea.grout) {
+                    this.handleLoader(areaIndex);
+                }
+                else if (currentArea.skewType !== prevArea.skewType) {
+                    this.handleLoader(areaIndex);
+                }
+                else if (currentArea.skewValue !== prevArea.skewValue) {
+                    this.handleLoader(areaIndex);
+                }
+                else if (currentArea.color !== prevArea.color) {
+                    this.changeColor(areaIndex, currentArea.color);
+                }
+                else if (currentArea.rotate !== prevArea.rotate) {
+                    this.changeRotate(areaIndex, currentArea.rotate);
+                }
+            }
+        }
     }
     handleInit = () => {
-        const { layout } = this.props;
+        this.raycaster = new THREE.Raycaster();
+        this.mouse = new THREE.Vector2();
+        const { layout, dispatch } = this.props;
         const { horizontal, vertical, cameraFov, areas, images } = layout;
-
         this.appCanvas = document.getElementById("roomCanvas");
         this.ctx = this.appCanvas.getContext("2d");
         this.background = new Image();
         this.background.src = "/api/images/" + images[0];
         this.transparent = new Image();
         this.transparent.src = "/api/images/" + images[1];
-        this.background.onload = this.handleRender;
-        this.transparent.onload = this.handleRender;
-
-        this.smooth = new Image();
-        this.smooth.src = "/api/images/" + images[2];
-        this.smooth.onload = () => {
+        this.matt = new Image();
+        this.matt.src = "/api/images/" + images[2];
+        let count = 0;
+        this.background.onload = () => { count++; if (count > 2) onload() };
+        this.transparent.onload = () => { count++; if (count > 2) onload() };
+        this.matt.onload = () => { count++; if (count > 2) onload() };
+        const onload = () => {
             this.rate = (window.innerWidth - (window.innerHeight + 16 >= window.innerWidth * hpw ? 0 : 16)) / 1600;
 
             const aspect = (1600 - horizontal * 2) / (900 - vertical * 2);
-            this.areas = areas.map((area) => {
+            this.areas = areas.map((area, index) => {
                 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
-                renderer.setClearColor(0xffffff, 0);
+                renderer.setClearColor(0xffffff, 1);
                 renderer.setSize(1600 * this.rate, 900 * this.rate);
                 renderer.shadowMap.enabled = false;
                 renderer.shadowMapSoft = false;
@@ -65,58 +93,99 @@ class ThreeJS extends Component {
                     900
                 );
                 const { x, y, z, _x, _y, _z, scaleX, scaleY, hoverArea } = area;
-                const group = new THREE.Group();
-                group.position.set(x, y, z);
-                group.rotation.set(deg(_x), deg(_y), deg(_z));
-                group.scale.set(scaleX / 1000, scaleY / 1000, 1);
+                const areaGroup = new THREE.Group();
+                areaGroup.position.set(x, y, z);
+                areaGroup.rotation.set(deg(_x), deg(_y), deg(_z));
+                areaGroup.scale.set(scaleX / 1000, scaleY / 1000, 1);
+                scene.add(areaGroup);
 
-                scene.add(group);
+                const group = new THREE.Group();
+
+                areaGroup.add(group);
+
                 const canvas = document.createElement('canvas');
                 const hoverCanvas = document.createElement('canvas');
+                const mattCanvas = document.createElement('canvas');
                 const smoothCanvas = document.createElement('canvas');
+                const surfCanvas = document.createElement('canvas');
 
-                const width = 1600;
-                const height = 900;
-
+                if ("canvasInit") {
+                    canvas.width = WIDTH;
+                    canvas.height = HEIGHT;
+                }
                 if ("hoverCanvasInit") {
-                    hoverCanvas.width = width;
-                    hoverCanvas.height = height;
+                    hoverCanvas.width = WIDTH;
+                    hoverCanvas.height = HEIGHT;
                     const ctx = hoverCanvas.getContext('2d');
                     ctx.fillStyle = "rgba(0, 130, 232, 0.3)";
-                    ctx.fillRect(0, 0, width, height);
-                    const hoverImage = ctx.getImageData(0, 0, width, height);
-                    for (let x = 0; x < width; x++) {
-                        for (let y = 0; y < height; y++) {
-                            let i = (x + y * width) * 4;
+                    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+                    const hoverImage = ctx.getImageData(0, 0, WIDTH, HEIGHT);
+                    for (let x = 0; x < WIDTH; x++) {
+                        for (let y = 0; y < HEIGHT; y++) {
+                            let i = (x + y * WIDTH) * 4;
                             const inner = this.pointInPolygon({ x: x * this.rate, y: y * this.rate }, hoverArea);
                             if (!inner) hoverImage.data[i + 3] = 0;
                         }
                     };
                     ctx.putImageData(hoverImage, 0, 0);
                 }
-                if ("smoothCanvasInit") {
-                    smoothCanvas.width = width;
-                    smoothCanvas.height = height;
-                    const ctx = smoothCanvas.getContext('2d');
-                    ctx.drawImage(this.smooth, 0, 0, width, height);
-                    const smoothImage = ctx.getImageData(0, 0, width, height);
-                    for (let x = 0; x < width; x++) {
-                        for (let y = 0; y < height; y++) {
-                            let i = (x + y * width) * 4;
+                if ("mattCanvasInit") {
+                    mattCanvas.width = WIDTH;
+                    mattCanvas.height = HEIGHT;
+                    const ctx = mattCanvas.getContext('2d');
+                    ctx.drawImage(this.matt, 0, 0, WIDTH, HEIGHT);
+                    const mattImage = ctx.getImageData(0, 0, WIDTH, HEIGHT);
+                    for (let x = 0; x < WIDTH; x++) {
+                        for (let y = 0; y < HEIGHT; y++) {
+                            let i = (x + y * WIDTH) * 4;
                             const inner = this.pointInPolygon({ x: x * this.rate, y: y * this.rate }, hoverArea);
-                            if (!inner) smoothImage.data[i + 3] = 0;
-                            else smoothImage.data[i + 3] = 128;
+                            if (inner) mattImage.data[i + 3] = 127;
+                            else mattImage.data[i + 3] = 0;
+                        }
+                    };
+                    ctx.putImageData(mattImage, 0, 0);
+                }
+                if ("smoothCanvasInit") {
+                    smoothCanvas.width = WIDTH;
+                    smoothCanvas.height = HEIGHT;
+                    const ctx = smoothCanvas.getContext('2d');
+                    ctx.drawImage(this.background, 0, 0, WIDTH, HEIGHT);
+                    const smoothImage = ctx.getImageData(0, 0, WIDTH, HEIGHT);
+                    for (let x = 0; x < WIDTH; x++) {
+                        for (let y = 0; y < HEIGHT; y++) {
+                            let i = (x + y * WIDTH) * 4;
+                            const inner = this.pointInPolygon({ x: x * this.rate, y: y * this.rate }, hoverArea);
+                            if (inner) smoothImage.data[i + 3] = 76;
+                            else smoothImage.data[i + 3] = 0;
                         }
                     };
                     ctx.putImageData(smoothImage, 0, 0);
                 }
-                // document.body.appendChild(canvas)
-                // document.body.appendChild(renderer.domElement)
-
-                return ({ renderer, scene, camera, group, area, canvas, hoverCanvas, smoothCanvas });
+                if ("surfCanvasInit") {
+                    surfCanvas.width = WIDTH;
+                    surfCanvas.height = HEIGHT;
+                    const ctx = surfCanvas.getContext('2d');
+                    ctx.drawImage(this.background, 0, 0, WIDTH, HEIGHT);
+                    const surfImage = ctx.getImageData(0, 0, WIDTH, HEIGHT);
+                    let j = 0;
+                    for (let x = 0; x < WIDTH; x++) {
+                        for (let y = 0; y < HEIGHT; y++) {
+                            let i = (x + y * WIDTH) * 4;
+                            const inner = this.pointInPolygon({ x: x * this.rate, y: y * this.rate }, hoverArea);
+                            if (inner) surfImage.data[i + 3] = 127;
+                            else surfImage.data[i + 3] = 0;
+                        }
+                    };
+                    ctx.putImageData(surfImage, 0, 0);
+                }
+                if (index === 2 || 0) {
+                    document.body.appendChild(canvas);
+                    document.body.appendChild(renderer.domElement);
+                }
+                return ({ renderer, scene, camera, group, area, canvas, hoverCanvas, smoothCanvas, mattCanvas, surfCanvas });
             });
-
-            this.handleLoader();
+            dispatch({ type: types.PROGRESS_UPDATE });
+            this.handleRender();
         }
         if (!this.fps) {
             this.fps = document.createElement('div');
@@ -124,123 +193,143 @@ class ThreeJS extends Component {
             document.getElementById('container').appendChild(this.fps);
         }
     }
-    handleGuiInit = () => {
-        window.onload = () => {
-            const gui = new dat.GUI();
-            const width = gui.add(co, 'w', 10.0, 50.0);
-            width.onChange(this.handleLoader);
-            const height = gui.add(co, 'h', 10.0, 50.0);
-            height.onChange(this.handleLoader);
-            const x = gui.add(co, 'x', -50.0, 50.0);
-            x.onChange(this.handleLoader);
-            const y = gui.add(co, 'y', -50.0, 50.0);
-            y.onChange(this.handleLoader);
-            const z = gui.add(co, 'z', -50.0, 50.0);
-            z.onChange(this.handleLoader);
-            const _x = gui.add(co, '_x', -180, 180);
-            _x.onChange(this.handleLoader);
-            const _y = gui.add(co, '_y', -180, 180);
-            _y.onChange(this.handleLoader);
-            const _z = gui.add(co, '_z', -180, 180);
-            _z.onChange(this.handleLoader);
-            const cy = gui.add(co, 'cy', -50.0, 50.0);
-            cy.onChange(this.handleRender);
-            const _cy = gui.add(co, '_cy', -50.0, 50.0);
-            _cy.onChange(this.handleRender);
-            const cz = gui.add(co, 'cz', -50.0, 50.0);
-            cz.onChange(this.handleRender);
-            const _cz = gui.add(co, '_cz', -50.0, 50.0);
-            _cz.onChange(this.handleRender);
+    handleLoader = (index) => {
+        console.log(index)
+        const { layout } = this.props;
+        const { areas } = layout;
+        const { renderer, group } = this.areas[index];
+        const {
+            products,
+            grout = 2,
+            color = 0xffffff,
+            width, height,
+            rotate, skewType, skewValue
+        } = areas[index];
+        const [p1, p2] = products;
+        group.clear();
+        if (rotate + 1) group.rotation.set(0, 0, deg(rotate));
+        renderer.setClearColor(color, 1);
+        let count = 0;
+        const productWidth = p1.size.width, productHeight = p1.size.height;
+        const texture = new THREE.TextureLoader().load("/api/images/" + p1.image, () => { count++; if (count === products.length) addMesh() });
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.wrapS = texture.wrapT = 1001;
+        texture.encoding = THREE.sRGBEncoding;
+        texture.encoding = 3000;
+        texture.flipY = true;
+        // texture.minFilter = THREE.LinearFilter;
+        // texture.magFilter = THREE.NearestFilter;
+        texture.minFilter = 1008;
+        texture.magFilter = 1006;
+        texture.needsUpdate = true;
+        texture.anisotropy = 16;
+        texture.opacity = 1;
+        texture.unpackAlignment = 4;
+        texture.format = 1023;
+        texture.mapping = 300;
+        texture.type = 1009;
+        let texture2 = null;
+        if (p2) {
+            texture2 = new THREE.TextureLoader().load("/api/images/" + p2.image, () => { count++; if (count === products.length) addMesh() });
+            texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping;
+            texture2.needsUpdate = true;
+            texture2.anisotropy = 16;
         }
+        const addMesh = () => {
+            const material = new THREE.MeshBasicMaterial({
+                map: texture,
+            });
+            const mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1), material);
+            mesh.scale.set(productWidth, productHeight);
+            mesh.product = p1;
+            const groupTitle = new THREE.Group();
+            groupTitle.add(mesh);
+
+            const material2 = new THREE.MeshBasicMaterial(texture2 ? { map: texture2 } : { color: new THREE.Color(color) });
+            const mesh2 = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1), material2);
+            mesh2.scale.set(productWidth, productHeight);
+            mesh2.product = p1;
+            const groupTitle2 = new THREE.Group();
+            groupTitle2.add(mesh2);
+
+            const maxX = productWidth / 2 + 2 + (productWidth + grout) * Math.ceil(width / (productWidth + grout));
+            const maxY = productHeight / 2 + 2 + (productHeight + grout) * Math.ceil(height / (productHeight + grout));
+            let i;
+            for (let x = -maxX; x < maxX; x += productWidth + grout) {
+                let j;
+                for (let y = -maxY; y < maxY; y += productHeight + grout) {
+                    let groupClone;
+                    if (i === j || skewType !== 1) {
+                        groupClone = groupTitle.clone();
+                    }
+                    else groupClone = groupTitle2.clone();
+                    groupClone.position.set(x, y, 0);
+                    group.add(groupClone);
+                    if (skewType === 2 && j) {
+                        if (!skewValue) skewValue = 1 / 2;
+                        groupClone.position.set(x + (productHeight + grout) * skewValue, y, 0);
+                    }
+                    else if (skewType === 3 && i) {
+                        if (!skewValue) skewValue = 1 / 2;
+                        groupClone.position.set(x, y + (productHeight + grout) * skewValue, 0);
+                    }
+                    j = !j;
+                }
+                i = !i;
+            };
+            console.log(group);
+            this.handleDraw(index);
+            this.handleRender();
+        }
+    }
+    changeRotate = (index, rotate) => {
+        this.areas[index].group.rotation.set(0, 0, deg(rotate));
+        this.handleDraw(index);
+    }
+    changeColor = (index, color) => {
+        const { renderer } = this.areas[index];
+        renderer.setClearColor(color, 1);
+        this.handleDraw(index);
+
+    }
+    handleDraw = (index) => {
+        const { layout: { areas } } = this.props;
+        const { hoverArea, } = areas[index];
+        const { renderer, camera, scene, canvas } = this.areas[index];
+        renderer.render(scene, camera);
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(renderer.domElement, 0, 0, WIDTH, HEIGHT);
+        const imageData = ctx.getImageData(0, 0, WIDTH, HEIGHT);
+        for (let x = 0; x < WIDTH; x++) {
+            for (let y = 0; y < HEIGHT; y++) {
+                let i = (x + y * WIDTH) * 4;
+                const inner = this.pointInPolygon({ x: x * this.rate, y: y * this.rate }, hoverArea);
+                if (!inner) imageData.data[i + 3] = 0;
+            }
+        };
+        ctx.putImageData(imageData, 0, 0);
+        this.handleRender()
+    }
+    handleRender = () => {
+        const { layout: { areas } } = this.props;
+        this.ctx.drawImage(this.background, 0, 0, WIDTH, HEIGHT);
+        this.areas.map(({ canvas, mattCanvas, smoothCanvas, surfCanvas, hover, hoverCanvas }, index) => {
+            if (areas[index].products) {
+                this.ctx.drawImage(canvas, 0, 0, WIDTH, HEIGHT);
+                const type = areas[index].products[0].front.type;
+                console.log(type)
+                if (type === 1) this.ctx.drawImage(mattCanvas, 0, 0, WIDTH, HEIGHT);
+                if (type === 2) this.ctx.drawImage(smoothCanvas, 0, 0, WIDTH, HEIGHT);
+                if (type === 3) this.ctx.drawImage(surfCanvas, 0, 0, WIDTH, HEIGHT);
+            }
+            if (hover) this.ctx.drawImage(hoverCanvas, 0, 0, WIDTH, HEIGHT);
+        });
+        this.ctx.drawImage(this.transparent, 0, 0, WIDTH, HEIGHT);
+        this.props.handleLoading(false);
     }
     handleResize = () => {
         this.rate = (window.innerWidth - (window.innerHeight + 16 >= window.innerWidth * hpw ? 0 : 16)) / 1600;
-        this.handleLoader();
-    }
-    handleLoader = () => {
-        const { layout, areaIndex } = this.props;
-        const { areas } = layout;
-        if (areaIndex + 1) {
-            const { renderer, camera, scene, group, canvas } = this.areas[areaIndex];
-            const { products, grout = 2, color = 0xffffff, hoverArea } = areas[areaIndex];
-            console.log(grout)
-            if (products && products[0]) {
-                group.clear();
-                renderer.setClearColor(color, 1);
-                const [p1, p2 = p1] = products;
-                if (p1.front.rate) this.areas[areaIndex].smooth = true;
-                let count = 0;
-                const productWidth = p1.size.width, productHeight = p1.size.height;
-                const texture = new THREE.TextureLoader().load("/api/images/" + p1.image, () => { count++; addMesh() });
-                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-                texture.needsUpdate = true;
-                texture.anisotropy = 16;
-                const texture2 = new THREE.TextureLoader().load("/api/images/" + p2.image, () => { count++; addMesh() });
-                texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping;
-                texture2.needsUpdate = true;
-                texture2.anisotropy = 16;
-
-                const addMesh = () => {
-                    if (count < 2) return;
-                    const material = new THREE.MeshBasicMaterial({
-                        map: texture,
-                        opacity: 1,
-                        transparent: true,
-                    });
-                    const mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(productWidth, productHeight), material);
-
-                    const material2 = new THREE.MeshBasicMaterial({
-                        map: texture2,
-                        opacity: 1,
-                        transparent: true,
-                    });
-                    const mesh2 = new THREE.Mesh(new THREE.PlaneBufferGeometry(productWidth, productHeight), material2);
-
-                    const maxX = infinitWidth / 2;
-                    const maxY = infinitHeight / 2;
-
-                    for (let x = -maxX; x < maxX; x += productWidth + grout) {
-                        for (let y = -maxY; y < maxY; y += productHeight + grout) {
-                            const cloneMesh = mesh.clone();
-                            cloneMesh.position.set(x, y, 0);
-                            group.add(cloneMesh);
-                        }
-                    };
-                    renderer.render(scene, camera);
-
-                    const width = 1600;
-                    const height = 900;
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(renderer.domElement, 0, 0, width, height);
-                    const imageData = ctx.getImageData(0, 0, width, height);
-                    for (let x = 0; x < width; x++) {
-                        for (let y = 0; y < height; y++) {
-                            let i = (x + y * width) * 4;
-                            const inner = this.pointInPolygon({ x: x * this.rate, y: y * this.rate }, hoverArea);
-                            if (inner) imageData.data[i + 3] = 255;
-                            else imageData.data[i + 3] = 0;
-                        }
-                    };
-                    ctx.putImageData(imageData, 0, 0);
-                    this.handleRender();
-                }
-            }
-        }
-    }
-    handleRender = () => {
-        const { layout } = this.props;
-        const { areas } = layout;
-        const { width, height } = this.appCanvas;
-        this.ctx.drawImage(this.background, 0, 0, width, height);
-        this.areas.map(({ canvas, smooth, smoothCanvas, hover, hoverCanvas }, index) => {
-            if (areas[index].products && areas[index].products[0]) this.ctx.drawImage(canvas, 0, 0, width, height);
-            if (smooth) this.ctx.drawImage(smoothCanvas, 0, 0, width, height);
-            if (hover) this.ctx.drawImage(hoverCanvas, 0, 0, width, height);
-        });
-        this.ctx.drawImage(this.transparent, 0, 0, width, height);
-        this.props.handleLoading(false);
+        this.handleRender();
     }
     onMouseMove = (e) => {
         const x = e.pageX, y = e.pageY;
@@ -261,8 +350,8 @@ class ThreeJS extends Component {
                 else area.hover = false;
             });
             this.handleRender();
-        } else if (!selected && this.index !== null) {
-            this.index = null;
+        } else if (!selected && this.index + 1) {
+            this.index = -1;
             e.target.style.cursor = 'unset';
             e.target.title = '';
             this.areas.map(area => area.hover = false);
@@ -288,13 +377,35 @@ class ThreeJS extends Component {
         return inside;
     };
     onSelect = (e) => {
-        const { dispatch } = this.props;
-        if (this.index + 1) {
+        const { dispatch, areaIndex } = this.props;
+        if (this.index < this.areas.length && this.index !== areaIndex) {
             dispatch({
                 type: types.SELECT_AREA,
                 payload: this.index
             });
+        } else if (this.index === areaIndex) {
+            const { layout } = this.props;
+            const area = layout?.areas[this.index];
+            this.mouse.x = e.pageX, this.mouse.y = e.pageY;
+            if (area && area.customRotate || area.custom) {
+                this.handleCustom(area.customRotate, area.custom);
+            }
+            else {
+                dispatch({
+                    type: types.SELECT_AREA,
+                    payload: this.index
+                });
+            }
         }
+    }
+    handleCustom = () => {
+        if (this.areas[this.index]) {
+            const { group, camera } = this.areas[this.index];
+        }
+    }
+    handleRotateItem = () => {
+        const { layout, areaIndex } = this.props;
+        projector.unprojectVector(vector, camera);
     }
     handleRenderInfo = (newInfo) => {
         this.info = { ...this.info, ...(newInfo || {}) };
@@ -307,7 +418,6 @@ class ThreeJS extends Component {
         }
     }
     render() {
-        console.log(this.props.layout)
         return (
             <canvas
                 id="roomCanvas"

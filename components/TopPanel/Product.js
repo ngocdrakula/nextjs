@@ -20,6 +20,7 @@ class Product extends Component {
         const { dispatch, products, layout, areaIndex, sizes, fronts, locations } = this.props;
         const area = layout?.areas[areaIndex] || {};
         const selecteds = area.products || [];
+        const skewType = area.skewType;
         return (
             <div id="topPanelTilesListBox" className="top-panel-box">
                 <div id="loadTilesAnimationContainer" style={products.length ? { display: 'none' } : {}}>
@@ -49,7 +50,7 @@ class Product extends Component {
                                     <p>Kích thước: {product.size.width}mm x {product.size.height}mm</p>
                                     <p>Bề mặt: {product.front.name}</p>
                                 </div>
-                                <div className="buttons-holder-tile-list-choose-tile" style={{ display: selecteds.length > 1 ? 'block' : 'none' }}>
+                                <div className="buttons-holder-tile-list-choose-tile" style={{ display: skewType===1 ? 'block' : 'none' }}>
                                     <button
                                         type="button"
                                         className="button-tile-list-choose-tile"

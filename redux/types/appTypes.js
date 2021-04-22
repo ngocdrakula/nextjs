@@ -37,6 +37,8 @@ export const HIDE_TOPPANEL = 'HIDE_TOPPANEL';
 
 export const CHANGE_GROUT = 'CHANGE_GROUT';
 export const CHANGE_COLOR = 'CHANGE_COLOR';
+export const CHANGE_CUSTOM = 'CHANGE_CUSTOM';
+export const CHANGE_CUSTOM_ROTATE = 'CHANGE_CUSTOM_ROTATE';
 
 export const SELECT_LAYOUT = 'SELECT_LAYOUT';
 export const SELECT_AREA = 'SELECT_AREA';
@@ -51,3 +53,5 @@ export const CHANGE_SKEW_VALUE = 'CHANGE_SKEW_VALUE';
 export const CHANGE_ROTATE = 'CHANGE_ROTATE';
 
 export const CHANGE_SORT = 'CHANGE_SORT';
+
+export const PROGRESS_UPDATE = 'PROGRESS_UPDATE';

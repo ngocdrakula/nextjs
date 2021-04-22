@@ -4,6 +4,7 @@ import types from '../../redux/types';
 
 const rotations = [
     { _id: 0, label: '0°', value: 0, },
+    { _id: 45, label: '45°', value: 45, },
     { _id: 90, label: '90°', value: 90, },
     { _id: 135, label: '135°', value: 135, },
     { _id: 180, label: '180°', value: 180, },

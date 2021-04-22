@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-export default class Process extends Component {
+class Process extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -11,15 +12,21 @@ export default class Process extends Component {
     componentDidMount() {
         this.interval = setInterval(() => {
             const { loaded } = this.state;
-            if (loaded >= 100) clearInterval(this.interval);
+            if (loaded >= 90) clearInterval(this.interval);
             else {
-                const radom = Math.floor(Math.random() * 5) + 15;
-                this.setState({ loaded: Math.min(loaded + radom, 100) });
+                const radom = Math.floor(Math.random() * 5) + 5;
+                this.setState({ loaded: Math.min(loaded + radom, 90) });
             }
         }, 100);
     }
     componentWillUnmount() {
         clearInterval(this.interval);
+    }
+    componentDidUpdate(prevProps) {
+        if (!prevProps.progress && this.props.progress) {
+            clearInterval(this.interval);
+            this.setState({ loaded: 100 });
+        }
     }
 
     render() {
@@ -35,3 +42,5 @@ export default class Process extends Component {
         );
     }
 }
+
+export default connect(({ app: { progress } }) => ({ progress }))(Process)
