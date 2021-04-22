@@ -3,7 +3,7 @@ import NextHead from 'next/head'
 export default function Head() {
     return (
         <NextHead>
-            <title>NgocDrakula</title>
+            <title>Really Virtual</title>
             <link rel="icon" href="/favicon.ico" />
             <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
             <meta httpEquiv="X-UA-Compatible" content="IE=edge" />

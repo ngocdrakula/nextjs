@@ -17,33 +17,41 @@ const skews = [
 class ProductLayout extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            custom: false,
-            rotate: false,
-        }
+        this.state = {}
     }
 
     handleCustom = (e) => this.setState({ [e.target.name]: !!e.target.checked });
 
     render() {
-        const { custom, rotate } = this.state;
         const { active, dispatch, layout, areaIndex } = this.props;
         const area = layout?.areas[areaIndex] || {};
-        const { skewType, skewValue } = area;
+        const { skewType, skewValue, custom, customRotate } = area;
         return (
             <div className="top-panel-option-box top-panel-box-overflow-y" style={!active ? { display: 'none' } : {}}>
                 <div id="topPanelContentFreeDesign" className="top-panel-box">
                     <div>
                         <label htmlFor="customCheck" className="top-panel-label stiled-checkbox-text">Tùy chỉnh</label>
                         <div className="stiled-checkbox">
-                            <input type="checkbox" id="customCheck" name="custom" defaultChecked={custom} onChange={this.handleCustom} />
+                            <input
+                                type="checkbox"
+                                id="customCheck"
+                                name="custom"
+                                checked={custom ? 'checked' : ''}
+                                onChange={e => dispatch({ type: types.CHANGE_CUSTOM, payload: e.target.checked, x: console.log(e.target.checked) })}
+                            />
                             <label htmlFor="customCheck" />
                         </div>
                     </div>
                     <div >
                         <label htmlFor="rotateCheck" className="top-panel-label stiled-checkbox-text">Bấm để xoay</label>
                         <div className="stiled-checkbox">
-                            <input type="checkbox" id="rotateCheck" name="rotate" defaultChecked={rotate} onChange={this.handleCustom} />
+                            <input
+                                type="checkbox"
+                                id="rotateCheck"
+                                name="rotate"
+                                checked={customRotate ? 'checked' : ''}
+                                onChange={e => dispatch({ type: types.CHANGE_CUSTOM_ROTATE, payload: e.target.checked })}
+                            />
                             <label htmlFor="rotateCheck" />
                         </div>
                     </div>
@@ -89,4 +97,4 @@ class ProductLayout extends Component {
     }
 }
 
-export default connect(({ app: { layout, areaIndex } }) => ({ layout, areaIndex }))(ProductLayout)
+export default connect(({ app: { layout, areaIndex, custom, rotate } }) => ({ layout, areaIndex, custom, rotate }))(ProductLayout)
