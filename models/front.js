@@ -11,7 +11,7 @@ const front = new Schema({
         type: Boolean,
         default: true
     },
-    rate: {
+    type: {
         type: Number,
         default: 1
     }
