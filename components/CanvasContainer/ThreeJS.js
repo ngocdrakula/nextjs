@@ -183,19 +183,10 @@ class ThreeJS extends Component {
                     };
                     ctx.putImageData(surfImage, 0, 0);
                 }
-                if (index === 2 || 0) {
-                    // document.body.appendChild(canvas);
-                    // document.body.appendChild(renderer.domElement);
-                }
                 return ({ renderer, scene, camera, group, area, canvas, hoverCanvas, smoothCanvas, mattCanvas, surfCanvas });
             });
             dispatch({ type: types.PROGRESS_UPDATE });
             this.handleRender();
-        }
-        if (!this.fps) {
-            this.fps = document.createElement('div');
-            this.fps.id = "fps"
-            document.getElementById('container').appendChild(this.fps);
         }
     }
     handleLoader = (index) => {
@@ -359,7 +350,6 @@ class ThreeJS extends Component {
             this.areas.map(area => area.hover = false);
             this.handleRender();
         }
-        this.handleRenderInfo({ x, y, i });
     }
     onMouseLeave = (e) => {
         e.target.style.cursor = 'unset';
@@ -424,7 +414,8 @@ class ThreeJS extends Component {
                         mesh.material.map = new THREE.TextureLoader().load("/api/images/" + mesh.userData.product.image, () => { this.handleDraw(this.index) });
                     }
                     else if (customRotate) {
-                        mesh.rotation.set(0, 0, mesh.rotation.z + deg(90));
+                        mesh.rotation.set(0, 0, mesh.rotation._z + deg(90));
+
                     }
                     else if (custom && mesh.userData.oldProduct) {
                         mesh.userData.product = mesh.userData.oldProduct;
@@ -436,6 +427,7 @@ class ThreeJS extends Component {
                         // mesh.position.z = 0;
                         mesh.material.map = new THREE.TextureLoader().load("/api/images/" + mesh.userData.product.image, () => { this.handleDraw(this.index) });
                     }
+                    this.handleDraw(this.index)
                 }
                 else if (customRotate) {
                     mesh.rotation.set(0, 0, mesh.rotation.z + deg(90));
@@ -451,16 +443,6 @@ class ThreeJS extends Component {
     handleRotateItem = () => {
         const { layout, areaIndex } = this.props;
         projector.unprojectVector(vector, camera);
-    }
-    handleRenderInfo = (newInfo) => {
-        this.info = { ...this.info, ...(newInfo || {}) };
-        if (this.fps) {
-            let info = '';
-            Object.keys(this.info).map(i => {
-                info += `${i}: ${this.info[i]}<br>`;
-            });
-            this.fps.innerHTML = info;
-        }
     }
     render() {
         return (
