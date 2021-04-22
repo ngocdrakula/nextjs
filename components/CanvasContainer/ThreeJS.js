@@ -179,8 +179,8 @@ class ThreeJS extends Component {
                     ctx.putImageData(surfImage, 0, 0);
                 }
                 if (index === 2 || 0) {
-                    document.body.appendChild(canvas);
-                    document.body.appendChild(renderer.domElement);
+                    // document.body.appendChild(canvas);
+                    // document.body.appendChild(renderer.domElement);
                 }
                 return ({ renderer, scene, camera, group, area, canvas, hoverCanvas, smoothCanvas, mattCanvas, surfCanvas });
             });
@@ -357,7 +357,7 @@ class ThreeJS extends Component {
             this.areas.map(area => area.hover = false);
             this.handleRender();
         }
-        this.handleRenderInfo({ x, y, i });
+        // this.handleRenderInfo({ x, y, i });
     }
     onMouseLeave = (e) => {
         e.target.style.cursor = 'unset';
