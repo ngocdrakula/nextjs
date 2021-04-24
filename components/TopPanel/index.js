@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import dynamic from 'next/dynamic';
 import types from '../../redux/types';
+import ProductResult from './ProductResult';
 
 const Filter = dynamic(() => import('./Filter'));
 const Grout = dynamic(() => import('./Grout'));
@@ -26,11 +27,15 @@ class TopPanel extends Component {
     handleChange = (e) => this.setState({ search: e.target.value });
     handleSearch = () => {
         const { search } = this.state;
-        console.log(search)
+        const { dispatch } = this.props;
+        dispatch({
+            type: types.CHANGE_SEARCH,
+            payload: search
+        })
     }
 
     render() {
-        const { panel, search } = this.state;
+        const { panel} = this.state;
         const { visible } = this.props;
         return (
             <div className="top-panel" style={{ display: 'flex', right: visible ? 0 : -400 }}>
@@ -50,8 +55,7 @@ class TopPanel extends Component {
                     <input type="search" placeholder="Tìm kiếm sản phẩm" className="input-search" onChange={this.handleChange} />
                     <button className="search-icon-button" onClick={this.handleSearch}><img src="/icons/search.png" alt="Search" className="search-icon-button-imqge" /></button>{' '}
                     <button onClick={() => this.handleSelect(panel !== 3 ? 3 : null)} className={"top-panel-button" + (panel === 3 ? " top-panel-button-active" : "")}>Lọc</button>
-                    <div style={search ? {} : { display: 'none' }}>
-                    </div>
+                    <ProductResult />
                 </div>
                 <ProductLayout active={panel === 1} />
                 <Grout active={panel === 2} />

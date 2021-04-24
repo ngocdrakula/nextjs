@@ -54,12 +54,14 @@ const appReducer = (state = initState, action) => {
             };
         }
         case types.FRONTS_SELECT_ONE: {
-            const current = state.fronts[index];
-            current = { ...current, uncheck: !current.uncheck };
-            return {
-                ...state,
-                fronts: [...state.fronts],
-            };
+            const current = state.fronts[action.payload];
+            if (current) {
+                state.fronts[action.payload] = { ...current, uncheck: !current.uncheck };
+                return {
+                    ...state,
+                    fronts: [...state.fronts],
+                };
+            }
         }
         case types.FRONTS_REVERSE: {
             return {
@@ -87,12 +89,14 @@ const appReducer = (state = initState, action) => {
             };
         }
         case types.SIZES_SELECT_ONE: {
-            const current = state.sizes[index];
-            current = { ...current, uncheck: !current.uncheck };
-            return {
-                ...state,
-                sizes: [...state.sizes],
-            };
+            const current = state.sizes[action.payload];
+            if (current) {
+                state.sizes[action.payload] = { ...current, uncheck: !current.uncheck };
+                return {
+                    ...state,
+                    sizes: [...state.sizes],
+                };
+            }
         }
         case types.SIZES_REVERSE: {
             return {
@@ -133,12 +137,14 @@ const appReducer = (state = initState, action) => {
             };
         }
         case types.LOCATIONS_SELECT_ONE: {
-            const current = state.locations[index];
-            current = { ...current, uncheck: !current.uncheck };
-            return {
-                ...state,
-                locations: [...state.locations],
-            };
+            const current = state.locations[action.payload];
+            if (current) {
+                state.locations[action.payload] = { ...current, uncheck: !current.uncheck };
+                return {
+                    ...state,
+                    locations: [...state.locations],
+                };
+            }
         }
         case types.LOCATIONS_REVERSE: {
             return {
@@ -147,16 +153,42 @@ const appReducer = (state = initState, action) => {
             };
         }
         case types.CHANGE_SORT: {
+            console.log(action.payload);
+            state.products.sort((p1, p2) => {
+                if (action.payload === 0) {//a-z 
+                    var nameA = p1.name.toUpperCase();
+                    var nameB = p2.name.toUpperCase();
+                    if (nameA > nameB) return 1;
+                    else if (nameA < nameB) return -1;
+                    return 0;
+                }
+                if (action.payload === 1) { //z-a
+                    var nameA = p1.name.toUpperCase();
+                    var nameB = p2.name.toUpperCase();
+                    if (nameA < nameB) return 1;
+                    else if (nameA > nameB) return -1;
+                    return 0;
+                }
+                var date1 = Date.parse(p1.createdAt);
+                var date2 = Date.parse(p2.createdAt);
+                if (action.payload === 2) {
+                    console.log(date1 - date2)
+                    return (date1 - date2);//new
+                }
+                return (date2 - date1);//old
+            })
             return {
                 ...state,
-                products: state.products.sort((p1, p2) => {
-                    if (action.payload === 0) return (p1.name - p2.name);//a-z 
-                    if (action.payload === 1) return (p2.name - p1.name);//z-a
-                    if (action.payload === 2) return (p1.createdAt - p2.createdAt);//new
-                    return (p2.createdAt - p1.createdAt);//old
-                }),
+                products: [...state.products],
                 sortType: action.payload
             };
+        }
+
+        case types.CHANGE_SEARCH: {
+            return {
+                ...state,
+                search: action.payload
+            }
         }
 
         case types.HIDE_TOPPANEL: {

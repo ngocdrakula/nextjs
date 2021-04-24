@@ -13,13 +13,13 @@ class Sort extends Component {
         super(props);
         this.state = {};
     }
-    
+
     render() {
         const { dispatch, sortType } = this.props;
         return (
             <div className="top-panel-box">
                 <span className="top-panel-label">Sắp xếp:</span>
-                <select name="productSort" defaultValue={sortType} onChange={e => dispatch({ type: types.CHANGE_SORT })}>
+                <select name="productSort" defaultValue={sortType} onChange={e => dispatch({ type: types.CHANGE_SORT, payload: Number(e.target.value) })}>
                     {sorts.map((sort, index) => {
                         return (
                             <option key={index} value={sort.value}>{sort.label}</option>
