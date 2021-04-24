@@ -13,6 +13,14 @@ const Progress = dynamic(() => import('../components/Progress'));
 
 
 class Home extends Component {
+  constructor(props) {
+    super(props);
+  }
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({ type: types.GET_PRODUCTS, payload: { } });
+  }
+
   render() {
     return (
       <div className="modal-open">
@@ -28,7 +36,6 @@ class Home extends Component {
 
 export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
   //call all data for SSR
-  store.dispatch({ type: types.GET_PRODUCTS, payload: { page: 0, pageSize: 10 } });
   store.dispatch({ type: types.GET_FRONTS, payload: { page: 0, pageSize: 10 } });
   store.dispatch({ type: types.GET_SIZES, payload: { page: 0, pageSize: 10 } });
   store.dispatch({ type: types.GET_ROOMS, payload: { page: 0, pageSize: 10 } });

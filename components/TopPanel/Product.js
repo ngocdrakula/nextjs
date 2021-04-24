@@ -10,9 +10,17 @@ class Product extends Component {
     }
 
     render() {
-        const { dispatch, products, layout, areaIndex, sizes, fronts, locations } = this.props;
+        const { dispatch, products, layout, areaIndex, sizes, fronts, locations, search } = this.props;
         const area = layout?.areas[areaIndex] || {};
         const { products: selecteds = [], skewType } = area;
+        const sortedProducts = products.filter(product => {
+            if (search && product.name.search(search) === - 1) return false
+            if (!product.image) return false;
+            if (!sizes.find(s => !s.uncheck && s._id === product.size._id)) return false;
+            if (!fronts.find(f => !f.uncheck && f._id === product.front._id)) return false;
+            if (!locations.find(l => !l.uncheck && l.outSide === product.outSide)) return false;
+            return true;
+        })
         return (
             <div id="topPanelTilesListBox" className="top-panel-box">
                 <div id="loadTilesAnimationContainer" style={products.length ? { display: 'none' } : {}}>
@@ -24,14 +32,8 @@ class Product extends Component {
                     </div>
                 </div>
                 <ul>
-                    {products.map(product => {
-                        if (!product.image) return null;
-                        if (!sizes.find(s => !s.uncheck && s._id === product.size._id)) return null;
-                        if (!fronts.find(f => !f.uncheck && f._id === product.front._id)) return null;
-                        if (!locations.find(l => !l.uncheck && l.outSide === product.outSide)) return null;
-
+                    {sortedProducts.map(product => {
                         const disabled = !!(selecteds.findIndex(p => p.size.width === product.size.width && p.size.height === product.size.height));
-
                         return (
                             <li key={product._id} className="top-panel-content-tiles-list-item"  >
                                 <div className="tile-list-thumbnail-image-holder" onClick={() => dispatch({ type: types.SELECT_PRODUCT, payload: product })}>
@@ -60,7 +62,6 @@ class Product extends Component {
                     })}
                 </ul>
             </div>
-
         );
     }
 }
@@ -71,8 +72,9 @@ const mStP = ({
         areaIndex,
         sizes = [],
         fronts = [],
-        locations = []
+        locations = [],
+        search
     }
-}) => ({ products, layout, areaIndex, sizes, fronts, locations });
+}) => ({ products, layout, areaIndex, sizes, fronts, locations, search });
 
 export default connect(mStP)(Product)
