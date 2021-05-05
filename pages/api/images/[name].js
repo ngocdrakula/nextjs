@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 
 export default async function images(req, res) {
-    if (process.env.HOST_NAME == 'localhost') {
+    if (process.env.HOST_NAME == 'production' || process.env.HOST_NAME == 'localhost') {
         try {
             const file = fs.readFileSync(process.env.FOLDER_UPLOAD + "/" + req.query.name);
             return res.end(file, 'binary');
@@ -15,7 +15,7 @@ export default async function images(req, res) {
         http.get(process.env.CLOUD_URL_ORIGIN + req.query.name, function (response) {
             if (response.statusCode == 200) {
                 res.status(200);
-                response.pipe(res);
+                return response.pipe(res);
             }
             else {
                 return res.status(404).send();

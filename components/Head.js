@@ -3,7 +3,7 @@ import NextHead from 'next/head'
 export default function Head() {
     return (
         <NextHead>
-            <title>Really Virtual</title>
+            <title>{process.env.TITLE}</title>
             <link rel="icon" href="/favicon.ico" />
             <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
             <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -11,6 +11,7 @@ export default function Head() {
             <link rel="stylesheet" href="/css/app.css" />
             <link rel="stylesheet" href="/css/color-picker.min.css" />
             <script src="/js/three.js"></script>
+            <script src="/js/color-picker.min.js"></script>
             <script src="/js/dat.gui.js"></script>
         </NextHead>
     )

@@ -16,7 +16,7 @@ function remove(sizeId) {
     return (sizeData.findByIdAndRemove(sizeId));
 }
 function getlist(query) {
-    return (sizeData.find(query));
+    return (sizeData.find(query).sort({ createdAt: -1 }));
 }
 export default {
     create,

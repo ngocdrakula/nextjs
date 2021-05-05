@@ -12,6 +12,18 @@ class Grout extends Component {
             currentGrout: 2
         };
     }
+    componentDidMount() {
+        const { dispatch } = this.props;
+        const picker = new CP(document.getElementById('grout-color-picker'));
+        picker.set('#FFFFFF')
+        picker.on('change', function (color) {
+            dispatch({
+                type: types.CHANGE_COLOR,
+                payload: `#${color}`
+            })
+        });
+    }
+
     componentDidUpdate(prevProps) {
         if (this.props.areaIndex !== prevProps.areaIndex) {
             const { layout, areaIndex } = this.props;
@@ -25,7 +37,7 @@ class Grout extends Component {
         const { currentGrout } = this.state;
         const { active, dispatch, layout, areaIndex } = this.props;
         const area = layout?.areas[areaIndex] || {};
-        const { color = '#FFFFFF' } = area;
+        const { color = '#ffffff' } = area;
         return (
             <div className="top-panel-option-box" style={!active ? { display: 'none' } : {}}>
                 <div id="topPanelContentSurfaceTabGroutSizeBody" className="top-panel-box">

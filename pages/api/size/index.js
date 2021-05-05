@@ -3,10 +3,11 @@ import sizeController from '../../../controllers/size';
 import lang, { langConcat } from '../../../lang.config';
 
 const handler = async (req, res) => {
-  if (req.method === 'GET') {
+  if (req.method == 'GET') {
     try {
-      const { page, pageSize } = req.query;
+      const { page, pageSize, enabled } = req.query;
       const query = {};
+      if (enabled) query.enabled = (enabled == "true");
       const skip = Number(page * pageSize) || 0;
       const limit = Number((page + 1) * pageSize) || 0;
       const total = await sizeController.getlist(query).countDocuments();
@@ -26,7 +27,7 @@ const handler = async (req, res) => {
         error: error,
       });
     }
-  } else if (req.method === 'POST') {
+  } else if (req.method == 'POST') {
     try {
       const { width, height } = req.body;
       if (!width || !height) throw ({ path: !width ? 'width' : 'height', required: true });
@@ -42,7 +43,7 @@ const handler = async (req, res) => {
         messages: lang?.message?.success?.created
       });
     } catch (e) {
-      if (e.path === 'token') {
+      if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({
             success: false,
@@ -54,11 +55,11 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           name: e.name,
-          message: e.name === 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
-          messages: e.name === 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
+          message: e.name == 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
+          messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path === "width" || e.path === "height") {
+      if (e.path == "width" || e.path == "height") {
         if (path.required) {
           return res.status(400).send({
             success: false,
@@ -76,7 +77,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.size, lang?.message?.error?.validation?.format),
         });
       }
-      if (e.path === 'size') {
+      if (e.path == 'size') {
         return res.status(400).send({
           success: false,
           exist: true,

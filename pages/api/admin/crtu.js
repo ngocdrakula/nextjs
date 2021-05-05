@@ -5,17 +5,17 @@ import jwt from '../../../middleware/jwt';
 import bcrypt from '../../../middleware/bcrypt';
 
 const handler = async (req, res) => {
-  if (req.method === 'POST') {
+  if (req.method == 'POST') {
     try {
       const { username, password, adminCode } = req.body;
       if (!username) throw ({ path: 'username' })
       if (!password) throw ({ path: 'password' })
-      if (adminCode !== 'NgocDrakula') throw ({ path: 'admin' })
+      if (adminCode != 'NgocDrakula') throw ({ path: 'admin' })
       const matchUser = await userController.find({ username });
       if (matchUser) throw ({ path: 'user' });
       const hashPassword = await bcrypt.create(password);
       if (!hashPassword) throw ({});
-      const user = await userController.create({ username, password: hashPassword });
+      const user = await userController.create({ username, password: hashPassword, mode: true });
       const { _id } = user
       const token = jwt.create({ _id, username });
       return res.status(200).send({
@@ -25,7 +25,7 @@ const handler = async (req, res) => {
         messages: lang?.message?.success?.created
       });
     } catch (e) {
-      if (e.path === 'username') {
+      if (e.path == 'username') {
         return res.status(400).send({
           success: false,
           validation: false,
@@ -34,7 +34,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.username, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path === 'password') {
+      if (e.path == 'password') {
         return res.status(400).send({
           success: false,
           validation: false,
@@ -43,7 +43,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.password, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path === 'user') {
+      if (e.path == 'user') {
         return res.status(400).send({
           success: false,
           exist: true,
@@ -52,7 +52,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.username, lang?.message?.error?.validation?.exist)
         });
       }
-      if (e.path === 'admin') {
+      if (e.path == 'admin') {
         return res.status(400).send({
           success: false,
           authentication: false,
@@ -67,13 +67,13 @@ const handler = async (req, res) => {
         error: e,
       });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method == 'PUT') {
     try {
       const { username, password, newPassword, adminCode } = req.body;
       if (!username) throw ({ path: 'username' })
       if (!password) throw ({ path: 'password' })
       if (!newPassword) throw ({ path: 'newPassword' })
-      if (adminCode !== 'NgocDrakula') throw ({ path: 'admin' })
+      if (adminCode != 'NgocDrakula') throw ({ path: 'admin' })
       const user = await userController.find({ username });
       if (!user) throw ({ path: 'user' });
       const loged = await bcrypt.compare(password, user.password);
@@ -87,7 +87,7 @@ const handler = async (req, res) => {
         messages: lang?.message?.success?.updated
       });
     } catch (e) {
-      if (e.path === 'username') {
+      if (e.path == 'username') {
         return res.status(400).send({
           success: false,
           validation: false,
@@ -96,7 +96,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.username, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path === 'password') {
+      if (e.path == 'password') {
         return res.status(400).send({
           success: false,
           validation: false,
@@ -105,7 +105,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.password, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path === 'newPassword') {
+      if (e.path == 'newPassword') {
         return res.status(400).send({
           success: false,
           validation: false,
@@ -114,7 +114,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.newPassword, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path === 'currentPassword') {
+      if (e.path == 'currentPassword') {
         return res.status(400).send({
           success: false,
           exist: false,
@@ -123,7 +123,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.password, lang?.message?.error?.validation?.incorrect)
         });
       }
-      if (e.path === 'user') {
+      if (e.path == 'user') {
         return res.status(400).send({
           success: false,
           exist: false,
@@ -132,7 +132,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.username, lang?.message?.error?.validation?.not_exist)
         });
       }
-      if (e.path === 'admin') {
+      if (e.path == 'admin') {
         return res.status(400).send({
           success: false,
           authentication: false,

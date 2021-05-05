@@ -7,14 +7,15 @@ import uploader, { cleanFiles } from '../../../middleware/multer';
 import jwt from '../../../middleware/jwt'
 
 const handler = async (req, res) => {
-  if (req.method === 'GET') {
+  if (req.method == 'GET') {
     try {
-      const { page, pageSize, name, code, sizes, fronts, outSide } = req.query;
+      const { page, pageSize, name, code, sizes, fronts, outSide, enabled } = req.query;
       const query = {};
       const skip = Number(page * pageSize) || 0;
-      const limit = Number((page + 1) * pageSize) || 0;
+      const limit = Number(pageSize) || 0;
       if (name) query.name = name;
       if (code) query.code = code;
+      if (enabled) query.enabled = (enabled == "true");
       if (sizes) {
         try {
           const sizesParser = JSON.parse(sizes);
@@ -31,8 +32,8 @@ const handler = async (req, res) => {
           };
         } catch (e) { }
       }
-      if (outSide !== undefined) {
-        query.outSide = (!outSide || outSide === 'false') ? false : true;
+      if (outSide != undefined) {
+        query.outSide = (!outSide || outSide == 'false') ? false : true;
       }
       const total = await productController.getlist(query).countDocuments();
       const list = await productController.getlist(query).skip(skip).limit(limit).populate('size').populate('front');
@@ -52,7 +53,7 @@ const handler = async (req, res) => {
         error: error,
       });
     }
-  } else if (req.method === 'POST') {
+  } else if (req.method == 'POST') {
     try {
       const contentType = req.headers['content-type'];
       const bearerToken = req.headers['authorization'];
@@ -60,8 +61,8 @@ const handler = async (req, res) => {
       if (!contentType || contentType.indexOf('multipart/form-data') == -1)
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
-      if (!user || !user._id) throw ({ ...user, path: 'token' });
-      const { body: { name, code, sizeId, frontId, outSide }, files, err } = await uploader(req); 
+      if (!user || !user.mode) throw ({ ...user, path: 'token' });
+      const { body: { name, code, sizeId, frontId, outSide }, files, err } = await uploader(req);
       if (err || !files.length) throw ({ path: 'files' });
       if (!name || !code || !sizeId || !frontId) {
         if (!name) throw ({ path: 'name', files })
@@ -73,14 +74,14 @@ const handler = async (req, res) => {
         const size = await sizeController.get(sizeId);
         if (!size) throw ({ path: '_id', files });
       } catch (err) {
-        if (err.path === '_id') throw ({ path: 'size', files });
+        if (err.path == '_id') throw ({ path: 'size', files });
         throw ({ err, files })
       }
       try {
         const front = await frontController.get(frontId);
         if (!front) throw ({ path: '_id', files });
       } catch (err) {
-        if (err.path === '_id') throw ({ path: 'front', files });
+        if (err.path == '_id') throw ({ path: 'front', files });
         throw ({ err, files })
       }
       const matchProduct = await productController.find({ name, code }).populate('size').populate('front');
@@ -94,7 +95,7 @@ const handler = async (req, res) => {
       });
     } catch (e) {
       if (e.files) await cleanFiles(e.files);
-      if (e.path === 'token') {
+      if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({
             success: false,
@@ -106,11 +107,11 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           name: e.name,
-          message: e.name === 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
-          messages: e.name === 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
+          message: e.name == 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
+          messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path === 'content-type') {
+      if (e.path == 'content-type') {
         return res.status(400).send({
           success: false,
           headerContentType: false,
@@ -120,7 +121,7 @@ const handler = async (req, res) => {
           messages: lang?.message?.error?.header_not_acepted
         });
       }
-      if (e.path === 'files') {
+      if (e.path == 'files') {
         return res.status(400).send({
           success: false,
           upload: false,
@@ -129,7 +130,7 @@ const handler = async (req, res) => {
           messages: lang?.message?.error?.upload_failed,
         });
       }
-      if (e.path === 'name') {
+      if (e.path == 'name') {
         return res.status(400).send({
           success: false,
           validation: false,
@@ -138,7 +139,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.productName, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path === 'code') {
+      if (e.path == 'code') {
         return res.status(400).send({
           success: false,
           validation: false,
@@ -147,7 +148,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.productCode, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path === 'sizeId') {
+      if (e.path == 'sizeId') {
         return res.status(400).send({
           success: false,
           validation: false,
@@ -156,7 +157,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.sizeId, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path === 'frontId') {
+      if (e.path == 'frontId') {
         return res.status(400).send({
           success: false,
           validation: false,
@@ -165,7 +166,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.frontId, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path === 'outSize') {
+      if (e.path == 'outSize') {
         return res.status(400).send({
           success: false,
           validation: false,
@@ -174,7 +175,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.outSize, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path === 'size') {
+      if (e.path == 'size') {
         return res.status(400).send({
           success: false,
           exist: false,
@@ -183,7 +184,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.size, lang?.message?.error?.validation?.not_exist),
         });
       }
-      if (e.path === 'front') {
+      if (e.path == 'front') {
         return res.status(400).send({
           success: false,
           exist: false,
@@ -192,13 +193,62 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.front, lang?.message?.error?.validation?.not_exist),
         });
       }
-      if (e.path === 'product') {
+      if (e.path == 'product') {
         return res.status(400).send({
           success: false,
           exist: true,
           current: e.matchProduct,
           message: "Tên hoặc mã sản phẩm đã tồn tại",
           messages: langConcat(lang?.resources?.productName, lang?.message?.error?.validation?.exist),
+        });
+      }
+      return res.status(500).send({
+        success: false,
+        message: 'Máy chủ không phản hồi',
+        messages: lang?.message?.error?.server,
+        error: e,
+      });
+    }
+  } else if (req.method == 'DELETE') {
+    try {
+      const bearerToken = req.headers['authorization'];
+      if (!bearerToken) throw ({ path: 'token' });
+      const user = jwt.verify(bearerToken);
+      if (!user || !user.mode) throw ({ ...user, path: 'token' });
+      const { _ids } = req.query;
+      if (!_ids) throw ({ path: '_ids' });
+      const query = {
+        _id: { $in: _ids.split(",") }
+      };
+      await productController.removeMany(query);
+      return res.status(200).send({
+        success: true,
+        message: 'Xóa thành công',
+        messages: lang?.message?.success?.deleted
+      });
+    } catch (e) {
+      if (e.files) await cleanFiles(e.files);
+      if (e.path == 'token') {
+        if (!e.token) {
+          return res.status(401).send({
+            success: false,
+            authentication: false,
+            message: 'Bạn không có quyền truy cập',
+            messages: lang?.message?.error?.unauthorized
+          });
+        }
+        return res.status(400).send({
+          success: false,
+          name: e.name,
+          message: e.name == 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
+          messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
+        });
+      }
+      if (e.path == '_ids') {
+        return res.status(400).send({
+          success: false,
+          required: false,
+          message: "Danh sách sản phẩm phải là một mảng id",
         });
       }
       return res.status(500).send({

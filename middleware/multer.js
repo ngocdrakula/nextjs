@@ -37,7 +37,7 @@ export const multerDestroys = (files) => {
 
 export const cleanFiles = async (files) => {
     return new Promise(resolve => {
-        if (process.env.HOST_NAME !== 'localhost') {
+        if (process.env.HOST_NAME !== 'production' && process.env.HOST_NAME !== 'localhost') {
             return cloudDestroys(files, clean => resolve(clean));
         }
         else {
@@ -52,7 +52,7 @@ export default async (req) => {
             if (err || !req.files) {
                 return resolve({ err, body: req.body, files: [] });
             }
-            if (process.env.HOST_NAME !== 'localhost') {
+            if (process.env.HOST_NAME !== 'production' && process.env.HOST_NAME !== 'localhost') {
                 return cloudUploads(req.files, files => {
                     multerDestroys(files);
                     resolve({ err, body: req.body, files })

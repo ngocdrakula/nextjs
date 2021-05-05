@@ -7,7 +7,7 @@ import uploader, { cleanFiles } from '../../../middleware/multer';
 import jwt from '../../../middleware/jwt'
 
 const handler = async (req, res) => {
-  if (req.method === 'GET') {
+  if (req.method == 'GET') {
     try {
       const { id } = req.query;
       const currentProduct = await productController.get(id);
@@ -17,7 +17,7 @@ const handler = async (req, res) => {
         data: currentProduct,
       });
     } catch (e) {
-      if (e.path === "_id") {
+      if (e.path == "_id") {
         return res.status(400).send({
           success: false,
           exist: false,
@@ -32,7 +32,7 @@ const handler = async (req, res) => {
         error: e,
       });
     }
-  } else if (req.method === 'POST') {
+  } else if (req.method == 'POST') {
     try {
       const contentType = req.headers['content-type'];
       const bearerToken = req.headers['authorization'];
@@ -40,8 +40,8 @@ const handler = async (req, res) => {
       if (!contentType || contentType.indexOf('multipart/form-data') == -1)
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
-      if (!user || !user._id) throw ({ ...user, path: 'token' });
-      const { body: { name, code, sizeId, frontId, outSide }, files, err } = await uploader(req);
+      if (!user || !user.mode) throw ({ ...user, path: 'token' });
+      const { body: { name, code, sizeId, frontId, outSide, enabled }, files, err } = await uploader(req);
       if (err) throw ({ path: 'files' });
       try {
         const currentProduct = await productController.get(req.query.id);
@@ -52,7 +52,7 @@ const handler = async (req, res) => {
             if (!size) throw ({ path: '_id' })
             currentProduct.size = sizeId;
           } catch (err) {
-            if (err.path === '_id') throw ({ path: 'size', files });
+            if (err.path == '_id') throw ({ path: 'size', files });
             throw ({ err, files })
           }
         }
@@ -62,14 +62,14 @@ const handler = async (req, res) => {
             if (!front) throw ({ path: '_id' })
             currentProduct.front = frontId;
           } catch (err) {
-            if (err.path === '_id') throw ({ path: 'front', files });
+            if (err.path == '_id') throw ({ path: 'front', files });
             throw ({ err, files })
           }
         }
         if (name || code) {
           const matchProduct = await productController.find({ $or: [{ name }, { code }] });
           if (matchProduct) {
-            if (matchProduct.name === name) throw ({ path: 'name', files });
+            if (matchProduct.name == name) throw ({ path: 'name', files });
             throw ({ path: 'code', files });
           }
           else {
@@ -77,27 +77,30 @@ const handler = async (req, res) => {
             else currentProduct.code = code;
           }
         }
-        if (outSide !== undefined) {
-          currentProduct.outSide = !([undefined, false, "0", "false", "null"].indexOf(outSide) + 1);
+        if (outSide != undefined) {
+          currentProduct.outSide = (outSide == "true")
+        }
+        if (enabled != undefined) {
+          currentProduct.enabled = (enabled == "true");
         }
         if (files.length) {
           await cleanFiles([currentProduct.image]);
           currentProduct.image = files[0];
         }
         const productUpdated = await (await currentProduct.save()).populate('size').populate('front').execPopulate();
-        return res.status(201).send({
+        return res.status(200).send({
           success: true,
           data: productUpdated,
           message: 'Cập nhật thành công',
           messages: lang?.message?.success?.updated
         });
       } catch (error) {
-        if (error.path === "_id") throw ({ path: 'product', files });
+        if (error.path == "_id") throw ({ path: 'product', files });
         throw error
       }
     } catch (e) {
       if (e.files) await cleanFiles(e.files);
-      if (e.path === 'token') {
+      if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({
             success: false,
@@ -109,11 +112,11 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           name: e.name,
-          message: e.name === 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
-          messages: e.name === 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
+          message: e.name == 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
+          messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path === 'content-type') {
+      if (e.path == 'content-type') {
         return res.status(400).send({
           success: false,
           headerContentType: false,
@@ -123,7 +126,7 @@ const handler = async (req, res) => {
           messages: lang?.message?.error?.header_not_acepted
         });
       }
-      if (e.path === 'files') {
+      if (e.path == 'files') {
         return res.status(400).send({
           success: false,
           upload: false,
@@ -132,7 +135,7 @@ const handler = async (req, res) => {
           messages: lang?.message?.error?.upload_failed,
         });
       }
-      if (e.path === 'size') {
+      if (e.path == 'size') {
         return res.status(400).send({
           success: false,
           exist: false,
@@ -141,7 +144,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.size, lang?.message?.error?.validation?.not_exist),
         });
       }
-      if (e.path === 'front') {
+      if (e.path == 'front') {
         return res.status(400).send({
           success: false,
           exist: false,
@@ -150,7 +153,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.front, lang?.message?.error?.validation?.not_exist),
         });
       }
-      if (e.path === 'product') {
+      if (e.path == 'product') {
         return res.status(400).send({
           success: false,
           exist: false,
@@ -158,7 +161,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.product, lang?.message?.error?.validation?.not_exist),
         });
       }
-      if (e.path === 'name') {
+      if (e.path == 'name') {
         return res.status(400).send({
           success: false,
           exist: true,
@@ -167,7 +170,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.productName, lang?.message?.error?.validation?.exist)
         });
       }
-      if (e.path === 'code') {
+      if (e.path == 'code') {
         return res.status(400).send({
           success: false,
           exist: true,
@@ -183,12 +186,12 @@ const handler = async (req, res) => {
         error: e.err,
       });
     }
-  } else if (req.method === 'DELETE') {
+  } else if (req.method == 'DELETE') {
     try {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
-      if (!user || !user._id) throw ({ ...user, path: 'token' });
+      if (!user || !user.mode) throw ({ ...user, path: 'token' });
       const currentProduct = await productController.get(req.query.id);
       if (!currentProduct) throw ({ path: '_id' });
       cleanFiles([currentProduct.image])
@@ -200,7 +203,7 @@ const handler = async (req, res) => {
         messages: lang?.message?.success?.deleted
       });
     } catch (e) {
-      if (e.path === 'token') {
+      if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({
             success: false,
@@ -212,11 +215,11 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           name: e.name,
-          message: e.name === 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
-          messages: e.name === 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
+          message: e.name == 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
+          messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path === '_id') {
+      if (e.path == '_id') {
         return res.status(400).send({
           success: false,
           exist: false,
@@ -231,7 +234,7 @@ const handler = async (req, res) => {
         error: e,
       });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method == 'PUT') {
     res.status(422).send({
       success: false,
       message: 'Phương thức không được hỗ trợ, vui lòng đổi sang phương thức POST',

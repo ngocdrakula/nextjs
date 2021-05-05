@@ -15,6 +15,8 @@ const front = new Schema({
         type: Number,
         default: 1
     }
+}, {
+    timestamps: { createdAt: 'createdAt' }
 });
 
 export default front;

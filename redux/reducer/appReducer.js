@@ -11,7 +11,7 @@ export const initState = {
     fronts: [],
     locations: [{ _id: 0, name: 'Phòng khách', outSide: false }, { _id: 1, name: 'Khác', outSide: true }],
     layout: null,
-    areaIndex: null,
+    areaIndex: -1,
 
 }
 const appReducer = (state = initState, action) => {
@@ -153,7 +153,6 @@ const appReducer = (state = initState, action) => {
             };
         }
         case types.CHANGE_SORT: {
-            console.log(action.payload);
             state.products.sort((p1, p2) => {
                 if (action.payload === 0) {//a-z 
                     var nameA = p1.name.toUpperCase();
@@ -172,7 +171,6 @@ const appReducer = (state = initState, action) => {
                 var date1 = Date.parse(p1.createdAt);
                 var date2 = Date.parse(p2.createdAt);
                 if (action.payload === 2) {
-                    console.log(date1 - date2)
                     return (date1 - date2);//new
                 }
                 return (date2 - date1);//old
@@ -198,9 +196,10 @@ const appReducer = (state = initState, action) => {
             };
         }
         case types.SELECT_LAYOUT: {
+            const layout = state.layouts.find(l => l._id === action.payload) || state.layouts[0] || null;
             return {
                 ...state,
-                layout: action.payload,
+                layout,
             };
         }
 
@@ -271,15 +270,15 @@ const appReducer = (state = initState, action) => {
             };
         }
         case types.CHANGE_COLOR: {
-            const { areaIndex, layout: { ...layout } } = state;
-            if (areaIndex + 1) {
+            const { areaIndex, layout } = state;
+            if (layout && areaIndex + 1) {
                 layout.areas = [...layout.areas];
                 layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
                 layout.areas[areaIndex].color = action.payload;
             }
             return {
                 ...state,
-                layout
+                layout: layout ? { ...layout } : null
             };
         }
         case types.CHANGE_CUSTOM: {

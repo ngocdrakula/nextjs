@@ -14,6 +14,8 @@ const size = new Schema({
         type: Boolean,
         default: true
     }
-}); 
+}, {
+    timestamps: { createdAt: 'createdAt' }
+});
 
 export default size;

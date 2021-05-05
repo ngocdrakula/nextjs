@@ -4,7 +4,7 @@ import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt';
 
 const handler = async (req, res) => {
-  if (req.method === 'GET') {
+  if (req.method == 'GET') {
     try {
       const { id } = req.query;
       const currentFront = await frontController.get(id);
@@ -14,7 +14,7 @@ const handler = async (req, res) => {
         data: currentFront,
       });
     } catch (e) {
-      if (e.path === '_id')
+      if (e.path == '_id')
         return res.status(400).send({
           success: false,
           exist: false,
@@ -28,13 +28,13 @@ const handler = async (req, res) => {
         error: e,
       });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method == 'PUT') {
     try {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
-      if (!user || !user._id) throw ({ ...user, path: 'token' });
-      const { name, rate } = req.body;
+      if (!user || !user.mode) throw ({ ...user, path: 'token' });
+      const { name, rate, enabled } = req.body;
       try {
         if (name) {
           const matchFront = await frontController.find({ name });
@@ -42,7 +42,8 @@ const handler = async (req, res) => {
         }
         const params = {};
         if (name) params.name = name;
-        if (rate !== undefined) params.rate = Number(rate) || 0;
+        if (enabled != undefined) params.enabled = !!enabled;
+        if (rate != undefined) params.rate = Number(rate) || 0;
         const currentFront = await frontController.update(req.query.id, params);
         return res.status(200).send({
           success: true,
@@ -54,7 +55,7 @@ const handler = async (req, res) => {
         throw error
       }
     } catch (e) {
-      if (e.path === 'token') {
+      if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({
             success: false,
@@ -66,11 +67,11 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           name: e.name,
-          message: e.name === 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
-          messages: e.name === 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
+          message: e.name == 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
+          messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path === 'name') {
+      if (e.path == 'name') {
         return res.status(400).send({
           success: false,
           exist: true,
@@ -79,7 +80,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.frontName, lang?.message?.error?.validation?.exist),
         });
       }
-      if (e.path === '_id') {
+      if (e.path == '_id') {
         return res.status(400).send({
           success: false,
           exist: false,
@@ -94,12 +95,12 @@ const handler = async (req, res) => {
         error: e.err,
       });
     }
-  } else if (req.method === 'DELETE') {
+  } else if (req.method == 'DELETE') {
     try {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
-      if (!user || !user._id) throw ({ ...user, path: 'token' });
+      if (!user || !user.mode) throw ({ ...user, path: 'token' });
       const currentFront = await frontController.get(req.query.id);
       if (!currentFront) throw ({ path: '_id' });
       currentFront.remove();
@@ -110,7 +111,7 @@ const handler = async (req, res) => {
         messages: lang?.message?.success?.deleted
       });
     } catch (e) {
-      if (e.path === 'token') {
+      if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({
             success: false,
@@ -122,11 +123,11 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           name: e.name,
-          message: e.name === 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
-          messages: e.name === 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
+          message: e.name == 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
+          messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path === '_id')
+      if (e.path == '_id')
         return res.status(400).send({
           success: false,
           exist: false,
