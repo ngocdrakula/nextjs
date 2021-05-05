@@ -16,7 +16,7 @@ function remove(roomId) {
     return (roomData.findByIdAndRemove(roomId));
 }
 function getlist(query) {
-    return (roomData.find(query));
+    return (roomData.find(query).sort({ createdAt: -1 }));
 }
 export default {
     create,

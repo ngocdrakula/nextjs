@@ -16,7 +16,10 @@ function remove(productId) {
     return (productData.findByIdAndRemove(productId));
 }
 function getlist(query) {
-    return (productData.find(query));
+    return (productData.find(query).sort({ createdAt: -1 }));
+}
+function removeMany(query) {
+    return (productData.deleteMany(query));
 }
 export default {
     create,
@@ -24,5 +27,6 @@ export default {
     update,
     remove,
     find,
-    getlist
+    getlist,
+    removeMany
 }

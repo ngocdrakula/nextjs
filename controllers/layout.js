@@ -16,7 +16,7 @@ function remove(layoutId) {
     return (layoutData.findByIdAndRemove(layoutId));
 }
 function getlist(query) {
-    return (layoutData.find(query));
+    return (layoutData.find(query).sort({ createdAt: -1 }));
 }
 export default {
     create,

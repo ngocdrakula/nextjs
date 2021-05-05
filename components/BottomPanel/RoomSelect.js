@@ -11,15 +11,8 @@ class RoomSelect extends Component {
         }
     }
     componentDidMount() {
-        const { layouts, dispatch, rooms } = this.props;
+        const { rooms } = this.props;
         this.setState({ selected: rooms[0]?._id });
-        
-        const _id = 1;
-        const layout = layouts.find(l => l._id === _id) || layouts[0];
-        dispatch({
-            type: types.SELECT_LAYOUT,
-            payload: layout
-        });
     }
 
     handleSelectRoom = (selected) => {

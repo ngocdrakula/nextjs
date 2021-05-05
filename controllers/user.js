@@ -16,7 +16,7 @@ function remove(userId) {
     return (userData.findByIdAndRemove(userId));
 }
 function getlist(query) {
-    return (userData.find(query));
+    return (userData.find(query).sort({ createdAt: -1 }));
 }
 export default {
     create,

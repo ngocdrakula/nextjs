@@ -94,8 +94,8 @@ class BottomPanel extends Component {
                         <img src="/icons/mail.png" alt="" />
                     </button>
                     <button id="bottomMenuFullScreen" title="Toàn màn hình" onClick={this.handleToggleFullScreen}>
-                        <img id="bottomMenuFullScreenImg" src="./icons/fullscreen.png" alt="" />
-                        <img id="bottomMenuCancelFullScreenImg" src="./icons/normalscreen.png" alt="" />
+                        <img id="bottomMenuFullScreenImg" src="/icons/fullscreen.png" alt="" />
+                        <img id="bottomMenuCancelFullScreenImg" src="/icons/normalscreen.png" alt="" />
                     </button>
                 </div>
                 <RoomSelect visible={visible} handleToggle={this.handleToggle} />

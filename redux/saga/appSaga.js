@@ -59,11 +59,12 @@ function* getRooms({ payload, callback }) {
         }
     }
 }
-function* getLayouts({ payload, callback }) {
+function* getLayouts({ payload: { _id, ...request }, callback }) {
     try {
-        const res = yield call(requests.getLayoutsRequest, payload);
+        const res = yield call(requests.getLayoutsRequest, request);
         if (res && res.data && res.data.success) {
             yield put({ type: types.GET_LAYOUTS_SUCCESS, payload: res.data });
+            yield put({ type: types.SELECT_LAYOUT, payload: _id });
             if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {

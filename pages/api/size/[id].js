@@ -4,7 +4,7 @@ import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt'
 
 const handler = async (req, res) => {
-  if (req.method === 'GET') {
+  if (req.method == 'GET') {
     try {
       const { id } = req.query;
       const currentSize = await sizeController.get(id);
@@ -14,7 +14,7 @@ const handler = async (req, res) => {
         data: currentSize,
       });
     } catch (e) {
-      if (e.path === "_id") {
+      if (e.path == "_id") {
         return res.status(400).send({
           success: false,
           exist: false,
@@ -29,24 +29,24 @@ const handler = async (req, res) => {
         error: e,
       });
     }
-  } else if (req.method === 'PUT') {
+  } else if (req.method == 'PUT') {
     try {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
-      if (!user || !user._id) throw ({ ...user, path: 'token' });
+      if (!user || !user.mode) throw ({ ...user, path: 'token' });
       const { id } = req.query;
-      const { width, height } = req.body;
+      const { width, height, enabled } = req.body;
       if (!width || !height) throw ({ path: !width ? 'width' : 'height', required: true });
       if (!(width > 0) || !(height > 0)) throw ({ path: !(width > 0) ? 'width' : 'height' })
       const size = { width: Number(width), height: Number(height) };
       try {
         const matchSize = await sizeController.find(size);
-        if (matchSize) throw ({ path: 'size', matchSize })
+        if (matchSize && matchSize._id != id) throw ({ path: 'size', matchSize })
       } catch (e) {
         throw e
       }
-      const currentSize = await sizeController.update(id, size);
+      const currentSize = await sizeController.update(id, { ...size, enabled });
       return res.status(200).send({
         success: true,
         data: currentSize,
@@ -54,7 +54,7 @@ const handler = async (req, res) => {
         messages: lang?.message?.success?.updated
       });
     } catch (e) {
-      if (e.path === 'token') {
+      if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({
             success: false,
@@ -66,12 +66,12 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           name: e.name,
-          message: e.name === 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
-          messages: e.name === 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
+          message: e.name == 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
+          messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path === "width" || e.path === "height") {
-        if (path.required) {
+      if (e.path == "width" || e.path == "height") {
+        if (e.path.required) {
           return res.status(400).send({
             success: false,
             required: false,
@@ -88,7 +88,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.size, lang?.message?.error?.validation?.format),
         });
       }
-      if (e.path === 'size') {
+      if (e.path == 'size') {
         return res.status(400).send({
           success: false,
           exist: true,
@@ -97,7 +97,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.size, lang?.message?.error?.validation?.exist),
         });
       }
-      if (e.path === "_id")
+      if (e.path == "_id")
         return res.status(400).send({
           success: false,
           exist: false,
@@ -111,12 +111,12 @@ const handler = async (req, res) => {
         error: e,
       });
     }
-  } else if (req.method === 'DELETE') {
+  } else if (req.method == 'DELETE') {
     try {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
-      if (!user || !user._id) throw ({ ...user, path: 'token' });
+      if (!user || !user.mode) throw ({ ...user, path: 'token' });
       const currentSize = await sizeController.get(req.query.id);
       if (!currentSize) throw ({ path: '_id' });
       currentSize.remove();
@@ -127,7 +127,7 @@ const handler = async (req, res) => {
         messages: lang?.message?.success?.deleted
       });
     } catch (e) {
-      if (e.path === 'token') {
+      if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({
             success: false,
@@ -139,11 +139,11 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           name: e.name,
-          message: e.name === 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
-          messages: e.name === 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
+          message: e.name == 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
+          messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path === '_id') {
+      if (e.path == '_id') {
         return res.status(400).send({
           success: false,
           exist: false,

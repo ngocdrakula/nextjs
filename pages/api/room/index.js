@@ -3,10 +3,11 @@ import roomController from '../../../controllers/room';
 import lang, { langConcat } from '../../../lang.config';
 
 const handler = async (req, res) => {
-  if (req.method === 'GET') {
+  if (req.method == 'GET') {
     try {
-      const { page, pageSize } = req.query;
+      const { page, pageSize, enabled } = req.query;
       const query = {};
+      if (enabled) query.enabled = (enabled == "true");
       const skip = Number(page * pageSize) || 0;
       const limit = Number((page + 1) * pageSize) || 0;
       const total = await roomController.getlist(query).countDocuments();
@@ -26,12 +27,12 @@ const handler = async (req, res) => {
         error: error,
       });
     }
-  } else if (req.method === 'POST') {
+  } else if (req.method == 'POST') {
     try {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
-      if (!user || !user._id) throw ({ ...user, path: 'token' });
+      if (!user || !user.mode) throw ({ ...user, path: 'token' });
       const { name } = req.body;
       if (!name) throw ({ path: 'name' })
       const matchRoom = await roomController.find({ name });
@@ -44,7 +45,7 @@ const handler = async (req, res) => {
         messages: lang?.message?.success?.created
       });
     } catch (e) {
-      if (e.path === 'token') {
+      if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({
             success: false,
@@ -56,11 +57,11 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           name: e.name,
-          message: e.name === 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
-          messages: e.name === 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
+          message: e.name == 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
+          messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path === 'name') {
+      if (e.path == 'name') {
         return res.status(400).send({
           success: false,
           validation: false,
@@ -69,7 +70,7 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.roomName, lang?.message?.error?.validation?.required),
         });
       }
-      if (e.path === 'room') {
+      if (e.path == 'room') {
         return res.status(400).send({
           success: false,
           exist: true,

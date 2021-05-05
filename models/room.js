@@ -11,6 +11,8 @@ const room = new Schema({
         type: Boolean,
         default: true
     }
+}, {
+    timestamps: { createdAt: 'createdAt' }
 });
 
 

@@ -13,6 +13,10 @@ button, button:active {
   outline: none;
 }
 
+a:link:focus, label:focus {
+  box-shadow: none;
+}
+
 .dg ul {
   list-style: none;
   margin: 0;
