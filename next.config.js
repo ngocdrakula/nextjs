@@ -1,7 +1,8 @@
 module.exports = {
     env: {
         // HOST_NAME: 'localhost',
-        HOST_NAME: 'production',
+        HOST_NAME: 'heroku',
+        // HOST_NAME: 'production',
 
         MONGODB_URL: "mongodb+srv://Trang8:AdminTrang8@trang8-cepg4.mongodb.net/visualizer?retryWrites=true&w=majority&useNewUrlParser=true&useUnifiedTopology=true",
         // MONGODB_URL: "mongodb://localhost:27017/visualizer",
