@@ -55,7 +55,7 @@ export default async (req) => {
             if (process.env.HOST_NAME !== 'production' && process.env.HOST_NAME !== 'localhost') {
                 return cloudUploads(req.files, files => {
                     multerDestroys(files);
-                    resolve({ err, body: req.body, files })
+                    return resolve({ err, body: req.body, files })
                 });
             }
             const files = req.files.map(({ filename }) => filename);

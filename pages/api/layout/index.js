@@ -61,7 +61,7 @@ const handler = async (req, res) => {
           vertical: Number(vertical) || 0,
           horizontal: Number(horizontal) || 0,
           cameraFov: Number(cameraFov) || 0,
-          areas: JSON.stringify(areas)
+          areas: JSON.parse(areas)
         }
         const layoutCreated = await (await layoutController.create(params)).populate('room').execPopulate();
         return res.status(201).send({
