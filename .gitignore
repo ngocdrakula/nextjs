@@ -48,4 +48,4 @@ yarn-error.log*
 # /datas
 
 #temp public
-# /public/temps
+/public/temps
