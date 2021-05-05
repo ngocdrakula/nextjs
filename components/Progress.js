@@ -5,7 +5,7 @@ class Process extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loaded: 100
+            loaded: 10
         }
         this.interval = null;
     }

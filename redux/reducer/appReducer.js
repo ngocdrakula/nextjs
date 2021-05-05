@@ -17,7 +17,7 @@ export const initState = {
 const appReducer = (state = initState, action) => {
     switch (action.type) {
         case HYDRATE: {
-            return { ...initState, ...state, ...action.payload.app };
+            return { ...initState, ...state, ...action.payload.app, products: state.products };
         }
         case types.GET_PRODUCTS_SUCCESS: {
             const { data, total, page } = action.payload;
