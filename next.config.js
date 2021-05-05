@@ -1,17 +1,19 @@
 module.exports = {
     env: {
         // HOST_NAME: 'localhost',
-        HOST_NAME: 'production',
+        HOST_NAME: 'heroku',
+        // HOST_NAME: 'production',
 
         MONGODB_URL: "mongodb+srv://Trang8:AdminTrang8@trang8-cepg4.mongodb.net/visualizer?retryWrites=true&w=majority&useNewUrlParser=true&useUnifiedTopology=true",
         // MONGODB_URL: "mongodb://localhost:27017/visualizer",
 
-        // API_URL: 'https://reallyvirtual.herokuapp.com/api/',
+        API_URL: 'https://reallyvirtual.herokuapp.com/api/',
         // API_URL: 'http://localhost:3000/api/',
-        API_URL: 'http://demo.unicreation.net/api/',
+        // API_URL: 'http://demo.unicreation.net/api/',
 
-        // FOLDER_UPLOAD: 'upload',
-        FOLDER_UPLOAD: 'upload/images',
+        FOLDER_UPLOAD: 'upload',
+        // FOLDER_UPLOAD: 'upload/images',
+
         FILE_SIZE_LIMIT: 1024 * 1024 * 5,
 
         CLOUD_NAME: 'ngocdrakula',
