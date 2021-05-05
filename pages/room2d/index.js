@@ -38,10 +38,10 @@ class Index extends Component {
 
 export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
     //call all data for SSR
-    store.dispatch({ type: types.GET_FRONTS, payload: { page: 0, pageSize: 10, enabled: undefined } });
-    store.dispatch({ type: types.GET_SIZES, payload: { page: 0, pageSize: 10, enabled: undefined } });
-    store.dispatch({ type: types.GET_ROOMS, payload: { page: 0, pageSize: 10, enabled: undefined } });
-    store.dispatch({ type: types.GET_LAYOUTS, payload: { page: 0, pageSize: 10, enabled: undefined } });
+    store.dispatch({ type: types.GET_FRONTS, payload: { page: 0, pageSize: 0, enabled: undefined } });
+    store.dispatch({ type: types.GET_SIZES, payload: { page: 0, pageSize: 0, enabled: undefined } });
+    store.dispatch({ type: types.GET_ROOMS, payload: { page: 0, pageSize: 0, enabled: undefined } });
+    store.dispatch({ type: types.GET_LAYOUTS, payload: { page: 0, pageSize: 0, enabled: undefined } });
     store.dispatch({ type: types.SELECT_LAYOUT, });
 
     store.dispatch(END)

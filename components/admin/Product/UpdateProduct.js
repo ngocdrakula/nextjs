@@ -47,9 +47,6 @@ class AddProduct extends Component {
                 payload: { _id, formData },
                 callback: res => {
                     if (res?.data?.success) {
-                        console.log(
-                            res?.data?.success
-                        )
                         this.handleClose();
                     }
                     else if (res?.data?.exist) {

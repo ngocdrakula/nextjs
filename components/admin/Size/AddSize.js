@@ -35,12 +35,10 @@ class AddSize extends Component {
         else {
             const { dispatch } = this.props;
             const size = { width: Number(width), height: Number(height), enabled };
-            console.log(size)
             dispatch({
                 type: types.ADMIN_ADD_SIZE,
                 payload: size,
                 callback: res => {
-                    console.log(res)
                     if (res?.data?.success) {
                         this.handleClose();
                         this.props.onAdded();

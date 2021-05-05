@@ -37,7 +37,7 @@ class ProductLayout extends Component {
                                 id="customCheck"
                                 name="custom"
                                 checked={custom ? 'checked' : ''}
-                                onChange={e => dispatch({ type: types.CHANGE_CUSTOM, payload: e.target.checked, x: console.log(e.target.checked) })}
+                                onChange={e => dispatch({ type: types.CHANGE_CUSTOM, payload: e.target.checked })}
                             />
                             <label htmlFor="customCheck" />
                         </div>

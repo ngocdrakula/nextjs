@@ -45,7 +45,6 @@ export default async (files, callback) => {
     const cloudFiles = [];
     for (const file of files) {
         const cloudFile = await cloudUploader(file);
-        console.log(cloudFile)
         cloudFiles.push(cloudFile);
     }
     return callback(cloudFiles);
