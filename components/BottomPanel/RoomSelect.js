@@ -9,26 +9,15 @@ import types from '../../redux/types';
 class RoomSelect extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            selected: 0
-        }
+        this.state = {}
     }
-    componentDidMount() {
-        const { rooms } = this.props;
-        this.setState({ selected: rooms[0]?._id });
-        const l1 = convertLayout(room1);
-        const l2 = convertLayout(room2);
-        console.log(JSON.stringify(l1.areas), l1);
-        console.log(JSON.stringify(l2.areas), l2);
-    }
-
     handleSelectRoom = (selected) => {
         this.setState({ selected });
     }
 
     render() {
         const { visible, handleToggle, rooms, layouts } = this.props;
-        const { selected } = this.state;
+        const { selected = rooms[0]?._id } = this.state;
         return (
             <div
                 id="dialogRoomSelect"
