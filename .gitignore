@@ -46,6 +46,6 @@ yarn-error.log*
 
 #fakedata
 # /datas
+/public/temps
 
 #temp public
-/public/temps
