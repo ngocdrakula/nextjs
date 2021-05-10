@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { createFormData } from '../../../utils/helper';
+import { createFormData, getThumbnail } from '../../../utils/helper';
 import types from '../../../redux/types';
 
 class AddProduct extends Component {
@@ -178,7 +178,7 @@ class AddProduct extends Component {
                                                     <div className="w-100 h-100 image-upload-change">
                                                         <div
                                                             className="w-100 h-100 d-flex justify-content-center align-items-center image-upload-over"
-                                                            style={{ backgroundImage: `url(${imageLocal || `/api/images/${image}`})` }} >
+                                                            style={{ backgroundImage: `url(${imageLocal || product?.size && getThumbnail(product)})` }} >
                                                         </div>
                                                         <div className="w-100 h-100 d-flex justify-content-center align-items-center input-upload-over">
                                                             <input type="file" name="files" id="files" className="file-hidden" onChange={this.handleChooseFiles} />
