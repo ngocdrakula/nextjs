@@ -85,7 +85,6 @@ function creatAllShape() {
         mesh.receiveShadow = true;
         mesh.rotation.set(-PI / 3, 0, 0)
         scene.add(mesh);
-        console.log(scene.children);
         animate();
     };
     image.src = "../img/wall.png";

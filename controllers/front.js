@@ -16,7 +16,7 @@ function remove(frontId) {
     return (frontData.findByIdAndRemove(frontId));
 }
 function getlist(query) {
-    return (frontData.find(query).sort({ createdAt: -1 }));
+    return (frontData.find(query));
 }
 export default {
     create,

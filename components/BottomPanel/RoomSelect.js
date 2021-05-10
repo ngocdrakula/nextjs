@@ -1,27 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { convertLayout } from '../../datas/convertLayout';
+import room1 from '../../datas/room1';
+import room2 from '../../datas/room2';
 import types from '../../redux/types';
 
 
 class RoomSelect extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            selected: 0
-        }
+        this.state = {}
     }
-    componentDidMount() {
-        const { rooms } = this.props;
-        this.setState({ selected: rooms[0]?._id });
-    }
-
     handleSelectRoom = (selected) => {
         this.setState({ selected });
     }
 
     render() {
         const { visible, handleToggle, rooms, layouts } = this.props;
-        const { selected } = this.state;
+        const { selected = rooms[0]?._id } = this.state;
         return (
             <div
                 id="dialogRoomSelect"
@@ -54,7 +50,7 @@ class RoomSelect extends Component {
                                             {layouts.map((layout, index) => {
                                                 if (layout.room._id !== room._id) return null;
                                                 return (
-                                                    <a key={layout._id} href={`/?layout=${layout._id}`} title={layout.name} className="room-select-link">
+                                                    <a key={layout._id} href={`/room2d/${layout._id}`} title={layout.name} className="room-select-link">
                                                         <div className="room-image-holder">
                                                             <img src={"/api/images/" + layout.images[0]} alt={layout.name} />
                                                             <img src="/icons/2d.png" alt="" width={32} className="room-image-engine-icon" />

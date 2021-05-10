@@ -1,4 +1,4 @@
-import connectDB from '../../../middleware/mongodb';
+import runMidldleware from '../../../middleware/mongodb';
 import roomController from '../../../controllers/room';
 import lang, { langConcat } from '../../../lang.config';
 
@@ -95,5 +95,5 @@ const handler = async (req, res) => {
   }
 };
 
-export default connectDB(handler);
+export default runMidldleware(handler);
 

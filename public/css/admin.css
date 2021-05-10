@@ -816,6 +816,9 @@
    list-style: none;
    padding: 0;
    cursor: pointer;
+   max-height: 200px;
+   overflow-y: auto;
+   overflow-x: hidden;
  }
 
  .input-select .input-select-item {

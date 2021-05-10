@@ -33,19 +33,12 @@ yarn-error.log*
 # vercel
 .vercel
 
-#image
-/upload/images
-/upload/origins
-
 #temp
 /temp
 
+
+#image
+/upload/
+
 #config
-# next.config.js
-
-
-#fakedata
-# /datas
-/public/temps
-
-#temp public
+# next.config.js 

@@ -36,7 +36,6 @@ class AddProduct extends Component {
     handleSubmit = e => {
         e.preventDefault();
         const { name, code, sizeSelected, frontSelected, enabled, outSide, files } = this.state;
-        console.log(this.state)
         if (!name) this.setState({ field: 'name', message: 'Tên sản phẩm là bắt buộc' });
         else if (!frontSelected) this.setState({ field: 'front', message: 'Loại bề mặt chưa được chọn' });
         else if (!sizeSelected) this.setState({ field: 'size', message: 'Kích thước chưa được chọn' });
@@ -57,7 +56,6 @@ class AddProduct extends Component {
                 type: types.ADMIN_ADD_PRODUCT,
                 payload: formData,
                 callback: res => {
-                    console.log(res.data);
                     if (res?.data?.success) {
                         this.handleClose();
                         this.props.onAdded();

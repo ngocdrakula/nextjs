@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import Switch from "react-switch";
 import types from '../../../redux/types';
-import { createFormData } from '../../../utils/helper';
+import { createFormData, getThumbnail } from '../../../utils/helper';
 import Page from '../Page';
 import PopupConfirm from '../PopupConfirm';
 import AddProduct from './AddProduct';
@@ -90,7 +90,7 @@ class Product extends Component {
     render() {
         const { data, page, total, locations } = this.props;
         const { selecteds, productOnEdit, addVisible } = this.state;
-        const totalPage = Math.round(total / pageSize) || 1;
+        const totalPage = Math.ceil(total / pageSize) || 1;
         return (
             <div className="row flex-lg-nowrap">
                 <div className="col mb-3">
@@ -231,7 +231,7 @@ class Product extends Component {
                                                         <td className="align-middle text-center" style={{ padding: '4px 12px' }}>
                                                             <div className="bg-light d-inline-flex justify-content-center align-items-center align-top itemdiv">
                                                                 <img
-                                                                    src={"/api/images/" + product.image}
+                                                                    src={"/api/images/" + getThumbnail(product)}
                                                                     style={{
                                                                         maxWidth: 60,
                                                                         maxHeight: 60,

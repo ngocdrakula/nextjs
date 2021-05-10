@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import types from '../../redux/types';
+import { getThumbnail } from '../../utils/helper';
 
 class Product extends Component {
     constructor(props) {
@@ -37,7 +38,7 @@ class Product extends Component {
                         return (
                             <li key={product._id} className="top-panel-content-tiles-list-item"  >
                                 <div className="tile-list-thumbnail-image-holder" onClick={() => dispatch({ type: types.SELECT_PRODUCT, payload: product })}>
-                                    <img src={"/api/images/" + product.image} />
+                                    <img src={"/api/images/" + getThumbnail(product)} />
                                 </div>
                                 <div className="tile-list-text" onClick={() => dispatch({ type: types.SELECT_PRODUCT, payload: product })}>
                                     <p className="-caption">{product.code}</p>

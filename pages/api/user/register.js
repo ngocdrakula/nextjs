@@ -1,4 +1,4 @@
-import connectDB from '../../../middleware/mongodb';
+import runMidldleware from '../../../middleware/mongodb';
 import userController from '../../../controllers/user';
 import lang, { langConcat } from '../../../lang.config';
 import { create } from '../../../middleware/bcrypt';
@@ -53,5 +53,5 @@ const handler = async (req, res) => {
     }
 };
 
-export default connectDB(handler);
+export default runMidldleware(handler);
 

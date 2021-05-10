@@ -1,20 +1,40 @@
 import mongoose from 'mongoose';
+import Cors from 'cors';
+const cors = Cors({
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD'],
+    origin: '*',
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 200
+})
 
-const connectDB = handler => async (req, res) => {
+function runCors(req, res, fn) {
+    return new Promise((resolve, reject) => {
+        fn(req, res, (result) => {
+            if (result instanceof Error) {
+                console.log('error')
+                return reject(result)
+            }
+
+            return resolve(result)
+        })
+    })
+}
+
+const runMidldleware = handler => async (req, res) => {
+
+    await runCors(req, res, cors)
+
     if (mongoose.connections[0].readyState) {
-        // Use current db connection
-        // console.log("Use current db connection")
         return handler(req, res);
     }
-    // Use new db connection
     await mongoose.connect(process.env.MONGODB_URL, {
         useUnifiedTopology: true,
         useFindAndModify: false,
         useCreateIndex: true,
         useNewUrlParser: true
     });
-    // console.log("  Use new db connection")
+
     return handler(req, res);
 };
 
-export default connectDB;
+export default runMidldleware;
