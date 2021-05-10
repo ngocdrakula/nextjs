@@ -11,7 +11,7 @@ module.exports = {
         // API_URL: 'http://localhost:3000/api/',
         // API_URL: 'http://demo.unicreation.net/api/',
 
-        API_URL: 'http://103.159.52.27:3000/',
+        API_URL: 'http://103.159.52.27:3000/api/',
 
         FOLDER_UPLOAD: 'upload',
 
