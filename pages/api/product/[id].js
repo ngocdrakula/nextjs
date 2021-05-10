@@ -1,4 +1,4 @@
-import connectDB from '../../../middleware/mongodb';
+import runMidldleware from '../../../middleware/mongodb';
 import productController from '../../../controllers/product';
 import sizeController from '../../../controllers/size';
 import frontController from '../../../controllers/front';
@@ -255,5 +255,5 @@ export const config = {
   },
 };
 
-export default connectDB(handler);
+export default runMidldleware(handler);
 

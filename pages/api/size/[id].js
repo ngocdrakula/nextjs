@@ -1,4 +1,4 @@
-import connectDB from '../../../middleware/mongodb';
+import runMidldleware from '../../../middleware/mongodb';
 import sizeController from '../../../controllers/size';
 import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt'
@@ -167,5 +167,5 @@ const handler = async (req, res) => {
   }
 };
 
-export default connectDB(handler);
+export default runMidldleware(handler);
 

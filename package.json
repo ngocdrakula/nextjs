@@ -16,6 +16,7 @@
     "bcrypt": "^5.0.1",
     "bootstrap": "^4.6.0",
     "cloudinary": "^1.25.0",
+    "cors": "^2.8.5",
     "fs": "^0.0.1-security",
     "http": "^0.0.1-security",
     "jsonwebtoken": "^8.5.1",
