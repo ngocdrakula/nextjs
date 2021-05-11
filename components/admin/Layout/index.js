@@ -206,7 +206,7 @@ class Layout extends Component {
                                             </tr>
                                             {data.map(layout => {
                                                 const checked = (selecteds.indexOf(layout._id) + 1) ? "checked" : "";
-                                                const image = "/api/images/" + layout.images?.[0] + "?width=160&height=90";
+                                                const image = "/api/images/" + layout.images?.[0] + "?width=320&height=180";
                                                 return (
                                                     <tr key={layout._id} style={{ textAlign: 'center' }}>
                                                         <td className="align-middle">
@@ -225,12 +225,12 @@ class Layout extends Component {
                                                             </div>
                                                         </td>
                                                         <td className="align-middle text-center" style={{ padding: '4px 12px' }}>
-                                                            <div className="bg-light d-inline-flex justify-content-center align-items-center align-top itemdiv">
+                                                            <div className="d-inline-flex justify-content-center align-items-center align-top itemdiv" style={{ height: 70, maxWidth: 120, padding: '5px 0px' }}>
                                                                 <img
                                                                     src={image}
                                                                     style={{
-                                                                        maxWidth: 60,
-                                                                        maxHeight: 60,
+                                                                        maxWidth: "100%",
+                                                                        maxHeight: "100%",
                                                                         width: 'auto',
                                                                         height: 'auto',
                                                                     }} />
