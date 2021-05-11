@@ -26,6 +26,8 @@ class AddLayout extends Component {
                 message: '',
                 enabled: true,
                 roomSelected: null,
+                loading: false,
+                submitting: false
             });
         }
     }
@@ -48,6 +50,7 @@ class AddLayout extends Component {
                 url: url + "/get/room2d/" + id,
                 src: url
             };
+            this.setState({ submitting: true })
             dispatch({
                 type: types.ADMIN_CLONE_LAYOUT,
                 payload: data,
@@ -59,13 +62,15 @@ class AddLayout extends Component {
                     else if (res?.data?.exist) {
                         this.setState({
                             field: 'name',
-                            message: res.data.message
+                            message: res.data.message,
+                            submitting: false
                         })
                     }
                     else {
                         this.setState({
                             field: 'name',
-                            message: 'Thêm thất bại.'
+                            message: 'Thêm thất bại.',
+                            submitting: false
                         })
                     }
                 }
@@ -77,6 +82,7 @@ class AddLayout extends Component {
     handleLoadUrl = () => {
         const { id } = this.state;
         const layoutUrl = url + "/get/room2d/" + id;
+        this.setState({ loading: true })
         admin_getLayoutFromUrl(layoutUrl).then(res => {
             if (res?.data?.id) {
                 const { name, icon } = res.data;
@@ -84,7 +90,8 @@ class AddLayout extends Component {
                     icon,
                     name: this.state.name || name,
                     originName: name,
-                    disabled: false
+                    disabled: false,
+                    loading: false
                 })
             }
             else {
@@ -92,7 +99,8 @@ class AddLayout extends Component {
                     message: 'Đường dẫn sai hoặc không đúng định dạng',
                     icon: '',
                     originName: '',
-                    disabled: true
+                    disabled: true,
+                    loading: false
                 })
             }
         }).catch(e => {
@@ -100,14 +108,15 @@ class AddLayout extends Component {
                 message: 'Đường dẫn sai hoặc không đúng định dạng',
                 icon: '',
                 originName: '',
-                disabled: true
+                disabled: true,
+                loading: false
             })
         })
     }
     render() {
         const { visible, rooms } = this.props;
         const { enabled, name, originName, icon, id, disabled } = this.state;
-        const { roomSelected, roomDropdown, field, message } = this.state;
+        const { roomSelected, roomDropdown, field, message, loading, submitting } = this.state;
         return (
             <div>
                 <div
@@ -140,7 +149,9 @@ class AddLayout extends Component {
                                                                     <span className="input-group-text" id="basic-addon3">{url + "/room2d/"}</span>
                                                                 </div>
                                                                 <input className="form-control" type="text" name="id" placeholder={1} value={id || ''} onChange={this.handleChange} />
-                                                                <button className="btn btn-primary ml-3" type="button" onClick={this.handleLoadUrl}>Load</button>
+                                                                <button className="btn btn-primary ml-3" type="button" onClick={this.handleLoadUrl} disabled={loading}>
+                                                                    {loading ? 'Loading...' : 'Kiểm tra'}
+                                                                </button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -191,11 +202,15 @@ class AddLayout extends Component {
                                                         <label>Kết quả:</label>
                                                         <br />
                                                         <label style={{ height: "calc(1.5em + .75rem + 2px)", lineHeight: 'calc(1.5em + .75rem + 2px)' }}><b>{originName}</b></label>
-                                                        <div className="w-100 h-100 flex justify-content-center align-items-center" style={{ paddingTop: 20 }}>
+                                                        <div className="w-100 h-100 d-flex justify-content-center align-items-center" style={{ paddingTop: 20 }}>
                                                             <img src={url + icon} style={{ width: '100%', height: 'auto' }} />
                                                         </div>
                                                     </div>
-                                                    : ""}
+                                                    : loading ?
+                                                        <div className="w-100 h-100 d-flex justify-content-center align-items-center" style={{ paddingTop: 20 }}>
+                                                            <div className="">Vui lòng chờ...</div>
+                                                        </div>
+                                                        : ''}
                                             </div>
                                         </div>
                                         <div className="row">
@@ -207,7 +222,7 @@ class AddLayout extends Component {
                                             </div>
                                             <div className="col d-flex justify-content-end align-items-end">
                                                 <div className="form-group">
-                                                    <button className="btn btn-primary" type="submit" disabled={disabled}>Lưu lại</button>
+                                                    <button className="btn btn-primary" type="submit" disabled={disabled || submitting}>{submitting ? 'Đang lưu...' : 'Lưu lại'}</button>
                                                 </div>
                                             </div>
                                         </div>

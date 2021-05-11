@@ -23,15 +23,19 @@ const handler = async (req, res) => {
         const cloneLayout = await getDataFromUrl(url);
         if (!cloneLayout?.id) throw ({ path: 'url' });
         const { image, shadow, shadow_matt, surfaces } = cloneLayout;
-        if (!image || !shadow || !shadow_matt || !surfaces) throw ({ path: 'url' });
+        if (!image || !shadow || !surfaces) throw ({ path: 'url' });
         const images = [];
         const origin = await downloadImageFromUrl(src + shadow);
         if (!origin) throw ({ path: 'src' });
         images.push(origin);
         const transparent = await downloadImageFromUrl(src + image);
         images.push(transparent);
-        const matt = await downloadImageFromUrl(src + shadow_matt);
-        images.push(matt);
+        if (shadow_matt) {
+          const matt = await downloadImageFromUrl(src + shadow_matt);
+          images.push(matt);
+        } else {
+          images.push(origin);
+        }
         try {
           const test = convertLayout(JSON.parse(surfaces));
         }
