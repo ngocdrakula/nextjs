@@ -33,23 +33,26 @@ class UpdateLayout extends Component {
             if (name !== this.props.layout.name) data.name = name;
             if (roomSelected) data.roomId = roomSelected._id;
             const formData = createFormData(data);
+            this.setState({ loading: true })
             dispatch({
                 type: types.ADMIN_UPDATE_LAYOUT,
                 payload: { _id, formData },
                 callback: res => {
                     if (res?.data?.success) {
                         this.handleClose();
+                        this.setState({ loading: false })
                     }
                     else if (res?.data?.exist) {
                         this.setState({
                             field: 'name',
-                            message: res.data.message
+                            message: res.data.message,
+                            loading: false
                         })
                     }
                     else {
                         this.setState({
                             field: 'name',
-                            message: 'Thêm thất bại.'
+                            message: 'Sửa không thành công.'
                         })
                     }
                 }
@@ -60,7 +63,7 @@ class UpdateLayout extends Component {
     handleCheckbox = e => this.setState({ [e.target.name]: e.target.checked });
     render() {
         const { layout, rooms } = this.props;
-        const { enabled, name, } = this.state;
+        const { enabled, name, loading } = this.state;
         const { roomSelected, roomDropdown, field, message } = this.state;
         const image = "/api/images/" + layout?.images?.[0] + "?width=160&height=90";
 
@@ -145,7 +148,7 @@ class UpdateLayout extends Component {
                                             </div>
                                             <div className="col d-flex justify-content-end align-items-end">
                                                 <div className="form-group">
-                                                    <button className="btn btn-primary" type="submit">Lưu lại</button>
+                                                    <button className="btn btn-primary" type="submit" disabled={loading}>{loading ? 'Đang lưu...' : 'Lưu lại'}</button>
                                                 </div>
                                             </div>
                                         </div>

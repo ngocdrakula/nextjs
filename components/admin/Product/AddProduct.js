@@ -52,6 +52,7 @@ class AddProduct extends Component {
             };
             const formData = createFormData(data);
             const { dispatch } = this.props;
+            this.setState({ loading: true })
             dispatch({
                 type: types.ADMIN_ADD_PRODUCT,
                 payload: formData,
@@ -59,11 +60,13 @@ class AddProduct extends Component {
                     if (res?.data?.success) {
                         this.handleClose();
                         this.props.onAdded();
+                        this.setState({ loading: false })
                     }
                     else if (res?.data?.exist) {
                         this.setState({
                             field: res.data.field,
-                            message: res.data.message
+                            message: res.data.message,
+                            loading: false
                         })
                     }
                 }
@@ -85,7 +88,7 @@ class AddProduct extends Component {
     }
     render() {
         const { visible, fronts, sizes } = this.props;
-        const { code, enabled, front, name, outSide, size } = this.state;
+        const { code, enabled, name, outSide, loading } = this.state;
         const { frontSelected, sizeSelected, frontDropdown, sizeDropdown, imageLocal, field, message } = this.state;
         const sizeName = sizeSelected ? `${sizeSelected.width}x${sizeSelected.height} mm` : "Chọn";
         return (
@@ -220,7 +223,7 @@ class AddProduct extends Component {
                                                 </div>
                                                 <div className="col d-flex justify-content-end align-items-end">
                                                     <div className="form-group">
-                                                        <button className="btn btn-primary" type="submit">Lưu lại</button>
+                                                        <button className="btn btn-primary" type="submit" disabled={loading}>{loading ? 'Đang lưu...' : 'Lưu lại'}</button>
                                                     </div>
                                                 </div>
                                             </div>
