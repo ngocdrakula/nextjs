@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { createFormData, getThumbnail } from '../../../utils/helper';
 import types from '../../../redux/types';
 
-class AddProduct extends Component {
+class UpdateProduct extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -228,4 +228,4 @@ class AddProduct extends Component {
 }
 
 
-export default connect(({ admin }) => ({ fronts: admin.front.data, sizes: admin.size.data }))(AddProduct)
+export default connect(({ admin }) => ({ fronts: admin.front.data, sizes: admin.size.data }))(UpdateProduct)

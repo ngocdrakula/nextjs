@@ -11,7 +11,6 @@ function runCors(req, res, fn) {
     return new Promise((resolve, reject) => {
         fn(req, res, (result) => {
             if (result instanceof Error) {
-                console.log('error')
                 return reject(result)
             }
 
