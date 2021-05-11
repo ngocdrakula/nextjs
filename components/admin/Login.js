@@ -7,19 +7,18 @@ class Login extends Component {
         super(props);
         this.state = {}
     }
-    componentDidUpdate(prevProps) {
-        const { message } = this.props;
-        if (message && message !== prevProps.message) {
-            this.setState({ message });
-        }
-    }
     handleSubmit = e => {
         e.preventDefault();
         const { username, password } = this.state;
         const { dispatch } = this.props;
         dispatch({
             type: types.ADMIN_LOGIN,
-            payload: { username, password }
+            payload: { username, password },
+            callback: data => {
+                if (!data?.success) {
+                    this.setState({ message: data?.message || 'Vui lòng kiểm tra kết nối internet' })
+                }
+            }
         })
     }
     handleChange = e => this.setState({ [e.target.name]: e.target.value, message: '' })
@@ -31,7 +30,7 @@ class Login extends Component {
                         <h3>Đăng nhập</h3>
                     </div>
                     <form onSubmit={this.handleSubmit}>
-                        <span style={{}}>{this.state.message}</span>
+                        <div style={{ color: 'red', marginBottom: 10 }}>{this.state.message}</div>
                         <input type="text" className="fadeIn second" name="username" placeholder="Tài khoản" onChange={this.handleChange} />
                         <input type="password" className="fadeIn third" name="password" placeholder="Mật khẩu" onChange={this.handleChange} />
                         <input type="submit" className="fadeIn fourth" value="Đăng nhập" />
@@ -47,4 +46,4 @@ class Login extends Component {
 }
 
 
-export default connect(({ admin: { message } }) => ({ message }))(Login)
+export default connect(({ }) => ({}))(Login)
