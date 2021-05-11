@@ -97,6 +97,7 @@ class AddLayout extends Component {
             else {
                 this.setState({
                     message: 'Đường dẫn sai hoặc không đúng định dạng',
+                    field: 'url',
                     icon: '',
                     originName: '',
                     disabled: true,
@@ -106,6 +107,7 @@ class AddLayout extends Component {
         }).catch(e => {
             this.setState({
                 message: 'Đường dẫn sai hoặc không đúng định dạng',
+                field: 'url',
                 icon: '',
                 originName: '',
                 disabled: true,
