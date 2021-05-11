@@ -1,6 +1,7 @@
 import runMidldleware from '../../../middleware/mongodb';
 import frontController from '../../../controllers/front';
 import lang, { langConcat } from '../../../lang.config';
+import jwt from '../../../middleware/jwt'
 
 const handler = async (req, res) => {
   if (req.method == 'GET') {

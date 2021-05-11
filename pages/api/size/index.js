@@ -1,6 +1,7 @@
 import runMidldleware from '../../../middleware/mongodb';
 import sizeController from '../../../controllers/size';
 import lang, { langConcat } from '../../../lang.config';
+import jwt from '../../../middleware/jwt'
 
 const handler = async (req, res) => {
   if (req.method == 'GET') {
@@ -29,6 +30,10 @@ const handler = async (req, res) => {
     }
   } else if (req.method == 'POST') {
     try {
+      const bearerToken = req.headers['authorization'];
+      if (!bearerToken) throw ({ path: 'token' })
+      const user = jwt.verify(bearerToken);
+      if (!user || !user.mode) throw ({ ...user, path: 'token' });
       const { width, height } = req.body;
       if (!width || !height) throw ({ path: !width ? 'width' : 'height', required: true });
       if (!(width > 0) || !(height > 0)) throw ({ path: !(width > 0) ? 'width' : 'height' })
