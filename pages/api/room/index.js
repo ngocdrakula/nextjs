@@ -1,6 +1,7 @@
 import runMidldleware from '../../../middleware/mongodb';
 import roomController from '../../../controllers/room';
 import lang, { langConcat } from '../../../lang.config';
+import jwt from '../../../middleware/jwt'
 
 const handler = async (req, res) => {
   if (req.method == 'GET') {
