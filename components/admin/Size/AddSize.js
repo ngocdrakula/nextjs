@@ -88,7 +88,7 @@ class AddSize extends Component {
                                             </div>
                                             <div className="col">
                                                 <div className="form-group">
-                                                    <label>Chiều rộng: <span className="error-field">{field === 'height' ? `(${message})` : ""}</span></label>
+                                                    <label>Chiều dài: <span className="error-field">{field === 'height' ? `(${message})` : ""}</span></label>
                                                     <input className="form-control" type="text" name="height" placeholder="Đơn vị: mm" value={height || ''} onChange={this.handleChange} />
                                                 </div>
                                             </div>

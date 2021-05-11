@@ -21,7 +21,7 @@ export const createFormData = (data) => {
 export const getThumbnail = (product, maxSize = 100) => {
     const rate = product.size.width / product.size.height;
     return product.image
-        + "?width=" + (rate > 1 ? maxSize : Math.floor(maxSize / rate))
+        + "?width=" + (rate > 1 ? maxSize : Math.floor(maxSize * rate))
         + "&height=" + (rate > 1 ? Math.floor(maxSize / rate) : maxSize);
 }
 export const convertLayout = (surfaces) => {
