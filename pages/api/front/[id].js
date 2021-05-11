@@ -34,7 +34,7 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
       if (!user || !user.mode) throw ({ ...user, path: 'token' });
-      const { name, rate, enabled } = req.body;
+      const { name, type, enabled } = req.body;
       try {
         if (name) {
           const matchFront = await frontController.find({ name });
@@ -43,7 +43,7 @@ const handler = async (req, res) => {
         const params = {};
         if (name) params.name = name;
         if (enabled != undefined) params.enabled = !!enabled;
-        if (rate != undefined) params.rate = Number(rate) || 0;
+        if (type != undefined) params.type = Number(type) || 0;
         const currentFront = await frontController.update(req.query.id, params);
         return res.status(200).send({
           success: true,
