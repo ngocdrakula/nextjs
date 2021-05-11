@@ -24,7 +24,7 @@ const appReducer = (state = initState, action) => {
         case types.ADMIN_LOGIN_FAILED: {
             return {
                 ...state,
-                user: null, 
+                user: null,
             };
         }
         case types.ADMIN_LOGOUT_SUCCESS: {
@@ -40,7 +40,6 @@ const appReducer = (state = initState, action) => {
                 product: action.payload
             };
         }
-
         case types.ADMIN_UPDATE_PRODUCT_SUCCESS: {
             const data = state.product.data.map(p => {
                 if (p._id === action.payload._id) return action.payload;
@@ -92,6 +91,19 @@ const appReducer = (state = initState, action) => {
             return {
                 ...state,
                 layout: action.payload
+            };
+        }
+        case types.ADMIN_UPDATE_LAYOUT_SUCCESS: {
+            const data = state.layout.data.map(p => {
+                if (p._id === action.payload._id) return action.payload;
+                return (p);
+            });
+            return {
+                ...state,
+                layout: {
+                    ...state.layout,
+                    data
+                }
             };
         }
         default: {

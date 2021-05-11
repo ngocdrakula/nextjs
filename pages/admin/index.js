@@ -8,11 +8,13 @@ import Product from '../../components/admin/Product';
 import Size from '../../components/admin/Size';
 import Login from '../../components/admin/Login';
 import types from '../../redux/types';
+import Layout from '../../components/admin/Layout';
 
 const menu = [
     { name: 'Sản phẩm', icon: 'nc-icon nc-layers-3', component: <Product /> },
     { name: 'Kích thước', icon: 'nc-icon nc-ruler-pencil', component: <Size /> },
-    { name: 'Thành viên', icon: 'nc-icon nc-circle-09', component: <div>User</div> },
+    { name: 'Kiểu bố trí', icon: 'nc-icon nc-bank', component: <Layout /> },
+    // { name: 'Thành viên', icon: 'nc-icon nc-circle-09', component: <div>User</div> },
 ];
 
 class Admin extends Component {
@@ -26,6 +28,7 @@ class Admin extends Component {
         dispatch({ type: types.ADMIN_LOGIN_LOCAL });
         dispatch({ type: types.ADMIN_GET_FRONTS });
         dispatch({ type: types.ADMIN_GET_SIZES });
+        dispatch({ type: types.ADMIN_GET_ROOMS });
     }
 
     mobileSidebarToggle = (e) => {
@@ -110,7 +113,7 @@ class Admin extends Component {
                                                     data-toggle="dropdown"
                                                     id="navbarDropdownMenuLink"
                                                     variant="default"
-                                                    className="m-0 mr-5" 
+                                                    className="m-0 mr-5"
                                                 >
                                                     <span className="no-icon">Tài khoản</span>
                                                 </Dropdown.Toggle>

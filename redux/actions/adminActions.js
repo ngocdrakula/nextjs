@@ -46,6 +46,23 @@ export const admin_deleteMultiSizeRequest = async (params) => {
 export const admin_getRoomsRequest = async (params) => {
     return axios.get('room?' + stringify(params))
 }
+
 export const admin_getLayoutsRequest = async (params) => {
     return axios.get('layout?' + stringify(params))
+}
+export const admin_addLayoutRequest = async (formData) => {
+    return uploadAxios.post('layout', formData);
+}
+export const admin_updateLayoutRequest = async ({ _id, formData }) => {
+    return uploadAxios.post('layout/' + _id, formData);
+}
+export const admin_deleteLayoutRequest = async (_id) => {
+    return axios.delete('layout/' + _id);
+}
+export const admin_deleteMultiLayoutRequest = async (params) => {
+    const _ids = params && params.join(",");
+    return axios.delete('layout?_ids=' + _ids);
+}
+export const admin_getLayoutFromUrl = async (url) => {
+    return axios.get('admin/getUrl?url=' + url);
 }
