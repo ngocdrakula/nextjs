@@ -26,27 +26,26 @@ export const getThumbnail = (product, maxSize = 100) => {
 }
 export const convertLayout = (surfaces) => {
     const newRoom = {};
-    newRoom.cameraFov = surfaces[0].cameraFov;
-    newRoom.vertical = surfaces[0].viewVerticalOffset;
-    newRoom.horizontal = surfaces[0].viewHorizontalOffset;
-    const areas = surfaces.map(face => {
+    newRoom.cameraFov = Number(surfaces[0]?.cameraFov) || 0;
+    newRoom.vertical = Number(surfaces[0]?.viewVerticalOffset) || 0;
+    newRoom.horizontal = Number(surfaces[0]?.viewHorizontalOffset) || 0;
+    newRoom.areas = surfaces.map(face => {
         return ({
-            x: Number(face[1]),
-            y: Number(face[2]),
-            z: Number(face[3]),
-            _x: Number(face[4]),
-            _y: Number(face[5]),
-            _z: Number(face[6]),
-            width: Number(face[7]),
-            height: Number(face[8]),
-            scaleX: Number(face[9]),
-            scaleY: Number(face[10]),
+            x: Number(face[1]) || 0,
+            y: Number(face[2]) || 0,
+            z: Number(face[3]) || 0,
+            _x: Number(face[4]) || 0,
+            _y: Number(face[5]) || 0,
+            _z: Number(face[6]) || 0,
+            width: Number(face[7]) || 0,
+            height: Number(face[8]) || 0,
+            scaleX: Number(face[9]) || 0,
+            scaleY: Number(face[10]) || 0,
             hoverArea: face[11].map(m => {
-                return { x: Number(m[0]), y: Number(m[1]) }
+                return { x: Number(m[0]) || 0, y: Number(m[1]) || 0 }
             }),
             type: face[176]
         })
     })
-    newRoom.areas = JSON.stringify(areas);
     return (newRoom);
 }

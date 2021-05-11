@@ -103,8 +103,8 @@ class UpdateSize extends Component {
                                         <div className="row">
                                             <div className="col">
                                                 <div className="form-group custom-control custom-checkbox">
-                                                    <input type="checkbox" className="custom-control-input" name="enabled" id="add-size-enabled" checked={enabled ? "checked" : ""} onChange={this.handleCheckbox} />
-                                                    <label className="custom-control-label" htmlFor="add-size-enabled">Trạng thái</label>
+                                                    <input type="checkbox" className="custom-control-input" name="enabled" id={size?._id} checked={enabled ? "checked" : ""} onChange={this.handleCheckbox} />
+                                                    <label className="custom-control-label" htmlFor={size?._id}>Trạng thái</label>
                                                 </div>
                                             </div>
                                             <div className="col d-flex justify-content-end align-items-end">

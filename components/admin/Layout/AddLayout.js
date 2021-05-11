@@ -4,15 +4,14 @@ import { convertLayout, createFormData } from '../../../utils/helper';
 import types from '../../../redux/types';
 import { admin_getLayoutFromUrl } from '../../../redux/actions/adminActions';
 
+const url = 'https://visualizer.vitto.vn';
+
 class AddLayout extends Component {
     constructor(props) {
         super(props);
         this.state = {
             name: '',
-            url: 'https://visualizer.vitto.vn',
-            images: [],
             disabled: true,
-            surfaces: []
         };
     }
     componentDidUpdate(prevProps) {
@@ -24,10 +23,9 @@ class AddLayout extends Component {
                 name: '',
                 id: '',
                 icon: '',
+                message: '',
                 enabled: true,
-                images: [],
                 roomSelected: null,
-                surfaces: []
             });
         }
     }
@@ -38,30 +36,21 @@ class AddLayout extends Component {
     }
     handleSubmit = e => {
         e.preventDefault();
-        const { name, roomSelected } = this.state;
+        const { name, roomSelected, enabled, id } = this.state;
         if (!name) this.setState({ field: 'name', message: 'Tên kiểu bố trí là bắt buộc' });
         else if (!roomSelected) this.setState({ field: 'room', message: 'Loại bề mặt chưa được chọn' });
         else {
-            this.handleCreateLayout();
-        }
-    }
-    handleCreateLayout = async () => {
-        const { name, roomSelected, images, surfaces, enabled, url } = this.state;
-        const { dispatch } = this.props;
-        try {
-            const layout = convertLayout(JSON.parse(surfaces));
-            layout.name = name;
-            layout.roomId = roomSelected._id;
-            layout.enabled = enabled;
-            layout.files = [];
-            for (const image of images) {
-                const file = await this.loadImageFromUrl(url + image);
-                layout.files.push(file);
-            }
-            const formData = createFormData(layout);
+            const { dispatch } = this.props;
+            const data = {
+                name,
+                enabled,
+                roomId: roomSelected._id,
+                url: url + "/get/room2d/" + id,
+                src: url
+            };
             dispatch({
-                type: types.ADMIN_ADD_LAYOUT,
-                payload: formData,
+                type: types.ADMIN_CLONE_LAYOUT,
+                payload: data,
                 callback: res => {
                     if (res?.data?.success) {
                         this.handleClose();
@@ -82,36 +71,17 @@ class AddLayout extends Component {
                 }
             })
         }
-        catch (e) {
-            this.setState({
-                field: 'name',
-                message: 'Thêm thất bại.'
-            })
-        }
-    }
-    loadImageFromUrl = async (url) => {
-        return new Promise(resolve => {
-            var request = new XMLHttpRequest();
-            request.responseType = "blob";
-            request.onload = function () {
-                return resolve(request.response);
-            }
-            request.open("GET", "/api/admin/getUrl?url=" + url);
-            request.send();
-        });
     }
     handleChange = e => this.setState({ [e.target.name]: e.target.value, field: null, message: null });
     handleCheckbox = e => this.setState({ [e.target.name]: e.target.checked });
     handleLoadUrl = () => {
-        const { url, id } = this.state;
+        const { id } = this.state;
         const layoutUrl = url + "/get/room2d/" + id;
         admin_getLayoutFromUrl(layoutUrl).then(res => {
             if (res?.data?.id) {
-                const { name, icon, image, shadow, shadow_matt, surfaces, } = res.data;
+                const { name, icon } = res.data;
                 this.setState({
-                    images: [shadow, image, shadow_matt],
                     icon,
-                    surfaces,
                     name: this.state.name || name,
                     originName: name,
                     disabled: false
@@ -120,9 +90,7 @@ class AddLayout extends Component {
             else {
                 this.setState({
                     message: 'Đường dẫn sai hoặc không đúng định dạng',
-                    images: [],
                     icon: '',
-                    surfaces: [],
                     originName: '',
                     disabled: true
                 })
@@ -130,9 +98,7 @@ class AddLayout extends Component {
         }).catch(e => {
             this.setState({
                 message: 'Đường dẫn sai hoặc không đúng định dạng',
-                images: [],
                 icon: '',
-                surfaces: [],
                 originName: '',
                 disabled: true
             })
@@ -140,7 +106,7 @@ class AddLayout extends Component {
     }
     render() {
         const { visible, rooms } = this.props;
-        const { enabled, name, originName, icon, url, id, disabled } = this.state;
+        const { enabled, name, originName, icon, id, disabled } = this.state;
         const { roomSelected, roomDropdown, field, message } = this.state;
         return (
             <div>
@@ -235,8 +201,8 @@ class AddLayout extends Component {
                                         <div className="row">
                                             <div className="col">
                                                 <div className="form-group custom-control custom-checkbox">
-                                                    <input type="checkbox" className="custom-control-input" name="enabled" id="add-enabled" checked={enabled ? "checked" : ""} onChange={this.handleCheckbox} />
-                                                    <label className="custom-control-label" htmlFor="add-enabled">Trạng thái</label>
+                                                    <input type="checkbox" className="custom-control-input" name="enabled" id="add-layout-enabled" checked={enabled ? "checked" : ""} onChange={this.handleCheckbox} />
+                                                    <label className="custom-control-label" htmlFor="add-layout-enabled">Trạng thái</label>
                                                 </div>
                                             </div>
                                             <div className="col d-flex justify-content-end align-items-end">

@@ -40,7 +40,7 @@ const handler = async (req, res) => {
       const user = jwt.verify(bearerToken);
       if (!user || !user.mode) throw ({ ...user, path: 'token' });
       const { body, files, err } = await uploader(req);
-      const { name, roomId, vertical, horizontal, cameraFov, areas } = body;
+      const { name, roomId, vertical, horizontal, cameraFov, areas, enabled } = body;
       if (err || !files.length) throw ({ path: 'files' })
       if (!name || !roomId) throw ({ path: !name ? 'name' : 'roomId', files });
       try {
@@ -61,7 +61,8 @@ const handler = async (req, res) => {
           vertical: Number(vertical) || 0,
           horizontal: Number(horizontal) || 0,
           cameraFov: Number(cameraFov) || 0,
-          areas: JSON.parse(areas)
+          areas: JSON.parse(areas),
+          enabled: enabled === "false" ? false : true
         }
         const layoutCreated = await (await layoutController.create(params)).populate('room').execPopulate();
         return res.status(201).send({
@@ -160,6 +161,54 @@ const handler = async (req, res) => {
         message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
         error: e.err,
+      });
+    }
+  } else if (req.method == 'DELETE') {
+    try {
+      const bearerToken = req.headers['authorization'];
+      if (!bearerToken) throw ({ path: 'token' });
+      const user = jwt.verify(bearerToken);
+      if (!user || !user.mode) throw ({ ...user, path: 'token' });
+      const { _ids } = req.query;
+      if (!_ids) throw ({ path: '_ids' });
+      const query = {
+        _id: { $in: _ids.split(",") }
+      };
+      await layoutController.removeMany(query);
+      return res.status(200).send({
+        success: true,
+        message: 'Xóa thành công',
+        messages: lang?.message?.success?.deleted
+      });
+    } catch (e) { 
+      if (e.path == 'token') {
+        if (!e.token) {
+          return res.status(401).send({
+            success: false,
+            authentication: false,
+            message: 'Bạn không có quyền truy cập',
+            messages: lang?.message?.error?.unauthorized
+          });
+        }
+        return res.status(400).send({
+          success: false,
+          name: e.name,
+          message: e.name == 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
+          messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
+        });
+      }
+      if (e.path == '_ids') {
+        return res.status(400).send({
+          success: false,
+          required: false,
+          message: "Danh sách sản phẩm phải là một mảng id",
+        });
+      }
+      return res.status(500).send({
+        success: false,
+        message: 'Máy chủ không phản hồi',
+        messages: lang?.message?.error?.server,
+        error: e,
       });
     }
   } else {

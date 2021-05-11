@@ -53,6 +53,9 @@ export const admin_getLayoutsRequest = async (params) => {
 export const admin_addLayoutRequest = async (formData) => {
     return uploadAxios.post('layout', formData);
 }
+export const admin_cloneLayoutRequest = async (request) => {
+    return axios.post('layout/clone', request);
+}
 export const admin_updateLayoutRequest = async ({ _id, formData }) => {
     return uploadAxios.post('layout/' + _id, formData);
 }

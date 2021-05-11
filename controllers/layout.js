@@ -18,11 +18,15 @@ function remove(layoutId) {
 function getlist(query) {
     return (layoutData.find(query));
 }
+function removeMany(query) {
+    return (layoutData.deleteMany(query));
+}
 export default {
     create,
     get,
     update,
     remove,
     find,
-    getlist
+    getlist,
+    removeMany
 }

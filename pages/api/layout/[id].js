@@ -134,7 +134,7 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           headerContentType: false,
-          contentType,
+          contentType: e.contentType,
           aceptedOnly: 'multipart/form-data',
           message: 'Header không được chấp nhận',
           messages: lang?.message?.error?.header_not_acepted
