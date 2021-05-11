@@ -22,18 +22,18 @@ function* admin_LoginLocal({ callback }) {
 function* admin_Login({ payload, callback }) {
     try {
         const res = yield call(requests.admin_LoginRequest, payload);
-        if (res && res.data && res.data.success) {
+        if (res?.data?.success) {
             localStorage.setItem('token', res.data.token);
             const user = jwt.decode(res.data.token);
             yield put({ type: types.ADMIN_LOGIN_SUCCESS, payload: user });
         }
         else {
-            yield put({ type: types.ADMIN_LOGIN_FAILED, payload: res.data });
+            yield put({ type: types.ADMIN_LOGIN_FAILED, payload: res?.data });
         }
         if (typeof callback === 'function') callback(res.data);
     } catch (e) {
-        yield put({ type: types.ADMIN_LOGIN_FAILED, payload: e.response });
-        if (typeof callback === 'function') callback(e.response);
+        yield put({ type: types.ADMIN_LOGIN_FAILED, payload: e?.response?.data });
+        if (typeof callback === 'function') callback(e?.response?.data);
     }
 }
 function* admin_Logout({ callback }) {

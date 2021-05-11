@@ -24,8 +24,7 @@ const appReducer = (state = initState, action) => {
         case types.ADMIN_LOGIN_FAILED: {
             return {
                 ...state,
-                user: null,
-                message: action.payload
+                user: null, 
             };
         }
         case types.ADMIN_LOGOUT_SUCCESS: {
