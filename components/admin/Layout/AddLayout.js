@@ -69,7 +69,7 @@ class AddLayout extends Component {
                     else {
                         this.setState({
                             field: 'name',
-                            message: 'Thêm thất bại.',
+                            message: 'Thêm không thành công.',
                             submitting: false
                         })
                     }
