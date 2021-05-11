@@ -18,11 +18,15 @@ function remove(sizeId) {
 function getlist(query) {
     return (sizeData.find(query).sort({ createdAt: -1 }));
 }
+function removeMany(query) {
+    return (sizeData.deleteMany(query));
+}
 export default {
     create,
     get,
     update,
     remove,
     find,
-    getlist
+    getlist,
+    removeMany
 }

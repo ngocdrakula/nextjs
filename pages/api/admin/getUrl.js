@@ -1,7 +1,8 @@
 import https from 'https';
 import http from 'http';
+import runMidldleware from '../../../middleware/mongodb';
 
-export default async function getUrl(req, res) {
+const handler = async (req, res) => {
     const { url } = req.query;
     try {
         const options = {
@@ -11,10 +12,7 @@ export default async function getUrl(req, res) {
             return new Promise(resolve => {
                 const request = https.request(url, options, function (response) {
                     if (response.statusCode == 200) {
-                        res.writeHead(200, {
-                            'Content-Type': response.headers['content-type'],
-                            'Content-Length': response.headers['content-length']
-                        })
+                        res.writeHead(200, response.headers)
                         return response.pipe(res);
                     }
                     else {
@@ -53,3 +51,5 @@ export default async function getUrl(req, res) {
         return res.status(404).send();
     }
 }
+
+export default runMidldleware(handler);

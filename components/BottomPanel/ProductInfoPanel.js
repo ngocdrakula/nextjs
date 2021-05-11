@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { getThumbnail } from '../../utils/helper';
 
 class ProductInfoPanel extends Component {
     constructor(props) {

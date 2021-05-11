@@ -219,6 +219,18 @@ function* admin_addLayout({ payload, callback }) {
         if (typeof callback === 'function') callback(e.response);
     }
 }
+function* admin_cloneLayout({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_cloneLayoutRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_CLONE_LAYOUT_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_CLONE_LAYOUT_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
 function* admin_updateLayout({ payload, callback }) {
     try {
         const res = yield call(requests.admin_updateLayoutRequest, payload);
@@ -281,6 +293,7 @@ export default function* appSaga() {
 
         yield takeEvery(types.ADMIN_GET_LAYOUTS, admin_getLayouts),
         yield takeEvery(types.ADMIN_ADD_LAYOUT, admin_addLayout),
+        yield takeEvery(types.ADMIN_CLONE_LAYOUT, admin_cloneLayout),
         yield takeEvery(types.ADMIN_UPDATE_LAYOUT, admin_updateLayout),
         yield takeEvery(types.ADMIN_DELETE_LAYOUT, admin_deleteLayout),
         yield takeEvery(types.ADMIN_DELETE_MULTI_LAYOUT, admin_deleteMultiLayout),

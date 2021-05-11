@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import dynamic from 'next/dynamic';
 import { connect } from 'react-redux'
+import types from '../../redux/types';
 
 
 const ProductInfoPanel = dynamic(() => import('./ProductInfoPanel'));
@@ -11,7 +12,6 @@ class BottomPanel extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            visible: false,
             langLists: [
                 { _id: 0, name: 'vn', },
                 { _id: 1, name: 'en', },
@@ -19,9 +19,14 @@ class BottomPanel extends Component {
             selected: 0
         }
     }
+    componentDidUpdate(prevProps) {
+        if (this.props.visible && !prevProps.visible && this.state.visibleProduct) {
+            this.setState({ visibleProduct: false });
+        }
+    }
     handleToggle = () => {
-        const { visible } = this.state;
-        this.setState({ visible: !visible, background: !visible });
+        const { visibleRoom } = this.state;
+        this.setState({ visibleRoom: !visibleRoom, background: !visibleRoom });
     }
     handleToggleLang = () => {
         const { visibleLang } = this.state;
@@ -31,6 +36,10 @@ class BottomPanel extends Component {
     handleToggleProduct = () => {
         const { visibleProduct } = this.state;
         this.setState({ visibleProduct: !visibleProduct });
+        const { dispatch, visible } = this.props;
+        if (visible && !visibleProduct) {
+            dispatch({ type: types.HIDE_TOPPANEL });
+        }
     }
     handleToggleSave = () => {
         const { visibleSave } = this.state;
@@ -64,7 +73,7 @@ class BottomPanel extends Component {
         }
     }
     render() {
-        const { visible, selected, visibleLang, langLists, visibleProduct, visibleSave, background } = this.state;
+        const { visibleRoom, selected, visibleLang, langLists, visibleProduct, visibleSave, background } = this.state;
         const langSelected = langLists.find(l => l._id === selected) || {};
         return (
             <>
@@ -98,7 +107,7 @@ class BottomPanel extends Component {
                         <img id="bottomMenuCancelFullScreenImg" src="/icons/normalscreen.png" alt="" />
                     </button>
                 </div>
-                <RoomSelect visible={visible} handleToggle={this.handleToggle} />
+                <RoomSelect visible={visibleRoom} handleToggle={this.handleToggle} />
                 <ProductInfoPanel visible={visibleProduct} handleToggle={this.handleToggleProduct} />
                 <SaveModal visible={visibleSave} handleToggle={this.handleToggleSave} />
                 <div className={"modal-backdrop fade in"} style={{ display: background ? 'block' : 'none' }}></div>
@@ -107,4 +116,4 @@ class BottomPanel extends Component {
     }
 }
 
-export default connect(() => ({}))(BottomPanel)
+export default connect(({ app: { visible } }) => ({ visible }))(BottomPanel)

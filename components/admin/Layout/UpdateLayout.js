@@ -127,7 +127,7 @@ class UpdateLayout extends Component {
                                                 </div>
                                             </div>
                                             <div className="col col-4">
-                                                {image ?
+                                                {layout?.image ?
                                                     <div className="form-group">
                                                         <div className="w-100 h-100 flex justify-content-center align-items-center" style={{ paddingTop: 20 }}>
                                                             <img src={image} style={{ width: '100%', height: 'auto' }} />
@@ -139,8 +139,8 @@ class UpdateLayout extends Component {
                                         <div className="row">
                                             <div className="col">
                                                 <div className="form-group custom-control custom-checkbox">
-                                                    <input type="checkbox" className="custom-control-input" name="enabled" id="add-enabled" checked={enabled ? "checked" : ""} onChange={this.handleCheckbox} />
-                                                    <label className="custom-control-label" htmlFor="add-enabled">Trạng thái</label>
+                                                    <input type="checkbox" className="custom-control-input" name="enabled" id="edit-layout-enabled" checked={enabled ? "checked" : ""} onChange={this.handleCheckbox} />
+                                                    <label className="custom-control-label" htmlFor="edit-layout-enabled">Trạng thái</label>
                                                 </div>
                                             </div>
                                             <div className="col d-flex justify-content-end align-items-end">
