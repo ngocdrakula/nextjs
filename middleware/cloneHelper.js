@@ -8,12 +8,9 @@ export async function downloadImageFromUrl(url) {
     const filename = Date.now() + "_" + rd1 + "_" + rd2 + ".png";
     const file = fs.createWriteStream(process.env.FOLDER_UPLOAD + "/" + filename);
     try {
-        const options = {
-            timeout: 3000
-        };
         if (!(url + "").search("https"))
             return new Promise(resolve => {
-                const request = https.get(url, options, function (response) {
+                const request = https.get(url, function (response) {
                     if (response.statusCode === 200) {
                         response.pipe(file);
                         return resolve(filename)
@@ -25,7 +22,7 @@ export async function downloadImageFromUrl(url) {
             })
         else if (!(url + "").search("http"))
             return new Promise(resolve => {
-                const request = http.get(url, options, function (response) {
+                const request = http.get(url, function (response) {
                     if (response.statusCode === 200) {
                         response.pipe(file);
                         return (resolve(filename))
@@ -40,12 +37,9 @@ export async function downloadImageFromUrl(url) {
 
 export async function getDataFromUrl(url) {
     try {
-        const options = {
-            timeout: 3000
-        };
         if (!(url + "").search("https")) {
             return new Promise((resolve, reject) => {
-                https.get(url, options, res => {
+                https.get(url, res => {
                     res.setEncoding('utf8');
                     let body = '';
                     res.on('data', chunk => body += chunk);
@@ -61,7 +55,7 @@ export async function getDataFromUrl(url) {
         }
         else if (!(url + "").search("http"))
             return new Promise((resolve, reject) => {
-                http.get(url, options, res => {
+                http.get(url, res => {
                     res.setEncoding('utf8');
                     let body = '';
                     res.on('data', chunk => body += chunk);

@@ -127,7 +127,7 @@ class UpdateLayout extends Component {
                                                 </div>
                                             </div>
                                             <div className="col col-4">
-                                                {layout?.image ?
+                                                {layout?.images?.length ?
                                                     <div className="form-group">
                                                         <div className="w-100 h-100 flex justify-content-center align-items-center" style={{ paddingTop: 20 }}>
                                                             <img src={image} style={{ width: '100%', height: 'auto' }} />
