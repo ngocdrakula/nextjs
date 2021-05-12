@@ -94,25 +94,16 @@ class AddLayout extends Component {
             try {
                 const layout = convertLayoutClient(JSON.parse(surfaces));
                 const { vertical, horizontal, cameraFov, areas } = layout;
-                const files = [];
-                const origin = await this.loadImageFromUrl(shadow);
+                const origin = shadow ? await this.loadImageFromUrl(shadow) : null;
                 this.setState({ progress: 30 })
                 await this.delay(2000);
-                if (!origin) throw {}
-                files.push(origin);
                 const transparent = await this.loadImageFromUrl(image);
                 this.setState({ progress: 60 })
                 await this.delay(2000);
-                if (!transparent) throw {}
-                files.push(transparent);
-                if (shadow_matt) {
-                    const matt = await this.loadImageFromUrl(shadow_matt);
-                    this.setState({ progress: 90 })
-                    if (!matt) throw {}
-                    files.push(matt);
-                } else {
-                    files.push(origin);
-                }
+                const matt = shadow_matt ? await this.loadImageFromUrl(shadow_matt) : null;
+                this.setState({ progress: 90 });
+                if (!origin && !matt) throw {}
+                const files = [origin || matt, transparent, matt || origin];
                 const data = { name, roomId: roomSelected._id, files, vertical, horizontal, cameraFov, areas, enabled };
                 const formData = createFormData(data);
                 dispatch({
@@ -155,7 +146,6 @@ class AddLayout extends Component {
 
     }
     delay = async (timeout) => {
-        return new Promise(resolve => { setTimeout(() => { resolve(1) }, timeout); })
     }
     loadImageFromUrl = async img => {
         const src = "/api/admin/getUrl?url=" + url + img;
@@ -173,6 +163,24 @@ class AddLayout extends Component {
             }
             request.open("GET", src);
             request.send();
+        })
+    }
+    loadImageByCanvas = async src => {
+        return new Promise(resolve => {
+            const image = new Image;
+            const c = document.createElement("canvas");
+            const ctx = c.getContext("2d");
+
+            image.onload = function () {
+                c.width = this.naturalWidth;     // update canvas size to match image
+                c.height = this.naturalHeight;
+                ctx.drawImage(this, 0, 0);       // draw in image
+                c.toBlob(function (blob) {        // get content as JPEG blob
+                    return resolve(blob);
+                }, "image/jpeg", 0.75);
+            };
+            image.crossOrigin = "";              // if from different origin
+            image.src = src;
         })
     }
 
