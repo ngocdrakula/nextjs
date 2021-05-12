@@ -33,7 +33,7 @@ const handler = async (req, res) => {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
-      if (!user || !user.mode) throw ({ ...user, path: 'token' });
+      if (!user?.mode) throw ({ ...user, path: 'token' });
       const { name, type } = req.body;
       if (!name) throw ({ path: 'name' })
       try {

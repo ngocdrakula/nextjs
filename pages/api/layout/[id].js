@@ -39,7 +39,7 @@ const handler = async (req, res) => {
       if (!contentType || contentType.indexOf('multipart/form-data') == -1)
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
-      if (!user || !user.mode) throw ({ ...user, path: 'token' });
+      if (!user?.mode) throw ({ ...user, path: 'token' });
       const { body, files, err } = await uploader(req);
       const { name, images, roomId, vertical, horizontal, cameraFov, areas, enabled } = body;
       if (err) throw ({ path: 'files' });
@@ -204,7 +204,7 @@ const handler = async (req, res) => {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
-      if (!user || !user.mode) throw ({ ...user, path: 'token' });
+      if (!user?.mode) throw ({ ...user, path: 'token' });
       const currentLayout = await layoutController.get(req.query.id);
       if (!currentLayout) throw ({ path: '_id' });
       await cleanFiles(currentLayout.images)

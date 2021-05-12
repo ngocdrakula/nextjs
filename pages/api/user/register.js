@@ -1,24 +1,24 @@
 import runMidldleware from '../../../middleware/mongodb';
 import userController from '../../../controllers/user';
 import lang, { langConcat } from '../../../lang.config';
-import { create } from '../../../middleware/bcrypt';
+import bcrypt from '../../../middleware/bcrypt';
 import jwt from '../../../middleware/jwt';
 
 const handler = async (req, res) => {
     if (req.method == 'POST') {
         try {
-            const { username, password } = req.body;
+            const { username, password, name } = req.body;
             if (!username || !password) throw ({ path: !username ? 'username' : 'password', required: true });
             const user = await userController.find({ username });
             if (user) throw ({ path: 'user' });
-            const hash = await create(password);
-            const userCreated = await userController.create({ username, password: hash });
+            const hash = await bcrypt.create(password);
+            const userCreated = await userController.create({ username, password: hash, name });
             const { _id } = userCreated;
-            const token = jwt.create({ username, _id });
+            const token = jwt.create({ username, _id, name });
             return res.status(201).send({
                 success: true,
                 token,
-                data: { username, _id },
+                data: { username, _id, name },
                 message: 'Đăng ký thành công',
             });
         } catch (e) {

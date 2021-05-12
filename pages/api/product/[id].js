@@ -40,7 +40,7 @@ const handler = async (req, res) => {
       if (!contentType || contentType.indexOf('multipart/form-data') == -1)
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
-      if (!user || !user.mode) throw ({ ...user, path: 'token' });
+      if (!user?.mode) throw ({ ...user, path: 'token' });
       const { body: { name, code, sizeId, frontId, outSide, enabled }, files, err } = await uploader(req);
       if (err) throw ({ path: 'files' });
       try {
@@ -191,7 +191,7 @@ const handler = async (req, res) => {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
-      if (!user || !user.mode) throw ({ ...user, path: 'token' });
+      if (!user?.mode) throw ({ ...user, path: 'token' });
       const currentProduct = await productController.get(req.query.id);
       if (!currentProduct) throw ({ path: '_id' });
       cleanFiles([currentProduct.image])
