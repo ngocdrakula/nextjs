@@ -1,6 +1,7 @@
 import runMidldleware from '../../../middleware/mongodb';
+import designController from '../../../controllers/design';
 import layoutController from '../../../controllers/layout';
-import roomController from '../../../controllers/room';
+import userController from '../../../controllers/user';
 import lang, { langConcat } from '../../../lang.config';
 import uploader, { cleanFiles } from '../../../middleware/multer';
 import jwt from '../../../middleware/jwt'
@@ -8,19 +9,24 @@ import jwt from '../../../middleware/jwt'
 const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
-      const { page, pageSize, enabled } = req.query;
-      const query = {};
-      if (enabled) query.enabled = (enabled == "true");
+      const bearerToken = req.headers['authorization'];
+      if (!bearerToken) throw ({ path: 'token' });
+      const user = jwt.verify(bearerToken);
+      if (!user?._id) throw ({ ...user, path: 'token' });
+      const { page, pageSize, name } = req.query;
+      const query = { author: user._id };
       const skip = Number(page * pageSize) || 0;
-      const limit = Number((page + 1) * pageSize) || 0;
-      const total = await layoutController.getlist(query).countDocuments();
-      const list = await layoutController.getlist(query).skip(skip).limit(limit).populate('room');
+      const limit = Number(pageSize) || 0;
+      if (name) query.name = name;
+      const total = await designController.getlist(query).countDocuments();
+      const list = await designController.getlist(query).skip(skip).limit(limit);
       return res.status(200).send({
         success: true,
         data: list,
         total,
         page: Number(page) || 0,
-        pageSize: Number(pageSize) || 0
+        pageSize: Number(pageSize) || 0,
+        query,
       });
     } catch (error) {
       return res.status(500).send({
@@ -38,43 +44,28 @@ const handler = async (req, res) => {
       if (!contentType || contentType.indexOf('multipart/form-data') == -1)
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
-      if (!user?.mode) throw ({ ...user, path: 'token' });
-      const { body, files, err } = await uploader(req);
-      const { name, roomId, vertical, horizontal, cameraFov, areas, enabled } = body;
-      if (err || !files.length) throw ({ path: 'files' })
-      if (!name || !roomId) throw ({ path: !name ? 'name' : 'roomId', files });
-      try {
-        JSON.parse(areas);
-      }
-      catch (e) {
-        throw ({ path: 'areas' })
+      if (!user?._id) throw ({ ...user, path: 'token' });
+      const { body: { name, layoutId, areas }, files, err } = await uploader(req);
+      if (err || !files.length) throw ({ path: 'files' });
+      if (!name || !areas || !layoutId) {
+        if (!name) throw ({ path: 'name', files })
+        if (!areas) throw ({ path: 'areas', files })
+        throw ({ path: 'layoutId', files })
       }
       try {
-        const room = await roomController.get(roomId);
-        if (!room) throw ({ path: '_id', files })
-        const matchLayout = await layoutController.find({ name }).populate('room');
-        if (matchLayout) throw ({ path: 'layout', files, matchLayout })
-        const params = {
-          name,
-          room: roomId,
-          images: files,
-          vertical: Number(vertical) || 0,
-          horizontal: Number(horizontal) || 0,
-          cameraFov: Number(cameraFov) || 0,
-          areas: JSON.parse(areas),
-          enabled: enabled === "false" ? false : true
-        }
-        const layoutCreated = await (await layoutController.create(params)).populate('room').execPopulate();
-        return res.status(201).send({
-          success: true,
-          data: layoutCreated,
-          message: 'Thêm thành công',
-          messages: lang?.message?.success?.created
-        });
+        const layout = await layoutController.get(layoutId);
+        if (!layout) throw ({ path: '_id', files });
       } catch (err) {
-        if (err.path == '_id') throw ({ path: 'room', files });
-        throw ({ ...err, files })
+        if (err.path == '_id') throw ({ path: 'layout', files });
+        throw ({ err, files })
       }
+      const designCreated = await designController.create({ name, layout: layoutId, author: userId, image: files[0] });
+      return res.status(201).send({
+        success: true,
+        data: designCreated,
+        message: 'Thêm thành công',
+        messages: lang?.message?.success?.created
+      });
     } catch (e) {
       if (e.files) await cleanFiles(e.files);
       if (e.path == 'token') {
@@ -117,50 +108,33 @@ const handler = async (req, res) => {
           success: false,
           validation: false,
           field: 'name',
-          message: 'Tên kiểu bố trí không được để trống',
-          messages: langConcat(lang?.resources?.layoutName, lang?.message?.error?.validation?.required)
+          message: 'Tên thiết kế không được để trống',
+          messages: langConcat(lang?.resources?.designName, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path == 'roomId') {
+      if (e.path == 'layoutId') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'roomId',
+          field: 'layoutId',
           message: 'Id không gian không được để trống',
-          messages: langConcat(lang?.resources?.roomId, lang?.message?.error?.validation?.required)
-        });
-      }
-      if (e.path == 'areas') {
-        return res.status(400).send({
-          success: false,
-          validation: false,
-          field: 'areas',
-          message: 'Danh sách các mặt không phải là mảng',
-        });
-      }
-      if (e.path == 'room') {
-        return res.status(400).send({
-          success: false,
-          exist: false,
-          field: 'room',
-          message: "Không gian không tồn tại",
-          messages: langConcat(lang?.resources?.front, lang?.message?.error?.validation?.not_exist),
+          messages: langConcat(lang?.resources?.layoutId, lang?.message?.error?.validation?.required)
         });
       }
       if (e.path == 'layout') {
         return res.status(400).send({
           success: false,
-          exist: true,
-          current: e.matchLayout,
-          message: "Tên kiểu bố trí đã tồn tại",
-          messages: langConcat(lang?.resources?.layoutName, lang?.message?.error?.validation?.exist),
+          exist: false,
+          field: 'layout',
+          message: "Không gian không tồn tại",
+          messages: langConcat(lang?.resources?.layout, lang?.message?.error?.validation?.not_exist),
         });
       }
       return res.status(500).send({
         success: false,
         message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
-        error: e.err,
+        error: e,
       });
     }
   } else if (req.method == 'DELETE') {
@@ -174,13 +148,13 @@ const handler = async (req, res) => {
       const query = {
         _id: { $in: _ids.split(",") }
       };
-      await layoutController.removeMany(query);
+      await designController.removeMany(query);
       return res.status(200).send({
         success: true,
         message: 'Xóa thành công',
         messages: lang?.message?.success?.deleted
       });
-    } catch (e) { 
+    } catch (e) {
       if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({
@@ -201,7 +175,7 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           required: false,
-          message: "Danh sách sản phẩm phải là một mảng id",
+          message: "Danh sách thiết kế phải là một mảng id",
         });
       }
       return res.status(500).send({

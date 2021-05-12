@@ -13,7 +13,11 @@ const user = new Schema({
     },
     mode: {
         type: Boolean
-    }
+    },
+    name: {
+        type: String,
+        required: true
+    },
 });
 
 

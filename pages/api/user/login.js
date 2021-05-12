@@ -14,8 +14,8 @@ const handler = async (req, res) => {
             if (!user) throw ({ path: 'user' });
             const loged = await bcrypt.compare(password, user.password);
             if (!loged) throw ({ path: 'user' });
-            const { _id } = user;
-            const token = jwt.create({ _id, username });
+            const { _id, name } = user;
+            const token = jwt.create({ _id, username, name });
             return res.status(200).send({
                 success: true,
                 token,

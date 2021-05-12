@@ -61,7 +61,7 @@ const handler = async (req, res) => {
       if (!contentType || contentType.indexOf('multipart/form-data') == -1)
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
-      if (!user || !user.mode) throw ({ ...user, path: 'token' });
+      if (!user?.mode) throw ({ ...user, path: 'token' });
       const { body: { name, code, sizeId, frontId, outSide }, files, err } = await uploader(req);
       if (err || !files.length) throw ({ path: 'files' });
       if (!name || !code || !sizeId || !frontId) {
@@ -214,7 +214,7 @@ const handler = async (req, res) => {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
-      if (!user || !user.mode) throw ({ ...user, path: 'token' });
+      if (!user?.mode) throw ({ ...user, path: 'token' });
       const { _ids } = req.query;
       if (!_ids) throw ({ path: '_ids' });
       const query = {

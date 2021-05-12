@@ -5,6 +5,11 @@ html, body {
   /* overflow: hidden; */
 }
 
+.user-page {
+  margin: 0;
+  font-family: Century Gothic, Helvetica, sans-serif;
+}
+
 .top-panel {
   transition: right .5s;
 }
