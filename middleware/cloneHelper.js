@@ -9,7 +9,7 @@ export async function downloadImageFromUrl(url) {
     const file = fs.createWriteStream(process.env.FOLDER_UPLOAD + "/" + filename);
     try {
         const options = {
-            timeout: 30000
+            timeout: 10000
         };
         if (!(url + "").search("https"))
             return new Promise(resolve => {
@@ -17,7 +17,7 @@ export async function downloadImageFromUrl(url) {
                     if (response.statusCode === 200) {
                         response.pipe(file)
                             .on('close', () => resolve(filename))
-                            .on('error', () => resolve(filename));
+                            .on('error', () => resolve(null));
 
                     }
                     else {
@@ -31,7 +31,7 @@ export async function downloadImageFromUrl(url) {
                     if (response.statusCode === 200) {
                         response.pipe(file)
                             .on('close', () => resolve(filename))
-                            .on('error', () => resolve(filename));
+                            .on('error', () => resolve(null));
                     }
                     else {
                         return (resolve(null))
@@ -44,7 +44,7 @@ export async function downloadImageFromUrl(url) {
 export async function getDataFromUrl(url) {
     try {
         const options = {
-            timeout: 3000
+            timeout: 5000
         };
         if (!(url + "").search("https")) {
             return new Promise((resolve, reject) => {
