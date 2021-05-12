@@ -108,8 +108,8 @@ class AddLayout extends Component {
                 if (shadow_matt) {
                     const matt = await this.loadImageFromUrl(shadow_matt);
                     this.setState({ progress: 90 })
-                    if (!origin) files.push(origin);
-                    else files.push(matt);
+                    if (!matt) throw {}
+                    files.push(matt);
                 } else {
                     files.push(origin);
                 }
