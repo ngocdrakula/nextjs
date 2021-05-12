@@ -42,39 +42,51 @@ class AddLayout extends Component {
         if (!name) this.setState({ field: 'name', message: 'Tên kiểu bố trí là bắt buộc' });
         else if (!roomSelected) this.setState({ field: 'room', message: 'Loại bề mặt chưa được chọn' });
         else {
-            const { dispatch } = this.props;
-            const data = {
-                name,
-                enabled,
-                roomId: roomSelected._id,
-                url: url + "/get/room2d/" + id,
-                src: url
-            };
-            this.setState({ submitting: true })
-            dispatch({
-                type: types.ADMIN_CLONE_LAYOUT,
-                payload: data,
-                callback: res => {
-                    if (res?.data?.success) {
-                        this.handleClose();
-                        this.props.onAdded();
-                    }
-                    else if (res?.data?.exist) {
+            this.handleCreateLayout(this.handleCloneLayout)
+        }
+    }
+    handleCloneLayout = (callback) => {
+        const { name, roomSelected, enabled, id } = this.state;
+        const { dispatch } = this.props;
+        const data = {
+            name,
+            enabled,
+            roomId: roomSelected._id,
+            url: url + "/get/room2d/" + id,
+            src: url
+        };
+        this.setState({ submitting: true })
+        dispatch({
+            type: types.ADMIN_CLONE_LAYOUT,
+            payload: data,
+            callback: res => {
+                if (res?.data?.success) {
+                    this.handleClose();
+                    this.props.onAdded();
+                }
+                else if (res?.data?.exist) {
+                    this.setState({
+                        field: 'name',
+                        message: res.data.message,
+                        submitting: false
+                    })
+                }
+                else {
+                    if (typeof callback === 'function') callback()
+                    else {
                         this.setState({
                             field: 'name',
-                            message: res.data.message,
+                            message: 'Thêm không thành công.',
                             submitting: false
                         })
                     }
-                    else {
-                        this.handleCreateLayout();
-                    }
                 }
-            });
+            }
+        });
 
-        }
     }
-    handleCreateLayout = async () => {
+    handleCreateLayout = async (callback) => {
+        this.setState({ submitting: true })
         const { layout, name, roomSelected, enabled } = this.state;
         const { dispatch } = this.props;
         if (layout?.id) {
@@ -84,18 +96,20 @@ class AddLayout extends Component {
                 const { vertical, horizontal, cameraFov, areas } = layout;
                 const files = [];
                 const origin = await this.loadImageFromUrl(shadow);
+                if (!origin) throw {}
                 files.push(origin);
                 const transparent = await this.loadImageFromUrl(image);
+                if (!transparent) throw {}
                 files.push(transparent);
                 if (shadow_matt) {
                     const matt = await this.loadImageFromUrl(shadow_matt);
-                    files.push(matt);
+                    if (!origin) files.push(origin);
+                    else files.push(matt);
                 } else {
                     files.push(origin);
                 }
                 const data = { name, roomId: roomSelected._id, files, vertical, horizontal, cameraFov, areas, enabled };
                 const formData = createFormData(data);
-                this.setState({ submitting: true })
                 dispatch({
                     type: types.ADMIN_ADD_LAYOUT,
                     payload: formData,
@@ -112,16 +126,20 @@ class AddLayout extends Component {
                             })
                         }
                         else {
-                            this.setState({
-                                field: 'name',
-                                message: 'Thêm không thành công.',
-                                submitting: false
-                            })
+                            if (typeof callback === 'function') callback()
+                            else {
+                                this.setState({
+                                    field: 'name',
+                                    message: 'Thêm không thành công.',
+                                    submitting: false
+                                })
+                            }
                         }
                     }
                 });
 
             } catch (e) {
+                console.log(e)
                 this.setState({
                     field: 'name',
                     message: 'Thêm không thành công.',
@@ -139,6 +157,14 @@ class AddLayout extends Component {
             request.responseType = "blob";
             request.onload = function () {
                 return resolve(request.response);
+            }
+            request.onerror = function () {
+                console.log('err')
+                return resolve(null);
+            }
+            request.onabort = function () {
+                console.log('abort')
+                return resolve(null);
             }
             request.open("GET", src);
             request.send();
