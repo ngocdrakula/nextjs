@@ -55,7 +55,7 @@ class AddLayout extends Component {
             url: url + "/get/room2d/" + id,
             src: url
         };
-        this.setState({ submitting: true })
+        this.setState({ submitting: true, process: 5 })
         dispatch({
             type: types.ADMIN_CLONE_LAYOUT,
             payload: data,
@@ -86,7 +86,7 @@ class AddLayout extends Component {
 
     }
     handleCreateLayout = async (callback) => {
-        this.setState({ submitting: true })
+        this.setState({ submitting: true, progress: 10 })
         const { layout, name, roomSelected, enabled } = this.state;
         const { dispatch } = this.props;
         if (layout?.id) {
@@ -96,13 +96,18 @@ class AddLayout extends Component {
                 const { vertical, horizontal, cameraFov, areas } = layout;
                 const files = [];
                 const origin = await this.loadImageFromUrl(shadow);
+                this.setState({ progress: 30 })
+                await this.delay(2000);
                 if (!origin) throw {}
                 files.push(origin);
                 const transparent = await this.loadImageFromUrl(image);
+                this.setState({ progress: 60 })
+                await this.delay(2000);
                 if (!transparent) throw {}
                 files.push(transparent);
                 if (shadow_matt) {
                     const matt = await this.loadImageFromUrl(shadow_matt);
+                    this.setState({ progress: 90 })
                     if (!origin) files.push(origin);
                     else files.push(matt);
                 } else {
@@ -149,7 +154,9 @@ class AddLayout extends Component {
         }
 
     }
-
+    delay = async (timeout) => {
+        return new Promise(resolve => { setTimeout(() => { resolve(1) }, timeout); })
+    }
     loadImageFromUrl = async img => {
         const src = "/api/admin/getUrl?url=" + url + img;
         return new Promise(resolve => {
@@ -159,11 +166,9 @@ class AddLayout extends Component {
                 return resolve(request.response);
             }
             request.onerror = function () {
-                console.log('err')
                 return resolve(null);
             }
             request.onabort = function () {
-                console.log('abort')
                 return resolve(null);
             }
             request.open("GET", src);
@@ -212,7 +217,7 @@ class AddLayout extends Component {
     }
     render() {
         const { visible, rooms } = this.props;
-        const { enabled, name, originName, icon, id, disabled } = this.state;
+        const { enabled, name, originName, icon, id, disabled, progress } = this.state;
         const { roomSelected, roomDropdown, field, message, loading, submitting } = this.state;
         return (
             <div>
@@ -310,6 +315,15 @@ class AddLayout extends Component {
                                                         : ''}
                                             </div>
                                         </div>
+                                        {submitting && progress ?
+                                            <div className="row">
+                                                <div className="col">
+                                                    <div className="progress" style={{ marginBottom: 10 }}>
+                                                        <div className="progress-bar progress-bar-striped active" style={{ width: progress + "%" }}>{progress}%</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            : ''}
                                         <div className="row">
                                             <div className="col">
                                                 <div className="form-group custom-control custom-checkbox">
