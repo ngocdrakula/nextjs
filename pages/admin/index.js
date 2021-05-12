@@ -3,12 +3,12 @@ import { Navbar, Container, Nav, Dropdown, Button } from "react-bootstrap";
 import { connect } from 'react-redux';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import AdminHead from '../../components/admin/AdminHead';
-import Product from '../../components/admin/Product';
-import Size from '../../components/admin/Size';
-import Login from '../../components/admin/Login';
+import AdminHead from '../../components/Admin/AdminHead';
+import Product from '../../components/Admin/Product';
+import Size from '../../components/Admin/Size';
+import Login from '../../components/Admin/Login';
 import types from '../../redux/types';
-import Layout from '../../components/admin/Layout';
+import Layout from '../../components/Admin/Layout';
 
 const menu = [
     { name: 'Sản phẩm', icon: 'nc-icon nc-layers-3', component: <Product /> },

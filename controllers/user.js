@@ -18,11 +18,15 @@ function remove(userId) {
 function getlist(query) {
     return (userData.find(query).sort({ createdAt: -1 }));
 }
+function removeMany(query) {
+    return (userData.deleteMany(query));
+}
 export default {
     create,
     get,
     update,
     remove,
     find,
-    getlist
+    getlist,
+    removeMany
 }

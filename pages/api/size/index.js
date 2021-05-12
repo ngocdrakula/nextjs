@@ -33,7 +33,7 @@ const handler = async (req, res) => {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
-      if (!user || !user.mode) throw ({ ...user, path: 'token' });
+      if (!user?.mode) throw ({ ...user, path: 'token' });
       const { width, height } = req.body;
       if (!width || !height) throw ({ path: !width ? 'width' : 'height', required: true });
       if (!(width > 0) || !(height > 0)) throw ({ path: !(width > 0) ? 'width' : 'height' })
@@ -103,7 +103,7 @@ const handler = async (req, res) => {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
-      if (!user || !user.mode) throw ({ ...user, path: 'token' }); 
+      if (!user?.mode) throw ({ ...user, path: 'token' }); 
       const { _ids } = req.query;
       if (!_ids) throw ({ path: '_ids' }); 
       const query = {

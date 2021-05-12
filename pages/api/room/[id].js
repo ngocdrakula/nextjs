@@ -34,7 +34,7 @@ const handler = async (req, res) => {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
-      if (!user || !user.mode) throw ({ ...user, path: 'token' });
+      if (!user?.mode) throw ({ ...user, path: 'token' });
       const { name, enabled } = req.body;
       if (!name) throw ({ path: 'name' })
       const matchRoom = await roomController.find({ name });
@@ -95,7 +95,7 @@ const handler = async (req, res) => {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
-      if (!user || !user.mode) throw ({ ...user, path: 'token' });
+      if (!user?.mode) throw ({ ...user, path: 'token' });
       const currentRoom = await roomController.get(req.query.id);
       if (!currentRoom) throw ({ path: '_id' });
       currentRoom.remove();

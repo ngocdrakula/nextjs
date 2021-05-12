@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { convertLayout, createFormData } from '../../../utils/helper';
+import { convertLayoutClient, createFormData } from '../../../utils/helper';
 import types from '../../../redux/types';
 import { admin_getLayoutFromUrl } from '../../../redux/actions/adminActions';
 
@@ -67,16 +67,84 @@ class AddLayout extends Component {
                         })
                     }
                     else {
-                        this.setState({
-                            field: 'name',
-                            message: 'Thêm không thành công.',
-                            submitting: false
-                        })
+                        this.handleCreateLayout();
                     }
                 }
-            })
+            });
+
         }
     }
+    handleCreateLayout = async () => {
+        const { layout, name, roomSelected, enabled } = this.state;
+        const { dispatch } = this.props;
+        if (layout?.id) {
+            const { image, shadow, shadow_matt, surfaces } = layout;
+            try {
+                const layout = convertLayoutClient(JSON.parse(surfaces));
+                const { vertical, horizontal, cameraFov, areas } = layout;
+                const files = [];
+                const origin = await this.loadImageFromUrl(shadow);
+                files.push(origin);
+                const transparent = await this.loadImageFromUrl(image);
+                files.push(transparent);
+                if (shadow_matt) {
+                    const matt = await this.loadImageFromUrl(shadow_matt);
+                    files.push(matt);
+                } else {
+                    files.push(origin);
+                }
+                const data = { name, roomId: roomSelected._id, files, vertical, horizontal, cameraFov, areas, enabled };
+                const formData = createFormData(data);
+                this.setState({ submitting: true })
+                dispatch({
+                    type: types.ADMIN_ADD_LAYOUT,
+                    payload: formData,
+                    callback: res => {
+                        if (res?.data?.success) {
+                            this.handleClose();
+                            this.props.onAdded();
+                        }
+                        else if (res?.data?.exist) {
+                            this.setState({
+                                field: 'name',
+                                message: res.data.message,
+                                submitting: false
+                            })
+                        }
+                        else {
+                            this.setState({
+                                field: 'name',
+                                message: 'Thêm không thành công.',
+                                submitting: false
+                            })
+                        }
+                    }
+                });
+
+            } catch (e) {
+                this.setState({
+                    field: 'name',
+                    message: 'Thêm không thành công.',
+                    submitting: false
+                })
+            }
+        }
+
+    }
+
+    loadImageFromUrl = async img => {
+        const src = "/api/admin/getUrl?url=" + url + img;
+        return new Promise(resolve => {
+            var request = new XMLHttpRequest();
+            request.responseType = "blob";
+            request.onload = function () {
+                return resolve(request.response);
+            }
+            request.open("GET", src);
+            request.send();
+        })
+    }
+
     handleChange = e => this.setState({ [e.target.name]: e.target.value, field: null, message: null });
     handleCheckbox = e => this.setState({ [e.target.name]: e.target.checked });
     handleLoadUrl = () => {
@@ -91,7 +159,8 @@ class AddLayout extends Component {
                     name: this.state.name || name,
                     originName: name,
                     disabled: false,
-                    loading: false
+                    loading: false,
+                    layout: res.data
                 })
             }
             else {

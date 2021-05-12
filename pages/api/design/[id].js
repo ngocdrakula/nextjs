@@ -1,60 +1,66 @@
 import runMidldleware from '../../../middleware/mongodb';
-import frontController from '../../../controllers/front';
+import designController from '../../../controllers/design';
 import lang, { langConcat } from '../../../lang.config';
+import uploader, { cleanFiles } from '../../../middleware/multer';
 import jwt from '../../../middleware/jwt';
 
 const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
       const { id } = req.query;
-      const currentFront = await frontController.get(id);
-      if (!currentFront) throw ({ path: '_id' });
+      const currentDesign = await designController.get(id).populate('layout');
+      if (!currentDesign) throw ({ path: '_id' })
       return res.status(201).send({
         success: true,
-        data: currentFront,
+        data: currentDesign,
       });
     } catch (e) {
-      if (e.path == '_id')
+      if (e.path == "_id") {
         return res.status(400).send({
           success: false,
           exist: false,
-          message: "Bề mặt không tồn tại hoặc đã bị xóa",
-          messages: langConcat(lang?.resources?.front, lang?.message?.error?.validation?.not_exist),
+          message: "Thiết kế không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.design, lang?.message?.error?.validation?.not_exist),
         });
+      }
       return res.status(500).send({
         success: false,
-        message: error.message,
+        message: e.message,
         messages: lang?.message?.error?.server,
         error: e,
       });
     }
-  } else if (req.method == 'PUT') {
+  } else if (req.method == 'POST') {
     try {
+      const contentType = req.headers['content-type'];
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' });
+      if (!contentType || contentType.indexOf('multipart/form-data') == -1)
+        throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
-      if (!user?.mode) throw ({ ...user, path: 'token' });
-      const { name, type, enabled } = req.body;
+      if (!user?._id) throw ({ ...user, path: 'token' });
+      const { body: { areas }, files, err } = await uploader(req);
+      if (err) throw ({ path: 'files' });
       try {
-        if (name) {
-          const matchFront = await frontController.find({ name });
-          if (matchFront) throw ({ path: 'name', matchFront });
+        const currentDesign = await designController.get(req.query.id);
+        if (!currentDesign) throw ({ path: '_id', files });
+        if (files.length) {
+          await cleanFiles([currentDesign.image]);
+          currentDesign.image = files[0];
         }
-        const params = {};
-        if (name) params.name = name;
-        if (enabled != undefined) params.enabled = !!enabled;
-        if (type != undefined) params.type = Number(type) || 0;
-        const currentFront = await frontController.update(req.query.id, params);
+        const designUpdated = await (await currentDesign.save()).populate('layout').execPopulate();
         return res.status(200).send({
           success: true,
-          data: currentFront,
+          data: designUpdated,
           message: 'Cập nhật thành công',
           messages: lang?.message?.success?.updated
         });
       } catch (error) {
+        if (error.path == "_id") throw ({ path: 'design', files });
         throw error
       }
     } catch (e) {
+      if (e.files) await cleanFiles(e.files);
       if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({
@@ -71,21 +77,31 @@ const handler = async (req, res) => {
           messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path == 'name') {
+      if (e.path == 'content-type') {
         return res.status(400).send({
           success: false,
-          exist: true,
-          current: e.matchFront,
-          message: "Tên bề mặt đã tồn tại",
-          messages: langConcat(lang?.resources?.frontName, lang?.message?.error?.validation?.exist),
+          headerContentType: false,
+          contentType: e.contentType,
+          aceptedOnly: 'multipart/form-data',
+          message: 'Header không được chấp nhận',
+          messages: lang?.message?.error?.header_not_acepted
         });
       }
-      if (e.path == '_id') {
+      if (e.path == 'files') {
+        return res.status(400).send({
+          success: false,
+          upload: false,
+          field: 'files',
+          message: 'Upload không thành công',
+          messages: lang?.message?.error?.upload_failed,
+        });
+      }
+      if (e.path == 'design') {
         return res.status(400).send({
           success: false,
           exist: false,
-          message: "Bề mặt không tồn tại hoặc đã bị xóa",
-          messages: langConcat(lang?.resources?.front, lang?.message?.error?.validation?.not_exist),
+          message: "Thiết kế không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.design, lang?.message?.error?.validation?.not_exist),
         });
       }
       return res.status(500).send({
@@ -101,9 +117,10 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
       if (!user?.mode) throw ({ ...user, path: 'token' });
-      const currentFront = await frontController.get(req.query.id);
-      if (!currentFront) throw ({ path: '_id' });
-      currentFront.remove();
+      const currentDesign = await designController.get(req.query.id);
+      if (!currentDesign) throw ({ path: '_id' });
+      cleanFiles([currentDesign.image])
+      currentDesign.remove();
       return res.status(200).send({
         success: true,
         data: null,
@@ -127,13 +144,14 @@ const handler = async (req, res) => {
           messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path == '_id')
+      if (e.path == '_id') {
         return res.status(400).send({
           success: false,
           exist: false,
-          message: "Bề mặt không tồn tại hoặc đã bị xóa",
-          messages: langConcat(lang?.resources?.front, lang?.message?.error?.validation?.not_exist),
+          message: "Thiết kế không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.design, lang?.message?.error?.validation?.not_exist),
         });
+      }
       return res.status(500).send({
         success: false,
         message: 'Máy chủ không phản hồi',
@@ -141,6 +159,12 @@ const handler = async (req, res) => {
         error: e,
       });
     }
+  } else if (req.method == 'PUT') {
+    res.status(422).send({
+      success: false,
+      message: 'Phương thức không được hỗ trợ, vui lòng đổi sang phương thức POST',
+      messages: lang?.message?.error?.method
+    });
   } else {
     res.status(422).send({
       success: false,
@@ -148,6 +172,12 @@ const handler = async (req, res) => {
       messages: lang?.message?.error?.method
     });
   }
+};
+
+export const config = {
+  api: {
+    bodyParser: false, // Disallow body parsing, consume as stream
+  },
 };
 
 export default runMidldleware(handler);
