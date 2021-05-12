@@ -8,7 +8,7 @@ import PopupConfirm from '../PopupConfirm';
 import AddLayout from './AddLayout';
 import UpdateLayout from './UpdateLayout';
 
-const pageSize = 20;
+const pageSize = 10;
 
 class Layout extends Component {
     constructor(props) {
@@ -107,7 +107,7 @@ class Layout extends Component {
                     <div className="e-panel card">
                         <div className="card-body">
                             <div className="card-title" style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-                                <div style={{ display: 'flex', flex: 1 }}>
+                                <div style={{ display: 'flex', flex: 2 }}>
                                     <h6 className="mr-2">
                                         <span>Kiểu bố trí</span>
                                         <small className="px-1">({total} Kiểu bố trí)</small>

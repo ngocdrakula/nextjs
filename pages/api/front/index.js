@@ -10,7 +10,7 @@ const handler = async (req, res) => {
       const query = {};
       if (enabled) query.enabled = (enabled == "true");
       const skip = Number(page * pageSize) || 0;
-      const limit = Number((page + 1) * pageSize) || 0;
+      const limit = Number(pageSize) || 0;
       const total = await frontController.getlist(query).countDocuments();
       const list = await frontController.getlist(query).skip(skip).limit(limit);
       return res.status(200).send({
