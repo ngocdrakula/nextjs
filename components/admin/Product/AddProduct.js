@@ -191,7 +191,7 @@ class AddProduct extends Component {
                                                     <div className="w-100 h-100 image-upload-change">
                                                         <div
                                                             className="w-100 h-100 d-flex justify-content-center align-items-center image-upload-over"
-                                                            style={{ backgroundImage: `url(${imageLocal})` }} >
+                                                            style={{ backgroundImage: imageLocal ? `url(${imageLocal})` : '#FFF' }} >
                                                         </div>
                                                         <div className={"w-100 h-100 d-flex justify-content-center align-items-center input-upload-over" + (field === 'files' ? " active" : "")}>
                                                             <input type="file" name="files" id="add-files" className="file-hidden" onChange={this.handleChooseFiles} />

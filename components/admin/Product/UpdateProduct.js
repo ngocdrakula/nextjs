@@ -178,7 +178,7 @@ class UpdateProduct extends Component {
                                                     <div className="w-100 h-100 image-upload-change">
                                                         <div
                                                             className="w-100 h-100 d-flex justify-content-center align-items-center image-upload-over"
-                                                            style={{ backgroundImage: `url(${imageLocal || product?.size && "/api/images/" + getThumbnail(product)})` }} >
+                                                            style={{ backgroundImage: imageLocal || product?.size ? `url(${imageLocal || "/api/images/" + getThumbnail(product)})` : '#FFF' }} >
                                                         </div>
                                                         <div className="w-100 h-100 d-flex justify-content-center align-items-center input-upload-over">
                                                             <input type="file" name="files" id="files" className="file-hidden" onChange={this.handleChooseFiles} />
