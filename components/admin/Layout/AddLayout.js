@@ -144,8 +144,8 @@ class AddLayout extends Component {
                 });
 
             } catch (e) {
-                console.log(e)
-                this.setState({
+                if (typeof callback === 'function') callback()
+                else this.setState({
                     field: 'name',
                     message: 'Thêm không thành công.',
                     submitting: false
