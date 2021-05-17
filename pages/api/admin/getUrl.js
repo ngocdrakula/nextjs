@@ -6,7 +6,7 @@ const handler = async (req, res) => {
     const { url } = req.query;
     try {
         const options = {
-            timeout: 10000
+            timeout: 30000
         };
         if (!(url + "").search("https"))
             return new Promise(resolve => {
@@ -23,7 +23,7 @@ const handler = async (req, res) => {
                 request.on('error', function (e) {
                     return res.status(404).send();
                 });
-                request.setTimeout(10000, function () {
+                request.setTimeout(30000, function () {
                     return res.status(404).send();
                 });
             })
@@ -42,7 +42,7 @@ const handler = async (req, res) => {
                 request.on('error', function (e) {
                     return res.status(404).send();
                 });
-                request.setTimeout(10000, function () {
+                request.setTimeout(30000, function () {
                     return res.status(404).send();
                 });
             })

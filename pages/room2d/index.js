@@ -28,7 +28,7 @@ class Index extends Component {
                 <Head />
                 <Progress />
                 <CanvasContainer />
-                <Logo />
+                {/* <Logo /> */}
                 <TopPanel />
                 <BottomPanel />
             </div>

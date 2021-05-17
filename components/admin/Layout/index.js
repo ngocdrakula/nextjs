@@ -8,13 +8,14 @@ import PopupConfirm from '../PopupConfirm';
 import AddLayout from './AddLayout';
 import UpdateLayout from './UpdateLayout';
 
-const pageSize = 20;
+const pageSize = 10;
 
 class Layout extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selecteds: []
+            selecteds: [],
+            nextPage: 1
         };
     }
     componentDidMount() {
@@ -36,7 +37,7 @@ class Layout extends Component {
         dispatch({
             type: types.ADMIN_GET_LAYOUTS,
             payload: { page, pageSize },
-            callback: () => this.setState({ selecteds: [] })
+            callback: () => this.setState({ selecteds: [], nextPage: page + 1 })
         });
     }
     handleSelectAll = () => {
@@ -87,31 +88,40 @@ class Layout extends Component {
             }
         });
     }
+    handleSubmit = e => {
+        e.preventDefault();
+        const { nextPage } = this.state;
+        const { total } = this.props;
+        const totalPage = Math.ceil(total / pageSize) || 1;
+        const next = Number(nextPage);
+        if (next >= 1 && next < totalPage) this.gotoPage(next - 1)
+    }
     render() {
         const { data, page, total } = this.props;
-        const { selecteds, layoutOnEdit, addVisible } = this.state;
+        const { selecteds, layoutOnEdit, addVisible, nextPage } = this.state;
         const totalPage = Math.ceil(total / pageSize) || 1;
+        const newTotalPage = Math.ceil((total + 1) / pageSize) || 1;
         return (
             <div className="row flex-lg-nowrap">
                 <div className="col mb-3">
                     <div className="e-panel card">
                         <div className="card-body">
                             <div className="card-title" style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-                                <div style={{ display: 'flex', flex: 1 }}>
+                                <div style={{ display: 'flex', flex: 2 }}>
                                     <h6 className="mr-2">
                                         <span>Kiểu bố trí</span>
                                         <small className="px-1">({total} Kiểu bố trí)</small>
                                     </h6>
                                     <form
-                                        onSubmit={e => { e.preventDefault(); if (this.state.page >= 1) this.gotoPage(this.state.page - 1) }}
+                                        onSubmit={this.handleSubmit}
                                         style={{ marginBottom: '.5rem' }}
                                     >
                                         <span style={{ fontSize: 14, color: '#333333', fontWeight: 600, marginRight: 5 }} >Trang:</span>
                                         <input
                                             type="text"
-                                            defaultValue={page + 1}
+                                            value={nextPage}
                                             placeholder="Trang"
-                                            onChange={e => this.setState({ page: Number(e.target.value) || 1 })}
+                                            onChange={e => this.setState({ nextPage: e.target.value })}
                                             style={{
                                                 width: 40,
                                                 padding: '0px 10px',
@@ -292,7 +302,7 @@ class Layout extends Component {
                     </div>
                 </div>
                 <UpdateLayout layout={layoutOnEdit} onHide={() => this.setState({ layoutOnEdit: null })} />
-                <AddLayout visible={addVisible} onHide={() => this.setState({ addVisible: false })} onAdded={() => this.gotoPage(0)} />
+                <AddLayout visible={addVisible} onHide={() => this.setState({ addVisible: false })} onAdded={() => this.gotoPage(newTotalPage - 1)} />
             </div >
         )
     }

@@ -210,13 +210,11 @@ function* admin_getLayouts({ payload, callback }) {
 function* admin_addLayout({ payload, callback }) {
     try {
         const res = yield call(requests.admin_addLayoutRequest, payload);
-        console.log(res?.data)
         if (res?.data?.success) { 
             yield put({ type: types.ADMIN_ADD_LAYOUT_SUCCESS, payload: res.data });
             if (typeof callback === 'function') callback(res);
         }
     } catch (e) {
-        console.log('err',e)
         yield put({ type: types.ADMIN_ADD_LAYOUT_FAILED, payload: e.response });
         if (typeof callback === 'function') callback(e.response);
     }

@@ -28,7 +28,7 @@ class Room2d extends Component {
                 <Head />
                 <Progress />
                 <CanvasContainer />
-                <Logo />
+                {/* <Logo /> */}
                 <TopPanel />
                 <BottomPanel />
             </div>

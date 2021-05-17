@@ -12,7 +12,7 @@ const handler = async (req, res) => {
       const query = {};
       if (enabled) query.enabled = (enabled == "true");
       const skip = Number(page * pageSize) || 0;
-      const limit = Number((page + 1) * pageSize) || 0;
+      const limit = Number(pageSize) || 0;
       const total = await layoutController.getlist(query).countDocuments();
       const list = await layoutController.getlist(query).skip(skip).limit(limit).populate('room');
       return res.status(200).send({
@@ -180,7 +180,7 @@ const handler = async (req, res) => {
         message: 'Xóa thành công',
         messages: lang?.message?.success?.deleted
       });
-    } catch (e) { 
+    } catch (e) {
       if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({

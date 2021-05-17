@@ -15,6 +15,7 @@ class UpdateLayout extends Component {
             document.documentElement.style = { paddingRight: 16 };
             this.setState({
                 ...layout,
+                roomSelected: layout.room
             });
         }
     }

@@ -19,16 +19,7 @@ class AddLayout extends Component {
         if (visible && !prevProps.visible) {
             document.documentElement.classList = "modal-open";
             document.documentElement.style = { paddingRight: 16 };
-            this.setState({
-                name: '',
-                id: '',
-                icon: '',
-                message: '',
-                enabled: true,
-                roomSelected: null,
-                loading: false,
-                submitting: false
-            });
+            this.handleReload(null);
         }
     }
     handleClose = () => {
@@ -61,7 +52,7 @@ class AddLayout extends Component {
             payload: data,
             callback: res => {
                 if (res?.data?.success) {
-                    this.handleClose();
+                    this.handleReload(true);
                     this.props.onAdded();
                 }
                 else if (res?.data?.exist) {
@@ -94,25 +85,16 @@ class AddLayout extends Component {
             try {
                 const layout = convertLayoutClient(JSON.parse(surfaces));
                 const { vertical, horizontal, cameraFov, areas } = layout;
-                const files = [];
-                const origin = await this.loadImageFromUrl(shadow);
+                const origin = shadow ? await this.loadImageFromUrl(shadow) : null;
                 this.setState({ progress: 30 })
                 await this.delay(2000);
-                if (!origin) throw {}
-                files.push(origin);
                 const transparent = await this.loadImageFromUrl(image);
                 this.setState({ progress: 60 })
                 await this.delay(2000);
-                if (!transparent) throw {}
-                files.push(transparent);
-                if (shadow_matt) {
-                    const matt = await this.loadImageFromUrl(shadow_matt);
-                    this.setState({ progress: 90 })
-                    if (!origin) files.push(origin);
-                    else files.push(matt);
-                } else {
-                    files.push(origin);
-                }
+                const matt = shadow_matt ? await this.loadImageFromUrl(shadow_matt) : null;
+                this.setState({ progress: 90 });
+                if (!origin && !matt) throw {}
+                const files = [origin || matt, transparent, matt || origin];
                 const data = { name, roomId: roomSelected._id, files, vertical, horizontal, cameraFov, areas, enabled };
                 const formData = createFormData(data);
                 dispatch({
@@ -120,7 +102,7 @@ class AddLayout extends Component {
                     payload: formData,
                     callback: res => {
                         if (res?.data?.success) {
-                            this.handleClose();
+                            this.handleReload(true)
                             this.props.onAdded();
                         }
                         else if (res?.data?.exist) {
@@ -144,8 +126,8 @@ class AddLayout extends Component {
                 });
 
             } catch (e) {
-                console.log(e)
-                this.setState({
+                if (typeof callback === 'function') callback()
+                else this.setState({
                     field: 'name',
                     message: 'Thêm không thành công.',
                     submitting: false
@@ -155,7 +137,6 @@ class AddLayout extends Component {
 
     }
     delay = async (timeout) => {
-        return new Promise(resolve => { setTimeout(() => { resolve(1) }, timeout); })
     }
     loadImageFromUrl = async img => {
         const src = "/api/admin/getUrl?url=" + url + img;
@@ -175,23 +156,62 @@ class AddLayout extends Component {
             request.send();
         })
     }
+    loadImageByCanvas = async src => {
+        return new Promise(resolve => {
+            const image = new Image;
+            const c = document.createElement("canvas");
+            const ctx = c.getContext("2d");
 
-    handleChange = e => this.setState({ [e.target.name]: e.target.value, field: null, message: null });
-    handleCheckbox = e => this.setState({ [e.target.name]: e.target.checked });
+            image.onload = function () {
+                c.width = this.naturalWidth;     // update canvas size to match image
+                c.height = this.naturalHeight;
+                ctx.drawImage(this, 0, 0);       // draw in image
+                c.toBlob(function (blob) {        // get content as JPEG blob
+                    return resolve(blob);
+                }, "image/jpeg", 0.75);
+            };
+            image.crossOrigin = "";              // if from different origin
+            image.src = src;
+        })
+    }
+    handleReload = (success) => {
+        this.setState({
+            name: '',
+            id: success ? Number(this.state.id || 0) + 1 : '',
+            icon: '',
+            message: '',
+            enabled: true,
+            roomSelected: success ? this.state.roomSelected : null,
+            loading: false,
+            submitting: false,
+            changed: false,
+            success
+        });
+    }
+    handleChange = e => {
+        this.setState({
+            [e.target.name]: e.target.value,
+            field: null,
+            message: null,
+            changed: e.target.name === 'name',
+            success: false
+        });
+    }
+    handleCheckbox = e => this.setState({ [e.target.name]: e.target.checked, success: false });
     handleLoadUrl = () => {
         const { id } = this.state;
         const layoutUrl = url + "/get/room2d/" + id;
-        this.setState({ loading: true })
+        this.setState({ loading: true, success: false, message: '' })
         admin_getLayoutFromUrl(layoutUrl).then(res => {
             if (res?.data?.id) {
                 const { name, icon } = res.data;
                 this.setState({
                     icon,
-                    name: this.state.name || name,
+                    name: this.state.changed ? this.state.name : name,
                     originName: name,
                     disabled: false,
                     loading: false,
-                    layout: res.data
+                    layout: res.data,
                 })
             }
             else {
@@ -205,6 +225,7 @@ class AddLayout extends Component {
                 })
             }
         }).catch(e => {
+            console.log(e)
             this.setState({
                 message: 'Đường dẫn sai hoặc không đúng định dạng',
                 field: 'url',
@@ -218,7 +239,7 @@ class AddLayout extends Component {
     render() {
         const { visible, rooms } = this.props;
         const { enabled, name, originName, icon, id, disabled, progress } = this.state;
-        const { roomSelected, roomDropdown, field, message, loading, submitting } = this.state;
+        const { roomSelected, roomDropdown, field, message, loading, submitting, success } = this.state;
         return (
             <div>
                 <div
@@ -232,7 +253,8 @@ class AddLayout extends Component {
                     <div className="modal-dialog modal-lg" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title">Thêm kiểu bố trí</h5>
+                                <h5 className="modal-title">Thêm kiểu bố trí </h5>
+                                {success ? <div style={{ fontSize: 16, color: 'green', marginLeft: 5, lineHeight: '30px' }}> (Thêm thành công)</div> : ''}
                                 <button type="button" className="close" onClick={this.handleClose}>
                                     <span aria-hidden="true">×</span>
                                 </button>

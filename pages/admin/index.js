@@ -61,7 +61,7 @@ class Admin extends Component {
                                 <div className="logo d-flex align-items-center justify-content-center" style={{ background: '#dddddd' }}>
                                     <a href="/" className="logo-mini mx-1">
                                         <div className="logo-img">
-                                            <img src={"/icons/logo.png"} style={{ maxWidth: '90%', height: 'auto' }} />
+                                            {/* <img src={"/icons/logo.png"} style={{ maxWidth: '90%', height: 'auto' }} /> */}
                                         </div>
                                     </a>
                                 </div>

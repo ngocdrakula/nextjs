@@ -144,7 +144,12 @@ class ThreeJS extends Component {
                         for (let y = 0; y < HEIGHT; y++) {
                             let i = (x + y * WIDTH) * 4;
                             const inner = this.pointInPolygon({ x: x * this.rate, y: y * this.rate }, hoverArea);
-                            if (inner) mattImage.data[i + 3] = 127;
+                            if (inner) {
+                                mattImage.data[i + 0] = Math.floor(mattImage.data[i + 0] / 255 * 127);
+                                mattImage.data[i + 1] = Math.floor(mattImage.data[i + 1] / 255 * 127);
+                                mattImage.data[i + 2] = Math.floor(mattImage.data[i + 2] / 255 * 127);
+                                mattImage.data[i + 3] = 127;
+                            }
                             else mattImage.data[i + 3] = 0;
                         }
                     };
@@ -160,7 +165,12 @@ class ThreeJS extends Component {
                         for (let y = 0; y < HEIGHT; y++) {
                             let i = (x + y * WIDTH) * 4;
                             const inner = this.pointInPolygon({ x: x * this.rate, y: y * this.rate }, hoverArea);
-                            if (inner) smoothImage.data[i + 3] = 76;
+                            if (inner) {
+                                smoothImage.data[i + 0] = Math.floor(smoothImage.data[i + 0] / 255 * 76);
+                                smoothImage.data[i + 1] = Math.floor(smoothImage.data[i + 1] / 255 * 76);
+                                smoothImage.data[i + 2] = Math.floor(smoothImage.data[i + 2] / 255 * 76);
+                                smoothImage.data[i + 3] = 76;
+                            }
                             else smoothImage.data[i + 3] = 0;
                         }
                     };

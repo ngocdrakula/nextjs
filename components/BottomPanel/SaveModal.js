@@ -43,13 +43,14 @@ export default class SaveModal extends Component {
             }));
         if (canvas) {
             toDataURL('/icons/logo.png').then(logo => {
-                content.push({
-                    image: logo,
-                    alignment: 'center',
-                    width: pageSize.width * .2,
-                    margin: [0, 0, 0, 10],
-                    pageBreak: null
-                });
+                // content.push({
+                //     image: logo,
+                //     alignment: 'center',
+                //     width: pageSize.width * .2,
+                //     margin: [0, 0, 0, 10],
+                //     pageBreak: null
+                // });
+                ////SAVE WIDTH LOGO
                 const roomImage = canvas.toDataURL('image/jpg');
 
                 content.push({
