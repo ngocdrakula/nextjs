@@ -50,7 +50,7 @@ export default class SaveModal extends Component {
                 //     margin: [0, 0, 0, 10],
                 //     pageBreak: null
                 // });
-                //SAVE WIDTH LOGO
+                ////SAVE WIDTH LOGO
                 const roomImage = canvas.toDataURL('image/jpg');
 
                 content.push({
