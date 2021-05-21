@@ -7,15 +7,21 @@ import Page from '../Page';
 import PopupConfirm from '../PopupConfirm';
 import AddLayout from './AddLayout';
 import UpdateLayout from './UpdateLayout';
+import Select from '../Form/Select';
+import Checkbox from '../Form/Checkbox';
 
-const pageSize = 10;
+const defaultPageSize = 20;
+const pageSizes = [5, 10, 20, 50, 100];
+const pageSizeSelects = pageSizes.map(p => ({ value: p, label: `${p}` }));
 
 class Layout extends Component {
     constructor(props) {
         super(props);
         this.state = {
             selecteds: [],
-            nextPage: 1
+            nextPage: 1,
+            pageSize: defaultPageSize,
+            loading: true
         };
     }
     componentDidMount() {
@@ -34,10 +40,19 @@ class Layout extends Component {
     }
     gotoPage = (page) => {
         const { dispatch } = this.props;
+        const { name, roomId, filterEnable, enabled, pageSize } = this.state;
+        const request = {
+            page,
+            pageSize: pageSize,
+            name: name || undefined,
+            roomId: roomId || undefined,
+            enabled: filterEnable ? enabled : undefined,
+        };
+        this.setState({ loading: true })
         dispatch({
             type: types.ADMIN_GET_LAYOUTS,
-            payload: { page, pageSize },
-            callback: () => this.setState({ selecteds: [], nextPage: page + 1 })
+            payload: request,
+            callback: () => this.setState({ selecteds: [], nextPage: page + 1, loading: false })
         });
     }
     handleSelectAll = () => {
@@ -96,59 +111,80 @@ class Layout extends Component {
         const next = Number(nextPage);
         if (next >= 1 && next < totalPage) this.gotoPage(next - 1)
     }
+    handleChange = e => this.setState({ [e.target.name]: e.target.value });
+    handleSearch = (e) => {
+        e.preventDefault();
+        this.gotoPage(0)
+    }
+    handleFilterRoom = roomId => this.setState({ roomId });
+    handleFilterEnabled = enabled => this.setState({ enabled });
+    handleSelectPageSize = pageSize => this.setState({ pageSize }, () => this.gotoPage(0));
+
     render() {
-        const { data, page, total } = this.props;
-        const { selecteds, layoutOnEdit, addVisible, nextPage } = this.state;
+        const { data, page, total, rooms } = this.props;
+        const { selecteds, layoutOnEdit, addVisible, loading, pageSize, filterEnable, enabled } = this.state;
         const totalPage = Math.ceil(total / pageSize) || 1;
         const newTotalPage = Math.ceil((total + 1) / pageSize) || 1;
+        const roomSelects = [{ value: null, label: 'Tất cả' }, ...rooms.filter(r => r.enabled).map(r => ({ value: r._id, label: r.name }))];
         return (
             <div className="row flex-lg-nowrap">
                 <div className="col mb-3">
                     <div className="e-panel card">
                         <div className="card-body">
-                            <div className="card-title" style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+                            <div className="card-title" style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', marginBottom: 15 }}>
                                 <div style={{ display: 'flex', flex: 2 }}>
-                                    <h6 className="mr-2">
+                                    <h4 className="mr-2">
                                         <span>Kiểu bố trí</span>
-                                        <small className="px-1">({total} Kiểu bố trí)</small>
-                                    </h6>
+                                        <small className="px-1" style={{ fontSize: '1rem' }}>({total} kiểu bố trí)</small>
+                                    </h4>
                                     <form
-                                        onSubmit={this.handleSubmit}
-                                        style={{ marginBottom: '.5rem' }}
+                                        onSubmit={e => { e.preventDefault(); if (this.state.page >= 1) this.gotoPage(this.state.page - 1) }}
+                                        style={{ marginBottom: '.5rem', display: 'flex', alignItems: 'flex-end' }}
                                     >
                                         <span style={{ fontSize: 14, color: '#333333', fontWeight: 600, marginRight: 5 }} >Trang:</span>
-                                        <input
-                                            type="text"
-                                            value={nextPage}
-                                            placeholder="Trang"
-                                            onChange={e => this.setState({ nextPage: e.target.value })}
-                                            style={{
-                                                width: 40,
-                                                padding: '0px 10px',
-                                                fontSize: 14,
-                                                borderRadius: 5,
-                                                border: '1px solid #666',
-                                                textAlign: 'right',
-                                            }}
-                                        />
-                                        <span style={{ fontSize: 14, color: '#333333', fontWeight: 600 }} >  /  {totalPage} </span>
-                                        <input
-                                            className="page-submit"
-                                            type="submit"
-                                            value="Đi"
-                                            style={{
-                                                width: 'auto',
-                                                padding: '0px 10px',
-                                                fontSize: 14,
-                                                textTransform: 'none',
-                                                borderRadius: 5,
-                                                border: '1px solid #007bff',
-                                                background: '#007bff',
-                                                color: '#FFF',
-                                                marginLeft: 5,
-                                            }}
-                                        />
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <input
+                                                type="text"
+                                                defaultValue={page + 1}
+                                                placeholder="Trang"
+                                                onChange={e => this.setState({ page: Number(e.target.value) || 1 })}
+                                                style={{
+                                                    width: 40,
+                                                    padding: '0px 10px',
+                                                    fontSize: 14,
+                                                    borderRadius: 5,
+                                                    border: '1px solid #666',
+                                                    textAlign: 'right',
+                                                }}
+                                            />
+                                            <span style={{ fontSize: 14, color: '#333333', fontWeight: 600, paddingLeft: 3 }}>/ {totalPage} </span>
+                                            <input
+                                                className="page-submit"
+                                                type="submit"
+                                                value="Đi"
+                                                style={{
+                                                    width: 'auto',
+                                                    padding: '0px 10px',
+                                                    fontSize: 14,
+                                                    textTransform: 'none',
+                                                    borderRadius: 5,
+                                                    border: '1px solid #007bff',
+                                                    background: '#007bff',
+                                                    color: '#FFF',
+                                                    marginLeft: 5,
+                                                }}
+                                            />
+                                        </div>
+
                                     </form>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginLeft: 15 }}>
+                                        <span style={{ lineHeight: 2, fontWeight: '400', marginRight: 5 }}>Phân trang:</span>
+                                        <Select
+                                            data={pageSizeSelects}
+                                            onChange={this.handleSelectPageSize}
+                                            hover={`${pageSize}`}
+                                        />
+                                    </div>
                                 </div>
                                 <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
                                     {selecteds.length ?
@@ -188,6 +224,56 @@ class Layout extends Component {
                                     >Thêm kiểu bố trí</button>
                                 </div>
                             </div>
+
+                            <form onSubmit={this.handleSearch}>
+                                <div className="row">
+                                    <div className="col-3">
+                                        <input
+                                            className="form-control"
+                                            type="text"
+                                            name="name"
+                                            placeholder="Tìm kiếm theo tên"
+                                            onChange={this.handleChange}
+                                        />
+                                    </div>
+                                    <div className="col-3">
+                                        <Select
+                                            data={roomSelects}
+                                            onChange={this.handleFilterRoom}
+                                            hover="Tìm theo khu vực"
+                                        />
+                                    </div>
+                                    <div className="col-3">
+                                        <div className="row">
+                                            <div className="col-8">
+                                                <Checkbox
+                                                    onChange={() => this.setState({ filterEnable: !filterEnable })}
+                                                    checked={filterEnable ? "checked" : ""}
+                                                />
+                                                <span style={{ lineHeight: 2, cursor: 'pointer' }} onClick={() => this.setState({ filterEnable: !filterEnable })}>Trạng thái{filterEnable ? ":" : ""}</span>
+                                            </div>
+                                            <div className="col-4 d-flex justify-content-center align-items-center">
+                                                {filterEnable ?
+                                                    <Switch
+                                                        id="product-filterEnable"
+                                                        onChange={this.handleFilterEnabled}
+                                                        checked={enabled || false}
+                                                        width={40}
+                                                        height={20}
+                                                        checkedIcon={null}
+                                                        uncheckedIcon={null}
+                                                    />
+                                                    : null}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-3 d-flex justify-content-end">
+                                        <div>
+                                            <button className="btn btn-primary" type="submit">Tìm kiếm</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                             <div className="e-table">
                                 <div className="table-responsive table-lg mt-3">
                                     <table className="table table-bordered">
@@ -295,6 +381,11 @@ class Layout extends Component {
                                             })}
                                         </tbody>
                                     </table>
+                                    {!data.length && !loading ?
+                                        <div style={{ width: '100%', textAlign: 'center', color: '#999', paddingTop: 10 }}>
+                                            <h5>Danh sách kiểu bố trí trống</h5>
+                                        </div>
+                                        : ""}
                                 </div>
                                 <Page {...{ page, totalPage, gotoPage: this.gotoPage }} />
                             </div>
@@ -309,4 +400,4 @@ class Layout extends Component {
 }
 
 
-export default connect(({ admin: { layout: { data, page, total } } }) => ({ data, page, total }))(Layout)
+export default connect(({ admin: { layout: { data, page, total }, room } }) => ({ data, page, total, rooms: room.data }))(Layout)

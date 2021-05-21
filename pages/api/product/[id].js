@@ -2,6 +2,7 @@ import runMidldleware from '../../../middleware/mongodb';
 import productController from '../../../controllers/product';
 import sizeController from '../../../controllers/size';
 import frontController from '../../../controllers/front';
+import roomController from '../../../controllers/room';
 import lang, { langConcat } from '../../../lang.config';
 import uploader, { cleanFiles } from '../../../middleware/multer';
 import jwt from '../../../middleware/jwt'
@@ -41,7 +42,7 @@ const handler = async (req, res) => {
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
       if (!user?.mode) throw ({ ...user, path: 'token' });
-      const { body: { name, code, sizeId, frontId, outSide, enabled }, files, err } = await uploader(req);
+      const { body: { name, sizeId, frontId, roomId, type, enabled }, files, err } = await uploader(req);
       if (err) throw ({ path: 'files' });
       try {
         const currentProduct = await productController.get(req.query.id);
@@ -66,19 +67,23 @@ const handler = async (req, res) => {
             throw ({ err, files })
           }
         }
-        if (name || code) {
-          const matchProduct = await productController.find({ $or: [{ name }, { code }] });
-          if (matchProduct) {
-            if (matchProduct.name == name) throw ({ path: 'name', files });
-            throw ({ path: 'code', files });
-          }
-          else {
-            if (name) currentProduct.name = name;
-            else currentProduct.code = code;
+        if (roomId) {
+          try {
+            const room = await roomController.get(roomId);
+            if (!room) throw ({ path: '_id' })
+            currentProduct.room = roomId;
+          } catch (err) {
+            if (err.path == '_id') throw ({ path: 'room', files });
+            throw ({ err, files })
           }
         }
-        if (outSide != undefined) {
-          currentProduct.outSide = (outSide == "true")
+        if (name) {
+          const matchProduct = await productController.find({ name });
+          if (matchProduct) throw ({ path: 'name', files });
+          else currentProduct.name = name;
+        }
+        if (type != undefined) {
+          currentProduct.type = type;
         }
         if (enabled != undefined) {
           currentProduct.enabled = (enabled == "true");
@@ -153,6 +158,15 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.front, lang?.message?.error?.validation?.not_exist),
         });
       }
+      if (e.path == 'room') {
+        return res.status(400).send({
+          success: false,
+          exist: false,
+          field: 'room',
+          message: "Khu vực không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.room, lang?.message?.error?.validation?.not_exist),
+        });
+      }
       if (e.path == 'product') {
         return res.status(400).send({
           success: false,
@@ -168,15 +182,6 @@ const handler = async (req, res) => {
           field: 'name',
           message: 'Tên sản phẩm đã tồn tại',
           messages: langConcat(lang?.resources?.productName, lang?.message?.error?.validation?.exist)
-        });
-      }
-      if (e.path == 'code') {
-        return res.status(400).send({
-          success: false,
-          exist: true,
-          field: 'code',
-          message: 'Mã sản phẩm đã tồn tại',
-          messages: langConcat(lang?.resources?.productCode, lang?.message?.error?.validation?.exist)
         });
       }
       return res.status(500).send({

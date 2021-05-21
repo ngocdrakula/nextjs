@@ -31,7 +31,7 @@ class AddLayout extends Component {
         e.preventDefault();
         const { name, roomSelected, enabled, id } = this.state;
         if (!name) this.setState({ field: 'name', message: 'Tên kiểu bố trí là bắt buộc' });
-        else if (!roomSelected) this.setState({ field: 'room', message: 'Loại bề mặt chưa được chọn' });
+        else if (!roomSelected) this.setState({ field: 'room', message: 'Không gian chưa được chọn' });
         else {
             this.handleCreateLayout(this.handleCloneLayout)
         }
@@ -225,7 +225,6 @@ class AddLayout extends Component {
                 })
             }
         }).catch(e => {
-            console.log(e)
             this.setState({
                 message: 'Đường dẫn sai hoặc không đúng định dạng',
                 field: 'url',

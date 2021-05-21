@@ -71,7 +71,7 @@ class UpdateSize extends Component {
                     <div className="modal-dialog modal-lg" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title">Sửa sản phẩm</h5>
+                                <h5 className="modal-title">Sửa kích thước</h5>
                                 <button type="button" className="close" onClick={this.handleClose}>
                                     <span aria-hidden="true">×</span>
                                 </button>
@@ -103,8 +103,8 @@ class UpdateSize extends Component {
                                         <div className="row">
                                             <div className="col">
                                                 <div className="form-group custom-control custom-checkbox">
-                                                    <input type="checkbox" className="custom-control-input" name="enabled" id={size?._id} checked={enabled ? "checked" : ""} onChange={this.handleCheckbox} />
-                                                    <label className="custom-control-label" htmlFor={size?._id}>Trạng thái</label>
+                                                    <input type="checkbox" className="custom-control-input" name="enabled" id="update-size-enabled" checked={enabled ? "checked" : ""} onChange={this.handleCheckbox} />
+                                                    <label className="custom-control-label" htmlFor="update-size-enabled">Trạng thái</label>
                                                 </div>
                                             </div>
                                             <div className="col d-flex justify-content-end align-items-end">

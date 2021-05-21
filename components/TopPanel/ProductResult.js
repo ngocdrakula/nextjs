@@ -10,13 +10,16 @@ class ProductResult extends Component {
     }
 
     render() {
-        const { products, sizes, fronts, locations, search } = this.props;
+        const { layout, areaIndex, products, sizes, fronts, search } = this.props;
+        const area = layout?.areas[areaIndex] || {};
+        const { type } = area;
         const sortedProducts = products.filter(product => {
             if (search && product.name.search(search) === - 1) return false
             if (!product.image) return false;
             if (!sizes.find(s => !s.uncheck && s._id === product.size._id)) return false;
             if (!fronts.find(f => !f.uncheck && f._id === product.front._id)) return false;
-            if (!locations.find(l => !l.uncheck && l.outSide === product.outSide)) return false;
+            if (layout?.room?._id !== product.room) return false;
+            if (type && type !== product.type) return false;
             return true;
         });
         return (
@@ -27,11 +30,12 @@ class ProductResult extends Component {
 const mStP = ({
     app: {
         products = [],
+        layout,
+        areaIndex,
         sizes = [],
         fronts = [],
-        locations = [],
         search
     }
-}) => ({ products, sizes, fronts, locations, search });
+}) => ({ products, layout, areaIndex, sizes, fronts, search });
 
 export default connect(mStP)(ProductResult)

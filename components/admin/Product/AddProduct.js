@@ -2,13 +2,15 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { createFormData } from '../../../utils/helper';
 import types from '../../../redux/types';
+import Select from '../Form/Select';
+
+const productTypes = [{ value: 'wall', label: 'Tường' }, { value: 'floor', label: 'Sàn' }];
 
 class AddProduct extends Component {
     constructor(props) {
         super(props);
         this.state = {
             name: '',
-            code: ''
         };
     }
     componentDidUpdate(prevProps) {
@@ -18,13 +20,13 @@ class AddProduct extends Component {
             document.documentElement.style = { paddingRight: 16 };
             this.setState({
                 name: '',
-                code: '',
                 enabled: true,
-                outSide: false,
                 files: null,
                 imageLocal: null,
                 sizeSelected: null,
-                frontSelected: null
+                frontSelected: null,
+                roomSelected: null,
+                typeSelected: null,
             });
         }
     }
@@ -35,19 +37,21 @@ class AddProduct extends Component {
     }
     handleSubmit = e => {
         e.preventDefault();
-        const { name, code, sizeSelected, frontSelected, enabled, outSide, files } = this.state;
+        const { name, sizeSelected, frontSelected, roomSelected, typeSelected, enabled, files } = this.state;
         if (!name) this.setState({ field: 'name', message: 'Tên sản phẩm là bắt buộc' });
         else if (!frontSelected) this.setState({ field: 'front', message: 'Loại bề mặt chưa được chọn' });
         else if (!sizeSelected) this.setState({ field: 'size', message: 'Kích thước chưa được chọn' });
+        else if (!roomSelected) this.setState({ field: 'room', message: 'Khu vực chưa được chọn' });
+        else if (!typeSelected) this.setState({ field: 'type', message: 'Loại sản phẩm chưa được chọn' });
         else if (!files?.length) this.setState({ field: 'files', message: 'Ảnh chưa được chọn' });
         else {
             const data = {
                 name,
-                code: code || name,
                 enabled,
-                outSide,
-                sizeId: sizeSelected._id,
-                frontId: frontSelected._id,
+                sizeId: sizeSelected.value,
+                frontId: frontSelected.value,
+                roomId: roomSelected.value,
+                type: typeSelected.value,
                 files
             };
             const formData = createFormData(data);
@@ -87,10 +91,12 @@ class AddProduct extends Component {
         this.setState({ files, imageLocal: null, field: null, message: null });
     }
     render() {
-        const { visible, fronts, sizes } = this.props;
-        const { code, enabled, name, outSide, loading } = this.state;
-        const { frontSelected, sizeSelected, frontDropdown, sizeDropdown, imageLocal, field, message } = this.state;
-        const sizeName = sizeSelected ? `${sizeSelected.width}x${sizeSelected.height} mm` : "Chọn";
+        const { visible, fronts, sizes, rooms } = this.props;
+        const { enabled, name, loading, imageLocal, field, message } = this.state;
+
+        const sizeSelects = sizes.filter(s => s.enabled).map(s => ({ value: s._id, label: `${s.width}x${s.height} mm` }));
+        const frontSelects = fronts.filter(f => f.enabled).map(f => ({ value: f._id, label: f.name }));
+        const roomSelects = rooms.filter(r => r.enabled).map(r => ({ value: r._id, label: r.name }));
         return (
             <div>
                 <div
@@ -120,70 +126,30 @@ class AddProduct extends Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <label>
-                                                        <span>Mã sản phẩm: </span>
-                                                        {field === 'code' && message ?
-                                                            <span className="error-field">({message})</span>
-                                                            :
-                                                            <span className="empty-field">(Có thể để trống nếu giống tên)</span>
-                                                        }
+                                                        <span>Khu vực: </span>
+                                                        {field === 'room' && message ? <span className="error-field">({message})</span> : ""}
                                                     </label>
-                                                    <input className="form-control" type="text" name="code" placeholder={code || name || ''} value={code || ''} onChange={this.handleChange} />
-                                                </div>
-                                                <div className="form-group">
-                                                    <label>Loại bề mặt: <span className="error-field">{field === 'front' && message ? `(${message})` : ""}</span></label>
-                                                    <div className="input-select">
-                                                        <div
-                                                            className="form-control input-select-current"
-                                                            onClick={() => this.setState({ frontDropdown: !frontDropdown })}
-                                                        >
-                                                            <span>{frontSelected?.name || "Chọn"}</span>
-                                                            <i className="fas fa-chevron-down" style={{ fontSize: 12 }} />
-                                                        </div>
-                                                        <ul style={{
-                                                            display: frontDropdown ? 'block' : 'none'
-                                                        }}
-                                                            className="input-select-container">
-                                                            {fronts.map(item => {
-                                                                if (!item.enabled) return null;
-                                                                return (
-                                                                    <li
-                                                                        key={item._id}
-                                                                        onClick={() => this.setState({ frontSelected: item, frontDropdown: false, field: null, message: null })}
-                                                                        className={"input-select-item" + (frontSelected?._id === item._id ? " active" : "")}
-                                                                    >{item.name}</li>
-                                                                )
-                                                            })}
-                                                        </ul>
-                                                    </div>
+                                                    <Select
+                                                        data={roomSelects}
+                                                        onChange={(id, roomSelected) => this.setState({ roomSelected })}
+                                                        hover="Chọn khu vực"
+                                                    />
                                                 </div>
                                                 <div className="form-group">
                                                     <label>Kích thước: <span className="error-field">{field === 'size' && message ? `(${message})` : ""}</span></label>
-                                                    <div className="input-select">
-                                                        <div
-                                                            className="form-control input-select-current"
-                                                            onClick={() => this.setState({ sizeDropdown: !sizeDropdown })}
-                                                        >
-                                                            <span>{sizeName}</span>
-                                                            <i className="fas fa-chevron-down" style={{ fontSize: 12 }} />
-                                                        </div>
-                                                        <ul style={{
-                                                            display: sizeDropdown ? 'block' : 'none'
-                                                        }}
-                                                            className="input-select-container">
-                                                            {sizes.map(item => {
-                                                                if (!item.enabled) return null;
-                                                                const { width, height } = item;
-                                                                const itemName = `${width}x${height} mm`;
-                                                                return (
-                                                                    <li
-                                                                        key={item._id}
-                                                                        onClick={() => this.setState({ sizeSelected: item, sizeDropdown: false, field: null, message: null })}
-                                                                        className={"input-select-item" + (sizeSelected?._id === item._id ? " active" : "")}
-                                                                    >{itemName}</li>
-                                                                )
-                                                            })}
-                                                        </ul>
-                                                    </div>
+                                                    <Select
+                                                        data={sizeSelects}
+                                                        onChange={(id, sizeSelected) => this.setState({ sizeSelected })}
+                                                        hover="Chọn kích thước"
+                                                    />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>Loại bề mặt: <span className="error-field">{field === 'front' && message ? `(${message})` : ""}</span></label>
+                                                    <Select
+                                                        data={frontSelects}
+                                                        onChange={(id, frontSelected) => this.setState({ frontSelected })}
+                                                        hover="Chọn bề mặt"
+                                                    />
                                                 </div>
                                             </div>
                                             <div className="col">
@@ -203,27 +169,35 @@ class AddProduct extends Component {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="col">
-                                            <div className="row">
-                                                <div className="col">
-                                                    <div className="row">
-                                                        <div className="col">
-                                                            <div className="form-group custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" name="enabled" id="add-enabled" checked={enabled ? "checked" : ""} onChange={this.handleCheckbox} />
-                                                                <label className="custom-control-label" htmlFor="add-enabled">Trạng thái</label>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col">
-                                                            <div className="form-group custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" name="outSide" id="add-outSide" checked={outSide ? "checked" : ""} onChange={this.handleCheckbox} />
-                                                                <label className="custom-control-label" htmlFor="add-outSide">Ngoài trời</label>
-                                                            </div>
+                                        <div className="row">
+                                            <div className="col">
+                                                <div className="form-group">
+                                                    <label>
+                                                        <span>Loại sản phẩm: </span>
+                                                        {field === 'type' && message ?
+                                                            <span className="error-field">({message})</span>
+                                                            : ""
+                                                        }
+                                                    </label>
+                                                    <Select
+                                                        data={productTypes}
+                                                        onChange={(id, typeSelected) => this.setState({ typeSelected })}
+                                                        hover="Chọn loại sản phẩm"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col d-flex align-items-end">
+                                                <div className="row w-100">
+                                                    <div className="col d-flex justify-content-start align-items-center">
+                                                        <div className="form-group custom-control custom-checkbox">
+                                                            <input type="checkbox" className="custom-control-input" name="enabled" id="add-enabled" checked={enabled ? "checked" : ""} onChange={this.handleCheckbox} />
+                                                            <label className="custom-control-label" htmlFor="add-enabled">Trạng thái</label>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="col d-flex justify-content-end align-items-end">
-                                                    <div className="form-group">
-                                                        <button className="btn btn-primary" type="submit" disabled={loading}>{loading ? 'Đang lưu...' : 'Lưu lại'}</button>
+                                                    <div className="col d-flex justify-content-end align-items-end">
+                                                        <div className="form-group">
+                                                            <button className="btn btn-primary" type="submit" disabled={loading}>{loading ? 'Đang lưu...' : 'Lưu lại'}</button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -241,4 +215,4 @@ class AddProduct extends Component {
 }
 
 
-export default connect(({ admin }) => ({ fronts: admin.front.data, sizes: admin.size.data }))(AddProduct)
+export default connect(({ admin: { front, size, room } }) => ({ fronts: front.data, sizes: size.data, rooms: room.data }))(AddProduct)

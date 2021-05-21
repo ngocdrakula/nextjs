@@ -8,7 +8,7 @@ class Filter extends Component {
         this.state = {}
     }
     render() {
-        const { dispatch, active, sizes, fronts, locations } = this.props;
+        const { dispatch, active, sizes, fronts, rooms } = this.props;
         return (
             <div className="top-panel-box top-panel-option-box top-panel-box-overflow-y" style={!active ? { display: 'none' } : {}}>
                 <div className="filter-block">
@@ -54,22 +54,22 @@ class Filter extends Component {
                     })}
                 </div>
                 <div className="filter-block">
-                    <div className="-header">Ngoại thất</div>
+                    <div className="-header">Khu vực</div>
                     <div className="filter-block-support-buttons">
-                        <span onClick={() => dispatch({ type: types.LOCATIONS_SELECT_ALL })}> Chọn hết </span>
-                        <span onClick={() => dispatch({ type: types.LOCATIONS_CLEAR_ALL })}> Bỏ chọn </span>
-                        <span onClick={() => dispatch({ type: types.LOCATIONS_REVERSE })}> Đảo chọn </span>
+                        <span onClick={() => dispatch({ type: types.ROOMS_SELECT_ALL })}> Chọn hết </span>
+                        <span onClick={() => dispatch({ type: types.ROOMS_CLEAR_ALL })}> Bỏ chọn </span>
+                        <span onClick={() => dispatch({ type: types.ROOMS_REVERSE })}> Đảo chọn </span>
                     </div>
-                    {locations.map(location => {
+                    {rooms.map((room, index) => {
                         return (
-                            <div key={location._id} className="filter-item-checkbox">
+                            <div key={room._id} className="filter-item-checkbox">
                                 <input
-                                    id={"filteLocation_" + location._id}
+                                    id={"filteLocation_" + room._id}
                                     type="checkbox"
-                                    checked={location.uncheck ? "" : "checked"}
-                                    onChange={() => dispatch({ type: types.LOCATIONS_SELECT_ONE, payload: index })}
+                                    checked={room.uncheck ? "" : "checked"}
+                                    onChange={() => dispatch({ type: types.ROOMS_SELECT_ONE, payload: index })}
                                 />
-                                <label htmlFor={"filteLocation_" + location._id}>{location.name}</label>
+                                <label htmlFor={"filteLocation_" + room._id}>{room.name}</label>
                             </div>
                         );
                     })}
@@ -79,4 +79,4 @@ class Filter extends Component {
     }
 }
 
-export default connect(({ app: { sizes = [], fronts = [], locations = [] } }) => ({ sizes, fronts, locations, }))(Filter)
+export default connect(({ app: { sizes = [], fronts = [], rooms = [] } }) => ({ sizes, fronts, rooms, }))(Filter)

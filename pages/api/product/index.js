@@ -2,6 +2,7 @@ import runMidldleware from '../../../middleware/mongodb';
 import productController from '../../../controllers/product';
 import sizeController from '../../../controllers/size';
 import frontController from '../../../controllers/front';
+import roomController from '../../../controllers/room';
 import lang, { langConcat } from '../../../lang.config';
 import uploader, { cleanFiles } from '../../../middleware/multer';
 import jwt from '../../../middleware/jwt'
@@ -9,32 +10,16 @@ import jwt from '../../../middleware/jwt'
 const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
-      const { page, pageSize, name, code, sizes, fronts, outSide, enabled } = req.query;
+      const { page, pageSize, name, sizeId, frontId, roomId, type, enabled } = req.query;
       const query = {};
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
-      if (name) query.name = name;
-      if (code) query.code = code;
-      if (enabled) query.enabled = (enabled == "true");
-      if (sizes) {
-        try {
-          const sizesParser = JSON.parse(sizes);
-          query.size = {
-            $in: sizesParser
-          };
-        } catch (e) { }
-      }
-      if (fronts) {
-        try {
-          const frontsParser = JSON.parse(fronts);
-          query.front = {
-            $in: frontsParser
-          };
-        } catch (e) { }
-      }
-      if (outSide != undefined) {
-        query.outSide = (!outSide || outSide == 'false') ? false : true;
-      }
+      if (name) query.name = new RegExp(name, "i");
+      if (enabled !== undefined) query.enabled = (enabled == "true");
+      if (sizeId) query.size = sizeId;
+      if (frontId) query.front = frontId;
+      if (roomId) query.room = roomId;
+      if (type) query.type = type;
       const total = await productController.getlist(query).countDocuments();
       const list = await productController.getlist(query).skip(skip).limit(limit).populate('size').populate('front');
       return res.status(200).send({
@@ -43,7 +28,6 @@ const handler = async (req, res) => {
         total,
         page: Number(page) || 0,
         pageSize: Number(pageSize) || 0,
-        query,
       });
     } catch (error) {
       return res.status(500).send({
@@ -62,12 +46,12 @@ const handler = async (req, res) => {
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
       if (!user?.mode) throw ({ ...user, path: 'token' });
-      const { body: { name, code, sizeId, frontId, outSide }, files, err } = await uploader(req);
+      const { body: { name, sizeId, frontId, roomId, enabled, type }, files, err } = await uploader(req);
       if (err || !files.length) throw ({ path: 'files' });
-      if (!name || !code || !sizeId || !frontId) {
+      if (!name || !sizeId || !frontId || !roomId) {
         if (!name) throw ({ path: 'name', files })
-        if (!code) throw ({ path: 'code', files })
         if (!sizeId) throw ({ path: 'sizeId', files })
+        if (!roomId) throw ({ path: 'roomId', files })
         throw ({ path: 'frontId', files })
       }
       try {
@@ -84,9 +68,18 @@ const handler = async (req, res) => {
         if (err.path == '_id') throw ({ path: 'front', files });
         throw ({ err, files })
       }
-      const matchProduct = await productController.find({ name, code }).populate('size').populate('front');
+      try {
+        const room = await roomController.get(roomId);
+        if (!room) throw ({ path: '_id', files });
+      } catch (err) {
+        if (err.path == '_id') throw ({ path: 'room', files });
+        throw ({ err, files })
+      }
+      if (!type) throw ({ path: 'type', files });
+
+      const matchProduct = await productController.find({ name }).populate('size').populate('front');
       if (matchProduct) throw ({ path: 'product', files, matchProduct })
-      const productCreated = await (await productController.create({ name, code, size: sizeId, front: frontId, image: files[0], outSide: !([undefined, false, "0", "false", "null"].indexOf(outSide) + 1) })).populate('size').populate('front').execPopulate();
+      const productCreated = await (await productController.create({ name, size: sizeId, front: frontId, room: roomId, image: files[0], enabled, type })).populate('size').populate('front').execPopulate();
       return res.status(201).send({
         success: true,
         data: productCreated,
@@ -139,15 +132,6 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.productName, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path == 'code') {
-        return res.status(400).send({
-          success: false,
-          validation: false,
-          field: 'code',
-          message: 'Mã sản phẩm không được để trống',
-          messages: langConcat(lang?.resources?.productCode, lang?.message?.error?.validation?.required)
-        });
-      }
       if (e.path == 'sizeId') {
         return res.status(400).send({
           success: false,
@@ -166,13 +150,21 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.frontId, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path == 'outSize') {
+      if (e.path == 'roomId') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'outSize',
+          field: 'roomId',
+          message: 'Id kiểu bề mặt không được để trống',
+          messages: langConcat(lang?.resources?.roomId, lang?.message?.error?.validation?.required)
+        });
+      }
+      if (e.path == 'type') {
+        return res.status(400).send({
+          success: false,
+          validation: false,
+          field: 'type',
           message: 'Loại sản phẩm không được để trống',
-          messages: langConcat(lang?.resources?.outSize, lang?.message?.error?.validation?.required)
         });
       }
       if (e.path == 'size') {
@@ -191,6 +183,15 @@ const handler = async (req, res) => {
           field: 'front',
           message: "Kiểu bề mặt không tồn tại",
           messages: langConcat(lang?.resources?.front, lang?.message?.error?.validation?.not_exist),
+        });
+      }
+      if (e.path == 'room') {
+        return res.status(400).send({
+          success: false,
+          exist: false,
+          field: 'room',
+          message: "Kiểu bề mặt không tồn tại",
+          messages: langConcat(lang?.resources?.room, lang?.message?.error?.validation?.not_exist),
         });
       }
       if (e.path == 'product') {

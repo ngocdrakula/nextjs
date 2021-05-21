@@ -8,7 +8,7 @@ const handler = async (req, res) => {
     try {
       const { page, pageSize, enabled } = req.query;
       const query = {};
-      if (enabled) query.enabled = (enabled == "true");
+      if (enabled !== undefined) query.enabled = (enabled == "true");
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
       const total = await sizeController.getlist(query).countDocuments();
