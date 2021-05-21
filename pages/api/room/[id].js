@@ -36,11 +36,19 @@ const handler = async (req, res) => {
       const user = jwt.verify(bearerToken);
       if (!user?.mode) throw ({ ...user, path: 'token' });
       const { name, enabled } = req.body;
-      if (!name) throw ({ path: 'name' })
-      const matchRoom = await roomController.find({ name });
-      if (matchRoom) throw ({ path: 'room', matchRoom })
-      const params = { name };
+      if (name) {
+        try {
+          const matchRoom = await roomController.find({ name });
+          if (matchRoom && matchRoom._id != req.query.id) throw ({ path: 'room', matchRoom });
+        }
+        catch (e) {
+          if (e.path == '_id') throw ({ path: 'room', matchRoom })
+          throw (e)
+        }
+      }
+      const params = {};
       if (enabled != undefined) params.enabled = !!enabled;
+      if (name) params.name = name;
       const roomUpdated = await roomController.update(req.query.id, params);
       return res.status(200).send({
         success: true,

@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { createFormData, getThumbnail } from '../../../utils/helper';
 import types from '../../../redux/types';
+import Select from '../Form/Select';
+
+const productTypes = [{ value: 'wall', label: 'Tường' }, { value: 'floor', label: 'Sàn' }];
 
 class UpdateProduct extends Component {
     constructor(props) {
@@ -17,7 +20,9 @@ class UpdateProduct extends Component {
                 ...product,
                 imageLocal: null,
                 sizeSelected: null,
-                frontSelected: null
+                frontSelected: null,
+                roomSelected: null,
+                typeSelected: null,
             });
         }
     }
@@ -28,16 +33,15 @@ class UpdateProduct extends Component {
     }
     handleSubmit = e => {
         e.preventDefault();
-        const { _id, name, code, sizeSelected, frontSelected, enabled, outSide, files } = this.state;
+        const { _id, name, sizeSelected, frontSelected, roomSelected, typeSelected, enabled, files } = this.state;
         if (!name) this.setState({ field: 'name', message: 'Tên sản phẩm không được để trống' });
-        else if (!code) this.setState({ field: 'code', message: 'Mã sản phẩm không được để trống' });
         else {
-            const data = { enabled, outSide };
-
+            const data = { enabled };
             if (name !== this.props.product.name) data.name = name;
-            if (code !== this.props.product.code) data.code = code || name;
-            if (sizeSelected) data.sizeId = sizeSelected._id;
-            if (frontSelected) data.frontId = frontSelected._id;
+            if (sizeSelected) data.sizeId = sizeSelected.value;
+            if (frontSelected) data.frontId = frontSelected.value;
+            if (roomSelected) data.roomId = roomSelected.value;
+            if (typeSelected) data.type = typeSelected.value;
             if (files && files.length) data.files = files;
 
             const formData = createFormData(data);
@@ -73,12 +77,19 @@ class UpdateProduct extends Component {
         }
     }
     render() {
-        const { product, fronts, sizes } = this.props;
-        const { code, enabled, front, name, outSide, size, loading } = this.state;
-        const { frontSelected, sizeSelected, frontDropdown, sizeDropdown, imageLocal, field, message } = this.state;
+        const { product, fronts, sizes, rooms } = this.props;
+        const { enabled, front, room, type, name, size, loading } = this.state;
+        const { imageLocal, field, message } = this.state;
 
-        const { width, height } = sizeSelected || size || {};
+        const { width, height } = size || {};
         const sizeName = `${width}x${height} mm`;
+        const oldRoom = rooms.find(r => r._id === room);
+        const oldType = productTypes.find(t => t.value === type);
+
+        const sizeSelects = sizes.filter(s => s.enabled).map(s => ({ value: s._id, label: `${s.width}x${s.height} mm` }));
+        const frontSelects = fronts.filter(f => f.enabled).map(f => ({ value: f._id, label: f.name }));
+        const roomSelects = rooms.filter(r => r.enabled).map(r => ({ value: r._id, label: r.name }));
+
         return (
             <div>
                 <div
@@ -108,69 +119,45 @@ class UpdateProduct extends Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <label>
-                                                        <span>Mã sản phẩm: </span>
-                                                        {field === 'code' && message ?
+                                                        <span>Khu vực: </span>
+                                                        {field === 'room' && message ?
                                                             <span className="error-field">({message})</span>
                                                             : ""
                                                         }
                                                     </label>
-                                                    <input className="form-control" type="text" name="code" placeholder={code} value={code || ''} onChange={this.handleChange} />
+                                                    <Select
+                                                        data={roomSelects}
+                                                        onChange={(id, roomSelected) => this.setState({ roomSelected })}
+                                                        hover={oldRoom?.name}
+                                                    />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>Kích thước:</label>
-                                                    <div className="input-select">
-                                                        <div
-                                                            className="form-control input-select-current"
-                                                            onClick={() => this.setState({ frontDropdown: !frontDropdown })}
-                                                        >
-                                                            <span>{frontSelected?.name || front?.name}</span>
-                                                            <i className="fas fa-chevron-down" style={{ fontSize: 12 }} />
-                                                        </div>
-                                                        <ul style={{
-                                                            display: frontDropdown ? 'block' : 'none'
-                                                        }}
-                                                            className="input-select-container">
-                                                            {fronts.map(item => {
-                                                                if (!item.enabled) return null;
-                                                                return (
-                                                                    <li
-                                                                        key={item._id}
-                                                                        onClick={() => this.setState({ frontSelected: item, frontDropdown: false })}
-                                                                        className={"input-select-item" + (frontSelected?._id === item._id ? " active" : "")}
-                                                                    >{item.name}</li>
-                                                                )
-                                                            })}
-                                                        </ul>
-                                                    </div>
+                                                    <label>
+                                                        <span>Kích thước: </span>
+                                                        {field === 'size' && message ?
+                                                            <span className="error-field">({message})</span>
+                                                            : ""
+                                                        }
+                                                    </label>
+                                                    <Select
+                                                        data={sizeSelects}
+                                                        onChange={(id, sizeSelected) => this.setState({ sizeSelected })}
+                                                        hover={sizeName}
+                                                    />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>Loại bề mặt:</label>
-                                                    <div className="input-select">
-                                                        <div
-                                                            className="form-control input-select-current"
-                                                            onClick={() => this.setState({ sizeDropdown: !sizeDropdown })}
-                                                        >
-                                                            <span>{sizeName}</span>
-                                                            <i className="fas fa-chevron-down" style={{ fontSize: 12 }} />
-                                                        </div>
-                                                        <ul style={{
-                                                            display: sizeDropdown ? 'block' : 'none'
-                                                        }}
-                                                            className="input-select-container">
-                                                            {sizes.map(item => {
-                                                                if (!item.enabled) return null;
-                                                                const { width, height } = item;
-                                                                const itemName = `${width}x${height} mm`;
-                                                                return (
-                                                                    <li
-                                                                        key={item._id}
-                                                                        onClick={() => this.setState({ sizeSelected: item, sizeDropdown: false })}
-                                                                        className={"input-select-item" + (sizeSelected?._id === item._id ? " active" : "")}
-                                                                    >{itemName}</li>
-                                                                )
-                                                            })}
-                                                        </ul>
-                                                    </div>
+                                                    <label>
+                                                        <span>Loại bề mặt: </span>
+                                                        {field === 'front' && message ?
+                                                            <span className="error-field">({message})</span>
+                                                            : ""
+                                                        }
+                                                    </label>
+                                                    <Select
+                                                        data={frontSelects}
+                                                        onChange={(id, frontSelected) => this.setState({ frontSelected })}
+                                                        hover={front?.name}
+                                                    />
                                                 </div>
                                             </div>
                                             <div className="col">
@@ -190,27 +177,35 @@ class UpdateProduct extends Component {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="col">
-                                            <div className="row">
-                                                <div className="col">
-                                                    <div className="row">
-                                                        <div className="col">
-                                                            <div className="form-group custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" name="enabled" id="enabled" checked={enabled ? "checked" : ""} onChange={this.handleCheckbox} />
-                                                                <label className="custom-control-label" htmlFor="enabled">Trạng thái</label>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col">
-                                                            <div className="form-group custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" name="outSide" id="outSide" checked={outSide ? "checked" : ""} onChange={this.handleCheckbox} />
-                                                                <label className="custom-control-label" htmlFor="outSide">Ngoài trời</label>
-                                                            </div>
+                                        <div className="row">
+                                            <div className="col">
+                                                <div className="form-group">
+                                                    <label>
+                                                        <span>Loại sản phẩm: </span>
+                                                        {field === 'type' && message ?
+                                                            <span className="error-field">({message})</span>
+                                                            : ""
+                                                        }
+                                                    </label>
+                                                    <Select
+                                                        data={productTypes}
+                                                        onChange={(id, typeSelected) => this.setState({ typeSelected })}
+                                                        hover={oldType?.label}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col d-flex align-items-end">
+                                                <div className="row w-100">
+                                                    <div className="col d-flex justify-content-start align-items-center">
+                                                        <div className="form-group custom-control custom-checkbox">
+                                                            <input type="checkbox" className="custom-control-input" name="enabled" id="update-enabled" checked={enabled ? "checked" : ""} onChange={this.handleCheckbox} />
+                                                            <label className="custom-control-label" htmlFor="update-enabled">Trạng thái</label>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="col d-flex justify-content-end align-items-end">
-                                                    <div className="form-group">
-                                                        <button className="btn btn-primary" type="submit" disabled={loading}>{loading ? 'Đang lưu...' : 'Lưu lại'}</button>
+                                                    <div className="col d-flex justify-content-end align-items-end">
+                                                        <div className="form-group">
+                                                            <button className="btn btn-primary" type="submit" disabled={loading}>{loading ? 'Đang lưu...' : 'Lưu lại'}</button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -228,4 +223,4 @@ class UpdateProduct extends Component {
 }
 
 
-export default connect(({ admin }) => ({ fronts: admin.front.data, sizes: admin.size.data }))(UpdateProduct)
+export default connect(({ admin }) => ({ fronts: admin.front.data, sizes: admin.size.data, rooms: admin.room.data }))(UpdateProduct)

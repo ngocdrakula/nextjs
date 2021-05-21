@@ -145,10 +145,11 @@ class ThreeJS extends Component {
                             let i = (x + y * WIDTH) * 4;
                             const inner = this.pointInPolygon({ x: x * this.rate, y: y * this.rate }, hoverArea);
                             if (inner) {
-                                mattImage.data[i + 0] = Math.floor(mattImage.data[i + 0] / 255 * 127);
-                                mattImage.data[i + 1] = Math.floor(mattImage.data[i + 1] / 255 * 127);
-                                mattImage.data[i + 2] = Math.floor(mattImage.data[i + 2] / 255 * 127);
-                                mattImage.data[i + 3] = 127;
+                                const tg = (mattImage.data[i + 0] + mattImage.data[i + 1] + mattImage.data[i + 2]);
+                                mattImage.data[i + 0] *= 0;
+                                mattImage.data[i + 1] *= 0;
+                                mattImage.data[i + 2] *= 0;
+                                mattImage.data[i + 3] = Math.floor(255 - tg / 3);
                             }
                             else mattImage.data[i + 3] = 0;
                         }
@@ -166,10 +167,11 @@ class ThreeJS extends Component {
                             let i = (x + y * WIDTH) * 4;
                             const inner = this.pointInPolygon({ x: x * this.rate, y: y * this.rate }, hoverArea);
                             if (inner) {
-                                smoothImage.data[i + 0] = Math.floor(smoothImage.data[i + 0] / 255 * 76);
-                                smoothImage.data[i + 1] = Math.floor(smoothImage.data[i + 1] / 255 * 76);
-                                smoothImage.data[i + 2] = Math.floor(smoothImage.data[i + 2] / 255 * 76);
-                                smoothImage.data[i + 3] = 76;
+                                const tg = (smoothImage.data[i + 0] + smoothImage.data[i + 1] + smoothImage.data[i + 2]);
+                                smoothImage.data[i + 0] *= 0;
+                                smoothImage.data[i + 1] *= 0;
+                                smoothImage.data[i + 2] *= 0;
+                                smoothImage.data[i + 3] = Math.floor(255 - tg / 3);
                             }
                             else smoothImage.data[i + 3] = 0;
                         }
@@ -182,12 +184,17 @@ class ThreeJS extends Component {
                     const ctx = surfCanvas.getContext('2d');
                     ctx.drawImage(this.background, 0, 0, WIDTH, HEIGHT);
                     const surfImage = ctx.getImageData(0, 0, WIDTH, HEIGHT);
-                    let j = 0;
                     for (let x = 0; x < WIDTH; x++) {
                         for (let y = 0; y < HEIGHT; y++) {
                             let i = (x + y * WIDTH) * 4;
                             const inner = this.pointInPolygon({ x: x * this.rate, y: y * this.rate }, hoverArea);
-                            if (inner) surfImage.data[i + 3] = 127;
+                            if (inner) {
+                                const tg = (surfImage.data[i + 0] + surfImage.data[i + 1] + surfImage.data[i + 2]);
+                                surfImage.data[i + 0] = 0;
+                                surfImage.data[i + 1] = 0;
+                                surfImage.data[i + 2] = 0;
+                                surfImage.data[i + 3] = Math.floor(255 - tg / 3);
+                            }
                             else surfImage.data[i + 3] = 0;
                         }
                     };
@@ -219,19 +226,18 @@ class ThreeJS extends Component {
         const texture = new THREE.TextureLoader().load("/api/images/" + p1.image, () => { count++; if (count === products.length) addMesh() });
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
         texture.wrapS = texture.wrapT = 1001;
-        texture.encoding = THREE.sRGBEncoding;
+        // texture.encoding = THREE.sRGBEncoding;
         texture.encoding = 3000;
         texture.flipY = true;
-        // texture.minFilter = THREE.LinearFilter;
-        // texture.magFilter = THREE.NearestFilter;
-        texture.minFilter = 1008;
+        texture.format = 1023;
+        texture.generateMipmaps = true;
         texture.magFilter = 1006;
+        texture.mapping = 300;
+        texture.minFilter = 1008;
         texture.needsUpdate = true;
         texture.anisotropy = 16;
         texture.opacity = 1;
         texture.unpackAlignment = 4;
-        texture.format = 1023;
-        texture.mapping = 300;
         texture.type = 1009;
         let texture2 = null;
         if (p2) {

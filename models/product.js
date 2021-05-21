@@ -6,10 +6,10 @@ const product = new Schema({
         type: String,
         required: true
     },
-    code: {
-        type: String,
+    room: {
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
-        unique: true
+        ref: 'room'
     },
     size: {
         type: mongoose.Schema.Types.ObjectId,
@@ -25,9 +25,9 @@ const product = new Schema({
         type: String,
         required: true
     },
-    outSide: {
-        type: Boolean,
-        default: false
+    type: {
+        type: String,
+        default: 'floor'
     },
     enabled: {
         type: Boolean,

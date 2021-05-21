@@ -8,9 +8,11 @@ import jwt from '../../../middleware/jwt'
 const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
-      const { page, pageSize, enabled } = req.query;
+      const { page, pageSize, name, roomId, enabled } = req.query;
       const query = {};
-      if (enabled) query.enabled = (enabled == "true");
+      if (name) query.name = new RegExp(name, "i");
+      if (enabled != undefined) query.enabled = (enabled == "true");
+      if (roomId) query.room = roomId;
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
       const total = await layoutController.getlist(query).countDocuments();

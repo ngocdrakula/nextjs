@@ -9,7 +9,6 @@ export const initState = {
     layouts: [],
     sizes: [],
     fronts: [],
-    locations: [{ _id: 0, name: 'Phòng khách', outSide: false }, { _id: 1, name: 'Khác', outSide: true }],
     layout: null,
     areaIndex: -1,
 
@@ -118,38 +117,32 @@ const appReducer = (state = initState, action) => {
                 layouts: data,
             };
         }
-        case types.GET_LOCATIONS_SUCCESS: {
+        case types.ROOMS_SELECT_ALL: {
             return {
                 ...state,
-                locations: [{ _id: 0, name: 'Phòng khách', outSide: false }, { _id: 1, name: 'Khác', outSide: true }],
+                rooms: state.rooms.map(room => ({ ...room, uncheck: false }))
             };
         }
-        case types.LOCATIONS_SELECT_ALL: {
+        case types.ROOMS_CLEAR_ALL: {
             return {
                 ...state,
-                locations: state.locations.map(location => ({ ...location, uncheck: false }))
+                rooms: state.rooms.map(room => ({ ...room, uncheck: true }))
             };
         }
-        case types.LOCATIONS_CLEAR_ALL: {
-            return {
-                ...state,
-                locations: state.locations.map(location => ({ ...location, uncheck: true }))
-            };
-        }
-        case types.LOCATIONS_SELECT_ONE: {
-            const current = state.locations[action.payload];
+        case types.ROOMS_SELECT_ONE: {
+            const current = state.rooms[action.payload];
             if (current) {
-                state.locations[action.payload] = { ...current, uncheck: !current.uncheck };
+                state.rooms[action.payload] = { ...current, uncheck: !current.uncheck };
                 return {
                     ...state,
-                    locations: [...state.locations],
+                    rooms: [...state.rooms],
                 };
             }
         }
-        case types.LOCATIONS_REVERSE: {
+        case types.ROOMS_REVERSE: {
             return {
                 ...state,
-                locations: state.locations.map(location => ({ ...location, uncheck: !location.uncheck })),
+                rooms: state.rooms.map(room => ({ ...room, uncheck: !room.uncheck })),
             };
         }
         case types.CHANGE_SORT: {

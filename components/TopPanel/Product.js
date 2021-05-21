@@ -11,15 +11,16 @@ class Product extends Component {
     }
 
     render() {
-        const { dispatch, products, layout, areaIndex, sizes, fronts, locations, search } = this.props;
+        const { dispatch, products, layout, areaIndex, sizes, fronts, search } = this.props;
         const area = layout?.areas[areaIndex] || {};
-        const { products: selecteds = [], skewType } = area;
+        const { products: selecteds = [], skewType, type } = area;
         const sortedProducts = products.filter(product => {
             if (search && product.name.search(search) === - 1) return false
             if (!product.image) return false;
             if (!sizes.find(s => !s.uncheck && s._id === product.size._id)) return false;
             if (!fronts.find(f => !f.uncheck && f._id === product.front._id)) return false;
-            if (!locations.find(l => !l.uncheck && l.outSide === product.outSide)) return false;
+            if (layout?.room?._id !== product.room) return false;
+            if (type && type !== product.type) return false;
             return true;
         })
         return (
@@ -41,7 +42,7 @@ class Product extends Component {
                                     <img src={"/api/images/" + getThumbnail(product)} />
                                 </div>
                                 <div className="tile-list-text" onClick={() => dispatch({ type: types.SELECT_PRODUCT, payload: product })}>
-                                    <p className="-caption">{product.code}</p>
+                                    <p className="-caption">{product.name}</p>
                                     <p>Kích thước: {product.size.width}mm x {product.size.height}mm</p>
                                     <p>Bề mặt: {product.front.name}</p>
                                 </div>
@@ -73,9 +74,8 @@ const mStP = ({
         areaIndex,
         sizes = [],
         fronts = [],
-        locations = [],
         search
     }
-}) => ({ products, layout, areaIndex, sizes, fronts, locations, search });
+}) => ({ products, layout, areaIndex, sizes, fronts, search });
 
 export default connect(mStP)(Product)

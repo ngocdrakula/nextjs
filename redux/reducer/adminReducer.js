@@ -6,8 +6,7 @@ export const initState = {
     room: { data: [], page: 0, total: 0 },
     layout: { data: [], page: 0, total: 0 },
     size: { data: [], page: 0, total: 0 },
-    front: { data: [], page: 0, total: 0 },
-    locations: [{ _id: 0, name: 'Phòng khách', outSide: false }, { _id: 1, name: 'Khác', outSide: true }],
+    front: { data: [], page: 0, total: 0 }, 
     user: null
 }
 const appReducer = (state = initState, action) => {

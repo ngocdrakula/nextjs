@@ -26,7 +26,7 @@ class ProductInfoPanel extends Component {
                                                 <img src={"/api/images/" + getThumbnail(product)} className="tile-list-thumbnail" />
                                             </div>
                                             <div className="tile-list-text">
-                                                <p className="-caption">{product.code}</p>
+                                                <p className="-caption">{product.name}</p>
                                                 <p>Kích thước: {product.width}mm x {product.height}mm</p>
                                                 <p>Bề mặt: {product.front.name}</p>
                                             </div>

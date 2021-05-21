@@ -34,23 +34,44 @@ export default class SaveModal extends Component {
         const fileName = `${process.env.TITLE} - Product Info.pdf`;
         const canvas = document.getElementById('roomCanvas');
         const toDataURL = url => fetch(url)
-            .then(response => response.blob())
+            .then(response => { if (response.data) return response.blob() })
             .then(blob => new Promise((resolve, reject) => {
-                const reader = new FileReader()
-                reader.onloadend = () => resolve(reader.result)
-                reader.onerror = reject
-                reader.readAsDataURL(blob)
+                if (blob) {
+                    const reader = new FileReader()
+                    reader.onloadend = () => resolve(reader.result)
+                    reader.onerror = () => reject(null)
+                    reader.readAsDataURL(blob)
+                }
+                else reject(null)
             }));
         if (canvas) {
-            toDataURL('/icons/logo.png').then(logo => {
-                // content.push({
-                //     image: logo,
-                //     alignment: 'center',
-                //     width: pageSize.width * .2,
-                //     margin: [0, 0, 0, 10],
-                //     pageBreak: null
-                // });
-                ////SAVE WIDTH LOGO
+            toDataURL('api/images/logo.png').then(logo => {
+                if (logo) {
+                    content.push({
+                        image: logo,
+                        alignment: 'center',
+                        width: pageSize.width * .2,
+                        margin: [0, 0, 0, 10],
+                        pageBreak: null
+                    });
+                }
+                //SAVE WIDTH LOGO
+                const roomImage = canvas.toDataURL('image/jpg');
+
+                content.push({
+                    image: roomImage,
+                    alignment: 'center',
+                    width: pageSize.width * .86,
+                    pageBreak: null
+                });
+                const docDefinition = {
+                    pageSize,
+                    content: content,
+                    pageMargins,
+                };
+                pdfMake.createPdf(docDefinition).download(fileName);
+            }).catch(e => {
+                //SAVE WIDTHOUT LOGO
                 const roomImage = canvas.toDataURL('image/jpg');
 
                 content.push({

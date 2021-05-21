@@ -13,7 +13,7 @@ export default class Page extends Component {
                 <ul className="pagination mt-3 mb-0">
                     {page > 0 ?
                         <li className="page-item">
-                            <a href="#" onClick={e => this.handleSelect(e, 0)} className="page-link">«</a>
+                            <a href="#" onClick={e => this.handleSelect(e, 0, true)} className="page-link">«</a>
                         </li>
                         : ""}
                     {new Array(numberButton).fill(0).map((item, index) => {
@@ -29,7 +29,7 @@ export default class Page extends Component {
                     })}
                     {page < totalPage - 1 ?
                         <li className="page-item">
-                            <a href="#" onClick={e => this.handleSelect(e, totalPage - 1)} className="page-link">»</a>
+                            <a href="#" onClick={e => this.handleSelect(e, totalPage - 1, true)} className="page-link">»</a>
                         </li>
                         : ""}
                 </ul >

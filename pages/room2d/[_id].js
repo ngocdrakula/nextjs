@@ -4,9 +4,9 @@ import { connect } from 'react-redux'
 import { END } from 'redux-saga'
 import { wrapper } from '../../redux/store';
 import types from '../../redux/types'
-import Logo from '../../components/Logo';
 
 const Head = dynamic(() => import('../../components/Head'));
+const Logo = dynamic(() => import('../../components/Logo'));
 const BottomPanel = dynamic(() => import('../../components/BottomPanel'));
 const CanvasContainer = dynamic(() => import('../../components/CanvasContainer'));
 const TopPanel = dynamic(() => import('../../components/TopPanel'));
@@ -19,7 +19,7 @@ class Room2d extends Component {
     }
     componentDidMount() {
         const { dispatch } = this.props;
-        dispatch({ type: types.GET_PRODUCTS, payload: {} });
+        dispatch({ type: types.GET_PRODUCTS, payload: { enabled: true } });
     }
 
     render() {
@@ -28,7 +28,7 @@ class Room2d extends Component {
                 <Head />
                 <Progress />
                 <CanvasContainer />
-                {/* <Logo /> */}
+                <Logo />
                 <TopPanel />
                 <BottomPanel />
             </div>
@@ -38,10 +38,10 @@ class Room2d extends Component {
 
 export const getStaticProps = wrapper.getStaticProps(async ({ store, params }) => {
     //call all data for SSR
-    store.dispatch({ type: types.GET_FRONTS, payload: { page: 0, pageSize: 0, enabled: undefined } });
-    store.dispatch({ type: types.GET_SIZES, payload: { page: 0, pageSize: 0, enabled: undefined } });
-    store.dispatch({ type: types.GET_ROOMS, payload: { page: 0, pageSize: 0, enabled: undefined } });
-    store.dispatch({ type: types.GET_LAYOUTS, payload: { page: 0, pageSize: 0, enabled: undefined, _id: params?._id } });
+    store.dispatch({ type: types.GET_FRONTS, payload: { page: 0, pageSize: 0, enabled: true } });
+    store.dispatch({ type: types.GET_SIZES, payload: { page: 0, pageSize: 0, enabled: true } });
+    store.dispatch({ type: types.GET_ROOMS, payload: { page: 0, pageSize: 0, enabled: true } });
+    store.dispatch({ type: types.GET_LAYOUTS, payload: { page: 0, pageSize: 0, enabled: true, _id: params?._id } });
 
     store.dispatch(END)
     await store.sagaTask.toPromise();

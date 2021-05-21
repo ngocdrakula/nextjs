@@ -9,11 +9,13 @@ import Size from '../../components/admin/Size';
 import Login from '../../components/admin/Login';
 import types from '../../redux/types';
 import Layout from '../../components/admin/Layout';
+import Setting from '../../components/admin/Setting';
 
 const menu = [
     { name: 'Sản phẩm', icon: 'nc-icon nc-layers-3', component: <Product /> },
     { name: 'Kích thước', icon: 'nc-icon nc-ruler-pencil', component: <Size /> },
     { name: 'Kiểu bố trí', icon: 'nc-icon nc-bank', component: <Layout /> },
+    { name: 'Cài đặt trang', icon: 'nc-icon nc-settings-tool-66', component: <Setting /> },
     // { name: 'Thành viên', icon: 'nc-icon nc-circle-09', component: <div>User</div> },
 ];
 
@@ -129,9 +131,13 @@ class Admin extends Component {
                             </Navbar>
 
                             <div className="content">
-                                <div className="container-fluid container-xl">
-                                    {menu[active].component}
-                                </div>
+                                {menu.map((item, index) => {
+                                    return (
+                                        <div key={index} className="container-fluid container-xl" style={{ display: index === active ? 'block' : 'none' }}>
+                                            {item.component}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>

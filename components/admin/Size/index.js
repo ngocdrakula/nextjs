@@ -6,14 +6,19 @@ import Page from '../Page';
 import PopupConfirm from '../PopupConfirm';
 import AddSize from './AddSize';
 import UpdateSize from './UpdateSize';
+import Select from '../Form/Select';
 
-const pageSize = 100;
+const defaultPageSize = 50;
+const pageSizes = [50, 100];
+const pageSizeSelects = pageSizes.map(p => ({ value: p, label: `${p}` }));
 
 class Size extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selecteds: []
+            selecteds: [],
+            pageSize: defaultPageSize,
+            loading: true
         };
     }
     componentDidMount() {
@@ -31,10 +36,11 @@ class Size extends Component {
     }
     gotoPage = (page) => {
         const { dispatch } = this.props;
+        const { pageSize } = this.state;
         dispatch({
             type: types.ADMIN_GET_SIZES,
             payload: { page, pageSize },
-            callback: () => this.setState({ selecteds: [] })
+            callback: () => this.setState({ selecteds: [], loading: false })
         });
     }
     handleSelectAll = () => {
@@ -85,58 +91,72 @@ class Size extends Component {
             }
         });
     }
+
+    handleSelectPageSize = pageSize => this.setState({ pageSize }, () => this.gotoPage(0));
+
     render() {
         const { data, page, total } = this.props;
-        const { selecteds, sizeOnEdit, addVisible, goPage } = this.state;
-        const totalPage = 1;
+        const { selecteds, sizeOnEdit, addVisible, pageSize, loading } = this.state;
+        const totalPage = Math.ceil(total / (pageSize)) || 1;
         return (
             <div className="row flex-lg-nowrap">
                 <div className="col mb-3">
                     <div className="e-panel card">
                         <div className="card-body">
-                            <div className="card-title" style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-                                <div style={{ display: 'flex', flex: 1 }}>
-                                    <h6 className="mr-2">
+                            <div className="card-title" style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', marginBottom: 15 }}>
+                                <div style={{ display: 'flex', flex: 2 }}>
+                                    <h4 className="mr-2">
                                         <span>Kích thước</span>
-                                        <small className="px-1">({total} kích thước)</small>
-                                    </h6>
+                                        <small className="px-1" style={{ fontSize: '1rem' }}>({total} kích thước)</small>
+                                    </h4>
                                     <form
-                                        onSubmit={e => { e.preventDefault(); if (goPage >= 1) this.gotoPage(goPage - 1) }}
-                                        style={{ marginBottom: '.5rem' }}
+                                        onSubmit={e => { e.preventDefault(); if (this.state.page >= 1) this.gotoPage(this.state.page - 1) }}
+                                        style={{ marginBottom: '.5rem', display: 'flex', alignItems: 'flex-end' }}
                                     >
                                         <span style={{ fontSize: 14, color: '#333333', fontWeight: 600, marginRight: 5 }} >Trang:</span>
-                                        <input
-                                            type="text"
-                                            defaultValue={page + 1}
-                                            placeholder="Trang"
-                                            onChange={e => this.setState({ goPage: Number(e.target.value) || 1 })}
-                                            style={{
-                                                width: 40,
-                                                padding: '0px 10px',
-                                                fontSize: 14,
-                                                borderRadius: 5,
-                                                border: '1px solid #666',
-                                                textAlign: 'right',
-                                            }}
-                                        />
-                                        <span style={{ fontSize: 14, color: '#333333', fontWeight: 600 }} >  /  {totalPage} </span>
-                                        <input
-                                            className="page-submit"
-                                            type="submit"
-                                            value="Đi"
-                                            style={{
-                                                width: 'auto',
-                                                padding: '0px 10px',
-                                                fontSize: 14,
-                                                textTransform: 'none',
-                                                borderRadius: 5,
-                                                border: '1px solid #007bff',
-                                                background: '#007bff',
-                                                color: '#FFF',
-                                                marginLeft: 5,
-                                            }}
-                                        />
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <input
+                                                type="text"
+                                                defaultValue={page + 1}
+                                                placeholder="Trang"
+                                                onChange={e => this.setState({ page: Number(e.target.value) || 1 })}
+                                                style={{
+                                                    width: 40,
+                                                    padding: '0px 10px',
+                                                    fontSize: 14,
+                                                    borderRadius: 5,
+                                                    border: '1px solid #666',
+                                                    textAlign: 'right',
+                                                }}
+                                            />
+                                            <span style={{ fontSize: 14, color: '#333333', fontWeight: 600, paddingLeft: 3 }}>/ {totalPage} </span>
+                                            <input
+                                                className="page-submit"
+                                                type="submit"
+                                                value="Đi"
+                                                style={{
+                                                    width: 'auto',
+                                                    padding: '0px 10px',
+                                                    fontSize: 14,
+                                                    textTransform: 'none',
+                                                    borderRadius: 5,
+                                                    border: '1px solid #007bff',
+                                                    background: '#007bff',
+                                                    color: '#FFF',
+                                                    marginLeft: 5,
+                                                }}
+                                            />
+                                        </div>
+
                                     </form>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginLeft: 15 }}>
+                                        <span style={{ lineHeight: 2, fontWeight: '400', marginRight: 5 }}>Phân trang:</span>
+                                        <Select
+                                            data={pageSizeSelects}
+                                            onChange={this.handleSelectPageSize}
+                                            hover={`${pageSize}`}
+                                        />
+                                    </div>
                                 </div>
                                 <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
                                     {selecteds.length ?
@@ -279,6 +299,11 @@ class Size extends Component {
                                             })}
                                         </tbody>
                                     </table>
+                                    {!data.length && !loading ?
+                                        <div style={{ width: '100%', textAlign: 'center', color: '#999', paddingTop: 10 }}>
+                                            <h5>Danh sách kích thước trống</h5>
+                                        </div>
+                                        : ""}
                                 </div>
                                 <Page {...{ page, totalPage, gotoPage: this.gotoPage }} />
                             </div>
@@ -293,4 +318,4 @@ class Size extends Component {
 }
 
 
-export default connect(({ admin: { size: { data, page, total }, locations } }) => ({ data, page, total, locations }))(Size)
+export default connect(({ admin: { size: { data, page, total } } }) => ({ data, page, total }))(Size)

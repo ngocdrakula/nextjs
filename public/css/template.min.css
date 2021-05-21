@@ -695,7 +695,7 @@ a:focus, a:active, button::-moz-focus-inner, input::-moz-focus-inner, input[type
 }
 
 .modal .modal-content .modal-body {
-    padding-top: 24px;
+    padding-top: 10px;
     padding-right: 24px;
     padding-bottom: 16px;
     padding-left: 24px;

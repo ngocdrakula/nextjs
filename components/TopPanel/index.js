@@ -35,7 +35,7 @@ class TopPanel extends Component {
     }
 
     render() {
-        const { panel} = this.state;
+        const { panel } = this.state;
         const { visible } = this.props;
         return (
             <div className="top-panel" style={{ display: 'flex', right: visible ? 0 : -400 }}>
@@ -43,8 +43,7 @@ class TopPanel extends Component {
                     onClick={this.handleToggle}
                     style={visible === undefined ? { display: 'none' } : {}}
                 >
-                    <span className={"glyphicon glyphicon-triangle-" + (visible ? "right" : "left")} aria-hidden="true">
-                    </span>
+                    <span className={"glyphicon glyphicon-triangle-" + (visible ? "right" : "left")} />
                 </div>
                 <div className="top-panel-box top-panel-box-first">
                     <button onClick={() => this.handleSelect(panel !== 0 ? 0 : null)} className={"top-panel-button" + (panel === 0 ? " top-panel-button-active" : "")}>Sản phẩm</button>{' '}

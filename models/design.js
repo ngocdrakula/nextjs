@@ -21,6 +21,10 @@ const design = new Schema({
         required: true,
         ref: 'user'
     },
+    enabled: {
+        type: Boolean,
+        default: true
+    }
 }, {
     timestamps: { createdAt: 'createdAt' }
 });
