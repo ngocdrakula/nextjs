@@ -11,15 +11,15 @@ class ProductResult extends Component {
 
     render() {
         const { layout, areaIndex, products, sizes, fronts, search } = this.props;
-        const area = layout?.areas[areaIndex] || {};
+        const area = layout?.areas?.[areaIndex] || {};
         const { type } = area;
         const sortedProducts = products.filter(product => {
             if (search && product.name.search(search) === - 1) return false
             if (!product.image) return false;
             if (!sizes.find(s => !s.uncheck && s._id === product.size._id)) return false;
             if (!fronts.find(f => !f.uncheck && f._id === product.front._id)) return false;
-            if (layout?.room?._id !== product.room) return false;
-            if (type && type !== product.type) return false;
+            if (!product.room.includes(layout?.room?._id)) return false;
+            if (!product.type.includes(type)) return false;
             return true;
         });
         return (

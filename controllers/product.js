@@ -21,6 +21,9 @@ function getlist(query) {
 function removeMany(query) {
     return (productData.deleteMany(query));
 }
+function updateMany(query, params) {
+    return (productData.updateMany(query, params));
+}
 export default {
     create,
     get,
@@ -28,5 +31,6 @@ export default {
     remove,
     find,
     getlist,
-    removeMany
+    removeMany,
+    updateMany
 }

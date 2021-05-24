@@ -18,8 +18,8 @@ const handler = async (req, res) => {
       if (enabled !== undefined) query.enabled = (enabled == "true");
       if (sizeId) query.size = sizeId;
       if (frontId) query.front = frontId;
-      if (roomId) query.room = roomId;
-      if (type) query.type = type;
+      if (roomId) query.room = { $all: [roomId] };;
+      if (type) query.type = { $all: [type] };
       const total = await productController.getlist(query).countDocuments();
       const list = await productController.getlist(query).skip(skip).limit(limit).populate('size').populate('front');
       return res.status(200).send({
@@ -46,12 +46,13 @@ const handler = async (req, res) => {
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
       if (!user?.mode) throw ({ ...user, path: 'token' });
-      const { body: { name, sizeId, frontId, roomId, enabled, type }, files, err } = await uploader(req);
+      const { body: { name, sizeId, frontId, room, enabled, type }, files, err } = await uploader(req);
       if (err || !files.length) throw ({ path: 'files' });
-      if (!name || !sizeId || !frontId || !roomId) {
+      if (!name || !sizeId || !frontId || !room?.length || !type?.length) {
         if (!name) throw ({ path: 'name', files })
         if (!sizeId) throw ({ path: 'sizeId', files })
-        if (!roomId) throw ({ path: 'roomId', files })
+        if (!room?.length) throw ({ path: 'room', files })
+        if (!type?.length) throw ({ path: 'type', files })
         throw ({ path: 'frontId', files })
       }
       try {
@@ -69,24 +70,36 @@ const handler = async (req, res) => {
         throw ({ err, files })
       }
       try {
-        const room = await roomController.get(roomId);
-        if (!room) throw ({ path: '_id', files });
+        const rooms = room.split(',');
+        if (!rooms.length) throw ({});
       } catch (err) {
-        if (err.path == '_id') throw ({ path: 'room', files });
-        throw ({ err, files })
+        throw ({ path: 'room', files });
       }
-      if (!type) throw ({ path: 'type', files });
-
+      try {
+        const types = type.split(',');
+        if (!types.length) throw ({});
+      } catch (err) {
+        throw ({ path: 'type', files });
+      }
       const matchProduct = await productController.find({ name }).populate('size').populate('front');
-      if (matchProduct) throw ({ path: 'product', files, matchProduct })
-      const productCreated = await (await productController.create({ name, size: sizeId, front: frontId, room: roomId, image: files[0], enabled, type })).populate('size').populate('front').execPopulate();
+      if (matchProduct) throw ({ path: 'product', files, matchProduct });
+      const productCreated = await (await productController.create({
+        name,
+        size: sizeId,
+        front: frontId,
+        room: room.split(','),
+        image: files[0],
+        enabled: (enabled == 'true'),
+        type: type.split(','),
+        code: name
+      })).populate('size').populate('front').execPopulate();
       return res.status(201).send({
         success: true,
         data: productCreated,
         message: 'Thêm thành công',
         messages: lang?.message?.success?.created
       });
-    } catch (e) {
+    } catch (e) { 
       if (e.files) await cleanFiles(e.files);
       if (e.path == 'token') {
         if (!e.token) {
@@ -150,12 +163,12 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.frontId, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path == 'roomId') {
+      if (e.path == 'room') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'roomId',
-          message: 'Id kiểu bề mặt không được để trống',
+          field: 'room',
+          message: 'Không gian không được để trống',
           messages: langConcat(lang?.resources?.roomId, lang?.message?.error?.validation?.required)
         });
       }

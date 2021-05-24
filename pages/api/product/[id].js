@@ -42,7 +42,7 @@ const handler = async (req, res) => {
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
       if (!user?.mode) throw ({ ...user, path: 'token' });
-      const { body: { name, sizeId, frontId, roomId, type, enabled }, files, err } = await uploader(req);
+      const { body: { name, sizeId, frontId, room, type, enabled }, files, err } = await uploader(req);
       if (err) throw ({ path: 'files' });
       try {
         const currentProduct = await productController.get(req.query.id);
@@ -67,23 +67,23 @@ const handler = async (req, res) => {
             throw ({ err, files })
           }
         }
-        if (roomId) {
+        if (room) {
           try {
-            const room = await roomController.get(roomId);
-            if (!room) throw ({ path: '_id' })
-            currentProduct.room = roomId;
+            const rooms = room.split(',');
+            if (!rooms.length) throw ({});
+            currentProduct.room = rooms;
           } catch (err) {
-            if (err.path == '_id') throw ({ path: 'room', files });
-            throw ({ err, files })
+            throw ({ path: 'room', files });
           }
         }
-        if (name) {
-          const matchProduct = await productController.find({ name });
-          if (matchProduct) throw ({ path: 'name', files });
-          else currentProduct.name = name;
-        }
-        if (type != undefined) {
-          currentProduct.type = type;
+        if (type) {
+          try {
+            const types = type.split(',');
+            if (!types.length) throw ({});
+            currentProduct.type = types;
+          } catch (err) {
+            throw ({ path: 'type', files });
+          }
         }
         if (enabled != undefined) {
           currentProduct.enabled = (enabled == "true");
