@@ -263,8 +263,8 @@ class ThreeJS extends Component {
             const groupTitle2 = new THREE.Group();
             groupTitle2.add(mesh2);
 
-            const maxX = productWidth / 2 + 2 + (productWidth + grout) * Math.ceil(width / (productWidth + grout));
-            const maxY = productHeight / 2 + 2 + (productHeight + grout) * Math.ceil(height / (productHeight + grout));
+            const maxX = productWidth / 2 + 2 + grout / 2 + (productWidth + grout) * Math.ceil(width * 2 / (productWidth + grout));
+            const maxY = productHeight / 2 + 2 + grout / 2 + (productHeight + grout) * Math.ceil(height * 2 / (productHeight + grout));
             let i;
             for (let x = -maxX; x < maxX; x += productWidth + grout) {
                 let j;

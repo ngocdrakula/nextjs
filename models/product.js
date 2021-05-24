@@ -7,9 +7,10 @@ const product = new Schema({
         required: true
     },
     room: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: [mongoose.Schema.Types.ObjectId],
         required: true,
-        ref: 'room'
+        ref: 'room',
+        default: []
     },
     size: {
         type: mongoose.Schema.Types.ObjectId,
@@ -26,12 +27,19 @@ const product = new Schema({
         required: true
     },
     type: {
-        type: String,
-        default: 'floor'
+        type: [String],
+        required: true,
+        default: []
     },
     enabled: {
         type: Boolean,
         default: true
+    },
+    code: {
+        type: String,
+        require: false,
+        unique: false,
+        default: null
     }
 }, {
     timestamps: { createdAt: 'createdAt' }

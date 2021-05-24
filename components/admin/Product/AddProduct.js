@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { createFormData } from '../../../utils/helper';
 import types from '../../../redux/types';
 import Select from '../Form/Select';
+import CheckList from '../Form/CheckList';
 
 const productTypes = [{ value: 'wall', label: 'Tường' }, { value: 'floor', label: 'Sàn' }];
 
@@ -11,6 +12,7 @@ class AddProduct extends Component {
         super(props);
         this.state = {
             name: '',
+            roomSelecteds: []
         };
     }
     componentDidUpdate(prevProps) {
@@ -25,8 +27,9 @@ class AddProduct extends Component {
                 imageLocal: null,
                 sizeSelected: null,
                 frontSelected: null,
-                roomSelected: null,
-                typeSelected: null,
+                roomSelecteds: [],
+                typeSelecteds: [],
+                loading: false,
             });
         }
     }
@@ -37,12 +40,12 @@ class AddProduct extends Component {
     }
     handleSubmit = e => {
         e.preventDefault();
-        const { name, sizeSelected, frontSelected, roomSelected, typeSelected, enabled, files } = this.state;
+        const { name, sizeSelected, frontSelected, roomSelecteds, typeSelecteds, enabled, files } = this.state;
         if (!name) this.setState({ field: 'name', message: 'Tên sản phẩm là bắt buộc' });
         else if (!frontSelected) this.setState({ field: 'front', message: 'Loại bề mặt chưa được chọn' });
         else if (!sizeSelected) this.setState({ field: 'size', message: 'Kích thước chưa được chọn' });
-        else if (!roomSelected) this.setState({ field: 'room', message: 'Khu vực chưa được chọn' });
-        else if (!typeSelected) this.setState({ field: 'type', message: 'Loại sản phẩm chưa được chọn' });
+        else if (!roomSelecteds.length) this.setState({ field: 'room', message: 'Khu vực chưa được chọn' });
+        else if (!typeSelecteds.length) this.setState({ field: 'type', message: 'Loại sản phẩm chưa được chọn' });
         else if (!files?.length) this.setState({ field: 'files', message: 'Ảnh chưa được chọn' });
         else {
             const data = {
@@ -50,8 +53,8 @@ class AddProduct extends Component {
                 enabled,
                 sizeId: sizeSelected.value,
                 frontId: frontSelected.value,
-                roomId: roomSelected.value,
-                type: typeSelected.value,
+                room: roomSelecteds.join(','),
+                type: typeSelecteds.join(','),
                 files
             };
             const formData = createFormData(data);
@@ -129,15 +132,17 @@ class AddProduct extends Component {
                                                         <span>Khu vực: </span>
                                                         {field === 'room' && message ? <span className="error-field">({message})</span> : ""}
                                                     </label>
-                                                    <Select
+                                                    <CheckList
+                                                        id={`${visible}`}
                                                         data={roomSelects}
-                                                        onChange={(id, roomSelected) => this.setState({ roomSelected })}
+                                                        onChange={roomSelecteds => this.setState({ roomSelecteds })}
                                                         hover="Chọn khu vực"
                                                     />
                                                 </div>
                                                 <div className="form-group">
                                                     <label>Kích thước: <span className="error-field">{field === 'size' && message ? `(${message})` : ""}</span></label>
                                                     <Select
+                                                        id={`${visible}`}
                                                         data={sizeSelects}
                                                         onChange={(id, sizeSelected) => this.setState({ sizeSelected })}
                                                         hover="Chọn kích thước"
@@ -146,6 +151,7 @@ class AddProduct extends Component {
                                                 <div className="form-group">
                                                     <label>Loại bề mặt: <span className="error-field">{field === 'front' && message ? `(${message})` : ""}</span></label>
                                                     <Select
+                                                        id={`${visible}`}
                                                         data={frontSelects}
                                                         onChange={(id, frontSelected) => this.setState({ frontSelected })}
                                                         hover="Chọn bề mặt"
@@ -179,9 +185,10 @@ class AddProduct extends Component {
                                                             : ""
                                                         }
                                                     </label>
-                                                    <Select
+                                                    <CheckList
+                                                        id={`${visible}`}
                                                         data={productTypes}
-                                                        onChange={(id, typeSelected) => this.setState({ typeSelected })}
+                                                        onChange={typeSelecteds => this.setState({ typeSelecteds })}
                                                         hover="Chọn loại sản phẩm"
                                                     />
                                                 </div>

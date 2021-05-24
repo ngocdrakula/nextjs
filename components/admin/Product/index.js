@@ -268,16 +268,16 @@ class Product extends Component {
                                             hover="Tìm theo loại sản phẩm"
                                         />
                                     </div>
-                                    <div className="col-3">
+                                    <div className="col-6">
                                         <div className="row">
-                                            <div className="col-8">
+                                            <div className="col-6">
                                                 <Checkbox
                                                     onChange={() => this.setState({ filterEnable: !filterEnable })}
                                                     checked={filterEnable ? "checked" : ""}
                                                 />
-                                                <span style={{ lineHeight: 2, cursor: 'pointer' }} onClick={() => this.setState({ filterEnable: !filterEnable })}>Trạng thái{filterEnable ? ":" : ""}</span>
+                                                <span style={{ lineHeight: 2, cursor: 'pointer' }} onClick={() => this.setState({ filterEnable: !filterEnable })}>Lọc theo trạng thái{filterEnable ? ":" : ""}</span>
                                             </div>
-                                            <div className="col-4 d-flex justify-content-center align-items-center">
+                                            <div className="col-6 d-flex justify-content-start align-items-center">
                                                 {filterEnable ?
                                                     <Switch
                                                         id="product-filterEnable"
@@ -292,7 +292,7 @@ class Product extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-6 d-flex justify-content-end">
+                                    <div className="col-3 d-flex justify-content-end">
                                         <div>
                                             <button className="btn btn-primary" type="submit">Tìm kiếm</button>
                                         </div>
@@ -330,8 +330,8 @@ class Product extends Component {
                                             </tr>
                                             {data.map(product => {
                                                 const checked = (selecteds.indexOf(product._id) + 1) ? "checked" : "";
-                                                const room = rooms.find(r => r._id === product.room);
-                                                const type = productTypes.find(t => t.value === product.type);
+                                                const roomList = rooms.filter(r => product.room.includes(r._id));
+                                                const typeList = productTypes.filter(t => product.type.includes(t.value));
                                                 return (
                                                     <tr key={product._id} style={{ textAlign: 'center' }}>
                                                         <td className="align-middle">
@@ -365,7 +365,9 @@ class Product extends Component {
                                                         </td>
                                                         <td className="text-nowrap align-middle">{product.name}</td>
                                                         <td className="text-nowrap align-middle">
-                                                            <span>{room?.name}</span>
+                                                            {roomList.map((room, index) => {
+                                                                return (<span key={room._id}>{index ? <>,<br /></> : ''}{room?.name}</span>)
+                                                            })}
                                                         </td>
                                                         <td className="text-nowrap align-middle">
                                                             <span>{product.size.width}x{product.size.height} mm</span>
@@ -374,7 +376,9 @@ class Product extends Component {
                                                             <span>{product.front.name}</span>
                                                         </td>
                                                         <td className="text-nowrap align-middle">
-                                                            <span>{type?.label}</span>
+                                                            {typeList.map((type, index) => {
+                                                                return (<span key={type.value}>{index ? <>,<br /></> : ''}{type?.label}</span>)
+                                                            })}
                                                         </td>
                                                         <td className="text-center align-middle">
                                                             <Switch

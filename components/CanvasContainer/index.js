@@ -15,7 +15,7 @@ class CanvasContainer extends Component {
         const { layout } = this.props;
         return (
             <div id="container" className="room-canvas-container" style={{}}>
-                {layout ? <ThreeJS handleLoading={this.handleLoading} /> : ''}
+                {layout?._id ? <ThreeJS handleLoading={this.handleLoading} /> : ''}
                 <div id="loadAnimationContainer" style={!loading ? { display: 'none' } : {}}>
                     <p>Applying Tiles</p>
                     <div className="circles marginLeft">

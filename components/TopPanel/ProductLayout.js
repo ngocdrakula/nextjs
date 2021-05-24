@@ -24,7 +24,7 @@ class ProductLayout extends Component {
 
     render() {
         const { active, dispatch, layout, areaIndex } = this.props;
-        const area = layout?.areas[areaIndex] || {};
+        const area = layout?.areas?.[areaIndex] || {};
         const { skewType, skewValue, custom, customRotate } = area;
         return (
             <div className="top-panel-option-box top-panel-box-overflow-y" style={!active ? { display: 'none' } : {}}>

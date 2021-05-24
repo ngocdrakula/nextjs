@@ -27,7 +27,7 @@ class Grout extends Component {
     componentDidUpdate(prevProps) {
         if (this.props.areaIndex !== prevProps.areaIndex) {
             const { layout, areaIndex } = this.props;
-            const area = layout?.areas[areaIndex] || {};
+            const area = layout?.areas?.[areaIndex] || {};
             const { grout } = area;
             this.setState({ currentGrout: grout || 2 })
         }
@@ -36,7 +36,7 @@ class Grout extends Component {
     render() {
         const { currentGrout } = this.state;
         const { active, dispatch, layout, areaIndex } = this.props;
-        const area = layout?.areas[areaIndex] || {};
+        const area = layout?.areas?.[areaIndex] || {};
         const { color = '#ffffff' } = area;
         return (
             <div className="top-panel-option-box" style={!active ? { display: 'none' } : {}}>

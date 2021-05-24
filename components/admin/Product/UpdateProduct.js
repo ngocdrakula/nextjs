@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { createFormData, getThumbnail } from '../../../utils/helper';
 import types from '../../../redux/types';
 import Select from '../Form/Select';
+import CheckList from '../Form/CheckList';
 
 const productTypes = [{ value: 'wall', label: 'Tường' }, { value: 'floor', label: 'Sàn' }];
 
@@ -21,8 +22,8 @@ class UpdateProduct extends Component {
                 imageLocal: null,
                 sizeSelected: null,
                 frontSelected: null,
-                roomSelected: null,
-                typeSelected: null,
+                roomSelecteds: [],
+                typeSelecteds: [],
             });
         }
     }
@@ -33,15 +34,15 @@ class UpdateProduct extends Component {
     }
     handleSubmit = e => {
         e.preventDefault();
-        const { _id, name, sizeSelected, frontSelected, roomSelected, typeSelected, enabled, files } = this.state;
+        const { _id, name, sizeSelected, frontSelected, roomSelecteds, typeSelecteds, enabled, files } = this.state;
         if (!name) this.setState({ field: 'name', message: 'Tên sản phẩm không được để trống' });
         else {
             const data = { enabled };
             if (name !== this.props.product.name) data.name = name;
             if (sizeSelected) data.sizeId = sizeSelected.value;
             if (frontSelected) data.frontId = frontSelected.value;
-            if (roomSelected) data.roomId = roomSelected.value;
-            if (typeSelected) data.type = typeSelected.value;
+            if (roomSelecteds.length) data.room = roomSelecteds.join(',');
+            if (typeSelecteds.length) data.type = typeSelecteds.join(',');
             if (files && files.length) data.files = files;
 
             const formData = createFormData(data);
@@ -78,13 +79,12 @@ class UpdateProduct extends Component {
     }
     render() {
         const { product, fronts, sizes, rooms } = this.props;
-        const { enabled, front, room, type, name, size, loading } = this.state;
+        const { _id, enabled, front, room, type, name, size, loading } = this.state;
         const { imageLocal, field, message } = this.state;
-
         const { width, height } = size || {};
         const sizeName = `${width}x${height} mm`;
-        const oldRoom = rooms.find(r => r._id === room);
-        const oldType = productTypes.find(t => t.value === type);
+        const oldRooms = rooms.map(r => r._id).filter(r => room?.includes(r));
+        const oldTypes = productTypes.map(t => t.value).filter(t => type?.includes(t));
 
         const sizeSelects = sizes.filter(s => s.enabled).map(s => ({ value: s._id, label: `${s.width}x${s.height} mm` }));
         const frontSelects = fronts.filter(f => f.enabled).map(f => ({ value: f._id, label: f.name }));
@@ -125,10 +125,12 @@ class UpdateProduct extends Component {
                                                             : ""
                                                         }
                                                     </label>
-                                                    <Select
+                                                    <CheckList
+                                                        id={_id}
                                                         data={roomSelects}
-                                                        onChange={(id, roomSelected) => this.setState({ roomSelected })}
-                                                        hover={oldRoom?.name}
+                                                        onChange={roomSelecteds => this.setState({ roomSelecteds })}
+                                                        hover="Chọn khu vực"
+                                                        selecteds={oldRooms}
                                                     />
                                                 </div>
                                                 <div className="form-group">
@@ -140,6 +142,7 @@ class UpdateProduct extends Component {
                                                         }
                                                     </label>
                                                     <Select
+                                                        id={`${product ? 1 : 0}`}
                                                         data={sizeSelects}
                                                         onChange={(id, sizeSelected) => this.setState({ sizeSelected })}
                                                         hover={sizeName}
@@ -154,6 +157,7 @@ class UpdateProduct extends Component {
                                                         }
                                                     </label>
                                                     <Select
+                                                        id={`${product ? 1 : 0}`}
                                                         data={frontSelects}
                                                         onChange={(id, frontSelected) => this.setState({ frontSelected })}
                                                         hover={front?.name}
@@ -187,10 +191,12 @@ class UpdateProduct extends Component {
                                                             : ""
                                                         }
                                                     </label>
-                                                    <Select
+                                                    <CheckList
+                                                        id={_id}
                                                         data={productTypes}
-                                                        onChange={(id, typeSelected) => this.setState({ typeSelected })}
-                                                        hover={oldType?.label}
+                                                        onChange={typeSelecteds => this.setState({ typeSelecteds })}
+                                                        hover="Chọn loại sản phẩm"
+                                                        selecteds={oldTypes}
                                                     />
                                                 </div>
                                             </div>

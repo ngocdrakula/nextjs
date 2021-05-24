@@ -263,15 +263,15 @@ const appReducer = (state = initState, action) => {
             };
         }
         case types.CHANGE_COLOR: {
-            const { areaIndex, layout } = state;
-            if (layout && areaIndex + 1) {
+            const { areaIndex, layout: { ...layout } } = state;
+            if (areaIndex + 1) {
                 layout.areas = [...layout.areas];
                 layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
                 layout.areas[areaIndex].color = action.payload;
             }
             return {
                 ...state,
-                layout: layout ? { ...layout } : null
+                layout
             };
         }
         case types.CHANGE_CUSTOM: {

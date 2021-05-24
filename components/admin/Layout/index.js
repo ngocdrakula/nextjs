@@ -243,16 +243,16 @@ class Layout extends Component {
                                             hover="Tìm theo khu vực"
                                         />
                                     </div>
-                                    <div className="col-3">
+                                    <div className="col-4">
                                         <div className="row">
-                                            <div className="col-8">
+                                            <div className="col-9">
                                                 <Checkbox
                                                     onChange={() => this.setState({ filterEnable: !filterEnable })}
                                                     checked={filterEnable ? "checked" : ""}
                                                 />
-                                                <span style={{ lineHeight: 2, cursor: 'pointer' }} onClick={() => this.setState({ filterEnable: !filterEnable })}>Trạng thái{filterEnable ? ":" : ""}</span>
+                                                <span style={{ lineHeight: 2, cursor: 'pointer' }} onClick={() => this.setState({ filterEnable: !filterEnable })}>Lọc theo trạng thái{filterEnable ? ":" : ""}</span>
                                             </div>
-                                            <div className="col-4 d-flex justify-content-center align-items-center">
+                                            <div className="col-3 d-flex justify-content-start align-items-center">
                                                 {filterEnable ?
                                                     <Switch
                                                         id="product-filterEnable"
@@ -267,7 +267,7 @@ class Layout extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-3 d-flex justify-content-end">
+                                    <div className="col-2 d-flex justify-content-end">
                                         <div>
                                             <button className="btn btn-primary" type="submit">Tìm kiếm</button>
                                         </div>

@@ -10,6 +10,11 @@ export default class Select extends Component {
         window.removeEventListener('click', this.handleClickOutside);
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.id !== prevProps.id) {
+            this.setState({ selected: null });
+        }
+    }
     handleClickOutside = (e) => {
         if (this.input?.current && !this.input.current.contains(e.target)) {
             this.handleClick();
