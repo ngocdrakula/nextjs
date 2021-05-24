@@ -24,7 +24,6 @@ class ProductLayout extends Component {
         const { dispatch } = this.props;
         const paint = new CP(document.getElementById('paint-color-picker'));
         paint.on('change', function (color) {
-            console.log('color', color)
             dispatch({
                 type: types.CHANGE_PAINT,
                 payload: `#${color}`

@@ -305,6 +305,7 @@ class ThreeJS extends Component {
             }
         }
         else {
+            renderer.setClearColor(0xffffff, 0);
             this.handleRender();
         }
     }
