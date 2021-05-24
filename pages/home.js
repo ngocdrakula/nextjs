@@ -10,6 +10,11 @@ class Home extends Component {
         super(props);
         this.state = {};
     }
+    componentDidMount() {
+        const { dispatch } = this.props;
+        dispatch({ type: types.ADMIN_GET_SETTING, });
+    }
+
     handleSelect = (e, isRegister) => {
         e.preventDefault();
         this.setState({ isRegister })

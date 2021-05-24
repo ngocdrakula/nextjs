@@ -48,6 +48,14 @@ const handler = async (req, res) => {
           await cleanFiles([currentDesign.image]);
           currentDesign.image = files[0];
         }
+        if (areas) {
+          try {
+            const areasParser = JSON.parse(areas);
+            currentDesign.areas = areasParser;
+          } catch (err) {
+            throw ({ path: 'areas', files });
+          }
+        }
         const designUpdated = await (await currentDesign.save()).populate('layout').execPopulate();
         return res.status(200).send({
           success: true,
@@ -116,7 +124,7 @@ const handler = async (req, res) => {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
-      if (!user?.mode) throw ({ ...user, path: 'token' });
+      if (!user?._id) throw ({ ...user, path: 'token' });
       const currentDesign = await designController.get(req.query.id);
       if (!currentDesign) throw ({ path: '_id' });
       cleanFiles([currentDesign.image])

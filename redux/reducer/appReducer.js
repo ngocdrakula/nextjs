@@ -205,7 +205,7 @@ const appReducer = (state = initState, action) => {
         }
         case types.SELECT_PRODUCT: {
             const { areaIndex, layout: { ...layout } } = state;
-            if (areaIndex + 1) {
+            if (layout.areas?.[areaIndex]) {
                 layout.areas = [...layout.areas];
                 layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
                 if (layout.areas[areaIndex].custom || layout.areas[areaIndex].customRotate) {
@@ -214,6 +214,7 @@ const appReducer = (state = initState, action) => {
                 else {
                     layout.areas[areaIndex].products = [action.payload];
                 }
+                layout.areas[areaIndex].paint = null;
             }
             return {
                 ...state,
@@ -223,11 +224,12 @@ const appReducer = (state = initState, action) => {
         }
         case types.SELECT_FIRST_PRODUCT: {
             const { areaIndex, layout: { ...layout } } = state;
-            if (areaIndex + 1) {
+            if (layout.areas?.[areaIndex]) {
                 layout.areas = [...layout.areas];
                 layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
                 layout.areas[areaIndex].products = [...layout.areas[areaIndex].products];
                 layout.areas[areaIndex].products[0] = action.payload;
+                layout.areas[areaIndex].paint = null;
             }
             return {
                 ...state,
@@ -237,12 +239,13 @@ const appReducer = (state = initState, action) => {
         }
         case types.SELECT_SECOND_PRODUCT: {
             const { areaIndex, layout: { ...layout } } = state;
-            if (areaIndex + 1) {
+            if (layout.areas?.[areaIndex]) {
                 layout.areas = [...layout.areas];
                 layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
                 layout.areas[areaIndex].products = [...layout.areas[areaIndex].products];
                 if (layout.areas[areaIndex].products[1]) layout.areas[areaIndex].products[1] = action.payload;
-                else layout.areas[areaIndex].products.push(action.payload)
+                else layout.areas[areaIndex].products.push(action.payload);
+                layout.areas[areaIndex].paint = null;
             }
             return {
                 ...state,
@@ -252,7 +255,7 @@ const appReducer = (state = initState, action) => {
         }
         case types.CHANGE_GROUT: {
             const { areaIndex, layout: { ...layout } } = state;
-            if (areaIndex + 1) {
+            if (layout.areas?.[areaIndex]) {
                 layout.areas = [...layout.areas];
                 layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
                 layout.areas[areaIndex].grout = action.payload;
@@ -264,7 +267,7 @@ const appReducer = (state = initState, action) => {
         }
         case types.CHANGE_COLOR: {
             const { areaIndex, layout: { ...layout } } = state;
-            if (areaIndex + 1) {
+            if (layout.areas?.[areaIndex]) {
                 layout.areas = [...layout.areas];
                 layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
                 layout.areas[areaIndex].color = action.payload;
@@ -274,9 +277,21 @@ const appReducer = (state = initState, action) => {
                 layout
             };
         }
+        case types.CHANGE_PAINT: {
+            const { areaIndex, layout: { ...layout } } = state;
+            if (layout.areas?.[areaIndex]) {
+                layout.areas = [...layout.areas];
+                layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
+                layout.areas[areaIndex].paint = action.payload;
+            }
+            return {
+                ...state,
+                layout
+            };
+        }
         case types.CHANGE_CUSTOM: {
             const { areaIndex, layout: { ...layout } } = state;
-            if (areaIndex + 1) {
+            if (layout.areas?.[areaIndex]) {
                 layout.areas = [...layout.areas];
                 layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
                 layout.areas[areaIndex].custom = action.payload;
@@ -288,7 +303,7 @@ const appReducer = (state = initState, action) => {
         }
         case types.CHANGE_CUSTOM_ROTATE: {
             const { areaIndex, layout: { ...layout } } = state;
-            if (areaIndex + 1) {
+            if (layout.areas?.[areaIndex]) {
                 layout.areas = [...layout.areas];
                 layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
                 layout.areas[areaIndex].customRotate = action.payload;
@@ -300,7 +315,7 @@ const appReducer = (state = initState, action) => {
         }
         case types.CHANGE_SKEW_TYPE: {
             const { areaIndex, layout: { ...layout } } = state;
-            if (areaIndex + 1) {
+            if (layout.areas?.[areaIndex]) {
                 layout.areas = [...layout.areas];
                 layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
                 layout.areas[areaIndex].skewType = action.payload;
@@ -313,7 +328,7 @@ const appReducer = (state = initState, action) => {
         }
         case types.CHANGE_SKEW_VALUE: {
             const { areaIndex, layout: { ...layout } } = state;
-            if (areaIndex + 1) {
+            if (layout.areas?.[areaIndex]) {
                 layout.areas = [...layout.areas];
                 layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
                 layout.areas[areaIndex].skewValue = action.payload;
@@ -325,7 +340,7 @@ const appReducer = (state = initState, action) => {
         }
         case types.CHANGE_ROTATE: {
             const { areaIndex, layout: { ...layout } } = state;
-            if (areaIndex + 1) {
+            if (layout.areas?.[areaIndex]) {
                 layout.areas = [...layout.areas];
                 layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
                 layout.areas[areaIndex].rotate = action.payload;

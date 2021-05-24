@@ -20,9 +20,9 @@ class Rotation extends Component {
     render() {
         const { dispatch, layout, areaIndex } = this.props;
         const area = layout?.areas?.[areaIndex] || {};
-        const { rotate } = area;
+        const { rotate, paint } = area;
         return (
-            <div className="top-panel-box radio-surface-rotation">
+            <div className="top-panel-box radio-surface-rotation" style={{ display: paint ? 'none' : 'block' }}>
                 <span className="top-panel-label">Xoay góc ốp/lát:</span>
                 {rotations.map((rotation, index) => {
                     return (

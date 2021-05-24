@@ -6,11 +6,13 @@ import { wrapper } from '../../redux/store';
 import types from '../../redux/types'
 
 const Head = dynamic(() => import('../../components/Head'));
+const Body = dynamic(() => import('../../components/Body'));
 const Logo = dynamic(() => import('../../components/Logo'));
 const BottomPanel = dynamic(() => import('../../components/BottomPanel'));
 const CanvasContainer = dynamic(() => import('../../components/CanvasContainer'));
 const TopPanel = dynamic(() => import('../../components/TopPanel'));
 const Progress = dynamic(() => import('../../components/Progress'));
+const Footer = dynamic(() => import('../../components/Footer'));
 
 
 class Room2d extends Component {
@@ -25,12 +27,14 @@ class Room2d extends Component {
     render() {
         return (
             <div className="modal-open">
-                <Head />
-                <Progress />
-                <CanvasContainer />
-                <Logo />
-                <TopPanel />
-                <BottomPanel />
+            <Head />
+            <Body />
+            <Progress />
+            <CanvasContainer />
+            <Logo />
+            <TopPanel />
+            <BottomPanel />
+            <Footer />
             </div>
         );
     }
@@ -38,6 +42,7 @@ class Room2d extends Component {
 
 export const getStaticProps = wrapper.getStaticProps(async ({ store, params }) => {
     //call all data for SSR
+    store.dispatch({ type: types.ADMIN_GET_SETTING, });
     store.dispatch({ type: types.GET_FRONTS, payload: { page: 0, pageSize: 0, enabled: true } });
     store.dispatch({ type: types.GET_SIZES, payload: { page: 0, pageSize: 0, enabled: true } });
     store.dispatch({ type: types.GET_ROOMS, payload: { page: 0, pageSize: 0, enabled: true } });

@@ -210,7 +210,7 @@ function* admin_getLayouts({ payload, callback }) {
 function* admin_addLayout({ payload, callback }) {
     try {
         const res = yield call(requests.admin_addLayoutRequest, payload);
-        if (res?.data?.success) { 
+        if (res?.data?.success) {
             yield put({ type: types.ADMIN_ADD_LAYOUT_SUCCESS, payload: res.data });
             if (typeof callback === 'function') callback(res);
         }
@@ -267,6 +267,32 @@ function* admin_deleteMultiLayout({ payload, callback }) {
         if (typeof callback === 'function') callback(e.response);
     }
 }
+function* admin_getSetting({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_getSettingRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_GET_SETTING_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_GET_SETTING_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+
+function* admin_updateSetting({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_updateSettingRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_UPDATE_SETTING_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_UPDATE_SETTING_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+
 
 
 export default function* appSaga() {
@@ -297,5 +323,8 @@ export default function* appSaga() {
         yield takeEvery(types.ADMIN_UPDATE_LAYOUT, admin_updateLayout),
         yield takeEvery(types.ADMIN_DELETE_LAYOUT, admin_deleteLayout),
         yield takeEvery(types.ADMIN_DELETE_MULTI_LAYOUT, admin_deleteMultiLayout),
+
+        yield takeEvery(types.ADMIN_GET_SETTING, admin_getSetting),
+        yield takeEvery(types.ADMIN_UPDATE_SETTING, admin_updateSetting),
     ])
 }
