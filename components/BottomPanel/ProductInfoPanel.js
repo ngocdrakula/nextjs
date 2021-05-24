@@ -19,9 +19,9 @@ class ProductInfoPanel extends Component {
                         return (
                             <React.Fragment key={index}>
                                 <p className="top-panel-label">{area.name}</p>
-                                {products.map(product => {
+                                {products.map((product, index) => {
                                     return (
-                                        <div key={product._id} className="top-panel-content-tiles-list-item">
+                                        <div key={index + product._id} className="top-panel-content-tiles-list-item">
                                             <div className="tile-list-thumbnail-image-holder">
                                                 <img src={"/api/images/" + getThumbnail(product)} className="tile-list-thumbnail" />
                                             </div>

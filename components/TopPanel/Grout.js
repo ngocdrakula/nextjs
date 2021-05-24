@@ -41,7 +41,7 @@ class Grout extends Component {
         return (
             <div className="top-panel-option-box" style={!active ? { display: 'none' } : {}}>
                 <div id="topPanelContentSurfaceTabGroutSizeBody" className="top-panel-box">
-                    <span className="top-panel-label stiled-checkbox-text">Kích thuớc mạch</span>
+                    <span className="top-panel-label stiled-checkbox-text">Kích thước mạch</span>
                     <input
                         id="topPanelGroutSizeRange"
                         type="range"

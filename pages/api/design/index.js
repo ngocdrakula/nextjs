@@ -59,7 +59,12 @@ const handler = async (req, res) => {
         if (err.path == '_id') throw ({ path: 'layout', files });
         throw ({ err, files })
       }
-      const designCreated = await designController.create({ name, layout: layoutId, author: userId, image: files[0] });
+      try {
+        const areasParser = JSON.parse(areas);
+      } catch (err) {
+        throw ({ path: 'areas', files });
+      }
+      const designCreated = await designController.create({ name, layout: layoutId, areas: JSON.parse(areas), author: user._id, image: files[0] });
       return res.status(201).send({
         success: true,
         data: designCreated,

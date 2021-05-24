@@ -6,8 +6,9 @@ export const initState = {
     room: { data: [], page: 0, total: 0 },
     layout: { data: [], page: 0, total: 0 },
     size: { data: [], page: 0, total: 0 },
-    front: { data: [], page: 0, total: 0 }, 
-    user: null
+    front: { data: [], page: 0, total: 0 },
+    user: null,
+    setting: {}
 }
 const appReducer = (state = initState, action) => {
     switch (action.type) {
@@ -103,6 +104,21 @@ const appReducer = (state = initState, action) => {
                     ...state.layout,
                     data
                 }
+            };
+        }
+
+        case types.ADMIN_GET_SETTING_SUCCESS: {
+            const { data } = action.payload
+            return {
+                ...state,
+                setting: data || {}
+            };
+        }
+        case types.ADMIN_UPDATE_SETTING_SUCCESS: {
+            const { data } = action.payload
+            return {
+                ...state,
+                setting: data || {}
             };
         }
         default: {

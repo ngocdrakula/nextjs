@@ -30,7 +30,11 @@ class ThreeJS extends Component {
         if (areaIndex + 1 && areaIndex < areas.length) {
             const currentArea = areas[areaIndex];
             const prevArea = prevAreas[areaIndex];
-            if (currentArea.products) {
+            if (currentArea.paint !== prevArea.paint) {
+                handleLoading(true);
+                this.handleLoader(areaIndex);
+            }
+            else if (currentArea.products) {
                 if (currentArea.products !== prevArea.products) {
                     handleLoading(true);
                     this.handleLoader(areaIndex);
@@ -215,80 +219,92 @@ class ThreeJS extends Component {
             grout = 2,
             color = 0xffffff,
             width, height,
-            rotate, skewType, skewValue
+            rotate, skewType, skewValue,
+            paint
         } = areas[index];
-        const [p1, p2] = products;
-        group.clear();
-        if (rotate + 1) group.rotation.set(0, 0, deg(rotate));
-        renderer.setClearColor(color, 1);
-        let count = 0;
-        const productWidth = p1.size.width, productHeight = p1.size.height;
-        const texture = new THREE.TextureLoader().load("/api/images/" + p1.image, () => { count++; if (count === products.length) addMesh() });
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.wrapS = texture.wrapT = 1001;
-        // texture.encoding = THREE.sRGBEncoding;
-        texture.encoding = 3000;
-        texture.flipY = true;
-        texture.format = 1023;
-        texture.generateMipmaps = true;
-        texture.magFilter = 1006;
-        texture.mapping = 300;
-        texture.minFilter = 1008;
-        texture.needsUpdate = true;
-        texture.anisotropy = 16;
-        texture.opacity = 1;
-        texture.unpackAlignment = 4;
-        texture.type = 1009;
-        let texture2 = null;
-        if (p2) {
-            texture2 = new THREE.TextureLoader().load("/api/images/" + p2.image, () => { count++; if (count === products.length) addMesh() });
-            texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping;
-            texture2.needsUpdate = true;
-            texture2.anisotropy = 16;
-        }
-        const addMesh = () => {
-            const material = new THREE.MeshBasicMaterial({
-                map: texture,
-            });
-            const mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1), material);
-            mesh.scale.set(productWidth, productHeight);
-            mesh.userData.product = p1;
-            const groupTitle = new THREE.Group();
-            groupTitle.add(mesh);
-
-            const material2 = new THREE.MeshBasicMaterial(texture2 ? { map: texture2 } : { color: new THREE.Color(color) });
-            const mesh2 = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1), material2);
-            mesh2.scale.set(productWidth, productHeight);
-            mesh2.product = p2;
-            const groupTitle2 = new THREE.Group();
-            groupTitle2.add(mesh2);
-
-            const maxX = productWidth / 2 + 2 + grout / 2 + (productWidth + grout) * Math.ceil(width * 2 / (productWidth + grout));
-            const maxY = productHeight / 2 + 2 + grout / 2 + (productHeight + grout) * Math.ceil(height * 2 / (productHeight + grout));
-            let i;
-            for (let x = -maxX; x < maxX; x += productWidth + grout) {
-                let j;
-                for (let y = -maxY; y < maxY; y += productHeight + grout) {
-                    let groupClone;
-                    if (i === j || skewType !== 1) {
-                        groupClone = groupTitle.clone();
-                    }
-                    else groupClone = groupTitle2.clone();
-                    groupClone.position.set(x, y, 0);
-                    group.add(groupClone);
-                    if (skewType === 2 && j) {
-                        if (!skewValue) skewValue = 1 / 2;
-                        groupClone.position.set(x + (productHeight + grout) * skewValue, y, 0);
-                    }
-                    else if (skewType === 3 && i) {
-                        if (!skewValue) skewValue = 1 / 2;
-                        groupClone.position.set(x, y + (productHeight + grout) * skewValue, 0);
-                    }
-                    j = !j;
-                }
-                i = !i;
-            };
+        if (paint) {
+            group.clear();
+            renderer.setClearColor(paint, 1);
             this.handleDraw(index);
+            this.handleRender();
+        }
+        else if (products?.length) {
+            const [p1, p2] = products;
+            group.clear();
+            if (rotate + 1) group.rotation.set(0, 0, deg(rotate));
+            renderer.setClearColor(color, 1);
+            let count = 0;
+            const productWidth = p1.size.width, productHeight = p1.size.height;
+            const texture = new THREE.TextureLoader().load("/api/images/" + p1.image, () => { count++; if (count === products.length) addMesh() });
+            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            texture.wrapS = texture.wrapT = 1001;
+            // texture.encoding = THREE.sRGBEncoding;
+            texture.encoding = 3000;
+            texture.flipY = true;
+            texture.format = 1023;
+            texture.generateMipmaps = true;
+            texture.magFilter = 1006;
+            texture.mapping = 300;
+            texture.minFilter = 1008;
+            texture.needsUpdate = true;
+            texture.anisotropy = 16;
+            texture.opacity = 1;
+            texture.unpackAlignment = 4;
+            texture.type = 1009;
+            let texture2 = null;
+            if (p2) {
+                texture2 = new THREE.TextureLoader().load("/api/images/" + p2.image, () => { count++; if (count === products.length) addMesh() });
+                texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping;
+                texture2.needsUpdate = true;
+                texture2.anisotropy = 16;
+            }
+            const addMesh = () => {
+                const material = new THREE.MeshBasicMaterial({
+                    map: texture,
+                });
+                const mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1), material);
+                mesh.scale.set(productWidth, productHeight);
+                mesh.userData.product = p1;
+                const groupTitle = new THREE.Group();
+                groupTitle.add(mesh);
+
+                const material2 = new THREE.MeshBasicMaterial(texture2 ? { map: texture2 } : { color: new THREE.Color(color) });
+                const mesh2 = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1), material2);
+                mesh2.scale.set(productWidth, productHeight);
+                mesh2.product = p2;
+                const groupTitle2 = new THREE.Group();
+                groupTitle2.add(mesh2);
+
+                const maxX = productWidth / 2 + 2 + grout / 2 + (productWidth + grout) * Math.ceil(width * 2 / (productWidth + grout));
+                const maxY = productHeight / 2 + 2 + grout / 2 + (productHeight + grout) * Math.ceil(height * 2 / (productHeight + grout));
+                let i;
+                for (let x = -maxX; x < maxX; x += productWidth + grout) {
+                    let j;
+                    for (let y = -maxY; y < maxY; y += productHeight + grout) {
+                        let groupClone;
+                        if (i === j || skewType !== 1) {
+                            groupClone = groupTitle.clone();
+                        }
+                        else groupClone = groupTitle2.clone();
+                        groupClone.position.set(x, y, 0);
+                        group.add(groupClone);
+                        if (skewType === 2 && j) {
+                            if (!skewValue) skewValue = 1 / 2;
+                            groupClone.position.set(x + (productWidth + grout) * skewValue, y, 0);
+                        }
+                        else if (skewType === 3 && i) {
+                            if (!skewValue) skewValue = 1 / 2;
+                            groupClone.position.set(x, y + (productHeight + grout) * skewValue, 0);
+                        }
+                        j = !j;
+                    }
+                    i = !i;
+                };
+                this.handleDraw(index);
+                this.handleRender();
+            }
+        }
+        else {
             this.handleRender();
         }
     }
@@ -304,6 +320,7 @@ class ThreeJS extends Component {
     }
     handleDraw = (index) => {
         const { layout: { areas } } = this.props;
+        if (!areas[index]) return null;
         const { hoverArea, } = areas[index];
         const { renderer, camera, scene, canvas } = this.areas[index];
         renderer.render(scene, camera);
@@ -324,7 +341,11 @@ class ThreeJS extends Component {
         const { layout: { areas } } = this.props;
         this.ctx.drawImage(this.background, 0, 0, WIDTH, HEIGHT);
         this.areas.map(({ canvas, mattCanvas, smoothCanvas, surfCanvas, hover, hoverCanvas }, index) => {
-            if (areas[index].products) {
+            if (areas[index].paint) {
+                this.ctx.drawImage(canvas, 0, 0, WIDTH, HEIGHT);
+                this.ctx.drawImage(mattCanvas, 0, 0, WIDTH, HEIGHT);
+            }
+            else if (areas[index].products) {
                 this.ctx.drawImage(canvas, 0, 0, WIDTH, HEIGHT);
                 const type = areas[index].products[0].front.type;
                 if (type === 1) this.ctx.drawImage(mattCanvas, 0, 0, WIDTH, HEIGHT);

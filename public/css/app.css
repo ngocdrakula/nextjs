@@ -8656,6 +8656,19 @@ p {
     max-height: 160px
 }
 
+@media only screen and (max-width: 600px) {
+    .logo {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        cursor: pointer
+    }
+    .logo img {
+        max-width: 100px;
+        max-height: 64px
+    }
+}
+
 .top-panel {
     display: -ms-flexbox;
     display: flex;
@@ -8665,6 +8678,7 @@ p {
     top: 20px;
     right: 0;
     width: 400px;
+    max-width: calc(100% - 20px);
     max-height: 90%;
     max-height: calc(100% - 54px);
     background-color: rgba(255, 255, 255, .8)
@@ -8765,6 +8779,13 @@ p {
     margin-right: 7px
 }
 
+@media only screen and (max-width: 419px) {
+    .top-panel-button {
+        width: 30%;
+        margin-right: 3px
+    }
+}
+
 .top-panel-button-active, .top-panel-button:active, .top-panel-button:hover {
     background-color: #656567
 }
@@ -8777,6 +8798,14 @@ p {
     border: 1px solid #ebdfe1;
     border-right: none;
     padding-left: 18px
+}
+
+@media only screen and (max-width: 419px) {
+    .input-search {
+        width: 51.5%;
+        padding-left: 5px;
+        font-size: initial;
+    }
 }
 
 .search-icon-button {
@@ -8847,10 +8876,10 @@ p {
     text-align: center;
     vertical-align: top;
     cursor: pointer;
-    margin-right: 10px;
-    padding: 8px;
-    width: 82px;
-    height: 100%
+    /* margin-right: 10px; */
+    padding: 4px;
+    width: 25%;
+    height: 100%;
 }
 
 .radio-surface-pattern label:hover {
@@ -9052,7 +9081,7 @@ p {
     height: 64px
 }
 
-#grout-predefined-color, .stiled-checkbox, .stiled-checkbox-text {
+#grout-predefined-color, #paint-predefined-color, .stiled-checkbox, .stiled-checkbox-text {
     vertical-align: middle
 }
 
@@ -9080,12 +9109,12 @@ p {
     background: #fff
 }
 
-#grout-predefined-color {
+#grout-predefined-color, #paint-predefined-color {
     display: inline-block;
     margin-left: 8px
 }
 
-#grout-predefined-color button {
+#grout-predefined-color button, #paint-predefined-color button {
     border: 1px solid #999;
     border-radius: 4px;
     width: 26px;
@@ -9707,4 +9736,31 @@ input[type=range]:focus::-ms-fill-upper {
 .draggable {
     cursor: -webkit-grab;
     cursor: grab
+}
+
+@media only screen and (max-width: 500px) {
+    .top-panel-label {
+        font-size: initial;
+        margin: 0 6px 0px 0px;
+    }
+    button {
+        font-size: initial;
+    }
+    .filter-block {
+        font-size: initial;
+    }
+    .filter-item-checkbox {
+        font-size: smaller;
+    }
+    .radio-surface-rotation label {
+        font-size: initial;
+    }
+    .stiled-checkbox:after {
+        font-size: 14px;
+    }
+    .radio-surface-pattern label {
+        width: 25%;
+        margin-right: 0;
+        padding: 8px 2px;
+    }
 }

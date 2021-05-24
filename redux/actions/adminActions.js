@@ -69,3 +69,10 @@ export const admin_deleteMultiLayoutRequest = async (params) => {
 export const admin_getLayoutFromUrl = async (url) => {
     return axios.get('admin/getUrl?url=' + url);
 }
+
+export const admin_getSettingRequest = async () => {
+    return axios.get('admin/setting');
+}
+export const admin_updateSettingRequest = async (request) => {
+    return axios.post('admin/setting', request);
+}
