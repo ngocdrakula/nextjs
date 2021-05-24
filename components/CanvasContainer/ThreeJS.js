@@ -334,7 +334,6 @@ class ThreeJS extends Component {
             if (hover && !areas[index].custom && !areas[index].customRotate) this.ctx.drawImage(hoverCanvas, 0, 0, WIDTH, HEIGHT);
         });
         this.ctx.drawImage(this.transparent, 0, 0, WIDTH, HEIGHT);
-        console.log(this.areas)
         this.props.handleLoading(false);
     }
     handleResize = () => {
