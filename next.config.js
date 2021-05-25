@@ -5,7 +5,7 @@ module.exports = {
         HOST_NAME: 'production',
 
         // MONGODB_URL: "mongodb+srv://Trang8:AdminTrang8@trang8-cepg4.mongodb.net/visualizer?retryWrites=true&w=majority&useNewUrlParser=true&useUnifiedTopology=true",
-        MONGODB_URL: "mongodb://localhost:27017/visualizer",
+        MONGODB_URL: "mongodb://localhost:27017/room",
 
         // API_URL: 'https://reallyvirtual.herokuapp.com/api/',
         // API_URL: 'http://localhost:3000/api/',
