@@ -27,6 +27,7 @@ class Admin extends Component {
     }
     componentDidMount() {
         const { dispatch } = this.props;
+        dispatch({ type: types.ADMIN_GET_SETTING });
         dispatch({ type: types.ADMIN_LOGIN_LOCAL });
         dispatch({ type: types.ADMIN_GET_FRONTS });
         dispatch({ type: types.ADMIN_GET_SIZES });

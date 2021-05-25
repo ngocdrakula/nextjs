@@ -78,4 +78,4 @@ class Login extends Component {
 }
 
 
-export default connect(({ app: { user } }) => ({ user }))(Login)
+export default connect(() => ({}))(Login)

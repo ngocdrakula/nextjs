@@ -18,7 +18,6 @@ const design = new Schema({
     areas: [Object],
     author: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: 'user'
     },
     enabled: {

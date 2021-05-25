@@ -73,7 +73,7 @@ class Setting extends Component {
                 if (res.data?.success) {
                     this.setState(res.data.data || {})
                 }
-            }).catch(e => console.log(e))
+            }).catch(e => {})
     }
     handleSubmit = e => {
         e.preventDefault();

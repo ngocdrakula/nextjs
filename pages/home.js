@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Login from '../components/User/Login';
 import Header from '../components/Header';
+import Login from '../components/User/Login';
 import Register from '../components/User/Register';
+import Main from '../components/User/Main';
 import types from '../redux/types';
 
 class Home extends Component {
@@ -26,7 +27,7 @@ class Home extends Component {
             <div id="app" className="user-page">
                 <Header handleSelect={this.handleSelect} />
                 {user ?
-                    <i>aaa</i>
+                    <Main />
                     : isRegister === 'register' ?
                         <Register handleSelect={this.handleSelect} />
                         :

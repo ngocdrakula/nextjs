@@ -11,7 +11,7 @@ export const initState = {
     fronts: [],
     layout: null,
     areaIndex: -1,
-
+    areasCustom: []
 }
 const appReducer = (state = initState, action) => {
     switch (action.type) {
@@ -193,6 +193,22 @@ const appReducer = (state = initState, action) => {
             return {
                 ...state,
                 layout,
+                areasCustom: new Array(layout?.areas.length || 0).fill([])
+            };
+        }
+        case types.APP_INITAL_LAYOUT: {
+            const { areas, layout } = action.payload;
+            layout.areas = layout.areas.map((area, index) => {
+                return { ...area, ...areas[index] };
+            });
+            const areasCustom = areas.map(area => {
+                const { design } = area;
+                return design;
+            })
+            return {
+                ...state,
+                layout,
+                areasCustom
             };
         }
 
@@ -354,6 +370,24 @@ const appReducer = (state = initState, action) => {
             return {
                 ...state,
                 progress: true
+            };
+        }
+
+        case types.CHANGE_PRODUCT_DESIGN: {
+            const { areasCustom, areaIndex } = state;
+            const mesh = action.payload;
+            if (areasCustom[areaIndex]?.find) {
+                const currentCustom = areasCustom[areaIndex].find(m => m.x === mesh.x && m.y === mesh.y);
+                if (currentCustom) {
+                    currentCustom.r = mesh.r;
+                    currentCustom.product = mesh.product;
+                }
+                else {
+                    areasCustom[areaIndex].push(mesh)
+                }
+            }
+            return {
+                ...state
             };
         }
         default: {

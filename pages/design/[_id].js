@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { END } from 'redux-saga'
 import { wrapper } from '../../redux/store';
 import types from '../../redux/types'
+import DefaultErrorPage from 'next/error'
 
 const Head = dynamic(() => import('../../components/Head'));
 const Body = dynamic(() => import('../../components/Body'));
@@ -15,7 +16,7 @@ const Progress = dynamic(() => import('../../components/Progress'));
 const Footer = dynamic(() => import('../../components/Footer'));
 
 
-class Index extends Component {
+class Design extends Component {
     constructor(props) {
         super(props);
     }
@@ -26,6 +27,7 @@ class Index extends Component {
     }
 
     render() {
+        if (this.props.error) return (<DefaultErrorPage statusCode={404} />)
         return (
             <div className="modal-open">
                 <Head />
@@ -41,16 +43,22 @@ class Index extends Component {
     }
 }
 
-export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
+export const getStaticProps = wrapper.getStaticProps(async ({ store, params }) => {
     //call all data for SSR
+    store.dispatch({ type: types.USER_GET_DESIGN, payload: params?._id });
     store.dispatch({ type: types.ADMIN_GET_SETTING, });
     store.dispatch({ type: types.GET_FRONTS, payload: { page: 0, pageSize: 0, enabled: true } });
     store.dispatch({ type: types.GET_SIZES, payload: { page: 0, pageSize: 0, enabled: true } });
     store.dispatch({ type: types.GET_ROOMS, payload: { page: 0, pageSize: 0, enabled: true } });
-    store.dispatch({ type: types.GET_LAYOUTS, payload: { page: 0, pageSize: 0, enabled: true, _id: '0' } });
+    store.dispatch({ type: types.GET_LAYOUTS, payload: { page: 0, pageSize: 0, enabled: true } });
 
     store.dispatch(END)
-    await store.sagaTask.toPromise()
+    await store.sagaTask.toPromise();
 });
 
-export default connect(() => ({}))(Index)
+export const getStaticPaths = async () => {
+    return { paths: [], fallback: true }
+}
+
+
+export default connect(({ user: { error } }) => ({ error }))(Design)

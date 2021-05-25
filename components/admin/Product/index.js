@@ -352,7 +352,7 @@ class Product extends Component {
                                                         <td className="align-middle text-center" style={{ padding: '4px 12px' }}>
                                                             <div
                                                                 className="d-inline-flex justify-content-center align-items-center align-top itemdiv"
-                                                                style={{ height: 70, maxWidth: 80, padding: '5px 0px' }}>
+                                                                style={{ height: 70, maxWidth: 80,minWidth: 60, padding: '5px 0px' }}>
                                                                 <img
                                                                     src={"/api/images/" + getThumbnail(product)}
                                                                     style={{

@@ -8,7 +8,7 @@ const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
       const { id } = req.query;
-      const currentDesign = await designController.get(id).populate('layout');
+      const currentDesign = await designController.get(id).populate({ path: 'layout', populate: [{ path: 'room', },] });
       if (!currentDesign) throw ({ path: '_id' })
       return res.status(201).send({
         success: true,
@@ -44,6 +44,7 @@ const handler = async (req, res) => {
       try {
         const currentDesign = await designController.get(req.query.id);
         if (!currentDesign) throw ({ path: '_id', files });
+        if (currentDesign.author && currentDesign.author != user._id) throw ({ ...user, path: 'token' });
         if (files.length) {
           await cleanFiles([currentDesign.image]);
           currentDesign.image = files[0];
@@ -126,7 +127,7 @@ const handler = async (req, res) => {
       const user = jwt.verify(bearerToken);
       if (!user?._id) throw ({ ...user, path: 'token' });
       const currentDesign = await designController.get(req.query.id);
-      if (!currentDesign) throw ({ path: '_id' });
+      if (!currentDesign || currentDesign.author != user._id) throw ({ path: '_id' });
       cleanFiles([currentDesign.image])
       currentDesign.remove();
       return res.status(200).send({

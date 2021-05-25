@@ -44,7 +44,6 @@ const handler = async (req, res) => {
       if (!contentType || contentType.indexOf('multipart/form-data') == -1)
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
-      if (!user?._id) throw ({ ...user, path: 'token' });
       const { body: { name, layoutId, areas }, files, err } = await uploader(req);
       if (err || !files.length) throw ({ path: 'files' });
       if (!name || !areas || !layoutId) {
@@ -64,7 +63,7 @@ const handler = async (req, res) => {
       } catch (err) {
         throw ({ path: 'areas', files });
       }
-      const designCreated = await designController.create({ name, layout: layoutId, areas: JSON.parse(areas), author: user._id, image: files[0] });
+      const designCreated = await designController.create({ name, layout: layoutId, areas: JSON.parse(areas), author: user?._id || null, image: files[0] });
       return res.status(201).send({
         success: true,
         data: designCreated,
@@ -147,11 +146,12 @@ const handler = async (req, res) => {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
-      if (!user?.mode) throw ({ ...user, path: 'token' });
+      if (!user?._id) throw ({ ...user, path: 'token' });
       const { _ids } = req.query;
       if (!_ids) throw ({ path: '_ids' });
       const query = {
-        _id: { $in: _ids.split(",") }
+        _id: { $in: _ids.split(",") },
+        author: user._id
       };
       await designController.removeMany(query);
       return res.status(200).send({

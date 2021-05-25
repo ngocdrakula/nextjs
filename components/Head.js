@@ -10,7 +10,7 @@ export class Head extends Component {
     render() {
         const { setting } = this.props;
         let children = null;
-        try { children = setting.footer && <head dangerouslySetInnerHTML={{ __html: setting.footer }} /> }
+        try { children = setting.header && <head dangerouslySetInnerHTML={{ __html: setting.header }} /> }
         catch { };
 
         return (

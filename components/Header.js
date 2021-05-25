@@ -34,7 +34,7 @@ class Header extends Component {
         }
     }
     render() {
-        const { user, handleSelect } = this.props;
+        const { user, handleSelect, setting } = this.props;
         const { visible } = this.state;
         return (
             <>
@@ -48,7 +48,7 @@ class Header extends Component {
                                 <span className="icon-bar" />
                                 <span className="icon-bar" />
                             </button>
-                            <a href="/" className="navbar-brand">{process.env.TITLE}</a>
+                            <a href="/" className="navbar-brand">{setting?.title || process.env.TITLE}</a>
                         </div>
                         {user ?
                             <ul className="nav navbar-nav navbar-right">
@@ -80,7 +80,7 @@ class Header extends Component {
                         }
                         <div id="app-navbar-collapse" className="collapse navbar-collapse">
                             <ul className="nav navbar-nav">
-                                <li>
+                                <li className="active">
                                     <a href="/home">Home</a>
                                 </li>
                             </ul>
@@ -92,4 +92,4 @@ class Header extends Component {
     }
 }
 
-export default connect(({ user: { user } }) => ({ user }))(Header)
+export default connect(({ user: { user }, admin: { setting } }) => ({ user, setting }))(Header)
