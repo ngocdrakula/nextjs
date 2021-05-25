@@ -22,19 +22,20 @@ class Room2d extends Component {
     componentDidMount() {
         const { dispatch } = this.props;
         dispatch({ type: types.GET_PRODUCTS, payload: { enabled: true } });
+        dispatch({ type: types.USER_LOGIN_LOCAL });
     }
 
     render() {
         return (
             <div className="modal-open">
-            <Head />
-            <Body />
-            <Progress />
-            <CanvasContainer />
-            <Logo />
-            <TopPanel />
-            <BottomPanel />
-            <Footer />
+                <Head />
+                <Body />
+                <Progress />
+                <CanvasContainer />
+                <Logo />
+                <TopPanel />
+                <BottomPanel />
+                <Footer />
             </div>
         );
     }

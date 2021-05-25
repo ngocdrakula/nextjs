@@ -8,18 +8,22 @@ export const user_RegisterRequest = async (request) => {
     return axios.post('user/register', request)
 }
 
-export const user_getDesignRequest = async (_id) => {
-    return axios.get('design/' + _id)
+export const user_getDesignRequest = async (id) => {
+    return axios.get('design/' + id);
 }
-
-export const user_getDesignsRequest = async (params) => {
+export const user_getMyDesignsRequest = async (params) => {
     return axios.get('design?' + stringify(params))
 }
-export const user_addDesignRequest = async (request) => {
-    return uploadAxios.post('design' , request)
+export const user_addDesignRequest = async (formData) => {
+    return uploadAxios.post('design', formData);
 }
-
+export const user_updateDesignRequest = async ({ _id, formData }) => {
+    return uploadAxios.post('design/' + _id, formData);
+}
+export const user_deleteDesignRequest = async (_id) => {
+    return axios.delete('design/' + _id);
+}
 export const user_deleteMultiDesignRequest = async (params) => {
     const _ids = params && params.join(",");
-    return axios.delete('product?_ids=' + _ids);
+    return axios.delete('design?_ids=' + _ids);
 }

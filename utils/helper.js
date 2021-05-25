@@ -8,10 +8,10 @@ export const tan = Math.tan;
 export const tanD = (a) => Math.tan(deg(a));
 
 export const createFormData = (data) => {
-    const { files = [], ...body } = data;
+    const { files = [], imageType, ...body } = data;
     const formData = new FormData();
     for (const file of files) {
-        formData.append('files', file, file.name || `File${Math.floor(Math.random() * 10000)}.png`);
+        formData.append('files', file, file.name || `File-${Math.floor(Math.random() * 10000)}.${imageType || 'png'}`);
     }
     for (const field in body) {
         formData.append(field, body[field]);

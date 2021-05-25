@@ -96,4 +96,4 @@ class Register extends Component {
     }
 }
 
-export default connect(({ app: { user } }) => ({ user }))(Register)
+export default connect(() => ({}))(Register)

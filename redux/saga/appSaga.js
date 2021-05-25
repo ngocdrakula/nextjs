@@ -64,7 +64,7 @@ function* getLayouts({ payload: { _id, ...request }, callback }) {
         const res = yield call(requests.getLayoutsRequest, request);
         if (res && res.data && res.data.success) {
             yield put({ type: types.GET_LAYOUTS_SUCCESS, payload: res.data });
-            yield put({ type: types.SELECT_LAYOUT, payload: _id });
+            if (_id) yield put({ type: types.SELECT_LAYOUT, payload: _id });
             if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {

@@ -21,6 +21,7 @@ class ThreeJS extends Component {
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.handleResize);
+        clearTimeout(this.timeout)
     }
     componentDidUpdate(prevProps) {
         const { layout, areaIndex, handleLoading } = this.props;
@@ -206,11 +207,22 @@ class ThreeJS extends Component {
                 }
                 return ({ renderer, scene, camera, group, area, canvas, hoverCanvas, smoothCanvas, mattCanvas, surfCanvas });
             });
-            dispatch({ type: types.PROGRESS_UPDATE });
-            this.handleRender();
+            const { design } = this.props;
+            if (design) {
+                this.areas.map((area, index) => {
+                    this.handleLoader(index, design?.areas?.[index]?.design);
+                    this.timeout = setTimeout(() => {
+                        dispatch({ type: types.PROGRESS_UPDATE });
+                    }, 5000);
+                })
+            }
+            else {
+                this.handleRender();
+                dispatch({ type: types.PROGRESS_UPDATE });
+            }
         }
     }
-    handleLoader = (index) => {
+    handleLoader = (index, areaCustom) => {
         const { layout } = this.props;
         const { areas } = layout;
         const { renderer, group } = this.areas[index];
@@ -238,7 +250,6 @@ class ThreeJS extends Component {
             const texture = new THREE.TextureLoader().load("/api/images/" + p1.image, () => { count++; if (count === products.length) addMesh() });
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
             texture.wrapS = texture.wrapT = 1001;
-            // texture.encoding = THREE.sRGBEncoding;
             texture.encoding = 3000;
             texture.flipY = true;
             texture.format = 1023;
@@ -295,6 +306,39 @@ class ThreeJS extends Component {
                         else if (skewType === 3 && i) {
                             if (!skewValue) skewValue = 1 / 2;
                             groupClone.position.set(x, y + (productHeight + grout) * skewValue, 0);
+                        }
+                        if (areaCustom) {
+                            const onCustom = areaCustom.find(m => m.x === groupClone.position.x && m.y === groupClone.position.y);
+                            if (onCustom) {
+                                const meshCurrent = groupClone.children[0];
+                                if (meshCurrent) {
+                                    if (onCustom.r) meshCurrent.rotation.set(0, 0, onCustom.r);
+                                    if (onCustom.product && onCustom.product._id !== meshCurrent.userData.product._id) {
+                                        meshCurrent.userData.oldProduct = meshCurrent.userData.product;
+                                        meshCurrent.userData.product = onCustom.product;
+                                        const size = meshCurrent.userData.product.size;
+                                        meshCurrent.scale.set(size.width, size.height);
+
+                                        meshCurrent.material = meshCurrent.material.clone();
+                                        const texture = new THREE.TextureLoader().load("/api/images/" + meshCurrent.userData.product.image, () => { this.handleDraw(index) });
+                                        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                                        texture.wrapS = texture.wrapT = 1001;
+                                        texture.encoding = 3000;
+                                        texture.flipY = true;
+                                        texture.format = 1023;
+                                        texture.generateMipmaps = true;
+                                        texture.magFilter = 1006;
+                                        texture.mapping = 300;
+                                        texture.minFilter = 1008;
+                                        texture.needsUpdate = true;
+                                        texture.anisotropy = 16;
+                                        texture.opacity = 1;
+                                        texture.unpackAlignment = 4;
+                                        texture.type = 1009;
+                                        meshCurrent.material.map = texture;
+                                    }
+                                }
+                            }
                         }
                         j = !j;
                     }
@@ -432,6 +476,7 @@ class ThreeJS extends Component {
         }
     }
     handleCustom = (customRotate, custom) => {
+        const { dispatch } = this.props;
         if (this.areas[this.index]) {
             const { group, camera } = this.areas[this.index];
             this.raycaster.setFromCamera(this.mouse, camera);
@@ -444,32 +489,77 @@ class ThreeJS extends Component {
                     if (custom && area.product._id !== mesh.userData.product?._id) {
                         mesh.userData.oldProduct = mesh.userData.product;
                         mesh.userData.product = area.product
+                        const size = mesh.userData.product.size;
+                        mesh.scale.set(size.width, size.height);
+
                         mesh.material = mesh.material.clone();
-                        // const productWidth = mesh.userData.product.size.width;
-                        // const productHeight = mesh.userData.product.size.height;
-                        // mesh.scale.set(productWidth, productHeight);
-                        // mesh.position.z = -0.01;
-                        mesh.material.map = new THREE.TextureLoader().load("/api/images/" + mesh.userData.product.image, () => { this.handleDraw(this.index) });
+                        const texture = new THREE.TextureLoader().load("/api/images/" + mesh.userData.product.image, () => { this.handleDraw(this.index) });
+                        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                        texture.wrapS = texture.wrapT = 1001;
+                        texture.encoding = 3000;
+                        texture.flipY = true;
+                        texture.format = 1023;
+                        texture.generateMipmaps = true;
+                        texture.magFilter = 1006;
+                        texture.mapping = 300;
+                        texture.minFilter = 1008;
+                        texture.needsUpdate = true;
+                        texture.anisotropy = 16;
+                        texture.opacity = 1;
+                        texture.unpackAlignment = 4;
+                        texture.type = 1009;
+                        mesh.material.map = texture;
                     }
                     else if (customRotate) {
                         mesh.rotation.set(0, 0, mesh.rotation._z + deg(90));
-
                     }
                     else if (custom && mesh.userData.oldProduct) {
                         mesh.userData.product = mesh.userData.oldProduct;
                         mesh.userData.oldProduct = area.product
+                        const size = mesh.userData.product.size;
+                        mesh.scale.set(size.width, size.height);
+
                         mesh.material = mesh.material.clone();
-                        // const productWidth = mesh.userData.product.size.width;
-                        // const productHeight = mesh.userData.product.size.height;
-                        // mesh.scale.set(productWidth, productHeight);
-                        // mesh.position.z = 0;
-                        mesh.material.map = new THREE.TextureLoader().load("/api/images/" + mesh.userData.product.image, () => { this.handleDraw(this.index) });
+                        const texture = new THREE.TextureLoader().load("/api/images/" + mesh.userData.product.image, () => { this.handleDraw(this.index) });
+                        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                        texture.wrapS = texture.wrapT = 1001;
+                        texture.encoding = 3000;
+                        texture.flipY = true;
+                        texture.format = 1023;
+                        texture.generateMipmaps = true;
+                        texture.magFilter = 1006;
+                        texture.mapping = 300;
+                        texture.minFilter = 1008;
+                        texture.needsUpdate = true;
+                        texture.anisotropy = 16;
+                        texture.opacity = 1;
+                        texture.unpackAlignment = 4;
+                        texture.type = 1009;
+                        mesh.material.map = texture;
                     }
                     this.handleDraw(this.index)
+                    dispatch({
+                        type: types.CHANGE_PRODUCT_DESIGN,
+                        payload: {
+                            x: mesh.parent.position.x,
+                            y: mesh.parent.position.y,
+                            product: mesh.userData.product,
+                            r: mesh.rotation._z,
+                        }
+                    });
                 }
                 else if (customRotate) {
                     mesh.rotation.set(0, 0, mesh.rotation.z + deg(90));
-                    this.handleDraw(this.index)
+                    this.handleDraw(this.index);
+                    dispatch({
+                        type: types.CHANGE_PRODUCT_DESIGN,
+                        payload: {
+                            x: mesh.parent.position.x,
+                            y: mesh.parent.position.y,
+                            product: mesh.userData.product,
+                            r: mesh.rotation._z,
+                        }
+                    });
                 }
                 else {
                     const { dispatch } = this.props;
@@ -498,4 +588,4 @@ class ThreeJS extends Component {
     }
 }
 
-export default connect(({ app: { layout, areaIndex } }) => ({ layout, areaIndex }))(React.memo(ThreeJS))
+export default connect(({ app: { layout, areaIndex }, user: { design } }) => ({ layout, areaIndex, design }))(React.memo(ThreeJS))
