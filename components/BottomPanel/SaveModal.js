@@ -123,7 +123,6 @@ class SaveModal extends Component {
                             type: types.USER_UPDATE_DESIGN,
                             payload: {_id: design._id, formData},
                             callback: result => {
-                                console.log(result)
                                 if (result?.success) {
                                     this.setState({ saved: true, _id: result.data?._id })
                                 }
@@ -135,7 +134,6 @@ class SaveModal extends Component {
                             type: types.USER_ADD_DESIGN,
                             payload: formData,
                             callback: result => {
-                                console.log(result)
                                 if (result?.success) {
                                     this.setState({ saved: true, _id: result.data?._id })
                                 }
