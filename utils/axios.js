@@ -8,18 +8,14 @@ const getToken = () => {
     catch { return null }
 }
 
-
-const headers = {
-    'Content-Type': 'application/json',
-};
-
 const defaultAxios = axios.create({
     baseURL: process.env.API_URL,
 });
 
 defaultAxios.interceptors.request.use(
     config => {
-        config.headers['Authorization'] = 'Bearer ' + getToken();
+        const token = getToken();
+        if (token) config.headers['Authorization'] = 'Bearer ' + token;
         config.headers['Content-Type'] = 'application/json';
         return config;
     },
@@ -31,7 +27,8 @@ const uploadAxios = axios.create({
 });
 uploadAxios.interceptors.request.use(
     config => {
-        config.headers['Authorization'] = 'Bearer ' + getToken();
+        const token = getToken();
+        if (token) config.headers['Authorization'] = 'Bearer ' + token;
         config.headers['Content-Type'] = 'multipart/form-data';
         return config;
     },
