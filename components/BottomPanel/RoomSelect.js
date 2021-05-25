@@ -12,7 +12,6 @@ class RoomSelect extends Component {
         const { dispatch } = this.props;
         dispatch({
             type: types.USER_GET_MY_DESIGN,
-            callback: e=> console.log(e)
         });
     }
 
