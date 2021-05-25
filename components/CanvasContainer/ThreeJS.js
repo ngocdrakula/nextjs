@@ -317,12 +317,13 @@ class ThreeJS extends Component {
                                         meshCurrent.userData.oldProduct = meshCurrent.userData.product;
                                         meshCurrent.userData.product = onCustom.product;
                                         const size = meshCurrent.userData.product.size;
-                                        meshCurrent.scale.set(size.width, size.height);
 
                                         meshCurrent.material = meshCurrent.material.clone();
-                                        const texture = new THREE.TextureLoader().load("/api/images/" + meshCurrent.userData.product.image, () => { this.handleDraw(index) });
+                                        const texture = new THREE.TextureLoader().load("/api/images/" + meshCurrent.userData.product.image, () => {
+                                            meshCurrent.material.map = texture;
+                                            this.handleDraw(index);
+                                        });
                                         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-                                        texture.wrapS = texture.wrapT = 1001;
                                         texture.encoding = 3000;
                                         texture.flipY = true;
                                         texture.format = 1023;
@@ -335,7 +336,7 @@ class ThreeJS extends Component {
                                         texture.opacity = 1;
                                         texture.unpackAlignment = 4;
                                         texture.type = 1009;
-                                        meshCurrent.material.map = texture;
+                                        texture.repeat.set(meshCurrent.scale.x / size.width, meshCurrent.scale.y / size.height);
                                     }
                                 }
                             }
@@ -490,12 +491,13 @@ class ThreeJS extends Component {
                         mesh.userData.oldProduct = mesh.userData.product;
                         mesh.userData.product = area.product
                         const size = mesh.userData.product.size;
-                        mesh.scale.set(size.width, size.height);
 
                         mesh.material = mesh.material.clone();
-                        const texture = new THREE.TextureLoader().load("/api/images/" + mesh.userData.product.image, () => { this.handleDraw(this.index) });
+                        const texture = new THREE.TextureLoader().load("/api/images/" + mesh.userData.product.image, () => {
+                            mesh.material.map = texture;
+                            this.handleDraw(this.index);
+                        });
                         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-                        texture.wrapS = texture.wrapT = 1001;
                         texture.encoding = 3000;
                         texture.flipY = true;
                         texture.format = 1023;
@@ -508,6 +510,7 @@ class ThreeJS extends Component {
                         texture.opacity = 1;
                         texture.unpackAlignment = 4;
                         texture.type = 1009;
+                        texture.repeat.set(mesh.scale.x / size.width, mesh.scale.y / size.height);
                         mesh.material.map = texture;
                     }
                     else if (customRotate) {
@@ -517,12 +520,13 @@ class ThreeJS extends Component {
                         mesh.userData.product = mesh.userData.oldProduct;
                         mesh.userData.oldProduct = area.product
                         const size = mesh.userData.product.size;
-                        mesh.scale.set(size.width, size.height);
 
                         mesh.material = mesh.material.clone();
-                        const texture = new THREE.TextureLoader().load("/api/images/" + mesh.userData.product.image, () => { this.handleDraw(this.index) });
+                        const texture = new THREE.TextureLoader().load("/api/images/" + mesh.userData.product.image, () => {
+                            mesh.material.map = texture;
+                            this.handleDraw(this.index);
+                        });
                         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-                        texture.wrapS = texture.wrapT = 1001;
                         texture.encoding = 3000;
                         texture.flipY = true;
                         texture.format = 1023;
@@ -535,7 +539,7 @@ class ThreeJS extends Component {
                         texture.opacity = 1;
                         texture.unpackAlignment = 4;
                         texture.type = 1009;
-                        mesh.material.map = texture;
+                        texture.repeat.set(mesh.scale.x / size.width, mesh.scale.y / size.height);
                     }
                     this.handleDraw(this.index)
                     dispatch({

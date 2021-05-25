@@ -8,14 +8,26 @@ class ProductInfoPanel extends Component {
         this.state = {};
     }
     render() {
-        const { visible, handleToggle, layout } = this.props;
-        const areas = layout?.areas || [];
+        const { visible, handleToggle, layout, areasCustom } = this.props;
+        const areas = (layout?.areas || []).map((area, index) => {
+            const areaCustom = areasCustom?.[index];
+            const products = [...(area.products || [])];
+            if (areaCustom) {
+                areaCustom.map(item => {
+                    if (item.product && !products.find(p => p._id === item.product._id)) {
+                        products.push(item.product);
+                    }
+                });
+            }
+            return { name: area.type === 'wall' ? 'Tường' : 'Sàn', products };
+        });
         return (
-            <div id="productInfoPanel" className="top-panel" style={{ display: visible ? 'flex' : 'none' }} onClick={handleToggle}>
+            <div id="productInfoPanel" className="top-panel" style={{ display: visible ? 'flex' : 'none' }} onClick={handleToggle} >
                 <div className="top-panel-header">Thông tin sản phẩm</div>
                 <div id="productInfoTilesList" className="top-panel-box">
                     {areas.map((area, index) => {
-                        const products = area.products || [];
+                        const products = area.products;
+                        if (!products.length) return null
                         return (
                             <React.Fragment key={index}>
                                 <p className="top-panel-label">{area.name}</p>
@@ -39,9 +51,9 @@ class ProductInfoPanel extends Component {
                 </div>
                 <div id="editor">
                 </div>
-            </div>
+            </div >
         );
     }
 }
 
-export default connect(({ app: { layout } }) => ({ layout }))(ProductInfoPanel)
+export default connect(({ app: { layout, areasCustom } }) => ({ layout, areasCustom }))(ProductInfoPanel)
