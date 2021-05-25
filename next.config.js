@@ -11,7 +11,7 @@ module.exports = {
         // API_URL: 'http://localhost:3000/api/',
         // API_URL: 'http://demo.unicreation.net/api/',
 
-        API_URL: 'http://visualizer.hungtin.vn',
+        API_URL: 'http://visualizer.hungtin.vn/api/',
 
         FOLDER_UPLOAD: 'upload',
 
