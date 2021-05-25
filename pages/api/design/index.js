@@ -15,8 +15,8 @@ const handler = async (req, res) => {
           success: true,
           data: [],
           total: 0,
-          page: Number(page) || 0,
-          pageSize: Number(pageSize) || 0,
+          page: 0,
+          pageSize: 0,
         });
       const user = jwt.verify(bearerToken);
       if (!user?._id) throw ({ ...user, path: 'token' });

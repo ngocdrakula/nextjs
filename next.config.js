@@ -23,6 +23,6 @@ module.exports = {
         // CLOUD_PATH: "photo/",
         // CLOUD_URL_ORIGIN: "http://res.cloudinary.com/ngocdrakula/image/upload/photo/",
 
-        TITLE: 'Really Virtual'
+        TITLE: 'http://visualizer.hungtin.vn'
     }
 };
