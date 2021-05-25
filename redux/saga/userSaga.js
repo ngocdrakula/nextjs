@@ -111,6 +111,18 @@ function* user_updateDesign({ payload, callback }) {
         if (typeof callback === 'function') callback(e.response);
     }
 }
+function* user_updateMyDesign({ payload, callback }) {
+    try {
+        const res = yield call(requests.user_updateMyDesignRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.USER_UPDATE_DESIGN_SUCCESS, payload: res.data.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.USER_UPDATE_DESIGN_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
 function* user_deleteDesign({ payload, callback }) {
     try {
         const res = yield call(requests.user_deleteDesignRequest, payload);
@@ -149,6 +161,7 @@ export default function* appSaga() {
         yield takeEvery(types.USER_GET_MY_DESIGN, user_getMyDesigns),
         yield takeEvery(types.USER_ADD_DESIGN, user_addDesign),
         yield takeEvery(types.USER_UPDATE_DESIGN, user_updateDesign),
+        yield takeEvery(types.USER_UPDATE_MY_DESIGN, user_updateMyDesign),
         yield takeEvery(types.USER_DELETE_DESIGN, user_deleteDesign),
         yield takeEvery(types.USER_DELETE_MUTIL_DESIGN, user_deleteMultiDesign),
     ])
