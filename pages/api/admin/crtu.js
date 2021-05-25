@@ -15,7 +15,7 @@ const handler = async (req, res) => {
       if (matchUser) throw ({ path: 'user' });
       const hashPassword = await bcrypt.create(password);
       if (!hashPassword) throw ({});
-      const user = await userController.create({ username, password: hashPassword, mode: true });
+      const user = await userController.create({ username, name: username, password: hashPassword, mode: true });
       const { _id } = user
       const token = jwt.create({ _id, username });
       return res.status(200).send({
