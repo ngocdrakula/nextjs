@@ -20,9 +20,6 @@ export const user_addDesignRequest = async (formData) => {
 export const user_updateDesignRequest = async ({ _id, formData }) => {
     return uploadAxios.post('design/' + _id, formData);
 }
-export const user_updateMyDesignRequest = async (_id) => {
-    return uploadAxios.put('design/' + _id);
-}
 export const user_deleteDesignRequest = async (_id) => {
     return axios.delete('design/' + _id);
 }

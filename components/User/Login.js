@@ -17,22 +17,7 @@ class Login extends Component {
             type: types.USER_LOGIN,
             payload: { username: email, password },
             callback: res => {
-                if (res?.success) {
-                    const design = localStorage.getItem('design');
-                    if (design) {
-                        dispatch({
-                            type: types.USER_UPDATE_MY_DESIGN,
-                            payload: design,
-                            callback: result => {
-                                if (result?.success) {
-                                    dispatch({ type: types.USER_GET_MY_DESIGN });
-                                    localStorage.removeItem('design');
-                                }
-                            }
-                        });
-                    };
-                }
-                else {
+                if (!res?.success) {
                     this.setState({ message: res?.message || 'Sai email hoặc mật khẩu' })
                 }
             }

@@ -47,9 +47,10 @@ const handler = async (req, res) => {
     try {
       const contentType = req.headers['content-type'];
       const bearerToken = req.headers['authorization'];
+      if (!bearerToken) throw ({ path: 'token' })
       if (!contentType || contentType.indexOf('multipart/form-data') == -1)
         throw ({ path: 'content-type', contentType });
-      const user = bearerToken && jwt.verify(bearerToken);
+      const user = jwt.verify(bearerToken);
       const { body: { name, layoutId, areas }, files, err } = await uploader(req);
       if (err || !files.length) throw ({ path: 'files' });
       if (!name || !areas || !layoutId) {
