@@ -14,7 +14,7 @@ class SaveModal extends Component {
     componentDidMount() {
         this.setState({
             origin: window.location.origin
-        });
+        })
     }
 
     handleSave = () => {
@@ -121,11 +121,10 @@ class SaveModal extends Component {
                     if (design) {
                         dispatch({
                             type: types.USER_UPDATE_DESIGN,
-                            payload: { _id: design._id, formData },
+                            payload: {_id: design._id, formData},
                             callback: result => {
                                 if (result?.success) {
-                                    this.setState({ saved: true, _id: result.data?._id });
-                                    localStorage.setItem('design', result.data?._id || '');
+                                    this.setState({ saved: true, _id: result.data?._id })
                                 }
                             }
                         });
@@ -136,8 +135,7 @@ class SaveModal extends Component {
                             payload: formData,
                             callback: result => {
                                 if (result?.success) {
-                                    this.setState({ saved: true, _id: result.data?._id });
-                                    localStorage.setItem('design', result.data?._id || '');
+                                    this.setState({ saved: true, _id: result.data?._id })
                                 }
                             }
                         });

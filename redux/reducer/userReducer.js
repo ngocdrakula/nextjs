@@ -27,12 +27,6 @@ const userReducer = (state = initState, action) => {
                 user: null,
             };
         }
-        case types.USER_REGISTER_SUCCESS: {
-            return {
-                ...state,
-                user: action.payload,
-            };
-        }
         case types.USER_GET_DESIGN_SUCCESS: {
             return {
                 ...state,

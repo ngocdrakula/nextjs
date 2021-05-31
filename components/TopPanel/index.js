@@ -25,7 +25,8 @@ class TopPanel extends Component {
     }
     handleSelect = (panel) => { this.setState({ panel }) }
     handleChange = (e) => this.setState({ search: e.target.value });
-    handleSearch = () => {
+    handleSearch = e => {
+        e.preventDefault();
         const { search } = this.state;
         const { dispatch } = this.props;
         dispatch({
@@ -33,7 +34,6 @@ class TopPanel extends Component {
             payload: search
         })
     }
-
     render() {
         const { panel } = this.state;
         const { visible } = this.props;
@@ -51,9 +51,11 @@ class TopPanel extends Component {
                     <button onClick={() => this.handleSelect(panel !== 2 ? 2 : null)} className={"top-panel-button" + (panel === 2 ? " top-panel-button-active" : "")}>Mạch</button>{' '}
                 </div>
                 <div className="top-panel-box">
-                    <input type="search" placeholder="Tìm kiếm sản phẩm" className="input-search" onChange={this.handleChange} />
-                    <button className="search-icon-button" onClick={this.handleSearch}><img src="/icons/search.png" alt="Search" className="search-icon-button-imqge" /></button>{' '}
-                    <button onClick={() => this.handleSelect(panel !== 3 ? 3 : null)} className={"top-panel-button" + (panel === 3 ? " top-panel-button-active" : "")}>Lọc</button>
+                    <form onSubmit={this.handleSearch}>
+                        <input type="search" placeholder="Tìm kiếm sản phẩm" className="input-search" onChange={this.handleChange} />
+                        <button type="submit" className="search-icon-button"><img src="/icons/search.png" alt="Search" className="search-icon-button-imqge" /></button>{' '}
+                        <button type="button" onClick={() => this.handleSelect(panel !== 3 ? 3 : null)} className={"top-panel-button" + (panel === 3 ? " top-panel-button-active" : "")}>Lọc</button>
+                    </form>
                     <ProductResult />
                 </div>
                 <ProductLayout active={panel === 1} />

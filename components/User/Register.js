@@ -31,21 +31,6 @@ class Register extends Component {
                 payload: { username: email, password, name },
                 callback: res => {
                     if (res?.success) {
-                        const design = localStorage.getItem('design');
-                        if (design) {
-                            dispatch({
-                                type: types.USER_UPDATE_MY_DESIGN,
-                                payload: design,
-                                callback: result => {
-                                    if (result?.success) {
-                                        dispatch({ type: types.USER_GET_MY_DESIGN });
-                                        localStorage.removeItem('design');
-                                    }
-                                }
-                            });
-                        };
-                    }
-                    else {
                         this.setState({
                             message: res?.message || 'Địa chỉ email đã được sử dụng',
                             field: 'email',
