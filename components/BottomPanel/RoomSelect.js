@@ -21,7 +21,7 @@ class RoomSelect extends Component {
 
     render() {
         const { visible, handleToggle, rooms, layouts, user, designs } = this.props;
-        const { selected = user?._id || rooms[0]?._id } = this.state;
+        const { selected = (designs.length && user?._id) || rooms[0]?._id } = this.state;
         return (
             <div
                 id="dialogRoomSelect"
@@ -38,7 +38,7 @@ class RoomSelect extends Component {
                         <div className="modal-body">
                             <div className="modal-body">
                                 <ul className="nav nav-tabs">
-                                    {user?._id ?
+                                    {designs.length && user?._id ?
                                         <li className={"rooms-types" + (user._id === selected ? " active" : "")}>
                                             <a href="#" onClick={() => this.setState({ selected: user._id })}>Thiết kế của tôi</a>
                                         </li>
@@ -53,7 +53,7 @@ class RoomSelect extends Component {
                                 </ul>
                             </div>
                             <div className="text-center rooms-select-list">
-                                {user?._id ?
+                                {designs.length && user?._id ?
                                     <div className="rooms-list-by-type" style={{ display: user._id === selected ? 'block' : 'none' }}>
                                         {designs.map(design => {
                                             return (
