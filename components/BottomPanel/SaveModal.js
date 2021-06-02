@@ -12,15 +12,17 @@ class SaveModal extends Component {
         this.state = {}
     }
     componentDidMount() {
-        this.setState({
-            origin: window.location.origin
-        })
+        this.setState({ origin: window.location.origin });
     }
-
+    componentDidUpdate(prevProps) {
+        if (!prevProps.visible && this.props.visible) {
+            this.setState({ saved: false });
+        }
+    }
     handleSave = () => {
         const { handleToggle } = this.props;
         handleToggle();
-        const fileName = `${process.env.TITLE} - Product Info`;
+        const fileName = `${process.env.TITLE} - Product Info.jpeg`;
         const canvas = document.getElementById('roomCanvas');
         if (canvas) {
             if (window.navigator.msSaveBlob) {
@@ -121,10 +123,11 @@ class SaveModal extends Component {
                     if (design) {
                         dispatch({
                             type: types.USER_UPDATE_DESIGN,
-                            payload: {_id: design._id, formData},
+                            payload: { _id: design._id, formData },
                             callback: result => {
                                 if (result?.success) {
-                                    this.setState({ saved: true, _id: result.data?._id })
+                                    this.setState({ saved: true, _id: result.data?._id });
+                                    localStorage.setItem('design', result.data?._id || '');
                                 }
                             }
                         });
@@ -135,7 +138,8 @@ class SaveModal extends Component {
                             payload: formData,
                             callback: result => {
                                 if (result?.success) {
-                                    this.setState({ saved: true, _id: result.data?._id })
+                                    this.setState({ saved: true, _id: result.data?._id });
+                                    localStorage.setItem('design', result.data?._id || '');
                                 }
                             }
                         });

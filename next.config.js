@@ -8,10 +8,10 @@ module.exports = {
         MONGODB_URL: "mongodb://localhost:27017/visualizer",
 
         // API_URL: 'https://reallyvirtual.herokuapp.com/api/',
-        // API_URL: 'http://localhost:3000/api/',
+        API_URL: 'http://localhost:3000/api/',
         // API_URL: 'http://demo.unicreation.net/api/',
 
-        API_URL: 'http://visualizer.hungtin.vn/api/',
+        // API_URL: 'http://visualizer.hungtin.vn/api/',
 
         FOLDER_UPLOAD: 'upload',
 
@@ -23,6 +23,6 @@ module.exports = {
         // CLOUD_PATH: "photo/",
         // CLOUD_URL_ORIGIN: "http://res.cloudinary.com/ngocdrakula/image/upload/photo/",
 
-        TITLE: 'http://visualizer.hungtin.vn'
+        TITLE: 'visualizer.hungtin.vn'
     }
 };

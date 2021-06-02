@@ -24,7 +24,14 @@ class TopPanel extends Component {
         dispatch({ type: types.HIDE_TOPPANEL })
     }
     handleSelect = (panel) => { this.setState({ panel }) }
-    handleChange = (e) => this.setState({ search: e.target.value });
+    handleChange = (e) => {
+        this.setState({ search: e.target.value });
+        const { dispatch } = this.props;
+        dispatch({
+            type: types.CHANGE_SEARCH,
+            payload: e.target.value
+        })
+    }
     handleSearch = e => {
         e.preventDefault();
         const { search } = this.state;
