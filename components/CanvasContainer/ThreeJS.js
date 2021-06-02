@@ -435,8 +435,10 @@ class ThreeJS extends Component {
         }
     }
     onMouseLeave = (e) => {
+        this.index = -1;
         e.target.style.cursor = 'unset';
         e.target.title = '';
+        this.areas.map(area => area.hover = false);
         this.handleRender();
     }
     pointInPolygon({ x, y }, polygon) {

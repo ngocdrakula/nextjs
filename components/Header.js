@@ -28,7 +28,7 @@ class Header extends Component {
         window.addEventListener('click', this.handleClick);
     }
     handleClick = e => {
-        if (!document.getElementById('dropdown').contains(e.target)) {
+        if (!document.getElementById('dropdown')?.contains(e.target)) {
             this.setState({ visible: false });
             window.removeEventListener('click', this.handleClick);
         }
