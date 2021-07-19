@@ -78,3 +78,15 @@ export const convertLayoutClient = (surfaces) => {
     newRoom.areas = JSON.stringify(areas)
     return (newRoom);
 }
+export const getQuery = (url) => {
+    if (typeof url !== "string") return ({})
+    const queryString = url?.split('?');
+    if (!queryString[1]) return ({})
+    const queryArray = queryString[1].split('&');
+    const query = {};
+    queryArray.map(item => {
+        const queryItem = item.split('=');
+        if (queryItem[0]) query[queryItem[0]] = queryItem[1];
+    });
+    return query
+}
