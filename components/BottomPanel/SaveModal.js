@@ -167,10 +167,10 @@ class SaveModal extends Component {
                         {saved ?
                             <div className="modal-body">
                                 <h4>Url to your room</h4>
-                                <input type="text" value={origin + "/design/" + (design?._id || _id || '')} className="form-control" onClick={e => e.target.select()} readOnly style={{ marginBottom: 10 }} />
+                                <input type="text" value={origin + "/design?id=" + (design?._id || _id || '')} className="form-control" onClick={e => e.target.select()} readOnly style={{ marginBottom: 10 }} />
                                 <div className="text-right">
                                     <button type="button" className="btn btn-default">Lưu dấu trang</button>
-                                    <a href={"/design/" + (design?._id || _id || '')} className="btn btn-default" role="button" style={{ display: user?._id ? 'none' : 'inline-block', marginLeft: 5 }}>Thiết kế của bạn</a>
+                                    <a href={"/design?id=" + (design?._id || _id || '')} className="btn btn-default" role="button" style={{ display: user?._id ? 'none' : 'inline-block', marginLeft: 5 }}>Thiết kế của bạn</a>
                                     <a href="/home" className="btn btn-primary" role="button" style={{ display: user?._id ? 'none' : 'inline-block', marginLeft: 5 }}>Đăng nhập</a>
                                 </div>
                                 <h4>Share</h4>

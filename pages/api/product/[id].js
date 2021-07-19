@@ -76,6 +76,11 @@ const handler = async (req, res) => {
             throw ({ path: 'room', files });
           }
         }
+        if (name) {
+          const matchProduct = await productController.find({ name });
+          if (matchProduct) throw ({ path: 'name', files });
+          else currentProduct.name = name;
+        }
         if (type) {
           try {
             const types = type.split(',');

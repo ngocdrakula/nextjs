@@ -125,12 +125,12 @@ class Main extends Component {
                                                         <img src={"/api/images/" + design.image + "?width=512&height=288"} alt={design.name} style={{ maxWidth: 128, maxHeight: 100 }} />
                                                     </td>
                                                     <td className="table-text">
-                                                        <a href={`/design/${design._id}`} title={`/design/${design._id}`} >
+                                                        <a href={`/design?id=${design._id}`} title={`/design?id=${design._id}`} >
                                                             <img src="/icons/2d.png" width={32} />
                                                         </a>
                                                     </td>
                                                     <td className="table-text">
-                                                        <a href={`/design/${design._id}`} >{design._id}</a>
+                                                        <a href={`/design?id=${design._id}`} >{design._id}</a>
                                                     </td>
                                                     <td className="table-text" />
                                                     <td className="table-text">

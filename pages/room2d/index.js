@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import dynamic from 'next/dynamic';
 import { connect } from 'react-redux'
-import { END } from 'redux-saga'
+import { END } from 'redux-saga';
+import Router from 'next/router';
 import { wrapper } from '../../redux/store';
 import types from '../../redux/types'
+import { getQuery } from '../../utils/helper';
 
 const Head = dynamic(() => import('../../components/Head'));
 const Body = dynamic(() => import('../../components/Body'));
@@ -23,6 +25,8 @@ class Index extends Component {
         const { dispatch } = this.props;
         dispatch({ type: types.GET_PRODUCTS, payload: { enabled: true } });
         dispatch({ type: types.USER_LOGIN_LOCAL });
+        const query = getQuery(Router?.router?.asPath);
+        dispatch({ type: types.SELECT_LAYOUT, payload: query.id });
     }
 
     render() {
@@ -47,7 +51,7 @@ export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
     store.dispatch({ type: types.GET_FRONTS, payload: { page: 0, pageSize: 0, enabled: true } });
     store.dispatch({ type: types.GET_SIZES, payload: { page: 0, pageSize: 0, enabled: true } });
     store.dispatch({ type: types.GET_ROOMS, payload: { page: 0, pageSize: 0, enabled: true } });
-    store.dispatch({ type: types.GET_LAYOUTS, payload: { page: 0, pageSize: 0, enabled: true, _id: '0' } });
+    store.dispatch({ type: types.GET_LAYOUTS, payload: { page: 0, pageSize: 0, enabled: true } });
 
     store.dispatch(END)
     await store.sagaTask.toPromise()
