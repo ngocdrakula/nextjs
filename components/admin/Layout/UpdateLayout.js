@@ -66,7 +66,7 @@ class UpdateLayout extends Component {
         const { layout, rooms } = this.props;
         const { enabled, name, loading } = this.state;
         const { roomSelected, roomDropdown, field, message } = this.state;
-        const image = "/api/images/" + layout?.images?.[0] + "?width=512&height=288";
+        const image = "/api/images/" + layout?.images?.[0] + "?width=256&height=144";
 
         return (
             <div>

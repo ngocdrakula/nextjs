@@ -122,7 +122,7 @@ class Main extends Component {
                                                 <tr key={design._id}>
                                                     <td className="table-text">{design.name}</td>
                                                     <td className="table-text">
-                                                        <img src={"/api/images/" + design.image + "?width=512&height=288"} alt={design.name} style={{ maxWidth: 128, maxHeight: 100 }} />
+                                                        <img src={"/api/images/" + design.image + "?width=256&height=144"} alt={design.name} style={{ maxWidth: 128, maxHeight: 100 }} />
                                                     </td>
                                                     <td className="table-text">
                                                         <a href={`/design?id=${design._id}`} title={`/design?id=${design._id}`} >
