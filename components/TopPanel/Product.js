@@ -16,7 +16,7 @@ class Product extends Component {
     handleScroll = (e) => {
         const { scrollTop } = e.target;
         const limit = (Math.floor(scrollTop / unitHeight / groupLength) + 1) * groupLength;
-        if (limit != this.state.limit) {
+        if (limit > this.state.limit) {
             this.setState({ limit })
         }
     }
