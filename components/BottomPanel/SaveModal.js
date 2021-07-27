@@ -23,16 +23,38 @@ class SaveModal extends Component {
         const { handleToggle } = this.props;
         handleToggle();
         const fileName = `${process.env.TITLE} - Product Info.jpeg`;
-        const canvas = document.getElementById('roomCanvas');
-        if (canvas) {
-            if (window.navigator.msSaveBlob) {
-                window.navigator.msSaveBlob(canvas.msToBlob(), fileName);
-            } else {
-                var a = document.createElement('a');
-                a.href = canvas.toDataURL('image/jpeg');
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.click();
+        const roomCanvas = document.getElementById('roomCanvas');
+        const logo = document.getElementById('companyLogo');
+        const canvas = document.createElement('canvas');
+        const dHeight = logo ? 300 : 0;
+        canvas.width = 1600;
+        canvas.height = 900 + dHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        if (logo) {
+            const logoWidth = logo.naturalWidth || logo.width;
+            const logoHeight = logo.naturalHeight || logo.height;
+            const maxWidth = canvas.width / 3;
+            const maxHeight = dHeight / 3;
+            const height = logoWidth * maxHeight <= logoHeight * maxWidth ? maxHeight : logoHeight * maxWidth / logoWidth;
+            const width = logoWidth * maxHeight >= logoHeight * maxWidth ? maxWidth : logoWidth * maxHeight / logoHeight;
+            const deltaX = (canvas.width - width) / 2;
+            const deltaY = (dHeight - height) / 2;
+            ctx.drawImage(logo, 0, 0, logo.naturalWidth, logo.naturalHeight, deltaX, deltaY, width, height);
+        }
+        if (roomCanvas) {
+            ctx.drawImage(roomCanvas, 0, dHeight);
+            if (canvas) {
+                if (window.navigator.msSaveBlob) {
+                    window.navigator.msSaveBlob(canvas.msToBlob(), fileName);
+                } else {
+                    var a = document.createElement('a');
+                    a.href = canvas.toDataURL('image/jpeg');
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                }
             }
         }
     }
