@@ -1,16 +1,13 @@
 module.exports = {
     env: {
-        // HOST_NAME: 'localhost',
-        HOST_NAME: 'production',
+        HOST_NAME: 'localhost',
+        // HOST_NAME: 'production',
 
         MONGODB_URL_LOCAL: "mongodb://localhost:27017/vimexpo",
         MONGODB_URL: "mongodb://localhost:27017/vimexpo",
 
-        API_URL_LOCAL: 'http://localhost:3000/api/',
-        API_URL: 'http://visualizer.hungtin.vn/api/',
-
-        ORIGIN_LOCAL: 'http://localhost:3000/api/',
-        ORIGIN: 'http://visualizer.hungtin.vn/api/',
+        API_URL_LOCAL: 'http://localhost:3001/api/',
+        API_URL: 'https://online.vimexpo.com.vn/api/',
 
         FOLDER_UPLOAD: 'upload',
 

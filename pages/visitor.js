@@ -29,7 +29,7 @@ class Visitor extends Component {
         type: types.GET_USER,
         payload: query.id,
         callback: res => {
-          if (res.success) this.setState({ visitor: res.data })
+          if (res?.success) this.setState({ visitor: res.data })
         }
       });
     }

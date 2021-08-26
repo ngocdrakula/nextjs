@@ -1,8 +1,8 @@
 import io from 'socket.io-client';
 
-const ORIGIN = process.env.HOST_NAME === 'localhost' ? process.env.ORIGIN_LOCAL : process.env.ORIGIN;
+const API_URL = process.env.HOST_NAME === 'localhost' ? process.env.API_URL_LOCAL : process.env.API_URL;
 
-const socket = io(ORIGIN);
+const socket = io(API_URL);
 
 
 export default socket;
