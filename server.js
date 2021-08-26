@@ -3,7 +3,7 @@ const { parse } = require('url')
 const next = require('next')
 const socketio = require('socket.io');
 
-const dev = process.env.NODE_ENV !== 'production';
+const dev = process.env.HOST_NAME !== 'production';
 const app = next({ dev })
 const handle = app.getRequestHandler()
 
