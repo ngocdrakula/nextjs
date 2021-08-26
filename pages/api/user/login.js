@@ -7,15 +7,15 @@ import bcrypt from '../../../middleware/bcrypt';
 const handler = async (req, res) => {
     if (req.method == 'POST') {
         try {
-            const { username, password } = req.body;
-            if (!username) throw ({ path: 'username' })
+            const { email, password } = req.body;
+            if (!email) throw ({ path: 'email' })
             if (!password) throw ({ path: 'password' })
-            const user = await userController.find({ username });
+            const user = await userController.find({ email });
             if (!user) throw ({ path: 'user' });
             const loged = await bcrypt.compare(password, user.password);
             if (!loged) throw ({ path: 'user' });
-            const { _id, name } = user;
-            const token = jwt.create({ _id, username, name });
+            const { _id, name, mode } = user;
+            const token = jwt.create({ _id, email, name, mode });
             return res.status(200).send({
                 success: true,
                 token,
@@ -23,13 +23,13 @@ const handler = async (req, res) => {
                 messages: lang?.message?.success?.loged
             });
         } catch (e) {
-            if (e.path == 'username') {
+            if (e.path == 'email') {
                 return res.status(400).send({
                     success: false,
                     validation: false,
-                    field: 'username',
+                    field: 'email',
                     message: "Tên đăng nhập không được để trống",
-                    messages: langConcat(lang?.resources?.username, lang?.message?.error?.validation?.required),
+                    messages: langConcat(lang?.resources?.email, lang?.message?.error?.validation?.required),
                 });
             }
             if (e.path == 'password') {
@@ -46,7 +46,7 @@ const handler = async (req, res) => {
                     success: false,
                     loged: false,
                     message: "Tên đăng nhập hoặc mật khẩu không chính xác",
-                    messages: langConcat(lang?.resources?.usernameOrPassword, lang?.message?.error?.validation?.incorrect),
+                    messages: langConcat(lang?.resources?.emailOrPassword, lang?.message?.error?.validation?.incorrect),
                 });
             }
             return res.status(500).send({

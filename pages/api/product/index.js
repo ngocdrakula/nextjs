@@ -1,27 +1,31 @@
 import runMidldleware from '../../../middleware/mongodb';
 import productController from '../../../controllers/product';
-import sizeController from '../../../controllers/size';
-import frontController from '../../../controllers/front';
-import roomController from '../../../controllers/room';
+import industryController from '../../../controllers/industry';
+import categoryController from '../../../controllers/category';
+import userController from '../../../controllers/user';
 import lang, { langConcat } from '../../../lang.config';
 import uploader, { cleanFiles } from '../../../middleware/multer';
-import jwt from '../../../middleware/jwt'
+import jwt from '../../../middleware/jwt';
+import { MODE } from '../../../utils/helper'
 
 const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
-      const { page, pageSize, name, sizeId, frontId, roomId, type, enabled } = req.query;
+      const { page, pageSize, name, description, categoryId, exbihitorId, industryId, enabled, sort } = req.query;
       const query = {};
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
+      const sortObj = {};
+      if (sort == 'name') sortObj.name = 1;
+      if (sort == 'namereverse') sortObj.name = -1;
       if (name) query.name = new RegExp(name, "i");
-      if (enabled !== undefined) query.enabled = (enabled == "true");
-      if (sizeId) query.size = sizeId;
-      if (frontId) query.front = frontId;
-      if (roomId) query.room = { $all: [roomId] };;
-      if (type) query.type = { $all: [type] };
+      if (enabled != undefined) query.enabled = (enabled == "true");
+      if (description) query.description = new RegExp(description, "i");
+      if (categoryId) query.category = categoryId;
+      if (exbihitorId) query.exbihitor = exbihitorId;
+      if (industryId) query.industry = industryId;
       const total = await productController.getlist(query).countDocuments();
-      const list = await productController.getlist(query).skip(skip).limit(limit).populate('size').populate('front');
+      const list = await productController.getlist(query).skip(skip).limit(limit).sort(sortObj).populate('industry').populate('category');
       return res.status(200).send({
         success: true,
         data: list,
@@ -45,61 +49,57 @@ const handler = async (req, res) => {
       if (!contentType || contentType.indexOf('multipart/form-data') == -1)
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
-      if (!user?.mode) throw ({ ...user, path: 'token' });
-      const { body: { name, sizeId, frontId, room, enabled, type }, files, err } = await uploader(req);
+      if (user?.mode != MODE.exhibitor && user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
+      const { body: { name, categoryId, exbihitorId = user._id, industryId, enabled, description }, files, err } = await uploader(req);
       if (err || !files.length) throw ({ path: 'files' });
-      if (!name || !sizeId || !frontId || !room?.length || !type?.length) {
+      if (!name || !industryId || !description) {
         if (!name) throw ({ path: 'name', files })
-        if (!sizeId) throw ({ path: 'sizeId', files })
-        if (!room?.length) throw ({ path: 'room', files })
-        if (!type?.length) throw ({ path: 'type', files })
-        throw ({ path: 'frontId', files })
+        if (!industryId) throw ({ path: 'industry', files })
+        throw ({ path: 'description', files })
+      }
+      // if (!categoryId) throw ({ path: 'category', files })
+      // try {
+      //   const category = await categoryController.get(categoryId);
+      //   if (!category) throw ({ path: '_id', files });
+      // } catch (err) {
+      //   if (err.path == '_id') throw ({ path: 'category', files });
+      //   throw ({ err, files })
+      // }
+      if (user.mode == MODE.admin) {
+        try {
+          if (!exbihitorId) throw ({ path: '_id', files })
+          const exbihitor = await userController.get(exbihitorId);
+          if (!exbihitor) throw ({ path: '_id', files });
+        } catch (err) {
+          if (err.path == '_id') throw ({ path: 'exbihitor', files });
+          throw ({ err, files })
+        }
       }
       try {
-        const size = await sizeController.get(sizeId);
-        if (!size) throw ({ path: '_id', files });
+        const industry = await industryController.get(industryId);
+        if (!industry) throw ({ path: '_id', files });
       } catch (err) {
-        if (err.path == '_id') throw ({ path: 'size', files });
+        if (err.path == '_id') throw ({ path: 'industry', files });
         throw ({ err, files })
       }
-      try {
-        const front = await frontController.get(frontId);
-        if (!front) throw ({ path: '_id', files });
-      } catch (err) {
-        if (err.path == '_id') throw ({ path: 'front', files });
-        throw ({ err, files })
-      }
-      try {
-        const rooms = room.split(',');
-        if (!rooms.length) throw ({});
-      } catch (err) {
-        throw ({ path: 'room', files });
-      }
-      try {
-        const types = type.split(',');
-        if (!types.length) throw ({});
-      } catch (err) {
-        throw ({ path: 'type', files });
-      }
-      const matchProduct = await productController.find({ name }).populate('size').populate('front');
+      const matchProduct = await productController.find({ name }).populate('category').populate('exbihitor').populate('industry');
       if (matchProduct) throw ({ path: 'product', files, matchProduct });
       const productCreated = await (await productController.create({
         name,
-        size: sizeId,
-        front: frontId,
-        room: room.split(','),
         image: files[0],
-        enabled: (enabled == 'true'),
-        type: type.split(','),
-        code: name
-      })).populate('size').populate('front').execPopulate();
+        description,
+        // category: categoryId,
+        exbihitor: exbihitorId,
+        industry: industryId,
+        enabled: (enabled == 'true')
+      })).populate('category').populate('exbihitor').populate('industry').execPopulate();
       return res.status(201).send({
         success: true,
         data: productCreated,
         message: 'Thêm thành công',
         messages: lang?.message?.success?.created
       });
-    } catch (e) { 
+    } catch (e) {
       if (e.files) await cleanFiles(e.files);
       if (e.path == 'token') {
         if (!e.token) {
@@ -145,31 +145,31 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.productName, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path == 'sizeId') {
+      if (e.path == 'industryId') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'sizeId',
-          message: 'Id kích thước không được để trống',
-          messages: langConcat(lang?.resources?.sizeId, lang?.message?.error?.validation?.required)
+          field: 'industryId',
+          message: 'Id ngành nghề không được để trống',
+          messages: langConcat(lang?.resources?.industryId, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path == 'frontId') {
+      if (e.path == 'categoryId') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'frontId',
-          message: 'Id kiểu bề mặt không được để trống',
-          messages: langConcat(lang?.resources?.frontId, lang?.message?.error?.validation?.required)
+          field: 'categoryId',
+          message: 'Id chuyên mục không được để trống',
+          messages: langConcat(lang?.resources?.categoryId, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path == 'room') {
+      if (e.path == 'exbihitor') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'room',
-          message: 'Không gian không được để trống',
-          messages: langConcat(lang?.resources?.roomId, lang?.message?.error?.validation?.required)
+          field: 'exbihitor',
+          message: 'Id tài khoản không được để trống',
+          messages: langConcat(lang?.resources?.exbihitorId, lang?.message?.error?.validation?.required)
         });
       }
       if (e.path == 'type') {
@@ -180,31 +180,31 @@ const handler = async (req, res) => {
           message: 'Loại sản phẩm không được để trống',
         });
       }
-      if (e.path == 'size') {
+      if (e.path == 'industry') {
         return res.status(400).send({
           success: false,
           exist: false,
-          field: 'size',
+          field: 'industry',
           message: "Không gian không tồn tại",
-          messages: langConcat(lang?.resources?.size, lang?.message?.error?.validation?.not_exist),
+          messages: langConcat(lang?.resources?.industry, lang?.message?.error?.validation?.not_exist),
         });
       }
-      if (e.path == 'front') {
+      if (e.path == 'category') {
         return res.status(400).send({
           success: false,
           exist: false,
-          field: 'front',
+          field: 'category',
           message: "Kiểu bề mặt không tồn tại",
-          messages: langConcat(lang?.resources?.front, lang?.message?.error?.validation?.not_exist),
+          messages: langConcat(lang?.resources?.category, lang?.message?.error?.validation?.not_exist),
         });
       }
-      if (e.path == 'room') {
+      if (e.path == 'exbihitor') {
         return res.status(400).send({
           success: false,
           exist: false,
-          field: 'room',
+          field: 'exbihitor',
           message: "Kiểu bề mặt không tồn tại",
-          messages: langConcat(lang?.resources?.room, lang?.message?.error?.validation?.not_exist),
+          messages: langConcat(lang?.resources?.exbihitor, lang?.message?.error?.validation?.not_exist),
         });
       }
       if (e.path == 'product') {

@@ -2,392 +2,125 @@ import types from '../types';
 import { HYDRATE } from 'next-redux-wrapper'
 
 export const initState = {
-    products: [],
-    page: 0,
+    industries: [],
+    exhibitors: [],
+    visitors: [],
+    user: null,
+    openMessage: true,
+    openList: true,
+    newMessage: 0,
+    conversations: [],
     total: 0,
-    rooms: [],
-    layouts: [],
-    sizes: [],
-    fronts: [],
-    layout: null,
-    areaIndex: -1,
-    areasCustom: []
+    page: 0,
 }
 const appReducer = (state = initState, action) => {
     switch (action.type) {
         case HYDRATE: {
-            return { ...initState, ...state, ...action.payload.app, products: state.products };
+            return { ...initState, ...state, ...action.payload.app, categories: state.categories };
         }
-        case types.GET_PRODUCTS_SUCCESS: {
-            const { data, total, page } = action.payload;
+        case types.GET_INDUSTRIES_SUCCESS: {
+            const { data } = action.payload;
             return {
                 ...state,
-                products: page ? [...state.products, ...data] : data,
+                industries: data,
+            };
+        }
+        case types.GET_EXHIBITORS_SUCCESS: {
+            const { data } = action.payload;
+            return {
+                ...state,
+                exhibitors: data,
+            };
+        }
+        case types.GET_VISITORS_SUCCESS: {
+            const { data } = action.payload;
+            return {
+                ...state,
+                visitors: data
+            };
+        }
+        case types.OPENFORM: {
+            return {
+                ...state,
+                openForm: action.payload
+            };
+        }
+        case types.USER_LOGIN_SUCCESS: {
+            return {
+                ...state,
+                user: action.payload,
+                openForm: null
+            };
+        }
+        case types.USER_LOGOUT_SUCCESS: {
+            return {
+                ...state,
+                user: null,
+            };
+        }
+        case types.USER_REGISTER_SUCCESS: {
+            return {
+                ...state,
+                user: action.payload,
+                openForm: null
+            };
+        }
+        case types.GET_USER_SUCCESS: {
+            return {
+                ...state,
+                user: action.payload.data?._id === state.user._id ? action.payload.data : state.user,
+            };
+        }
+        case types.OPEN_MESSAGE: {
+            return {
+                ...state,
+                openMessage: !state.openMessage,
+            };
+        }
+        case types.OPEN_LIST: {
+            return {
+                ...state,
+                openList: state.conId ? !state.openList : true,
+            };
+        }
+        case types.GET_CONVERSATIONS_SUCCESS: {
+            const { data, total, page, totalNew } = action.payload;
+            return {
+                ...state,
+                conversations: data,
                 page,
-                total
+                total,
+                newMessage: totalNew
             };
         }
-        case types.GET_FRONTS_SUCCESS: {
-            const { data } = action.payload;
-            return {
-                ...state,
-                fronts: data,
-            };
-        }
-        case types.GET_FRONTS_FAILED: {
-            return {
-                ...state,
-                fronts: [],
-            };
-        }
-        case types.FRONTS_SELECT_ALL: {
-            return {
-                ...state,
-                fronts: state.fronts.map(front => ({ ...front, uncheck: false }))
-            };
-        }
-        case types.FRONTS_CLEAR_ALL: {
-            return {
-                ...state,
-                fronts: state.fronts.map(front => ({ ...front, uncheck: true })),
-            };
-        }
-        case types.FRONTS_SELECT_ONE: {
-            const current = state.fronts[action.payload];
-            if (current) {
-                state.fronts[action.payload] = { ...current, uncheck: !current.uncheck };
-                return {
-                    ...state,
-                    fronts: [...state.fronts],
-                };
+        case types.GET_ONE_CONVERSATION_SUCCESS: {
+            const con = action.payload.data;
+            const index = state.conversations.findIndex(c => c._id === con._id)
+            if (index + 1) {
+                state.conversations[index] = con
             }
-        }
-        case types.FRONTS_REVERSE: {
-            return {
-                ...state,
-                fronts: state.fronts.map(front => ({ ...front, uncheck: !front.uncheck })),
-            };
-        }
-        case types.GET_SIZES_SUCCESS: {
-            const { data } = action.payload;
-            return {
-                ...state,
-                sizes: data,
-            };
-        }
-        case types.SIZES_SELECT_ALL: {
-            return {
-                ...state,
-                sizes: state.sizes.map(size => ({ ...size, uncheck: false }))
-            };
-        }
-        case types.SIZES_CLEAR_ALL: {
-            return {
-                ...state,
-                sizes: state.sizes.map(size => ({ ...size, uncheck: true }))
-            };
-        }
-        case types.SIZES_SELECT_ONE: {
-            const current = state.sizes[action.payload];
-            if (current) {
-                state.sizes[action.payload] = { ...current, uncheck: !current.uncheck };
-                return {
-                    ...state,
-                    sizes: [...state.sizes],
-                };
-            }
-        }
-        case types.SIZES_REVERSE: {
-            return {
-                ...state,
-                sizes: state.sizes.map(size => ({ ...size, uncheck: !size.uncheck })),
-            };
-        }
-        case types.GET_ROOMS_SUCCESS: {
-            const { data } = action.payload;
-            return {
-                ...state,
-                rooms: data,
-            };
-        }
-        case types.GET_LAYOUTS_SUCCESS: {
-            const { data } = action.payload;
-            return {
-                ...state,
-                layouts: data,
-            };
-        }
-        case types.ROOMS_SELECT_ALL: {
-            return {
-                ...state,
-                rooms: state.rooms.map(room => ({ ...room, uncheck: false }))
-            };
-        }
-        case types.ROOMS_CLEAR_ALL: {
-            return {
-                ...state,
-                rooms: state.rooms.map(room => ({ ...room, uncheck: true }))
-            };
-        }
-        case types.ROOMS_SELECT_ONE: {
-            const current = state.rooms[action.payload];
-            if (current) {
-                state.rooms[action.payload] = { ...current, uncheck: !current.uncheck };
-                return {
-                    ...state,
-                    rooms: [...state.rooms],
-                };
-            }
-        }
-        case types.ROOMS_REVERSE: {
-            return {
-                ...state,
-                rooms: state.rooms.map(room => ({ ...room, uncheck: !room.uncheck })),
-            };
-        }
-        case types.CHANGE_SORT: {
-            state.products.sort((p1, p2) => {
-                if (action.payload === 0) {//a-z 
-                    var nameA = p1.name.toUpperCase();
-                    var nameB = p2.name.toUpperCase();
-                    if (nameA > nameB) return 1;
-                    else if (nameA < nameB) return -1;
-                    return 0;
-                }
-                if (action.payload === 1) { //z-a
-                    var nameA = p1.name.toUpperCase();
-                    var nameB = p2.name.toUpperCase();
-                    if (nameA < nameB) return 1;
-                    else if (nameA > nameB) return -1;
-                    return 0;
-                }
-                var date1 = Date.parse(p1.createdAt);
-                var date2 = Date.parse(p2.createdAt);
-                if (action.payload === 2) {
-                    return (date1 - date2);//new
-                }
-                return (date2 - date1);//old
-            })
-            return {
-                ...state,
-                products: [...state.products],
-                sortType: action.payload
-            };
-        }
-
-        case types.CHANGE_SEARCH: {
-            return {
-                ...state,
-                search: action.payload
-            }
-        }
-
-        case types.HIDE_TOPPANEL: {
-            return {
-                ...state,
-                visible: !state.visible,
-            };
-        }
-        case types.SELECT_LAYOUT: {
-            const layout = state.layouts.find(l => l._id === action.payload) || state.layouts[0] || null;
-            return {
-                ...state,
-                layout,
-                areasCustom: new Array(layout?.areas.length || 0).fill([])
-            };
-        }
-        case types.APP_INITAL_LAYOUT: {
-            const { areas, layout } = action.payload;
-            layout.areas = layout.areas.map((area, index) => {
-                return { ...area, ...areas[index] };
-            });
-            const areasCustom = areas.map(area => {
-                const { design } = area;
-                return design;
-            })
-            return {
-                ...state,
-                layout,
-                areasCustom
-            };
-        }
-
-        case types.SELECT_AREA: {
-            return {
-                ...state,
-                areaIndex: action.payload,
-                visible: true
-            };
-        }
-        case types.SELECT_PRODUCT: {
-            const { areaIndex, layout: { ...layout } } = state;
-            if (layout.areas?.[areaIndex]) {
-                layout.areas = [...layout.areas];
-                layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
-                if (layout.areas[areaIndex].custom || layout.areas[areaIndex].customRotate) {
-                    layout.areas[areaIndex].product = action.payload;
-                }
-                else {
-                    layout.areas[areaIndex].products = [action.payload];
-                }
-                layout.areas[areaIndex].paint = null;
+            else {
+                state.conversations.push(con)
             }
             return {
                 ...state,
-                layout,
-                visible: false
+                conversations: [...state.conversations],
+                conId: con._id,
+                openList: false
             };
         }
-        case types.SELECT_FIRST_PRODUCT: {
-            const { areaIndex, layout: { ...layout } } = state;
-            if (layout.areas?.[areaIndex]) {
-                layout.areas = [...layout.areas];
-                layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
-                layout.areas[areaIndex].products = [...layout.areas[areaIndex].products];
-                layout.areas[areaIndex].products[0] = action.payload;
-                layout.areas[areaIndex].paint = null;
+        case types.SEND_MESSAGE_SUCCESS: {
+            const { data, conversationCreated, conversationId } = action.payload;
+            const index = state.conversations.findIndex(c => c._id === conversationId);
+            if (index + 1) {
+                state.conversations[index].messages.push(data)
+            }
+            else if (conversationCreated) {
+                state.conversations.push(conversationCreated)
             }
             return {
                 ...state,
-                layout,
-                visible: false
-            };
-        }
-        case types.SELECT_SECOND_PRODUCT: {
-            const { areaIndex, layout: { ...layout } } = state;
-            if (layout.areas?.[areaIndex]) {
-                layout.areas = [...layout.areas];
-                layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
-                layout.areas[areaIndex].products = [...layout.areas[areaIndex].products];
-                if (layout.areas[areaIndex].products[1]) layout.areas[areaIndex].products[1] = action.payload;
-                else layout.areas[areaIndex].products.push(action.payload);
-                layout.areas[areaIndex].paint = null;
-            }
-            return {
-                ...state,
-                layout,
-                visible: false
-            };
-        }
-        case types.CHANGE_GROUT: {
-            const { areaIndex, layout: { ...layout } } = state;
-            if (layout.areas?.[areaIndex]) {
-                layout.areas = [...layout.areas];
-                layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
-                layout.areas[areaIndex].grout = action.payload;
-            }
-            return {
-                ...state,
-                layout
-            };
-        }
-        case types.CHANGE_COLOR: {
-            const { areaIndex, layout: { ...layout } } = state;
-            if (layout.areas?.[areaIndex]) {
-                layout.areas = [...layout.areas];
-                layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
-                layout.areas[areaIndex].color = action.payload;
-            }
-            return {
-                ...state,
-                layout
-            };
-        }
-        case types.CHANGE_PAINT: {
-            const { areaIndex, layout: { ...layout } } = state;
-            if (layout.areas?.[areaIndex]) {
-                layout.areas = [...layout.areas];
-                layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
-                layout.areas[areaIndex].paint = action.payload;
-            }
-            return {
-                ...state,
-                layout
-            };
-        }
-        case types.CHANGE_CUSTOM: {
-            const { areaIndex, layout: { ...layout } } = state;
-            if (layout.areas?.[areaIndex]) {
-                layout.areas = [...layout.areas];
-                layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
-                layout.areas[areaIndex].custom = action.payload;
-            }
-            return {
-                ...state,
-                layout
-            };
-        }
-        case types.CHANGE_CUSTOM_ROTATE: {
-            const { areaIndex, layout: { ...layout } } = state;
-            if (layout.areas?.[areaIndex]) {
-                layout.areas = [...layout.areas];
-                layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
-                layout.areas[areaIndex].customRotate = action.payload;
-            }
-            return {
-                ...state,
-                layout
-            };
-        }
-        case types.CHANGE_SKEW_TYPE: {
-            const { areaIndex, layout: { ...layout } } = state;
-            if (layout.areas?.[areaIndex]) {
-                layout.areas = [...layout.areas];
-                layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
-                layout.areas[areaIndex].skewType = action.payload;
-                layout.areas[areaIndex].skewValue = 1 / 2;
-            }
-            return {
-                ...state,
-                layout
-            };
-        }
-        case types.CHANGE_SKEW_VALUE: {
-            const { areaIndex, layout: { ...layout } } = state;
-            if (layout.areas?.[areaIndex]) {
-                layout.areas = [...layout.areas];
-                layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
-                layout.areas[areaIndex].skewValue = action.payload;
-            }
-            return {
-                ...state,
-                layout
-            };
-        }
-        case types.CHANGE_ROTATE: {
-            const { areaIndex, layout: { ...layout } } = state;
-            if (layout.areas?.[areaIndex]) {
-                layout.areas = [...layout.areas];
-                layout.areas[areaIndex] = { ...layout.areas[areaIndex] };
-                layout.areas[areaIndex].rotate = action.payload;
-            }
-            return {
-                ...state,
-                layout
-            };
-        }
-        case types.PROGRESS_UPDATE: {
-            return {
-                ...state,
-                progress: true
-            };
-        }
-
-        case types.CHANGE_PRODUCT_DESIGN: {
-            const { areasCustom, areaIndex } = state;
-            const mesh = action.payload;
-            if (areasCustom[areaIndex]?.find) {
-                const currentCustom = areasCustom[areaIndex].find(m => m.x === mesh.x && m.y === mesh.y);
-                if (currentCustom) {
-                    currentCustom.r = mesh.r;
-                    currentCustom.product = mesh.product;
-                }
-                else {
-                    areasCustom[areaIndex].push(mesh)
-                }
-            }
-            return {
-                ...state
+                conversations: [...state.conversations],
             };
         }
         default: {

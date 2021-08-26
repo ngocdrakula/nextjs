@@ -1,20 +1,16 @@
 import mongoose from 'mongoose';
-import front from "./front";
-import layout from "./layout";
+import category from "./category";
+import conversation from "./conversation";
+import message from "./message";
 import product from "./product";
-import room from "./room";
-import size from "./size";
+import industry from "./industry";
 import user from "./user";
-import design from "./design";
-import setting from "./setting";
 
 mongoose.models = {};
 
-export const frontData = mongoose.model('front', front);
-export const layoutData = mongoose.model('layout', layout);
+export const categoryData = mongoose.model('category', category);
+export const conversationData = mongoose.model('conversation', conversation);
+export const messageData = mongoose.model('message', message);
 export const productData = mongoose.model('product', product);
-export const roomData = mongoose.model('room', room);
-export const sizeData = mongoose.model('size', size);
+export const industryData = mongoose.model('industry', industry);
 export const userData = mongoose.model('user', user);
-export const designData = mongoose.model('design', design);
-export const settingData = mongoose.model('setting', setting);

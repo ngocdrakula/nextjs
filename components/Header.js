@@ -1,95 +1,122 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import types from '../redux/types';
+import { getQuery, MODE } from '../utils/helper';
 import Head from './Head';
+import LoginVisitor from '../components/LoginVisitor';
+import LoginExhibitor from '../components/LoginExhibitor';
+import Router from 'next/router';
+import MessageContainer from './Message/MessageContainer';
+import MessageIconNoti from './Message/MessageIconNoti';
 
 class Header extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            name: ''
+        }
     }
     componentDidMount() {
         const { dispatch } = this.props;
+        dispatch({ type: types.ADMIN_GET_SETTING });
         dispatch({ type: types.USER_LOGIN_LOCAL });
+        const query = getQuery(Router?.router?.asPath);
+        if (query.name) this.setState({ name: query.name })
     }
-    componentWillUnmount() {
-        window.removeEventListener('click', this.handleClick);
+    openLoginVisitor = e => {
+        e.preventDefault();
+        const { dispatch } = this.props;
+        dispatch({ type: types.OPENFORM, payload: MODE.visitor });
+    }
+    openLoginExhibitor = e => {
+        e.preventDefault();
+        const { dispatch } = this.props;
+        dispatch({ type: types.OPENFORM, payload: MODE.exhibitor });
+    }
+    handleChange = e => {
+        this.setState({ name: e.target.value })
+    }
+    handleSubmit = e => {
+        e.preventDefault();
+        const { name } = this.state;
+        const query = getQuery(Router?.router?.asPath);
+        if (name) query.name = name;
+        Router.push("/user", { query })
     }
     handleLogout = e => {
         e.preventDefault();
         const { dispatch } = this.props;
-        dispatch({
-            type: types.USER_LOGOUT,
-            callback: e => this.setState({ visible: false })
-        });
-    }
-    handleTogle = () => {
-        this.setState({ visible: !this.state.visible });
-        window.addEventListener('click', this.handleClick);
-    }
-    handleClick = e => {
-        if (!document.getElementById('dropdown')?.contains(e.target)) {
-            this.setState({ visible: false });
-            window.removeEventListener('click', this.handleClick);
-        }
+        dispatch({ type: types.USER_LOGOUT });
     }
     render() {
-        const { user, handleSelect, setting } = this.props;
-        const { visible } = this.state;
+        const { name } = this.state;
+        const { user } = this.props;
         return (
             <>
                 <Head />
-                <nav className="navbar navbar-default navbar-static-top">
-                    <div className="container">
-                        <div className="navbar-header">
-                            <button type="button" data-toggle="collapse" data-target="#app-navbar-collapse" className="navbar-toggle collapsed">
-                                <span className="sr-only">Toggle Navigation</span>
-                                <span className="icon-bar" />
-                                <span className="icon-bar" />
-                                <span className="icon-bar" />
-                            </button>
-                            <a href="/" className="navbar-brand">{setting?.title || process.env.TITLE}</a>
-                        </div>
-                        {user ?
-                            <ul className="nav navbar-nav navbar-right">
-                                <li>
-                                    <a href="/home" style={{ padding: 9 }}>
-                                        <img src="/icons/noavatar.png" style={{ maxWidth: 32, maxHeight: 32, borderRadius: '50%' }} />
-                                    </a>
-                                </li>
-                                <li className={"dropdown" + (visible ? " open" : "")} id="dropdown">
-                                    <a href="#" className="dropdown-toggle" onClick={this.handleTogle}>
-                                        {user.name} <span className="caret" />
-                                    </a>
-                                    <ul role="menu" className="dropdown-menu">
-                                        <li>
-                                            <a href="#" onClick={this.handleLogout}>Logout</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            :
-                            <ul className="nav navbar-nav navbar-right">
-                                <li>
-                                    <a href="/login" onClick={e => handleSelect(e, 'login')}>Login</a>
-                                </li>
-                                <li>
-                                    <a href="/register" onClick={e => handleSelect(e, 'register')}>Register</a>
-                                </li>
-                            </ul>
-                        }
-                        <div id="app-navbar-collapse" className="collapse navbar-collapse">
-                            <ul className="nav navbar-nav">
-                                <li className="active">
-                                    <a href="/home">Home</a>
-                                </li>
-                            </ul>
+                <header id="header" className="site-header">
+                    <div className="header-top">
+                        <div className="container">
+                            <p>
+                                <a href="#" className="online-exhibition"><img src="/images/online.png" alt="" />Triển lãm trực tuyến</a>
+                                <a href="#" className="lang"><img src="/images/lang-vn.png" alt="" /><img src="/images/icon-down.png" alt="" /></a>
+                            </p>
                         </div>
                     </div>
-                </nav>
+                    <div className="header-main header-border">
+                        <div className="container">
+                            <div className="header-content">
+                                <div className="row">
+                                    <div className="col-5 col-md-3">
+                                        <div className="logo">
+                                            <a href="/"><img src="/images/logo.png" alt="" /></a>
+                                        </div>
+                                    </div>
+                                    <div className="col-7 col-md-9 choose-login">
+                                        {user?._id ?
+                                            <div className="login-guest">
+                                                <a href="#" onClick={this.handleLogout}><span>Đăng xuất</span></a>
+                                            </div>
+                                            :
+                                            <div className="login-guest">
+                                                <a href="#" onClick={this.openLoginVisitor}>Đăng nhập <span>Khách tham quan</span></a>
+                                            </div>
+                                        }
+                                        {user?._id ?
+                                            <div className="login-guest">
+                                                <a href={`/${user.mode === MODE.visitor ? 'visitor' : 'exhibitor'}?id=${user._id}`}>
+                                                    <span style={{ textTransform: 'uppercase' }}>{user.name || user.email?.split('@')[0]?.slice(0, 10)}</span>
+                                                </a>
+                                            </div>
+                                            :
+                                            <div className="login-exhibitor">
+                                                <a href="#" onClick={this.openLoginExhibitor}>Đăng nhập <span>Nhà trưng bày</span></a>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div className="search">
+                                    <input type="text" name="search" placeholder="Tìm kiếm Nhà trưng bày" name="name" value={name} onChange={this.handleChange} />
+                                    <button onClick={this.handleSubmit}><img src="/images/icon-search.png" alt="" /></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                {user?._id ?
+                    <>
+                        <MessageContainer />
+                        <MessageIconNoti />
+                    </>
+                    :
+                    <>
+                        <LoginVisitor />
+                        <LoginExhibitor />
+                    </>
+                }
             </>
         )
     }
 }
 
-export default connect(({ user: { user }, admin: { setting } }) => ({ user, setting }))(Header)
+export default connect(({ app: { user }, admin: { setting } }) => ({ user, setting }))(Header)

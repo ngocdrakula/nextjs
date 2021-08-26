@@ -1,5 +1,8 @@
 import axios from 'axios';
 
+const API_URL = process.env.HOST_NAME === 'localhost' ? process.env.API_URL_LOCAL : process.env.API_URL;
+
+
 const getToken = () => {
     try {
         const token = localStorage.getItem('token');
@@ -9,7 +12,7 @@ const getToken = () => {
 }
 
 const defaultAxios = axios.create({
-    baseURL: process.env.API_URL,
+    baseURL: API_URL,
 });
 
 defaultAxios.interceptors.request.use(
@@ -23,7 +26,7 @@ defaultAxios.interceptors.request.use(
 );
 
 const uploadAxios = axios.create({
-    baseURL: process.env.API_URL,
+    baseURL: API_URL,
 });
 uploadAxios.interceptors.request.use(
     config => {

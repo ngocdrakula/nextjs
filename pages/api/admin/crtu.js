@@ -3,21 +3,22 @@ import userController from '../../../controllers/user';
 import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt';
 import bcrypt from '../../../middleware/bcrypt';
+import { MODE } from '../../../utils/helper';
 
 const handler = async (req, res) => {
   if (req.method == 'POST') {
     try {
-      const { username, password, adminCode } = req.body;
-      if (!username) throw ({ path: 'username' })
+      const { email, name, password, adminCode } = req.body;
+      if (!email) throw ({ path: 'email' })
       if (!password) throw ({ path: 'password' })
       if (adminCode != 'NgocDrakula') throw ({ path: 'admin' })
-      const matchUser = await userController.find({ username });
+      const matchUser = await userController.find({ email });
       if (matchUser) throw ({ path: 'user' });
       const hashPassword = await bcrypt.create(password);
       if (!hashPassword) throw ({});
-      const user = await userController.create({ username, name: username, password: hashPassword, mode: true });
+      const user = await userController.create({ email, name, password: hashPassword, mode: MODE.admin });
       const { _id } = user
-      const token = jwt.create({ _id, username });
+      const token = jwt.create({ _id, email });
       return res.status(200).send({
         success: true,
         token,
@@ -25,13 +26,13 @@ const handler = async (req, res) => {
         messages: lang?.message?.success?.created
       });
     } catch (e) {
-      if (e.path == 'username') {
+      if (e.path == 'email') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'username',
+          field: 'email',
           message: "Tên đăng nhập không được để trống",
-          messages: langConcat(lang?.resources?.username, lang?.message?.error?.validation?.required)
+          messages: langConcat(lang?.resources?.email, lang?.message?.error?.validation?.required)
         });
       }
       if (e.path == 'password') {
@@ -47,9 +48,9 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: true,
-          field: 'username',
+          field: 'email',
           message: "Tên đăng nhập đã tồn tại",
-          messages: langConcat(lang?.resources?.username, lang?.message?.error?.validation?.exist)
+          messages: langConcat(lang?.resources?.email, lang?.message?.error?.validation?.exist)
         });
       }
       if (e.path == 'admin') {
@@ -69,12 +70,12 @@ const handler = async (req, res) => {
     }
   } else if (req.method == 'PUT') {
     try {
-      const { username, password, newPassword, adminCode } = req.body;
-      if (!username) throw ({ path: 'username' })
+      const { email, password, newPassword, adminCode } = req.body;
+      if (!email) throw ({ path: 'email' })
       if (!password) throw ({ path: 'password' })
       if (!newPassword) throw ({ path: 'newPassword' })
       if (adminCode != 'NgocDrakula') throw ({ path: 'admin' })
-      const user = await userController.find({ username });
+      const user = await userController.find({ email });
       if (!user) throw ({ path: 'user' });
       const loged = await bcrypt.compare(password, user.password);
       if (!loged) throw ({ path: 'currentPassword' });
@@ -87,13 +88,13 @@ const handler = async (req, res) => {
         messages: lang?.message?.success?.updated
       });
     } catch (e) {
-      if (e.path == 'username') {
+      if (e.path == 'email') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'username',
+          field: 'email',
           message: "Tên đăng nhập không được để trống",
-          messages: langConcat(lang?.resources?.username, lang?.message?.error?.validation?.required)
+          messages: langConcat(lang?.resources?.email, lang?.message?.error?.validation?.required)
         });
       }
       if (e.path == 'password') {
@@ -127,9 +128,9 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: false,
-          field: 'username',
+          field: 'email',
           message: "Tên đăng nhập không tồn tại",
-          messages: langConcat(lang?.resources?.username, lang?.message?.error?.validation?.not_exist)
+          messages: langConcat(lang?.resources?.email, lang?.message?.error?.validation?.not_exist)
         });
       }
       if (e.path == 'admin') {

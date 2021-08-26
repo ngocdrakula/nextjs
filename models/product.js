@@ -6,44 +6,36 @@ const product = new Schema({
         type: String,
         required: true
     },
-    room: {
-        type: [mongoose.Schema.Types.ObjectId],
-        required: true,
-        ref: 'room',
-        default: []
-    },
-    size: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'size'
-    },
-    front: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'front'
-    },
     image: {
         type: String,
         required: true
     },
-    type: {
-        type: [String],
+    description: {
+        type: String,
+        required: true
+    },
+    exbihitor: {
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
-        default: []
+        ref: 'user',
+    },
+    industry: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'industry'
     },
     enabled: {
         type: Boolean,
         default: true
     },
-    code: {
-        type: String,
-        require: false,
-        unique: false,
-        default: null
-    }
 }, {
     timestamps: { createdAt: 'createdAt' }
 });
+
+product.methods.toJSON = function () {
+    var obj = this.toObject();
+    delete obj.exbihitor.password;
+    return (obj);
+}
 
 
 export default product;

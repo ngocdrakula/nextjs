@@ -1,17 +1,16 @@
 import runMidldleware from '../../../middleware/mongodb';
 import productController from '../../../controllers/product';
-import sizeController from '../../../controllers/size';
-import frontController from '../../../controllers/front';
-import roomController from '../../../controllers/room';
+import categoryController from '../../../controllers/category';
 import lang, { langConcat } from '../../../lang.config';
 import uploader, { cleanFiles } from '../../../middleware/multer';
-import jwt from '../../../middleware/jwt'
+import jwt from '../../../middleware/jwt';
+import { MODE } from '../../../utils/helper';
 
 const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
       const { id } = req.query;
-      const currentProduct = await productController.get(id);
+      const currentProduct = await productController.get(id).populate('category').populate('exbihitor').populate('industry');
       if (!currentProduct) throw ({ path: '_id' })
       return res.status(201).send({
         success: true,
@@ -41,39 +40,30 @@ const handler = async (req, res) => {
       if (!contentType || contentType.indexOf('multipart/form-data') == -1)
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
-      if (!user?.mode) throw ({ ...user, path: 'token' });
-      const { body: { name, sizeId, frontId, room, type, enabled }, files, err } = await uploader(req);
+      if (user?.mode != MODE.exhibitor && user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
+      const { body: { name, categoryId, industry, description, enabled }, files, err } = await uploader(req);
       if (err) throw ({ path: 'files' });
       try {
         const currentProduct = await productController.get(req.query.id);
         if (!currentProduct) throw ({ path: '_id', files });
-        if (sizeId) {
+        if (user._id != currentProduct.exhibitor) throw ({ ...user, path: 'token' });
+        if (categoryId) {
           try {
-            const size = await sizeController.get(sizeId);
-            if (!size) throw ({ path: '_id' })
-            currentProduct.size = sizeId;
+            const category = await categoryController.get(categoryId);
+            if (!category) throw ({ path: '_id' })
+            currentProduct.category = categoryId;
           } catch (err) {
-            if (err.path == '_id') throw ({ path: 'size', files });
+            if (err.path == '_id') throw ({ path: 'category', files });
             throw ({ err, files })
           }
-        }
-        if (frontId) {
+        } if (industry) {
           try {
-            const front = await frontController.get(frontId);
-            if (!front) throw ({ path: '_id' })
-            currentProduct.front = frontId;
+            const category = await categoryController.get(industry);
+            if (!category) throw ({ path: '_id' })
+            currentProduct.industry = industry;
           } catch (err) {
-            if (err.path == '_id') throw ({ path: 'front', files });
+            if (err.path == '_id') throw ({ path: 'category', files });
             throw ({ err, files })
-          }
-        }
-        if (room) {
-          try {
-            const rooms = room.split(',');
-            if (!rooms.length) throw ({});
-            currentProduct.room = rooms;
-          } catch (err) {
-            throw ({ path: 'room', files });
           }
         }
         if (name) {
@@ -81,14 +71,8 @@ const handler = async (req, res) => {
           if (matchProduct) throw ({ path: 'name', files });
           else currentProduct.name = name;
         }
-        if (type) {
-          try {
-            const types = type.split(',');
-            if (!types.length) throw ({});
-            currentProduct.type = types;
-          } catch (err) {
-            throw ({ path: 'type', files });
-          }
+        if (description) {
+          currentProduct.description = description;
         }
         if (enabled != undefined) {
           currentProduct.enabled = (enabled == "true");
@@ -97,7 +81,7 @@ const handler = async (req, res) => {
           await cleanFiles([currentProduct.image]);
           currentProduct.image = files[0];
         }
-        const productUpdated = await (await currentProduct.save()).populate('size').populate('front').execPopulate();
+        const productUpdated = await (await currentProduct.save()).populate('category').populate('exbihitor').populate('industry').execPopulate();
         return res.status(200).send({
           success: true,
           data: productUpdated,
@@ -145,31 +129,22 @@ const handler = async (req, res) => {
           messages: lang?.message?.error?.upload_failed,
         });
       }
-      if (e.path == 'size') {
+      if (e.path == 'category') {
         return res.status(400).send({
           success: false,
           exist: false,
-          field: 'size',
-          message: "Không gian không tồn tại hoặc đã bị xóa",
-          messages: langConcat(lang?.resources?.size, lang?.message?.error?.validation?.not_exist),
+          field: 'category',
+          message: "Chuyên mục không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.category, lang?.message?.error?.validation?.not_exist),
         });
       }
-      if (e.path == 'front') {
+      if (e.path == 'industry') {
         return res.status(400).send({
           success: false,
           exist: false,
-          field: 'front',
-          message: "Kiểu bề mặt không tồn tại hoặc đã bị xóa",
-          messages: langConcat(lang?.resources?.front, lang?.message?.error?.validation?.not_exist),
-        });
-      }
-      if (e.path == 'room') {
-        return res.status(400).send({
-          success: false,
-          exist: false,
-          field: 'room',
-          message: "Khu vực không tồn tại hoặc đã bị xóa",
-          messages: langConcat(lang?.resources?.room, lang?.message?.error?.validation?.not_exist),
+          field: 'industry',
+          message: "Ngành nghề không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.industry, lang?.message?.error?.validation?.not_exist),
         });
       }
       if (e.path == 'product') {

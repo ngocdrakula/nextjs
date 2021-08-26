@@ -1,22 +1,31 @@
 import runMidldleware from '../../../middleware/mongodb';
 import userController from '../../../controllers/user';
 import lang from '../../../lang.config';
-import jwt from '../../../middleware/jwt'
+import jwt from '../../../middleware/jwt';
+import { MODE } from '../../../utils/helper';
 
 const handler = async (req, res) => {
     if (req.method == 'GET') {
         try {
-            const { page, pageSize, enabled } = req.query;
+            const { page, pageSize, enabled, mode, name, industry, sort } = req.query;
             const query = {};
             if (enabled) query.enabled = (enabled == "true");
+            if (mode != undefined) query.mode = Number(mode);
+            if (industry) query.industry = { $in: industry.split(',') };
+            if (name) query.name = new RegExp(name, "i");
+            const sortObj = {};
+            if (sort == 'name') sortObj.name = 1;
+            else if (sort == 'namereverse') sortObj.name = -1;
+            else sortObj.createdAt = -1;
             const skip = Number(page * pageSize) || 0;
             const limit = Number(pageSize) || 0;
             const total = await userController.getlist(query).countDocuments();
-            const list = await userController.getlist(query).skip(skip).limit(limit);
+            const list = await userController.getlist(query).skip(skip).sort(sortObj).limit(limit);
             return res.status(200).send({
                 success: true,
                 data: list,
                 total,
+                query,
                 page: Number(page) || 0,
                 pageSize: Number(pageSize) || 0
             });
@@ -33,7 +42,7 @@ const handler = async (req, res) => {
             const bearerToken = req.headers['authorization'];
             if (!bearerToken) throw ({ path: 'token' });
             const user = jwt.verify(bearerToken);
-            if (!user?.mode) throw ({ ...user, path: 'token' });
+            if (user?.mode == MODE.admin) throw ({ ...user, path: 'token' });
             const { _ids } = req.query;
             if (!_ids) throw ({ path: '_ids' });
             const query = {

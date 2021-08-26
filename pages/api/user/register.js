@@ -1,28 +1,47 @@
 import runMidldleware from '../../../middleware/mongodb';
 import userController from '../../../controllers/user';
+import industryController from '../../../controllers/industry';
 import lang, { langConcat } from '../../../lang.config';
 import bcrypt from '../../../middleware/bcrypt';
 import jwt from '../../../middleware/jwt';
+import { MODE } from '../../../utils/helper';
 
 const handler = async (req, res) => {
     if (req.method == 'POST') {
         try {
-            const { username, password, name } = req.body;
-            if (!username || !password) throw ({ path: !username ? 'username' : 'password', required: true });
-            const user = await userController.find({ username });
+            const {
+                email, password, name, phone, mode, industry, address,
+                hotline, fax, representative, position, mobile, re_email, website, introduce,
+                product, contact
+            } = req.body;
+            if (!email || !password) throw ({ path: !email ? 'email' : 'password', required: true });
+            if (mode != MODE.visitor && mode != MODE.exhibitor) throw ({ path: 'mode', required: true });
+            if (!industry) throw ({ path: 'industry', required: true });
+            const user = await userController.find({ email });
             if (user) throw ({ path: 'user' });
             const hash = await bcrypt.create(password);
-            const userCreated = await userController.create({ username, password: hash, name });
+            try {
+                const currentIndustry = await industryController.get(industry);
+                if (!currentIndustry) throw ({ path: '_id' })
+            }
+            catch (e) { throw ({ path: '_id' }); };
+            const userInfo = {
+                password: hash,
+                email, name, phone, mode, address, industry: [industry],
+                hotline, fax, representative, position, mobile, re_email, website, introduce,
+                product, contact
+            };
+            const userCreated = await userController.create(userInfo);
             const { _id } = userCreated;
-            const token = jwt.create({ username, _id, name });
+            const token = jwt.create({ email, _id, name, mode });
             return res.status(201).send({
                 success: true,
                 token,
-                data: { username, _id, name },
+                data: { email, _id, name, mode },
                 message: 'Đăng ký thành công',
             });
         } catch (e) {
-            if (e.path == 'username' || e.path == 'password') {
+            if (e.path == 'email' || e.path == 'password') {
                 return res.status(400).send({
                     success: false,
                     required: false,
@@ -34,7 +53,21 @@ const handler = async (req, res) => {
                 return res.status(400).send({
                     success: false,
                     exist: true,
-                    message: "Tên tài khoản đã tồn tại",
+                    message: "Email đã tồn tại",
+                });
+            }
+            if (e.path == 'industry') {
+                return res.status(400).send({
+                    success: false,
+                    exist: true,
+                    message: "Ngành nghề là bắt buộc",
+                });
+            }
+            if (e.path == '_id') {
+                return res.status(400).send({
+                    success: false,
+                    exist: true,
+                    message: "Ngành nghề không tồn tại",
                 });
             }
             return res.status(500).send({
