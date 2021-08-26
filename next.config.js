@@ -6,7 +6,7 @@ module.exports = {
         MONGODB_URL_LOCAL: "mongodb://localhost:27017/vimexpo",
         MONGODB_URL: "mongodb://localhost:27017/vimexpo",
 
-        API_URL_LOCAL: 'http://localhost:3001/api/',
+        API_URL_LOCAL: 'http://localhost:3000/api/',
         API_URL: 'https://online.vimexpo.com.vn/api/',
 
         FOLDER_UPLOAD: 'upload',

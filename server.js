@@ -14,7 +14,7 @@ app.prepare().then(() => {
         const parsedUrl = parse(req.url, true)
         handle(req, res, parsedUrl);
 
-    }).listen(3001, (err) => {
+    }).listen(3000, (err) => {
         if (err) throw err
         // console.log('> Ready on Port 3000')
     })
