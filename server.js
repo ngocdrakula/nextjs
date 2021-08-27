@@ -33,7 +33,7 @@ app.prepare().then(async () => {
         res.sendFile("HTML/index.html", { root: __dirname });
     });
     exApp.all('*', (req, res) => handle(req, res, parse(req.url, true)));
-    server.listen(3001, (err) => {
+    server.listen(3000, (err) => {
         if (err) throw err
         console.log('> Ready on Port 3000')
     })
