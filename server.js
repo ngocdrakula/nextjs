@@ -12,7 +12,7 @@ const handle = app.getRequestHandler();
 
 const httpsOptions = {
     key: fs.readFileSync("./certificates/ssl.key"),
-    cert: fs.readFileSync("./certificates/ssl.crt"),
+    cert: fs.readFileSync("./certificates/ssl.cert"),
 }
 const exApp = express();
 const server = createServer(httpsOptions, exApp);
