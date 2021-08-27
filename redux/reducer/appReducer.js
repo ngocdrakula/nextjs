@@ -6,7 +6,7 @@ export const initState = {
     exhibitors: [],
     visitors: [],
     user: null,
-    openMessage: true,
+    openMessage: false,
     openList: true,
     newMessage: 0,
     conversations: [],
