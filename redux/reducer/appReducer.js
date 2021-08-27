@@ -10,6 +10,7 @@ export const initState = {
     openList: true,
     newMessage: 0,
     conversations: [],
+    conversationsAll: [],
     total: 0,
     page: 0,
 }
@@ -85,9 +86,10 @@ const appReducer = (state = initState, action) => {
         }
         case types.GET_CONVERSATIONS_SUCCESS: {
             const { data, total, page, totalNew } = action.payload;
+            data.map(c => { if (!state.conversationsAll.find(con => con._id === c._id)) state.conversationsAll.push(c) })
             return {
                 ...state,
-                conversations: data,
+                conversations: page === 0 ? data : [...state.conversations, ...data],
                 page,
                 total,
                 newMessage: totalNew
@@ -96,11 +98,33 @@ const appReducer = (state = initState, action) => {
         case types.GET_ONE_CONVERSATION_SUCCESS: {
             const con = action.payload.data;
             const index = state.conversations.findIndex(c => c._id === con._id)
-            if (index + 1) {
+            const indexAll = state.conversationsAll.findIndex(c => c._id === con._id)
+            if (index + 1 && indexAll + 1) {
                 state.conversations[index] = con
+                state.conversationsAll[indexAll] = con
             }
             else {
                 state.conversations.push(con)
+                state.conversationsAll.push(con)
+            }
+            return {
+                ...state,
+                conversations: [...state.conversations],
+                conId: con._id,
+                openList: false
+            };
+        }
+        case types.GET_CONVERSATION_TO_SUCCESS: {
+            const con = action.payload.data;
+            const index = state.conversations.findIndex(c => c._id === con._id)
+            const indexAll = state.conversationsAll.findIndex(c => c._id === con._id)
+            if (index + 1 && indexAll + 1) {
+                state.conversations[index] = con
+                state.conversationsAll[indexAll] = con
+            }
+            else {
+                state.conversations.push(con)
+                state.conversationsAll.push(con)
             }
             return {
                 ...state,
@@ -112,11 +136,14 @@ const appReducer = (state = initState, action) => {
         case types.SEND_MESSAGE_SUCCESS: {
             const { data, conversationCreated, conversationId } = action.payload;
             const index = state.conversations.findIndex(c => c._id === conversationId);
-            if (index + 1) {
+            const indexAll = state.conversationsAll.findIndex(c => c._id === conversationId)
+            if (index + 1 && indexAll + 1) {
                 state.conversations[index].messages.push(data)
+                state.conversationsAll[indexAll].messages.push(data)
             }
             else if (conversationCreated) {
                 state.conversations.push(conversationCreated)
+                state.conversationsAll.push(conversationCreated)
             }
             return {
                 ...state,

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"
+        integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg"
+        crossorigin="anonymous"></script>
+    <link rel="icon" href="/IMG/icon/favicon.ico">
+    <title>Trang 8</title>
+</head>
+
+<body>
+    <script>
+        var socket = io.connect('http://localhost:3000');
+        socket.on('online', data => console.log(data))
+        setInterval(() => {
+            socket.emit('online', '122')
+        }, 1000)
+    </script>
+    <noscript>
+        <div class="userForm register">
+            <div class="form-title">
+                JavaScript đang tắt
+            </div>
+            <div class="form-group">
+                Rất tiếc! Trang8 chỉ hoạt động khi bạn bật JavaScript.
+                Hãy truy cập vào mục cài đặt trang web và cho phép JavaScript hoạt động.
+                Chúc bạn có một trải nghiệm tốt tại Trang8.
+            </div>
+        </div>
+    </noscript>
+</body>
+
+</html>

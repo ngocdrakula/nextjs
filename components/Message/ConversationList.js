@@ -24,7 +24,6 @@ class ConversationList extends Component {
   render() {
     const { conversations, user, openList } = this.props;
     const { name } = this.state;
-    console.log(conversations)
     return (
       <>
         <div className={"messageListHead" + (openList ? "" : " hidden")}>Cuộc hội thoại</div>

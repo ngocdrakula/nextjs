@@ -168,15 +168,15 @@ function* getConversationById({ payload, callback }) {
         }
     }
 }
-function* getMessages({ payload, callback }) {
+function* getConversationByIdUser({ payload, callback }) {
     try {
-        const res = yield call(requests.getMessagesRequest, payload);
+        const res = yield call(requests.getConversationByIdUserRequest, payload);
         if (res?.data?.success) {
-            yield put({ type: types.GET_MESSAGES_SUCCESS, payload: res.data });
+            yield put({ type: types.GET_CONVERSATION_TO_SUCCESS, payload: res.data });
             if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
-        yield put({ type: types.GET_MESSAGES_FAILED, payload: e.response });
+        yield put({ type: types.GET_CONVERSATION_TO_FAILED, payload: e.response });
         if (typeof callback === 'function') {
             callback(e.response);
         }
@@ -190,7 +190,6 @@ function* postMessage({ payload, callback }) {
             if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
-        console.log(e)
         yield put({ type: types.SEND_MESSAGE_FAILED, payload: e.response });
         if (typeof callback === 'function') {
             callback(e.response);
@@ -210,7 +209,7 @@ export default function* appSaga() {
         yield takeEvery(types.GET_PRODUCTS, getProducts),
         yield takeEvery(types.GET_CONVERSATIONS, getConversations),
         yield takeEvery(types.GET_ONE_CONVERSATION, getConversationById),
-        yield takeEvery(types.GET_MESSAGES, getMessages),
+        yield takeEvery(types.GET_CONVERSATION_TO, getConversationByIdUser),
         yield takeEvery(types.SEND_MESSAGE, postMessage),
     ])
 }

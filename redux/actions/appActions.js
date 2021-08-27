@@ -27,12 +27,9 @@ export const getConversationsRequest = async (params) => {
 export const getConversationByIdRequest = async (id) => {
     return axios.get('conversation/' + id)
 }
-export const getMessagesRequest = async (params) => {
-    return axios.get('message?' + stringify(params))
+export const getConversationByIdUserRequest = async (to) => {
+    return axios.get('conversation/to?to=' + to)
 }
 export const postMessageRequest = async (request) => {
     return axios.post('message?', request)
-}
-export const getMessageByIdRequest = async (id) => {
-    return axios.get('message/' + id)
 }

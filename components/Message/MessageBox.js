@@ -14,45 +14,48 @@ class MessageBox extends Component {
     }
     componentDidMount() {
         const { user } = this.props;
+        console.log(user._id)
+        socket.emit('online', 'online')
         socket.on(user._id, data => {
-            if (data.type === 'message' || data.type === 'mymessage') {
-                var toId = data.to._id || data.to;
-                if (toId === to._id) {
-                    axios.get('/conversation/' + toId + '?order=0')
-                        .then(response => {
-                            if (response.data && response.data.success) {
-                                var lastMessage = response.data.data.message[response.data.data.message.length - 1];
-                                var messageList = message;
-                                messageList.push(lastMessage);
-                                var conversation = response.data.data;
-                                conversation.message = conversation.message.slice(-1);
-                                dispatch({
-                                    type: 'UPDATE_CONVERSATIONS',
-                                    to: to,
-                                    conversation: conversation,
-                                    newMessage: data.type === 'message' ? true : false,
-                                });
-                                this.setState({
-                                    newMessage: data.type === 'message' ? true : false,
-                                    messageList: messageList
-                                });
-                            }
-                        }).catch(err => {
-                            console.log(err);
-                        });
-                }
-            }
-            else if (data.type === 'read' && data.to === to._id) {
-                dispatch({
-                    type: 'READ_MESSAGE',
-                    to: to,
-                    time: data.time
-                });
-                this.setState({
-                    newMessage: false,
-                    seen: Date.parse(data.time)
-                });
-            }
+            console.log(data)
+            // if (data.type === 'message' || data.type === 'mymessage') {
+            //     var toId = data.to._id || data.to;
+            //     if (toId === to._id) {
+            //         axios.get('/conversation/' + toId + '?order=0')
+            //             .then(response => {
+            //                 if (response.data && response.data.success) {
+            //                     var lastMessage = response.data.data.message[response.data.data.message.length - 1];
+            //                     var messageList = message;
+            //                     messageList.push(lastMessage);
+            //                     var conversation = response.data.data;
+            //                     conversation.message = conversation.message.slice(-1);
+            //                     dispatch({
+            //                         type: 'UPDATE_CONVERSATIONS',
+            //                         to: to,
+            //                         conversation: conversation,
+            //                         newMessage: data.type === 'message' ? true : false,
+            //                     });
+            //                     this.setState({
+            //                         newMessage: data.type === 'message' ? true : false,
+            //                         messageList: messageList
+            //                     });
+            //                 }
+            //             }).catch(err => {
+            //                 console.log(err);
+            //             });
+            //     }
+            // }
+            // else if (data.type === 'read' && data.to === to._id) {
+            //     dispatch({
+            //         type: 'READ_MESSAGE',
+            //         to: to,
+            //         time: data.time
+            //     });
+            //     this.setState({
+            //         newMessage: false,
+            //         seen: Date.parse(data.time)
+            //     });
+            // }
         });
     }
     componentDidUpdate(prevProps) {

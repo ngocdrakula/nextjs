@@ -2,29 +2,34 @@ const { createServer } = require('http')
 const { parse } = require('url')
 const next = require('next')
 const socketio = require('socket.io');
+const express = require('express');
 
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
-const handle = app.getRequestHandler()
+const handle = app.getRequestHandler();
 
-app.prepare().then(() => {
-    const server = createServer((req, res) => {
-        // Be sure to pass `true` as the second argument to `url.parse`.
-        // This tells it to parse the query portion of the URL.
-        const parsedUrl = parse(req.url, true)
-        handle(req, res, parsedUrl);
 
-    }).listen(3000, (err) => {
-        if (err) throw err
-        // console.log('> Ready on Port 3000')
-    })
-    const io = new socketio.Server();
-    io.attach(server);
-    io.on('connection', (socket) => {
-        console.log('connection');
-        socket.emit('status', 'Hello from Socket.io');
-        socket.on('disconnect', () => {
-            console.log('client disconnected');
-        })
+const exApp = express();
+const server = createServer(exApp);
+const io = socketio(server);
+io.on('connection', (socket) => {
+    console.log('connection');
+    socket.on('online', (data) => {
+        console.log(data)
     });
+    socket.on('disconnect', () => {
+        console.log('client disconnected');
+    })
+});
+
+app.prepare().then(async () => {
+    exApp.set('socket.io', io);
+    exApp.get("/elo", (req, res) => {
+        res.sendFile("HTML/index.html", { root: __dirname });
+    });
+    exApp.all('*', (req, res) => handle(req, res, parse(req.url, true)));
+    server.listen(3000, (err) => {
+        if (err) throw err
+        console.log('> Ready on Port 3000')
+    })
 })

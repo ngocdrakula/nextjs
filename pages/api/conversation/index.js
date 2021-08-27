@@ -10,16 +10,21 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
       if (!user?._id) throw ({ ...user, path: 'token' });
-      const { page, pageSize, name, to } = req.query;
+      const { page, pageSize, name } = req.query;
       const query = { $or: [{ 'leader.user': user._id }, { 'member.user': user._id }] };
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
+      const populateName = {};
+      if (name) populateName.match = { name: new RegExp(name, "i") };
       const queryNew = { $or: [{ 'leader.user': user._id, 'leader.seen': false }, { 'member.user': user._id, 'member.seen': false }] };
       const totalNew = await conversationController.getlist(queryNew).countDocuments();
-      const total = await conversationController.getlist(query).countDocuments();
+      const total = await conversationController.getlist(query)
+        .populate({ path: 'leader.user', select: 'name mode', ...populateName })
+        .populate({ path: 'member.user', select: 'name mode', ...populateName })
+        .countDocuments();
       const conversations = await conversationController.getlist(query)
-        .populate({ path: 'leader.user', select: 'name mode' })
-        .populate({ path: 'member.user', select: 'name mode' })
+        .populate({ path: 'leader.user', select: 'name mode', ...populateName })
+        .populate({ path: 'member.user', select: 'name mode', ...populateName })
         .populate({ path: 'messages', options: { sort: { createdAt: -1 }, limit: 1 } })
         .skip(skip).limit(limit);
       return res.status(200).send({
@@ -29,7 +34,7 @@ const handler = async (req, res) => {
         totalNew,
         page: Number(page) || 0,
         pageSize: Number(pageSize) || 0,
-        query,
+        query: { name },
       });
     } catch (error) {
       if (error.path == 'token') {

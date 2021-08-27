@@ -5,44 +5,7 @@ import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt'
 
 const handler = async (req, res) => {
-  if (req.method == 'GET') {
-    try {
-      const bearerToken = req.headers['authorization'];
-      if (!bearerToken) throw ({ path: 'token' });
-      const user = jwt.verify(bearerToken);
-      if (!user?._id) throw ({ ...user, path: 'token' });
-      const { page, pageSize, to } = req.query;
-      if (!to) throw ({ path: 'to' })
-      const query = { $or: [{ 'leader.user': user._id, 'member.user': to }, { 'member.user': user._id, 'leader.user': to }] }
-      const currentConversation = await conversationController.find(query)
-        .populate({ path: 'leader.user', select: 'name' })
-        .populate({ path: 'member.user', select: 'name' })
-        .populate({ path: 'messages', options: { $sort: { createdAt: -1 }, limit: 10 } })
-        .populate({ path: 'messages.author', })
-      return res.status(200).send({
-        success: true,
-        data: currentConversation,
-        total: currentConversation,
-        page: Number(page) || 0,
-        pageSize: Number(pageSize) || 0,
-      });
-    } catch (error) {
-      if (error.path == 'to')
-        return res.status(500).send({
-          success: false,
-          message: error.message,
-          messages: lang?.message?.error?.server,
-          error: error,
-        });
-      return res.status(500).send({
-        success: false,
-        message: error.message,
-        messages: lang?.message?.error?.server,
-        error: error,
-      });
-    }
-  }
-  else if (req.method == 'POST') {
+  if (req.method == 'POST') {
     try {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' })
@@ -57,44 +20,46 @@ const handler = async (req, res) => {
         ]
       }
       const newMessage = await messageController.create({ author: user._id, content: message });
-      try {
-        const currentConversation = await conversationController.find(query)
-          .populate({ path: 'messages', options: { limit: 1 } });
-        if (currentConversation) {
-          if (currentConversation.leader.user == user._id) {
-            currentConversation.member.seen = false;
-          }
-          else currentConversation.leader.seen = false;
-          currentConversation.messages.push(newMessage._id);
-          await currentConversation.save();
-          return res.status(200).send({
-            success: true,
-            data: newMessage,
-            conversationId: currentConversation._id,
-            message: 'Lưu thành thành công',
-            messages: lang?.message?.success?.created
-          });
+      const currentConversation = await conversationController.find(query)
+        .populate({ path: 'messages', options: { limit: 1 } });
+      if (currentConversation) {
+        if (currentConversation.leader.user == user._id) {
+          currentConversation.member.seen = false;
         }
+        else currentConversation.leader.seen = false;
+        currentConversation.messages.push(newMessage._id);
+        await currentConversation.save();
+        const io = req.app.get('socket.io');
+        console.log(io, io?.emit)
+        io.emit(user._id, { type: "send", to: to });
+        io.emit(to, { type: "new", from: user._id });
+        return res.status(200).send({
+          success: true,
+          data: newMessage,
+          conversationId: currentConversation._id,
+          message: 'Lưu thành thành công',
+          messages: lang?.message?.success?.created
+        });
       }
-      catch (e) { }
-      const newConversation = {
-        leader: { user: user._id, seen: true },
-        member: { user: to, seen: false },
-        messages: [newMessage._id]
+      else {
+        const newConversation = {
+          leader: { user: user._id, seen: true },
+          member: { user: to, seen: false },
+          messages: [newMessage._id]
+        }
+        const conversationCreated = await (await conversationController.create(newConversation))
+          .populate({ path: 'leader.user', select: 'name mode' })
+          .populate({ path: 'member.user', select: 'name mode' })
+          .populate({ path: 'messages', options: { $sort: { createdAt: -1 }, limit: 1 } })
+          .populate({ path: 'messages.author', }).execPopulate();
+        return res.status(201).send({
+          success: true,
+          data: newMessage,
+          conversationCreated,
+          message: 'Thêm thành công',
+          messages: lang?.message?.success?.created
+        });
       }
-      const conversationCreated = await (await conversationController.create(newConversation))
-        .populate({ path: 'leader.user', select: 'name mode' })
-        .populate({ path: 'member.user', select: 'name mode' })
-        .populate({ path: 'messages', options: { $sort: { createdAt: -1 }, limit: 1 } })
-        .populate({ path: 'messages.author', }).execPopulate();
-      console.log(conversationCreated)
-      return res.status(201).send({
-        success: true,
-        data: newMessage,
-        conversationCreated,
-        message: 'Thêm thành công',
-        messages: lang?.message?.success?.created
-      });
     } catch (e) {
       console.log(e)
       if (e.path == 'token') {
