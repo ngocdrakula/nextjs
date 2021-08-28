@@ -16,7 +16,10 @@ function remove(conversationId) {
     return (conversationData.findByIdAndRemove(conversationId));
 }
 function getlist(query) {
-    return (conversationData.find(query));
+    return (conversationData.find(query).sort({ updatedAt: -1 }));
+}
+function aggregate(query) {
+    return (conversationData.aggregate(query));
 }
 export default {
     create,
@@ -24,5 +27,6 @@ export default {
     update,
     remove,
     find,
-    getlist
+    getlist,
+    aggregate
 }

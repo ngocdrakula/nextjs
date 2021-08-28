@@ -13,7 +13,6 @@ class MessageIconNoti extends Component {
   }
   render() {
     const { newMessage, openMessage } = this.props;
-    console.log(openMessage)
     return (
       <div className="notiIcon" style={{ display: openMessage ? 'none' : 'block' }} onClick={this.handleOpen}>
         <img src="/images/chat2.png" />

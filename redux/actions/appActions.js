@@ -24,8 +24,8 @@ export const getProductsRequest = async (params) => {
 export const getConversationsRequest = async (params) => {
     return axios.get('conversation?' + stringify(params))
 }
-export const getConversationByIdRequest = async (id) => {
-    return axios.get('conversation/' + id)
+export const getConversationByIdRequest = async ({ id, ...params }) => {
+    return axios.get('conversation/' + id + "?" + stringify(params))
 }
 export const getConversationByIdUserRequest = async (to) => {
     return axios.get('conversation/to?to=' + to)

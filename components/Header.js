@@ -8,6 +8,8 @@ import LoginExhibitor from '../components/LoginExhibitor';
 import Router from 'next/router';
 import MessageContainer from './Message/MessageContainer';
 import MessageIconNoti from './Message/MessageIconNoti';
+import SocketIO from '../utils/SocketIO';
+import { stringify } from 'qs';
 
 class Header extends Component {
     constructor(props) {
@@ -18,10 +20,11 @@ class Header extends Component {
     }
     componentDidMount() {
         const { dispatch } = this.props;
+        SocketIO.start();
         dispatch({ type: types.ADMIN_GET_SETTING });
         dispatch({ type: types.USER_LOGIN_LOCAL });
         const query = getQuery(Router?.router?.asPath);
-        if (query.name) this.setState({ name: query.name })
+        if (query.name) this.setState({ name: query.name });
     }
     openLoginVisitor = e => {
         e.preventDefault();
@@ -40,13 +43,20 @@ class Header extends Component {
         e.preventDefault();
         const { name } = this.state;
         const query = getQuery(Router?.router?.asPath);
-        if (name) query.name = name;
-        Router.push("/user", { query })
+        query.name = name;
+        Object.keys(query).map((k) => { if (!query[k]) delete query[k] });
+        const url = "user?" + stringify(query)
+        Router.push(url, undefined, { scroll: false })
     }
     handleLogout = e => {
         e.preventDefault();
         const { dispatch } = this.props;
         dispatch({ type: types.USER_LOGOUT });
+    }
+    checkKeyDown = (e) => {
+        if (e.keyCode === 13) {
+            this.handleSubmit(e)
+        }
     }
     render() {
         const { name } = this.state;
@@ -96,8 +106,18 @@ class Header extends Component {
                                     </div>
                                 </div>
                                 <div className="search">
-                                    <input type="text" name="search" placeholder="Tìm kiếm Nhà trưng bày" name="name" value={name} onChange={this.handleChange} />
-                                    <button onClick={this.handleSubmit}><img src="/images/icon-search.png" alt="" /></button>
+                                    <input
+                                        type="text"
+                                        name="search"
+                                        placeholder="Tìm kiếm Nhà trưng bày"
+                                        name="name"
+                                        value={name}
+                                        onChange={this.handleChange}
+                                        onKeyDown={this.checkKeyDown}
+                                    />
+                                    <button onClick={this.handleSubmit}  >
+                                        <img src="/images/icon-search.png" alt="" />
+                                    </button>
                                 </div>
                             </div>
                         </div>

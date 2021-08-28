@@ -21,7 +21,7 @@ const handler = async (req, res) => {
       }
       const newMessage = await messageController.create({ author: user._id, content: message });
       const currentConversation = await conversationController.find(query)
-        .populate({ path: 'messages', options: { limit: 1 } });
+        .populate({ path: 'messages', options: { limit: 1, sort: { createdAt: -1 } } });
       if (currentConversation) {
         if (currentConversation.leader.user == user._id) {
           currentConversation.member.seen = false;
@@ -30,9 +30,8 @@ const handler = async (req, res) => {
         currentConversation.messages.push(newMessage._id);
         await currentConversation.save();
         const io = req.app.get('socket.io');
-        console.log(io, io?.emit)
         io.emit(user._id, { type: "send", to: to });
-        io.emit(to, { type: "new", from: user._id });
+        io.emit(to, { type: "new", to: user._id });
         return res.status(200).send({
           success: true,
           data: newMessage,
@@ -52,16 +51,19 @@ const handler = async (req, res) => {
           .populate({ path: 'member.user', select: 'name mode' })
           .populate({ path: 'messages', options: { $sort: { createdAt: -1 }, limit: 1 } })
           .populate({ path: 'messages.author', }).execPopulate();
+        const io = req.app.get('socket.io');
+        io.emit(user._id, { type: "send", to: to });
+        io.emit(to, { type: "new", to: user._id });
         return res.status(201).send({
           success: true,
           data: newMessage,
           conversationCreated,
+          conversationId: conversationCreated._id,
           message: 'Thêm thành công',
           messages: lang?.message?.success?.created
         });
       }
     } catch (e) {
-      console.log(e)
       if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({

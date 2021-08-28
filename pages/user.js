@@ -15,7 +15,6 @@ const sorts = [{ label: 'Nổi bật', value: 'feature' }, { label: 'Tên: A-Z',
 const Header = dynamic(() => import('../components/Header'));
 const Footer = dynamic(() => import('../components/Footer'));
 
-let count = 10;
 class User extends Component {
   constructor(props) {
     super(props);
@@ -40,12 +39,9 @@ class User extends Component {
       (query.sort && sortSelected !== query.sort) ||
       (query.industry && industrySelected !== query.industry) ||
       (Number(query.filter) >= 0 && filter !== Number(query.filter)) ||
-      (query.name !== name)) {
-      console.log(query, this.state)
-
-      count--;
-      if (count > 0)
-        this.gotoPage(query);
+      (query.name !== name)
+    ) {
+      this.gotoPage(query);
     }
   }
   componentWillUnmount() {
@@ -104,33 +100,27 @@ class User extends Component {
             this.timeout = setTimeout(() => {
               const list = document.getElementById('menu-list');
               if (list) list.scrollIntoView();
-            }, 1000);
+            }, 500);
           })
         }
       }
     });
   }
-  handleChat = (e, id) => {
+  handleChat = (e, toUser) => {
     e.preventDefault();
-    dispatch({
-      type: types.GET_EXHIBITORS,
-      payload: {
-        page: 0,
-        pageSize,
-        industry: e.target.id
-      }
-    })
-  }
-  handleConnect = (e, id) => {
-    e.preventDefault();
-    dispatch({
-      type: types.GET_EXHIBITORS,
-      payload: {
-        page: 0,
-        pageSize,
-        industry: e.target.id
-      }
-    })
+    const { user, dispatch } = this.props;
+    if (user?._id && user._id !== toUser._id) {
+      dispatch({
+        type: types.GET_CONVERSATION_TO,
+        payload: { ...toUser, open: true },
+      });
+    }
+    else if (!user?._id) {
+      dispatch({
+        type: types.OPENFORM,
+        payload: MODE.exhibitor,
+      });
+    }
   }
   render() {
     const { industries } = this.props
@@ -229,8 +219,8 @@ class User extends Component {
                             }
                           </div>
                           <div className="store-bottom">
-                            <a href="#"><img src="/images/talk.png" alt="" />Trò chuyện</a>
-                            <a href="#"><img src="/images/connect.png" alt="" />Kết nối giao thương</a>
+                            <a href="#" onClick={e => this.handleChat(e, user)}><img src="/images/talk.png" alt="" />Trò chuyện</a>
+                            <a href="#" onClick={e => this.handleChat(e, user)}><img src="/images/connect.png" alt="" />Kết nối giao thương</a>
                           </div>
                         </div>
                       </div>
@@ -257,5 +247,5 @@ export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
   await store.sagaTask.toPromise()
 });
 
-export default connect(({ app: { industries } }) => ({ industries }))(User)
+export default connect(({ app: { industries, user } }) => ({ industries, user }))(User)
 

@@ -24,27 +24,21 @@ class Exhibitor extends Component {
             }
         })
     }
-    handleChat = (e, id) => {
+    handleChat = (e, toUser) => {
         e.preventDefault();
-        dispatch({
-            type: types.GET_EXHIBITORS,
-            payload: {
-                page: 0,
-                pageSize,
-                industry: e.target.id
-            }
-        })
-    }
-    handleConnectt = (e, id) => {
-        e.preventDefault();
-        dispatch({
-            type: types.GET_EXHIBITORS,
-            payload: {
-                page: 0,
-                pageSize,
-                industry: e.target.id
-            }
-        })
+        const { user, dispatch } = this.props;
+        if (user?._id && user._id !== toUser._id) {
+            dispatch({
+                type: types.GET_CONVERSATION_TO,
+                payload: { ...toUser, open: true },
+            });
+        }
+        else if (user?._id) {
+            dispatch({
+                type: types.OPENFORM,
+                payload: MODE.exhibitor,
+            });
+        }
     }
     render() {
         const { industries, exhibitors } = this.props
@@ -103,8 +97,8 @@ class Exhibitor extends Component {
 
                                             </div>
                                             <div className="store-bottom">
-                                                <a href="#" onClick={e => this.handleChat(e, exhibitor.id)}><img src="/images/talk.png" alt="" />Trò chuyện</a>
-                                                <a href="#" onClick={e => this.handleConnectt(e, exhibitor.id)}><img src="/images/connect.png" alt="" />Kết nối giao thương</a>
+                                                <a href="#" onClick={e => this.handleChat(e, exhibitor)}><img src="/images/talk.png" alt="" />Trò chuyện</a>
+                                                <a href="#" onClick={e => this.handleChat(e, exhibitor)}><img src="/images/connect.png" alt="" />Kết nối giao thương</a>
                                             </div>
                                         </div>
                                     </div>
@@ -121,4 +115,4 @@ class Exhibitor extends Component {
     }
 }
 
-export default connect(({ app: { industries, exhibitors } }) => ({ industries, exhibitors }))(Exhibitor)
+export default connect(({ app: { industries, exhibitors, user } }) => ({ industries, exhibitors, user }))(Exhibitor)

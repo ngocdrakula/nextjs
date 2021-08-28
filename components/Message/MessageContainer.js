@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import MessageBox from './MessageBox';
-import socket from '../../utils/socket';
+import SocketIo from '../../utils/SocketIO';
 import types from '../../redux/types';
 import ConversationList from './ConversationList';
 import MessageBox from './MessageBox';
@@ -24,12 +23,11 @@ class MessageContainer extends Component {
       },
       callback: res => {
         if (res?.success) {
-          socket.on(user._id, data => {
+          SocketIo.socket?.on(user._id, data => {
             if (data.type === 'message') {
               dispatch({
                 type: 'OPEN_CONVERSATION',
                 to: data.to,
-                focus: false
               });
             }
           });
@@ -51,13 +49,13 @@ class MessageContainer extends Component {
       <div className="mesContainer" style={{ visibility: openMessage ? 'visible' : 'hidden' }}>
         <div className="mesContainerHead">
           <div className="mesContainerTitle">Tin nhắn</div>
-          <div className="closeButton" onClick={this.handleClose} title="Đóng">X</div>
+          <div className="closeButton" onClick={this.handleClose} title="Đóng">-</div>
         </div>
         <div className="mesTask">
           <div className={"mesTaskItem" + (openList ? " active" : "")} onClick={() => !openList && this.handleOpenList()}>
             <img src="/images/chat2.png" />
           </div>
-          <div className={"mesTaskItem" + (!openList ? " active" : "")} onClick={() => openList && this.handleOpenList()}>
+          <div className={"mesTaskItem filter-blue" + (!openList ? " active" : "")} onClick={() => openList && this.handleOpenList()}>
             <img src="/images/user.png" />
           </div>
         </div>

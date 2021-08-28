@@ -10,26 +10,33 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
       if (!user?._id) throw ({ ...user, path: 'token' });
-      const { page, pageSize, id } = req.query;
+      const { page, pageSize, id, read } = req.query;
       const skip = Number(page * pageSize) || 0;
-      const limit = Number(pageSize) || 0;
+      const limit = Number(pageSize) || 1;
       const currentConversation = await conversationController.get(id)
         .populate({ path: 'leader.user', select: 'name mode' })
         .populate({ path: 'member.user', select: 'name mode' })
-        .populate({ path: 'messages', options: { $sort: { createdAt: -1 }, skip, limit } })
+        .populate({ path: 'messages', options: { sort: { createdAt: -1 }, skip, limit } })
         .populate({ path: 'messages.author', })
       if (!currentConversation) throw ({ path: '_id' });
       if (currentConversation.leader.user._id == user._id) {
-        currentConversation.leader.seen = true;
+        if (read) {
+          currentConversation.leader.seen = true;
+          await currentConversation.save();
+        }
       }
       else if (currentConversation.member.user._id == user._id) {
-        currentConversation.member.seen = true;
+        if (read) {
+          currentConversation.member.seen = true;
+          await currentConversation.save();
+        }
       }
       else throw ({ path: 'token' });
-      await currentConversation.save();
       return res.status(201).send({
         success: true,
         data: currentConversation,
+        currentPage: Number(page) || 0,
+        pageSize: Number(pageSize) || 1
       });
     } catch (e) {
       if (e.path == 'token') {

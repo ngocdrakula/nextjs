@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import types from '../../redux/types';
-import { MODE } from '../../utils/helper';
-import socket from '../../utils/socket';
+import { getTime, MODE } from '../../utils/helper';
+import SocketIO from '../../utils/SocketIO';
 import Time from './Time';
+
+const pageSize = 10;
 
 class MessageBox extends Component {
     state = {
@@ -13,67 +15,54 @@ class MessageBox extends Component {
         this.state = {}
     }
     componentDidMount() {
-        const { user } = this.props;
-        console.log(user._id)
-        socket.emit('online', 'online')
-        socket.on(user._id, data => {
-            console.log(data)
-            // if (data.type === 'message' || data.type === 'mymessage') {
-            //     var toId = data.to._id || data.to;
-            //     if (toId === to._id) {
-            //         axios.get('/conversation/' + toId + '?order=0')
-            //             .then(response => {
-            //                 if (response.data && response.data.success) {
-            //                     var lastMessage = response.data.data.message[response.data.data.message.length - 1];
-            //                     var messageList = message;
-            //                     messageList.push(lastMessage);
-            //                     var conversation = response.data.data;
-            //                     conversation.message = conversation.message.slice(-1);
-            //                     dispatch({
-            //                         type: 'UPDATE_CONVERSATIONS',
-            //                         to: to,
-            //                         conversation: conversation,
-            //                         newMessage: data.type === 'message' ? true : false,
-            //                     });
-            //                     this.setState({
-            //                         newMessage: data.type === 'message' ? true : false,
-            //                         messageList: messageList
-            //                     });
-            //                 }
-            //             }).catch(err => {
-            //                 console.log(err);
-            //             });
-            //     }
-            // }
-            // else if (data.type === 'read' && data.to === to._id) {
-            //     dispatch({
-            //         type: 'READ_MESSAGE',
-            //         to: to,
-            //         time: data.time
-            //     });
-            //     this.setState({
-            //         newMessage: false,
-            //         seen: Date.parse(data.time)
-            //     });
-            // }
+        const { user, dispatch } = this.props;
+        SocketIO.socket.on(user._id, data => {
+            if (data?.type === 'new' || data?.type === 'send') {
+                dispatch({
+                    type: types.REVICED_MESSAGE,
+                    payload: data.to,
+                    callback: res => {
+                        if (res?.success) {
+                            const { conversationsAll, conId, openList } = this.props;
+                            const conCurrent = conversationsAll.find(c => c.leader.user._id === data.to || c.member.user._id === data.to);
+                            if (conCurrent._id === conId && !openList) {
+                                this.readMessage();
+                                this.scrollToBottom();
+                            }
+                        }
+                    }
+                })
+            }
         });
     }
     componentDidUpdate(prevProps) {
-        if (prevProps.openList && !this.props.openList) this.scrollToTop();
+        if (prevProps.openList && !this.props.openList) {
+            this.scrollToBottom();
+            this.readMessage();
+            this.focusToWritting();
+        }
     }
     componentWillUnmount() {
         clearTimeout(this.timeout)
+        clearInterval(this.interval)
     }
     readMessage = () => {
-        if (this.state.newMessage) {
-            axios.get("/conversation/read/" + this.props.to._id)
-                .then(response => {
-                    if (response.data && response.data.success) {
-                        this.setState({ newMessage: false })
+        const { conversationsAll, conId, user, dispatch } = this.props;
+        const conCurrent = conversationsAll.find(con => con._id === conId);
+        if (conCurrent) {
+            const { leader, member } = conCurrent;
+            const from = leader.user._id === user._id ? leader : member;
+            if (!from.seen) {
+                dispatch({
+                    type: types.READ_MESSAGE,
+                    payload: conCurrent._id,
+                    callback: res => {
+                        if (res?.success) {
+                            this.scrollToBottom();
+                        }
                     }
-                }).catch(err => {
-                    console.log(err)
                 })
+            }
         }
     }
     checkKeyDown = (e) => {
@@ -89,18 +78,15 @@ class MessageBox extends Component {
     writeMessage = (e) => {
         e.target.style.height = "14px";
         e.target.style.height = (e.target.scrollHeight - 10) + "px";
-        if (this.state.newMessage) {
-            this.readMessage();
-        }
         this.setState({
             message: e.target.value
         });
     }
     sendMessage = (e) => {
         if (e) e.preventDefault();
-        const { dispatch, conversations, conId, user } = this.props;
+        const { dispatch, conversationsAll, conId, user } = this.props;
         const { message } = this.state;
-        const conCurrent = conversations.find(con => con._id === conId) || {};
+        const conCurrent = conversationsAll.find(con => con._id === conId) || {};
         const { leader, member } = conCurrent;
         const to = (leader?.user?._id === user._id ? member?.user : leader?.user) || {};
         if (message && to?._id) {
@@ -109,52 +95,74 @@ class MessageBox extends Component {
                 payload: { message, to: to._id, conId },
                 callback: res => {
                     if (res?.success) this.setState({ message: "" })
-                    this.scrollToTop()
+                    this.scrollToBottom()
                 }
             })
         }
     }
-    hideBox = () => {
-        this.setState({
-            onFocus: false
-        })
-        this.props.dispatch({
-            type: 'CLOSE_CONVERSATION',
-            to: this.props.to
-        });
-    }
     focusToWritting = (e) => {
-        if (e.target.querySelector('span'))
-            this.Textarea.focus();
+        this.Textarea?.focus();
     }
-    scrollToTop = (e) => {
+    scrollToBottom = (e) => {
         const bottom = document.getElementById('bottom-message');
         if (bottom) bottom.scrollIntoView();
     }
+    handleScroll = e => {
+        if (!this.loading && !e.target.scrollTop) {
+            const { conversationsAll, conId, dispatch } = this.props;
+            const conCurrent = conversationsAll.find(con => con._id === conId);
+            if (conCurrent && !conCurrent.loadAll) {
+                this.loading = true;
+                dispatch({
+                    type: types.GET_ONE_CONVERSATION,
+                    payload: {
+                        id: conCurrent._id,
+                        page: Math.floor((conCurrent.messages.length - 1) / pageSize) + 1,
+                        pageSize
+                    },
+                    callback: res => {
+                        if (res?.success) {
+                            this.loading = false;
+                            e.target.scrollTop = 660;
+                        };
+                    }
+                })
+            }
+        }
+    }
+    handleShowTime = id => {
+        const timeElm = document.getElementById('time-' + id);
+        if (timeElm?.className === "mesTimeContainer left hidden") timeElm.className = "mesTimeContainer left";
+        if (timeElm?.className === "mesTimeContainer right hidden") timeElm.className = "mesTimeContainer right";
+    }
     render() {
-        const { conversations, conId, user, openList } = this.props;
-        const conCurrent = conversations.find(con => con._id === conId) || {};
+        const { conversationsAll, conId, user, openList } = this.props;
+        const conCurrent = conversationsAll.find(con => con._id === conId) || {};
         const { leader, member, messages } = conCurrent;
         const to = (leader?.user?._id === user._id ? member?.user : leader?.user) || {};
-
+        const messagesReverse = messages ? [...messages].reverse() : [];
         return (
             <>
                 <div className={"mesTitle" + (openList ? " hidden" : "")}>
-                    <a href={`/${to.mode === MODE.visitor ? "visitor" : "exhibitor"}?id=${to._id}`}>
+                    <a href={`/${to.mode === MODE.visitor ? "visitor" : "exhibitor"}?id=${to._id}`} className="textover" title={to.name}>
                         {to.name}
                     </a>
                 </div>
-                <div className={"mesBox" + (openList ? " hidden" : "")} onClick={this.focusToWritting}>
-
+                <div className={"mesBox" + (openList ? " hidden" : "")} onClick={this.focusToWritting} onScroll={this.handleScroll}>
                     {
-                        messages?.[0] ?
-                            messages.map((mes, index) => {
+                        messagesReverse[0] ?
+                            messagesReverse.map((mes, index) => {
                                 if (user._id !== mes.author) {
                                     return (
-                                        <div className="mesLine" key={index}>
+                                        <div
+                                            key={mes._id}
+                                            className="mesLine"
+                                            title={getTime(mes.createdAt)[2]}
+                                            onClick={() => this.handleShowTime(mes._id)}
+                                        >
                                             <div className="mesAvatar">
                                                 <a href={`/${to.mode === MODE.visitor ? "visitor" : "exhibitor"}?id=${to._id}`}>
-                                                    <img src={origin + "/image/avatar/" + mes.author} title={to.name} />
+                                                    <img src={"/images/" + (to.avatar || "logo-showroom.png")} />
                                                 </a>
                                             </div>
                                             <div className="mesOther">
@@ -171,7 +179,10 @@ class MessageBox extends Component {
                                                         })}
                                                     </div>
                                                 </div>
-                                                <div className="mesTimeContainer left">
+                                                <div
+                                                    className={"mesTimeContainer left" + (!messagesReverse[index + 1]?.author || messagesReverse[index + 1]?.author === user._id ? "" : " hidden")}
+                                                    id={'time-' + mes._id}
+                                                >
                                                     <Time className="mesTime" title="2" value="3" createdAt={mes.createdAt} />
                                                 </div>
                                             </div>
@@ -180,7 +191,12 @@ class MessageBox extends Component {
                                 }
                                 else {
                                     return (
-                                        <div className="mesLine" key={index}>
+                                        <div
+                                            key={mes._id}
+                                            className="mesLine"
+                                            title={getTime(mes.createdAt)[2]}
+                                            onClick={() => this.handleShowTime(mes._id)}
+                                        >
                                             <div className="mesAuthor">
                                                 <div className="mesContentContainer">
                                                     <div className="mesContent">
@@ -195,7 +211,10 @@ class MessageBox extends Component {
                                                         })}
                                                     </div>
                                                 </div>
-                                                <div className="mesTimeContainer right">
+                                                <div
+                                                    className={"mesTimeContainer right" + (messagesReverse[index + 1]?.author !== user._id ? "" : " hidden")}
+                                                    id={'time-' + mes._id}
+                                                >
                                                     <Time className="mesTime" title="2" value="3" createdAt={mes.createdAt} />
                                                 </div>
                                             </div>
@@ -218,9 +237,9 @@ class MessageBox extends Component {
                                 <textarea value={this.state.message || ""}
                                     onChange={this.writeMessage}
                                     onKeyDown={this.checkKeyDown}
-                                    onClick={this.readMessage}
-                                    ref={(e) => { this.Textarea = e; if (e && this.props.focus) { this.readMessage(); e.focus(); } }}
-                                    placeholder="Viết tin nhắn" />
+                                    ref={(e) => this.Textarea = e}
+                                    placeholder="Viết tin nhắn"
+                                />
                             </div>
                             <div className="mesBoxSubmit">
                                 <input type="submit" value="Gửi" onClick={this.readMessage} />
@@ -232,4 +251,4 @@ class MessageBox extends Component {
         );
     }
 }
-export default connect(({ app: { conversations, openList, user, conId } }) => ({ conversations, openList, user, conId }))(MessageBox);
+export default connect(({ app: { conversationsAll, openList, user, conId } }) => ({ conversationsAll, openList, user, conId }))(MessageBox);

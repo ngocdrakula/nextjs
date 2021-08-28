@@ -13,11 +13,24 @@ export const initState = {
     conversationsAll: [],
     total: 0,
     page: 0,
+    hydrate: false
 }
 const appReducer = (state = initState, action) => {
     switch (action.type) {
         case HYDRATE: {
-            return { ...initState, ...state, ...action.payload.app, categories: state.categories };
+            return {
+                ...initState,
+                ...state,
+                ...action.payload.app,
+                conversations: state.conversations.length ? state.conversations : action.payload.app.conversations,
+                conversationsAll: state.conversationsAll.length ? state.conversationsAll : action.payload.app.conversationsAll,
+                user: state.user || action.payload.app.user,
+                total: state.total || action.payload.app.total,
+                page: state.page || action.payload.app.page,
+                openMessage: state.openMessage || action.payload.app.openMessage,
+                openList: state.user ? state.openList : action.payload.app.openList,
+                newMessage: state.user ? state.newMessage : action.payload.app.newMessage,
+            };
         }
         case types.GET_INDUSTRIES_SUCCESS: {
             const { data } = action.payload;
@@ -55,8 +68,10 @@ const appReducer = (state = initState, action) => {
         }
         case types.USER_LOGOUT_SUCCESS: {
             return {
-                ...state,
-                user: null,
+                ...initState,
+                industries: state.industries,
+                exhibitors: state.exhibitors,
+                visitors: state.visitors,
             };
         }
         case types.USER_REGISTER_SUCCESS: {
@@ -76,6 +91,7 @@ const appReducer = (state = initState, action) => {
             return {
                 ...state,
                 openMessage: !state.openMessage,
+                openList: true
             };
         }
         case types.OPEN_LIST: {
@@ -86,69 +102,161 @@ const appReducer = (state = initState, action) => {
         }
         case types.GET_CONVERSATIONS_SUCCESS: {
             const { data, total, page, totalNew } = action.payload;
-            data.map(c => { if (!state.conversationsAll.find(con => con._id === c._id)) state.conversationsAll.push(c) })
+            data.map(c => {
+                if (page > 0 && !state.conversations.find(con => con._id === c._id)) state.conversations.push(c)
+                if (!state.conversationsAll.find(con => con._id === c._id)) state.conversationsAll.push(c)
+            })
             return {
                 ...state,
-                conversations: page === 0 ? data : [...state.conversations, ...data],
+                conversations: page === 0 ? data : [...state.conversations],
+                conversationsAll: [...state.conversationsAll],
                 page,
                 total,
                 newMessage: totalNew
             };
         }
+
+        case types.SELECT_CONVERSATION: {
+            return {
+                ...state,
+                conId: action.payload,
+                openList: false
+            };
+        }
         case types.GET_ONE_CONVERSATION_SUCCESS: {
-            const con = action.payload.data;
-            const index = state.conversations.findIndex(c => c._id === con._id)
-            const indexAll = state.conversationsAll.findIndex(c => c._id === con._id)
-            if (index + 1 && indexAll + 1) {
-                state.conversations[index] = con
-                state.conversationsAll[indexAll] = con
+            const { data, currentPage } = action.payload;
+            const loadAll = !data.messages.length;
+            const index = state.conversations.findIndex(c => c._id === data._id)
+            const indexAll = state.conversationsAll.findIndex(c => c._id === data._id);
+            const conNew = { ...data, currentPage, loadAll }
+            if (index + 1) {
+                if (!currentPage) {
+                    state.conversations[index] = conNew;
+                }
             }
             else {
-                state.conversations.push(con)
-                state.conversationsAll.push(con)
+                state.conversations = [conNew, ...state.conversations]
+            }
+            if (indexAll + 1) {
+                if (state.conversationsAll[indexAll].currentPage >= 0) {
+                    const messagesNew = conNew.messages.filter(c => !state.conversationsAll[index].messages.find(con => con._id === c._id));
+                    if (currentPage > 0) {
+                        state.conversationsAll[index].messages = [...state.conversationsAll[index].messages, ...messagesNew];
+                    }
+                    else {
+                        state.conversationsAll[index].messages = [...messagesNew, ...state.conversationsAll[index].messages];
+                    }
+                }
+                else {
+                    state.conversationsAll[indexAll] = { ...data, currentPage }
+                }
+                state.conversationsAll[indexAll].leader = data.leader;
+                state.conversationsAll[indexAll].member = data.member;
+                state.conversationsAll[indexAll].loadAll = loadAll;
+            }
+            else {
+                state.conversationsAll.push(conNew)
             }
             return {
                 ...state,
                 conversations: [...state.conversations],
-                conId: con._id,
-                openList: false
+                conversationsAll: [...state.conversationsAll],
             };
         }
         case types.GET_CONVERSATION_TO_SUCCESS: {
-            const con = action.payload.data;
-            const index = state.conversations.findIndex(c => c._id === con._id)
-            const indexAll = state.conversationsAll.findIndex(c => c._id === con._id)
-            if (index + 1 && indexAll + 1) {
-                state.conversations[index] = con
-                state.conversationsAll[indexAll] = con
+            const { data, open } = action.payload;
+            const indexAll = state.conversationsAll.findIndex(c => c._id === data._id);
+            const conNew = { ...data, currentPage: 0, loadAll: data.messages.length < 10 }
+            if (indexAll + 1) {
+                state.conversationsAll[indexAll] = conNew;
             }
             else {
-                state.conversations.push(con)
-                state.conversationsAll.push(con)
+                state.conversationsAll.push(conNew);
             }
             return {
                 ...state,
-                conversations: [...state.conversations],
-                conId: con._id,
+                conversationsAll: [...state.conversationsAll],
+                conId: conNew._id,
+                openList: false,
+                openMessage: open || state.openMessage
+            };
+        }
+        case types.GET_CONVERSATION_TO_FAILED: {
+            const conNew = {
+                _id: 'temp',
+                leader: {
+                    user: state.user,
+                    seen: true
+                },
+                member: {
+                    user: action.payload,
+                    seen: true
+                },
+                messages: []
+            }
+            state.conversationsAll = state.conversationsAll.filter(c => c._id !== conNew._id);
+            state.conversationsAll.push(conNew);
+            return {
+                ...state,
+                conversationsAll: [...state.conversationsAll],
+                conId: conNew._id,
+                openMessage: true,
                 openList: false
             };
         }
-        case types.SEND_MESSAGE_SUCCESS: {
-            const { data, conversationCreated, conversationId } = action.payload;
-            const index = state.conversations.findIndex(c => c._id === conversationId);
-            const indexAll = state.conversationsAll.findIndex(c => c._id === conversationId)
-            if (index + 1 && indexAll + 1) {
-                state.conversations[index].messages.push(data)
-                state.conversationsAll[indexAll].messages.push(data)
+        case types.READ_MESSAGE_SUCCESS: {
+            const con = action.payload.data;
+            const index = state.conversations.findIndex(c => c._id === con._id)
+            const indexAll = state.conversationsAll.findIndex(c => c._id === con._id)
+            if (index + 1) {
+                state.conversations[index].leader = con.leader;
+                state.conversations[index].member = con.member;
             }
-            else if (conversationCreated) {
-                state.conversations.push(conversationCreated)
-                state.conversationsAll.push(conversationCreated)
+            if (indexAll + 1) {
+                state.conversationsAll[indexAll].leader = con.leader;
+                state.conversationsAll[indexAll].member = con.member;
             }
+            state.newMessage--;
             return {
                 ...state,
                 conversations: [...state.conversations],
+                conversationsAll: [...state.conversationsAll],
+                conId: con._id,
+                openList: false,
+                newMessage: Math.max(0, state.newMessage)
             };
+        }
+        case types.SEND_MESSAGE_SUCCESS: {
+            return {
+                ...state,
+                conversations: [...state.conversations],
+                conversationsAll: [...state.conversationsAll],
+                conId: action.payload.conversationId
+            };
+        }
+        case types.REVICED_MESSAGE_SUCCESS: {
+            const { data } = action.payload;
+            state.conversations = [data, ...state.conversations.filter(c => c._id !== data._id)];
+            const indexAll = state.conversationsAll.findIndex(c => c._id === data._id);
+            if (indexAll + 1) {
+                const conCopy = state.conversationsAll[indexAll];
+                const messagesNew = data.messages.filter(c => !conCopy.messages.find(con => con._id === c._id));
+                conCopy.messages = [...messagesNew, ...conCopy.messages];
+                conCopy.leader = data.leader;
+                conCopy.member = data.member;
+                state.conversationsAll = [conCopy, ...state.conversationsAll.filter(c => c._id !== data._id)];
+            }
+            else {
+                state.conversationsAll = [data, ...state.conversationsAll.filter(c => c._id !== data._id)];
+            }
+            const { leader, member } = data;
+            const from = leader.user._id === state.user._id ? leader : member;
+            if (!from.seen) state.newMessage++;
+            return {
+                ...state,
+                conversations: [...state.conversations],
+                conversationsAll: [...state.conversationsAll],
+            }
         }
         default: {
             return state;

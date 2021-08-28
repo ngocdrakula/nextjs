@@ -24,27 +24,21 @@ class Buyer extends Component {
             }
         })
     }
-    handleChat = (e, id) => {
+    handleChat = (e, toUser) => {
         e.preventDefault();
-        dispatch({
-            type: types.GET_VISITORS,
-            payload: {
-                page: 0,
-                pageSize,
-                industry: e.target.id
-            }
-        })
-    }
-    handleConnectt = (e, id) => {
-        e.preventDefault();
-        dispatch({
-            type: types.GET_VISITORS,
-            payload: {
-                page: 0,
-                pageSize,
-                industry: e.target.id
-            }
-        })
+        const { user, dispatch } = this.props;
+        if (user?._id && user._id !== toUser._id) {
+            dispatch({
+                type: types.GET_CONVERSATION_TO,
+                payload: { ...toUser, open: true },
+            });
+        }
+        else if (user?._id) {
+            dispatch({
+                type: types.OPENFORM,
+                payload: MODE.exhibitor,
+            });
+        }
     }
     render() {
         const { industries, visitors } = this.props
@@ -97,11 +91,10 @@ class Buyer extends Component {
                                                 :
                                                 <img src="/images/showroom1.png" alt="" />
                                             }
-
                                         </div>
                                         <div className="store-bottom">
-                                            <a href="#" onClick={e => this.handleChat(e, visitor.id)}><img src="/images/talk.png" alt="" />Trò chuyện</a>
-                                            <a href="#" onClick={e => this.handleConnectt(e, visitor.id)}><img src="/images/connect.png" alt="" />Kết nối giao thương</a>
+                                            <a href="#" onClick={e => this.handleChat(e, visitor)}><img src="/images/talk.png" alt="" />Trò chuyện</a>
+                                            <a href="#" onClick={e => this.handleChat(e, visitor)}><img src="/images/connect.png" alt="" />Kết nối giao thương</a>
                                         </div>
                                     </div>
                                 </div>
@@ -118,4 +111,4 @@ class Buyer extends Component {
     }
 }
 
-export default connect(({ app: { industries, visitors } }) => ({ industries, visitors }))(Buyer)
+export default connect(({ app: { industries, visitors, user } }) => ({ industries, visitors, user }))(Buyer)

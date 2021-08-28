@@ -38,7 +38,7 @@ const handler = async (req, res) => {
       if (!contentType || contentType.indexOf('multipart/form-data') == -1)
         throw ({ path: 'content-type', contentType });
       const user = bearerToken && jwt.verify(bearerToken);
-      if (user?._id && user._id != id) throw ({ ...user, path: 'token' });
+      if (user?.mode != MODE.exhibitor && user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
       const {
         body: {
           password, newpassword, name, phone,
@@ -48,7 +48,7 @@ const handler = async (req, res) => {
         files, err } = await uploader(req);
       if (err) throw ({ path: 'files' });
       try {
-        const currentUser = await userController.get(req.query.id);
+        const currentUser = await userController.get(id);
         if (!currentUser) throw ({ path: '_id', files });
         if (files.length) {
           await cleanFiles([currentUser.image]);

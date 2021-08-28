@@ -13,21 +13,22 @@ const handler = async (req, res) => {
       if (!user?._id) throw ({ ...user, path: 'token' });
       const { to } = req.query;
       if (!to) throw ({ path: 'to' })
-      const query = { $or: [{ 'leader.user': user._id, 'member.user': to }, { 'member.user': user._to, 'leader.user': id }] }
+      const query = { $or: [{ 'leader.user': user._id, 'member.user': to }, { 'member.user': user._id, 'leader.user': to }] }
       const currentConversation = await conversationController.find(query)
-        .populate({ path: 'leader.user', select: 'name' })
-        .populate({ path: 'member.user', select: 'name' })
-        .populate({ path: 'messages', options: { $sort: { createdAt: -1 }, limit: 10 } })
-        .populate({ path: 'messages.author', })
+        .populate({ path: 'leader.user', select: 'name mode' })
+        .populate({ path: 'member.user', select: 'name mode' })
+        .populate({ path: 'messages', options: { sort: { createdAt: -1 }, limit: 10 } })
+        .populate({ path: 'messages.author', });
+      if (!currentConversation) throw ({ path: 'to' })
       return res.status(200).send({
         success: true,
         data: currentConversation,
       });
     } catch (error) {
       if (error.path == 'to')
-        return res.status(500).send({
+        return res.status(404).send({
           success: false,
-          message: error.message,
+          message: 'Không tồn tại cuộc hội thoại',
           messages: lang?.message?.error?.server,
           error: error,
         });

@@ -2,24 +2,87 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import types from '../../redux/types';
 
+const pageSize = 10;
+
+
 class ConversationList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      order: 0
+      name: ''
     }
   }
-  handleSelect = (id) => {
-    const { dispatch } = this.props
-    dispatch({
-      type: types.GET_ONE_CONVERSATION,
-      payload: id,
-    })
+  componentWillUnmount() {
+    clearTimeout(this.timeout)
   }
-  handleChange = e => this.setState({ name: e.target.value });
+  handleSelect = (id) => {
+    const { dispatch, conversations } = this.props;
+    const conCurrent = conversations.find(c => c._id === id);
+    if (conCurrent?.currentPage >= 0) {
+      dispatch({
+        type: types.SELECT_CONVERSATION,
+        payload: id,
+      });
+    }
+    else {
+      dispatch({
+        type: types.GET_ONE_CONVERSATION,
+        payload: { id, page: 0, pageSize },
+        callback: res => {
+          if (res?.success) {
+            dispatch({
+              type: types.SELECT_CONVERSATION,
+              payload: id,
+            });
+          }
+        }
+      });
+    }
+  }
+  handleChange = e => {
+    this.setState({ name: e.target.value });
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
+      this.gotoPage()
+    }, 1000);
+  }
   handleSubmit = e => {
     e.preventDefault();
-    console.log(this.state.name)
+    this.gotoPage();
+  }
+  gotoPage = (page) => {
+    const { dispatch } = this.props;
+    const { name } = this.state;
+    dispatch({
+      type: types.GET_CONVERSATIONS,
+      payload: {
+        page: page || 0,
+        pageSize,
+        name
+      }
+    })
+  }
+  handleScroll = e => {
+    if (!this.loading && e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight - 10) {
+      const { conversations, total, dispatch } = this.props;
+      const { name } = this.props;
+      if (conversations.length < total) {
+        this.loading = true;
+        dispatch({
+          type: types.GET_CONVERSATIONS,
+          payload: {
+            page: Math.round((conversations.length) / pageSize),
+            pageSize,
+            name
+          },
+          callback: res => {
+            if (res?.success) {
+              this.loading = false;
+            };
+          }
+        })
+      }
+    }
   }
   render() {
     const { conversations, user, openList } = this.props;
@@ -27,22 +90,22 @@ class ConversationList extends Component {
     return (
       <>
         <div className={"messageListHead" + (openList ? "" : " hidden")}>Cuộc hội thoại</div>
-        <div className={"messageList" + (openList ? "" : " hidden")}>
+        <div className={"messageList" + (openList ? "" : " hidden")} onScroll={this.handleScroll}>
           {conversations.map((conversation, index) => {
-            const to = conversation.leader.user._id === user._id ? conversation.member.user : conversation.leader.user;
-            const from = conversation.leader.user._id === user._id ? conversation.leader.user : conversation.member.user;
-            const lastMessage = conversation.messages?.[conversation.messages.length - 1];
-            const author = lastMessage?.author === to._id ? to.name : "Bạn";
-            const inboxNew = from.seen ? " inboxNew" : "";
+            const toUser = conversation.leader.user._id === user._id ? conversation.member.user : conversation.leader.user;
+            const from = conversation.leader.user._id === user._id ? conversation.leader : conversation.member;
+            const lastMessage = conversation.messages?.[0];
+            const author = lastMessage?.author === toUser._id ? toUser.name : "Bạn";
+            const inboxNew = !from.seen ? " inboxNew" : "";
             return (
               <div key={index} className={"inboxLine" + inboxNew} onClick={() => this.handleSelect(conversation._id)}  >
                 <div className="inboxAvatar">
-                  <img src={"/images/" + (to.avatar || "logo-showroom.png")} />
+                  <img src={"/images/" + (toUser.avatar || "logo-showroom.png")} />
                 </div>
                 <div className="inboxContent">
                   <div className="inboxUsername">
-                    <div className="link textover">
-                      {to.name}
+                    <div className="link textover" title={toUser.name}>
+                      {toUser.name}
                     </div>
                   </div>
                   <div className="inboxLastMessage textover">
@@ -58,11 +121,11 @@ class ConversationList extends Component {
         </div>
         <form className={"search-con" + (openList ? "" : " hidden")} onSubmit={this.handleSubmit}>
           <button type="submit"><img src="/images/icon-search.png" alt="" /></button>
-          <input name="name" value={name} onChange={this.handleChange} />
+          <input name="inbox-name"autoComplete={"inbox-name"} value={name} onChange={this.handleChange} />
         </form>
       </>
     );
   }
 }
 
-export default connect(({ app: { conversations, user, openList } }) => ({ conversations, user, openList }))(ConversationList);
+export default connect(({ app: { conversations, user, openList, total } }) => ({ conversations, user, openList, total }))(ConversationList);

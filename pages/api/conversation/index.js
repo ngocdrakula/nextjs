@@ -16,21 +16,37 @@ const handler = async (req, res) => {
       const limit = Number(pageSize) || 0;
       const populateName = {};
       if (name) populateName.match = { name: new RegExp(name, "i") };
-      const queryNew = { $or: [{ 'leader.user': user._id, 'leader.seen': false }, { 'member.user': user._id, 'member.seen': false }] };
+      const queryNew = {
+        $or: [
+          { 'leader.user': user._id, 'leader.seen': false },
+          { 'member.user': user._id, 'member.seen': false }
+        ]
+      };
       const totalNew = await conversationController.getlist(queryNew).countDocuments();
       const total = await conversationController.getlist(query)
         .populate({ path: 'leader.user', select: 'name mode', ...populateName })
         .populate({ path: 'member.user', select: 'name mode', ...populateName })
         .countDocuments();
       const conversations = await conversationController.getlist(query)
-        .populate({ path: 'leader.user', select: 'name mode', ...populateName })
-        .populate({ path: 'member.user', select: 'name mode', ...populateName })
-        .populate({ path: 'messages', options: { sort: { createdAt: -1 }, limit: 1 } })
-        .skip(skip).limit(limit);
+        .populate({ path: 'leader.user', select: 'name mode', match: { name: new RegExp(name, "i") } })
+        .populate({ path: 'member.user', select: 'name mode', match: { name: new RegExp(name, "i") } })
+        .populate({ path: 'messages', options: { sort: { updatedAt: -1 }, limit: 1 } })
+      const cons = conversations.filter(c => {
+        if (c.leader.user?._id && c.leader.user._id != user._id) {
+          c.member.user = { _id: user._id, name: user.name };
+          return true;
+        }
+        if (c.member.user?._id && c.member.user._id != user._id) {
+          c.leader.user = { _id: user._id, name: user.name };
+          return true;
+        }
+        return false
+      });
+      const data = cons.slice(skip, skip + limit);
       return res.status(200).send({
         success: true,
-        data: conversations,
-        total,
+        data,
+        total: cons.length,
         totalNew,
         page: Number(page) || 0,
         pageSize: Number(pageSize) || 0,

@@ -168,15 +168,43 @@ function* getConversationById({ payload, callback }) {
         }
     }
 }
-function* getConversationByIdUser({ payload, callback }) {
+function* getConversationByIdUser({ payload: { _id, name, open }, callback }) {
     try {
-        const res = yield call(requests.getConversationByIdUserRequest, payload);
+        const res = yield call(requests.getConversationByIdUserRequest, _id);
         if (res?.data?.success) {
-            yield put({ type: types.GET_CONVERSATION_TO_SUCCESS, payload: res.data });
+            yield put({ type: types.GET_CONVERSATION_TO_SUCCESS, payload: { ...res.data, open } });
             if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
-        yield put({ type: types.GET_CONVERSATION_TO_FAILED, payload: e.response });
+        yield put({ type: types.GET_CONVERSATION_TO_FAILED, payload: { _id, name } });
+        if (typeof callback === 'function') {
+            callback(e.response);
+        }
+    }
+}
+function* getConversationAndRead({ payload, callback }) {
+    try {
+        const res = yield call(requests.getConversationByIdRequest, { id: payload, read: true });
+        if (res?.data?.success) {
+            yield put({ type: types.READ_MESSAGE_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.READ_MESSAGE_FAILED, payload: e.response });
+        if (typeof callback === 'function') {
+            callback(e.response);
+        }
+    }
+}
+function* revicedMessage({ payload, callback }) {
+    try {
+        const res = yield call(requests.getConversationByIdUserRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.REVICED_MESSAGE_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.REVICED_MESSAGE_FAILED, payload: e.response });
         if (typeof callback === 'function') {
             callback(e.response);
         }
@@ -210,6 +238,8 @@ export default function* appSaga() {
         yield takeEvery(types.GET_CONVERSATIONS, getConversations),
         yield takeEvery(types.GET_ONE_CONVERSATION, getConversationById),
         yield takeEvery(types.GET_CONVERSATION_TO, getConversationByIdUser),
+        yield takeEvery(types.READ_MESSAGE, getConversationAndRead),
         yield takeEvery(types.SEND_MESSAGE, postMessage),
+        yield takeEvery(types.REVICED_MESSAGE, revicedMessage),
     ])
 }

@@ -9,6 +9,9 @@ module.exports = {
         API_URL_LOCAL: 'http://localhost:3000/api/',
         API_URL: 'https://online.vimexpo.com.vn/api/',
 
+        ORIGIN_LOCAL: 'http://localhost:3000/',
+        ORIGIN: 'https://online.vimexpo.com.vn/',
+
         FOLDER_UPLOAD: 'upload',
 
         FILE_SIZE_LIMIT: 1024 * 1024 * 5,
