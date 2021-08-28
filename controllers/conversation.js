@@ -18,15 +18,11 @@ function remove(conversationId) {
 function getlist(query) {
     return (conversationData.find(query).sort({ updatedAt: -1 }));
 }
-function aggregate(query) {
-    return (conversationData.aggregate(query));
-}
 export default {
     create,
     get,
     update,
     remove,
     find,
-    getlist,
-    aggregate
+    getlist
 }

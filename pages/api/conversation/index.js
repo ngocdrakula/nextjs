@@ -30,8 +30,10 @@ const handler = async (req, res) => {
       const conversations = await conversationController.getlist(query)
         .populate({ path: 'leader.user', select: 'name mode', match: { name: new RegExp(name, "i") } })
         .populate({ path: 'member.user', select: 'name mode', match: { name: new RegExp(name, "i") } })
-        .populate({ path: 'messages', options: { sort: { updatedAt: -1 }, limit: 1 } })
+        .populate({ path: 'messages', perDocumentLimit: 1, options: { sort: { createdAt: -1 }, limit: 1 } });
+      let totalms = 0;
       const cons = conversations.filter(c => {
+        totalms += c.messages.length;
         if (c.leader.user?._id && c.leader.user._id != user._id) {
           c.member.user = { _id: user._id, name: user.name };
           return true;
@@ -47,6 +49,7 @@ const handler = async (req, res) => {
         success: true,
         data,
         total: cons.length,
+        totalms,
         totalNew,
         page: Number(page) || 0,
         pageSize: Number(pageSize) || 0,
