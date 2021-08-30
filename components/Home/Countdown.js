@@ -12,7 +12,7 @@ class Countdown extends Component {
         }
     }
     componentDidMount() {
-        const deadline = (new Date('08/27/2021')).getTime();
+        const deadline = (new Date('09/02/2021')).getTime();
         if (deadline > Date.now()) {
             this.interval = setInterval(() => {
                 const current = Date.now();
@@ -30,6 +30,7 @@ class Countdown extends Component {
     }
     render() {
         const { d, h, m, s } = this.state;
+        const { user } = this.props;
         return (
             <div id="counter">
                 <div className="container">
@@ -51,13 +52,15 @@ class Countdown extends Component {
                             <span className="couter-txt">Giây</span>
                         </div>
                     </div>
-                    <div className="register-guest">
-                        <a href="#"><img src="/images/icon-register-guest.png" alt="" />Đăng ký <span>Khách tham quan</span></a>
-                    </div>
+                    {!user?._id ?
+                        <div className="register-guest">
+                            <a href="#"><img src="/images/icon-register-guest.png" alt="" />Đăng ký <span>Khách tham quan</span></a>
+                        </div>
+                        : ""}
                 </div>
             </div>
         )
     }
 }
 
-export default connect(() => ({}))(Countdown)
+export default connect(({ app: { user } }) => ({ user }))(Countdown)

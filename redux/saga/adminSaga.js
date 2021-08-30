@@ -2,6 +2,7 @@ import { call, put, takeEvery, all } from 'redux-saga/effects';
 import jwt from 'jsonwebtoken';
 import * as requests from '../actions/adminActions';
 import types from '../types';
+import { MODE } from '../../utils/helper';
 
 
 function* admin_LoginLocal({ callback }) {
@@ -45,7 +46,142 @@ function* admin_Logout({ callback }) {
         if (typeof callback === 'function') callback(e);
     }
 }
+function* admin_getExhibitor({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_getUsersRequest, { ...payload, mode: MODE.exhibitor });
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_GET_EXHIBITOR_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_GET_EXHIBITOR_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_getVisitor({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_getUsersRequest, { ...payload, mode: MODE.visitor });
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_GET_VISITOR_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_GET_VISITOR_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_addUser({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_addUserRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_ADD_USER_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_ADD_USER_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_updateUser({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_updateUserRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_UPDATE_USER_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        console.log(e)
+        yield put({ type: types.ADMIN_UPDATE_USER_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_deleteUser({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_deleteUserRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_DELETE_USER_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_DELETE_USER_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_deleteMultiUser({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_deleteMultiUserRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_DELETE_MULTI_USER_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_DELETE_MULTI_USER_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
 
+
+
+function* admin_getIndustries({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_getIndustriesRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_GET_INDUSTRIES_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_GET_INDUSTRIES_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_addIndustry({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_addIndustryRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_ADD_INDUSTRY_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_ADD_INDUSTRY_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_updateIndustry({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_updateIndustryRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_UPDATE_INDUSTRY_SUCCESS, payload: res.data.data });
+            if (typeof callback === 'function') callback(res);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_UPDATE_INDUSTRY_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_deleteIndustry({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_deleteIndustryRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_DELETE_INDUSTRY_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_DELETE_INDUSTRY_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_deleteMultiIndustry({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_deleteMultiIndustryRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_DELETE_MULTI_INDUSTRY_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_DELETE_MULTI_INDUSTRY_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
 
 function* admin_getProducts({ payload, callback }) {
     try {
@@ -108,79 +244,6 @@ function* admin_deleteMultiProduct({ payload, callback }) {
     }
 }
 
-function* admin_getFronts({ payload, callback }) {
-    try {
-        const res = yield call(requests.admin_getFrontsRequest, payload);
-        if (res?.data?.success) {
-            yield put({ type: types.ADMIN_GET_FRONTS_SUCCESS, payload: res.data });
-            if (typeof callback === 'function') callback(res.data);
-        }
-    } catch (e) {
-        yield put({ type: types.ADMIN_GET_FRONTS_FAILED, payload: e.response });
-        if (typeof callback === 'function') callback(e.response);
-    }
-}
-
-function* admin_getSizes({ payload, callback }) {
-    try {
-        const res = yield call(requests.admin_getSizesRequest, payload);
-        if (res?.data?.success) {
-            yield put({ type: types.ADMIN_GET_SIZES_SUCCESS, payload: res.data });
-            if (typeof callback === 'function') callback(res.data);
-        }
-    } catch (e) {
-        yield put({ type: types.ADMIN_GET_SIZES_FAILED, payload: e.response });
-        if (typeof callback === 'function') callback(e.response);
-    }
-}
-function* admin_addSize({ payload, callback }) {
-    try {
-        const res = yield call(requests.admin_addSizeRequest, payload);
-        if (res?.data?.success) {
-            yield put({ type: types.ADMIN_ADD_SIZE_SUCCESS, payload: res.data });
-            if (typeof callback === 'function') callback(res);
-        }
-    } catch (e) {
-        yield put({ type: types.ADMIN_ADD_SIZE_FAILED, payload: e.response });
-        if (typeof callback === 'function') callback(e.response);
-    }
-}
-function* admin_updateSize({ payload, callback }) {
-    try {
-        const res = yield call(requests.admin_updateSizeRequest, payload);
-        if (res?.data?.success) {
-            yield put({ type: types.ADMIN_UPDATE_SIZE_SUCCESS, payload: res.data.data });
-            if (typeof callback === 'function') callback(res);
-        }
-    } catch (e) {
-        yield put({ type: types.ADMIN_UPDATE_SIZE_FAILED, payload: e.response });
-        if (typeof callback === 'function') callback(e.response);
-    }
-}
-function* admin_deleteSize({ payload, callback }) {
-    try {
-        const res = yield call(requests.admin_deleteSizeRequest, payload);
-        if (res?.data?.success) {
-            yield put({ type: types.ADMIN_DELETE_SIZE_SUCCESS, payload: res.data });
-            if (typeof callback === 'function') callback(res.data);
-        }
-    } catch (e) {
-        yield put({ type: types.ADMIN_DELETE_SIZE_FAILED, payload: e.response });
-        if (typeof callback === 'function') callback(e.response);
-    }
-}
-function* admin_deleteMultiSize({ payload, callback }) {
-    try {
-        const res = yield call(requests.admin_deleteMultiSizeRequest, payload);
-        if (res?.data?.success) {
-            yield put({ type: types.ADMIN_DELETE_MULTI_SIZE_SUCCESS, payload: res.data });
-            if (typeof callback === 'function') callback(res.data);
-        }
-    } catch (e) {
-        yield put({ type: types.ADMIN_DELETE_MULTI_SIZE_FAILED, payload: e.response });
-        if (typeof callback === 'function') callback(e.response);
-    }
-}
 
 function* admin_getRooms({ payload, callback }) {
     try {
@@ -204,18 +267,6 @@ function* admin_getLayouts({ payload, callback }) {
         }
     } catch (e) {
         yield put({ type: types.ADMIN_GET_LAYOUTS_FAILED, payload: e.response });
-        if (typeof callback === 'function') callback(e.response);
-    }
-}
-function* admin_addLayout({ payload, callback }) {
-    try {
-        const res = yield call(requests.admin_addLayoutRequest, payload);
-        if (res?.data?.success) {
-            yield put({ type: types.ADMIN_ADD_LAYOUT_SUCCESS, payload: res.data });
-            if (typeof callback === 'function') callback(res);
-        }
-    } catch (e) {
-        yield put({ type: types.ADMIN_ADD_LAYOUT_FAILED, payload: e.response });
         if (typeof callback === 'function') callback(e.response);
     }
 }
@@ -301,24 +352,31 @@ export default function* appSaga() {
         yield takeEvery(types.ADMIN_LOGIN, admin_Login),
         yield takeEvery(types.ADMIN_LOGOUT, admin_Logout),
 
+        yield takeEvery(types.ADMIN_GET_EXHIBITOR, admin_getExhibitor),
+        yield takeEvery(types.ADMIN_GET_VISITOR, admin_getVisitor),
+
+        yield takeEvery(types.ADMIN_ADD_USER, admin_addUser),
+        yield takeEvery(types.ADMIN_UPDATE_USER, admin_updateUser),
+        yield takeEvery(types.ADMIN_DELETE_USER, admin_deleteUser),
+        yield takeEvery(types.ADMIN_DELETE_MULTI_USER, admin_deleteMultiUser),
+
+
         yield takeEvery(types.ADMIN_GET_PRODUCTS, admin_getProducts),
         yield takeEvery(types.ADMIN_ADD_PRODUCT, admin_addProduct),
         yield takeEvery(types.ADMIN_UPDATE_PRODUCT, admin_updateProduct),
         yield takeEvery(types.ADMIN_DELETE_PRODUCT, admin_deleteProduct),
         yield takeEvery(types.ADMIN_DELETE_MULTI_PRODUCT, admin_deleteMultiProduct),
 
-        yield takeEvery(types.ADMIN_GET_FRONTS, admin_getFronts),
 
-        yield takeEvery(types.ADMIN_GET_SIZES, admin_getSizes),
-        yield takeEvery(types.ADMIN_ADD_SIZE, admin_addSize),
-        yield takeEvery(types.ADMIN_UPDATE_SIZE, admin_updateSize),
-        yield takeEvery(types.ADMIN_DELETE_SIZE, admin_deleteSize),
-        yield takeEvery(types.ADMIN_DELETE_MULTI_SIZE, admin_deleteMultiSize),
+        yield takeEvery(types.ADMIN_GET_INDUSTRIES, admin_getIndustries),
+        yield takeEvery(types.ADMIN_ADD_INDUSTRY, admin_addIndustry),
+        yield takeEvery(types.ADMIN_UPDATE_INDUSTRY, admin_updateIndustry),
+        yield takeEvery(types.ADMIN_DELETE_INDUSTRY, admin_deleteIndustry),
+        yield takeEvery(types.ADMIN_DELETE_MULTI_INDUSTRY, admin_deleteMultiIndustry),
 
         yield takeEvery(types.ADMIN_GET_ROOMS, admin_getRooms),
 
         yield takeEvery(types.ADMIN_GET_LAYOUTS, admin_getLayouts),
-        yield takeEvery(types.ADMIN_ADD_LAYOUT, admin_addLayout),
         yield takeEvery(types.ADMIN_CLONE_LAYOUT, admin_cloneLayout),
         yield takeEvery(types.ADMIN_UPDATE_LAYOUT, admin_updateLayout),
         yield takeEvery(types.ADMIN_DELETE_LAYOUT, admin_deleteLayout),

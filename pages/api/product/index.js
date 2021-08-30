@@ -91,7 +91,7 @@ const handler = async (req, res) => {
         // category: categoryId,
         exbihitor: exbihitorId,
         industry: industryId,
-        enabled: (enabled == 'true')
+        enabled: !(enabled == 'false')
       })).populate('category').populate('exbihitor').populate('industry').execPopulate();
       return res.status(201).send({
         success: true,

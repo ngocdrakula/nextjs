@@ -74,7 +74,7 @@ class Exhibitor extends Component {
                                                     <div className="col-lg-4">
                                                         <a href={"/exhibitor?id=" + exhibitor._id}>
                                                             {exhibitor.avatar ?
-                                                                <img src={`/images/${exhibitor.avatar}`} alt="" />
+                                                                <img src={`/api/images/${exhibitor.avatar}`} alt="" />
                                                                 :
                                                                 <img src="/images/logo-showroom.png" alt="" />
                                                             }
@@ -90,7 +90,7 @@ class Exhibitor extends Component {
                                             </div>
                                             <div className="store-body">
                                                 {exhibitor.image ?
-                                                    <img src={`/images/${exhibitor.image}`} alt="" />
+                                                    <img src={`/api/images/${exhibitor.image}`} alt="" />
                                                     :
                                                     <img src="/images/showroom1.png" alt="" />
                                                 }

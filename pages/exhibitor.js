@@ -104,7 +104,7 @@ class Exhibitor extends Component {
                 <a href="#" className="connect-exhibitor"><img src="images/user2.png" alt="" />Nhà trưng bày</a>
                 <h3>
                   {exhibitor.avatar ?
-                    <img src={`/images/${exhibitor.avatar}`} alt="" />
+                    <img src={`/api/images/${exhibitor.avatar}`} alt="" />
                     :
                     <img src="/images/logo-showroom.png" alt="" />
                   }

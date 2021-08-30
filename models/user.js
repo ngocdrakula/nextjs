@@ -84,6 +84,8 @@ const user = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'industry'
     }]
+}, {
+    timestamps: { createdAt: 'createdAt' }
 });
 user.methods.toJSON = function () {
     var obj = this.toObject();

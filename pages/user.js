@@ -197,7 +197,7 @@ class User extends Component {
                               <div className="col-lg-4">
                                 <a href={`/${filter === MODE.exhibitor ? "exhibitor" : "visitor"}?id=${user._id}`}>
                                   {user.avatar ?
-                                    <img src={"/images" + user.avatar} alt="" />
+                                    <img src={"/api/images/" + user.avatar} alt="" />
                                     :
                                     <img src="/images/logo-showroom.png" alt="" />
                                   }
@@ -213,7 +213,7 @@ class User extends Component {
                           </div>
                           <div className="store-body">
                             {user.image ?
-                              <img src={"/images" + user.image} alt="" />
+                              <img src={"/api/images/" + user.image} alt="" />
                               :
                               <img src="/images/showroom1.png" alt="" />
                             }

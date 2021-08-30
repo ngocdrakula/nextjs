@@ -11,15 +11,13 @@ export class AdminHead extends Component {
         return (
             <NextHead>
                 <title>{setting.title || process.env.TITLE}</title>
-                <link rel="icon" href="/api/images/favicon.ico" />
+                <link rel="icon" href="/api/images/favicon.ico" type="image/x-icon" />
                 <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
                 <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-                <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-                <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
-                <link rel="stylesheet" href="/css/animate.min.css" />
-                <link rel="stylesheet" href="/css/template.min.css" />
-                <link rel="stylesheet" href="/css/admin.css" />
-                <link rel="stylesheet" href="/css/login.css" />
+                <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, shrink-to-fit=no" />
+                <meta name="author" content="Ngoc Drakula" />
+                <link href="/css/app.css" rel="stylesheet" />
+                <link href="/css/admin.css" rel="stylesheet" />
             </NextHead>
         )
     }

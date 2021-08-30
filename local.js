@@ -18,9 +18,6 @@ io.on('connection', (socket) => {
 
 app.prepare().then(async () => {
     exApp.set('socket.io', io);
-    exApp.get("/elo", (req, res) => {
-        res.sendFile("HTML/index.html", { root: __dirname });
-    });
     exApp.all('*', (req, res) => handle(req, res, parse(req.url, true)));
     server.listen(3000, (err) => {
         if (err) throw err

@@ -71,7 +71,7 @@ class Buyer extends Component {
                                                 <div className="col-lg-4">
                                                     <a href={"/visitor?id=" + visitor._id}>
                                                         {visitor.avatar ?
-                                                            <img src={`/images/${visitor.avatar}`} alt="" />
+                                                            <img src={`/api/images/${visitor.avatar}`} alt="" />
                                                             :
                                                             <img src="/images/logo-showroom.png" alt="" />
                                                         }
@@ -87,7 +87,7 @@ class Buyer extends Component {
                                         </div>
                                         <div className="store-body">
                                             {visitor.image ?
-                                                <img src={`/images/${visitor.image}`} alt="" />
+                                                <img src={`/api/images/${visitor.image}`} alt="" />
                                                 :
                                                 <img src="/images/showroom1.png" alt="" />
                                             }

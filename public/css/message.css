@@ -1,3 +1,16 @@
+html body {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	font-size: 14px;
+	line-height: 19.2px;
+	color: #373737;
+}
+
+.counter-time .counter-time-item {
+	width: 116px;
+}
+
 a:link, a:visited, .link {
 	color: blue;
 	text-decoration: none;
@@ -125,6 +138,7 @@ input[type=submit] {
 }
 
 .mesTaskItem {
+	position: relative;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -133,8 +147,19 @@ input[type=submit] {
 	cursor: pointer;
 }
 
-.mesTaskItem.active {
-	border-bottom: 3px solid #212657;
+.mesTaskItem::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 0px;
+	background-color: #212657;
+	transition: all 0.2s;
+}
+
+.mesTaskItem.active::after {
+	height: 3px;
 }
 
 .mesTaskItem img {
@@ -470,4 +495,29 @@ input[type=submit] {
 .mesLoader {
 	padding: 10px;
 	font-size: 13px;
+}
+
+.store-body {
+	height: 200px;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.store-top>div>div>a {
+	display: block;
+	height: 84px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+}
+
+.entry-title>p {
+	width: 100%;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	overflow: hidden;
 }

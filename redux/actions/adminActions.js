@@ -2,7 +2,40 @@ import { stringify } from 'qs';
 import axios, { uploadAxios } from "../../utils/axios";
 
 export const admin_LoginRequest = async (request) => {
-    return axios.post('admin/login', request)
+    return axios.post('user/login', request)
+}
+export const admin_getUsersRequest = async (params) => {
+    return axios.get('user?' + stringify(params))
+}
+export const admin_addUserRequest = async (request) => {
+    return axios.post('user', request);
+}
+export const admin_updateUserRequest = async ({ _id, formData }) => {
+    return uploadAxios.post('user/' + _id, formData);
+}
+export const admin_deleteUserRequest = async (_id) => {
+    return axios.delete('user/' + _id);
+}
+export const admin_deleteMultiUserRequest = async (params) => {
+    const _ids = params && params.join(",");
+    return axios.delete('user?_ids=' + _ids);
+}
+
+export const admin_getIndustriesRequest = async (params) => {
+    return axios.get('industry?' + stringify(params))
+}
+export const admin_addIndustryRequest = async (request) => {
+    return axios.post('industry', request);
+}
+export const admin_updateIndustryRequest = async ({ _id, ...request }) => {
+    return axios.put('industry/' + _id, request);
+}
+export const admin_deleteIndustryRequest = async (_id) => {
+    return axios.delete('industry/' + _id);
+}
+export const admin_deleteMultiIndustryRequest = async (params) => {
+    const _ids = params && params.join(",");
+    return axios.delete('industry?_ids=' + _ids);
 }
 
 export const admin_getProductsRequest = async (params) => {
@@ -22,26 +55,6 @@ export const admin_deleteMultiProductRequest = async (params) => {
     return axios.delete('product?_ids=' + _ids);
 }
 
-export const admin_getFrontsRequest = async (params) => {
-    return axios.get('front?' + stringify(params))
-}
-
-export const admin_getSizesRequest = async (params) => {
-    return axios.get('size?' + stringify(params))
-}
-export const admin_addSizeRequest = async (request) => {
-    return axios.post('size', request);
-}
-export const admin_updateSizeRequest = async ({ _id, ...request }) => {
-    return axios.put('size/' + _id, request);
-}
-export const admin_deleteSizeRequest = async (_id) => {
-    return axios.delete('size/' + _id);
-}
-export const admin_deleteMultiSizeRequest = async (params) => {
-    const _ids = params && params.join(",");
-    return axios.delete('size?_ids=' + _ids);
-}
 
 export const admin_getRoomsRequest = async (params) => {
     return axios.get('room?' + stringify(params))
@@ -49,9 +62,6 @@ export const admin_getRoomsRequest = async (params) => {
 
 export const admin_getLayoutsRequest = async (params) => {
     return axios.get('layout?' + stringify(params))
-}
-export const admin_addLayoutRequest = async (formData) => {
-    return uploadAxios.post('layout', formData);
 }
 export const admin_cloneLayoutRequest = async (request) => {
     return axios.post('layout/clone', request);
