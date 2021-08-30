@@ -8,13 +8,13 @@ class AddVisitor extends Component {
     constructor(props) {
         super(props);
         this.defaultState = {
-            email: 'ngocdrakula@gmail.com',
-            password: '123456',
-            name: 'Ngoc',
-            phone: '1212112',
-            introduce: '1212112',
-            contact: '1212112',
-            product: '1212112',
+            email: '',
+            password: '',
+            name: '',
+            phone: '',
+            introduce: '',
+            contact: '',
+            product: '',
             enabled: true,
             fieldError: null,
             message: ''
