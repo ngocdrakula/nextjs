@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import AdminHead from '../../components/admin/AdminHead'; 
+import AdminHead from '../../components/admin/AdminHead';
 import Login from '../../components/admin/Login';
-import types from '../../redux/types'; 
+import types from '../../redux/types';
 import { MODE } from '../../utils/helper';
 import Header from '../../components/admin/Header';
 import SideBar from '../../components/admin/SideBar';
@@ -10,13 +10,14 @@ import Exhibitor from '../../components/admin/Exhibitor';
 import Visitor from '../../components/admin/Visitor';
 import Overview from '../../components/admin/Overview';
 import Tooltip from '../../components/admin/Tooltip';
+import Industry from '../../components/admin/Industry';
 
 
 class Admin extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            active: 1
+            active: 0
         }
     }
     componentDidMount() {
@@ -59,6 +60,7 @@ class Admin extends Component {
                             <Overview active={active === 0} />
                             <Exhibitor active={active === 1} />
                             <Visitor active={active === 2} />
+                            <Industry active={active === 3} />
                         </div>
                         <footer className="main-footer">
                         </footer>

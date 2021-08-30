@@ -18,7 +18,7 @@ class Overview extends Component {
 
 
     render() {
-        const { toggleMail, toggleNoti, toggleUser } = this.state;
+        const { totalExhibitor, totalVisitor } = this.props;
         const { active } = this.props;
         if (!active) return null;
         return (
@@ -28,17 +28,12 @@ class Overview extends Component {
                         <div className="info-box">
                             <span className="info-box-icon bg-yellow"><i className="icon ion-md-people" /></span>
                             <div className="info-box-content">
-                                <span className="info-box-text">VISITOR</span>
-                                <span className="info-box-number">
-                                    54
-                                    <a href="https://online.vietnam-autoexpo.com/admin/admin/customer" className="pull-right small" data-toggle="tooltip" data-placement="left" title="Detail">
-                                        <i className="icon ion-md-send" />
-                                    </a>
-                                </span>
+                                <span className="info-box-text">Khách thăm quan</span>
+                                <span className="info-box-number">{totalVisitor}</span>
                                 <div className="progress" style={{ background: 'transparent' }} />
                                 <span className="progress-description text-muted">
                                     <i className="icon ion-md-add" />
-                                    4 Visitors in 30 days
+                                    0 Khách thăm quan trong 30 ngày
                                 </span>
                             </div>
                         </div>
@@ -47,17 +42,12 @@ class Overview extends Component {
                         <div className="info-box">
                             <span className="info-box-icon bg-aqua"><i className="icon ion-md-contacts" /></span>
                             <div className="info-box-content">
-                                <span className="info-box-text">EXHIBITOR</span>
-                                <span className="info-box-number">
-                                    5
-                                    <a href="https://online.vietnam-autoexpo.com/admin/vendor/merchant" className="pull-right small" data-toggle="tooltip" data-placement="left" title="Detail">
-                                        <i className="icon ion-md-send" />
-                                    </a>
-                                </span>
+                                <span className="info-box-text">Nhà trưng bày</span>
+                                <span className="info-box-number">{totalExhibitor}</span>
                                 <div className="progress" style={{ background: 'transparent' }} />
                                 <span className="progress-description text-muted">
                                     <i className="icon ion-md-add" />
-                                    0 Exhibitors in 30 days
+                                    0 Nhà trưng bày trong 30 ngày
                                 </span>
                             </div>
                         </div>
@@ -69,13 +59,8 @@ class Overview extends Component {
                                 <i className="icon ion-md-heart" />
                             </span>
                             <div className="info-box-content">
-                                <span className="info-box-text">Visitors today</span>
-                                <span className="info-box-number">
-                                    8
-                                    <a href="https://online.vietnam-autoexpo.com/admin/report/visitors" className="pull-right small" data-toggle="tooltip" data-placement="left" title="Detail">
-                                        <i className="icon ion-md-send" />
-                                    </a>
-                                </span>
+                                <span className="info-box-text">Truy cập hôm nay</span>
+                                <span className="info-box-number">8</span>
                                 <div className="progress">
                                     <div className="progress-bar progress-bar-info" style={{ width: '82%' }} />
                                 </div>
@@ -135,4 +120,4 @@ class Overview extends Component {
     }
 }
 
-export default connect(({ admin: { setting, user } }) => ({ setting, user }))(Overview)
+export default connect(({ admin: { setting, user, exhibitor: { total: totalExhibitor }, visitor: { total: totalVisitor } } }) => ({ setting, user, totalExhibitor, totalVisitor }))(Overview)

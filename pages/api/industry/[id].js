@@ -45,11 +45,11 @@ const handler = async (req, res) => {
           const matchIndustry = await industryController.find({ name });
           if (matchIndustry && matchIndustry._id != id) throw ({ path: 'industry', matchIndustry })
         } catch (e) {
-          if (e.path == '_id') throw ({ path: 'industry', matchIndustry })
           throw e
         }
+        currentIndustry.name = name;
       }
-      if (enabled != undefined) currentIndustry.enabled = enabled
+      if (enabled != undefined) currentIndustry.enabled = enabled;
       await currentIndustry.save();
       return res.status(200).send({
         success: true,
@@ -78,6 +78,7 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: true,
+          field: 'name',
           current: e.matchIndustry,
           message: "Ngành nghề đã tồn tại",
           messages: langConcat(lang?.resources?.industry, lang?.message?.error?.validation?.exist),
@@ -87,6 +88,7 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: false,
+          field: 'name',
           message: "Ngành nghề không tồn tại hoặc đã bị xóa",
           messages: langConcat(lang?.resources?.industry, lang?.message?.error?.validation?.not_exist),
         });

@@ -139,7 +139,7 @@ function* admin_addIndustry({ payload, callback }) {
         const res = yield call(requests.admin_addIndustryRequest, payload);
         if (res?.data?.success) {
             yield put({ type: types.ADMIN_ADD_INDUSTRY_SUCCESS, payload: res.data });
-            if (typeof callback === 'function') callback(res);
+            if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
         yield put({ type: types.ADMIN_ADD_INDUSTRY_FAILED, payload: e.response });
@@ -151,7 +151,7 @@ function* admin_updateIndustry({ payload, callback }) {
         const res = yield call(requests.admin_updateIndustryRequest, payload);
         if (res?.data?.success) {
             yield put({ type: types.ADMIN_UPDATE_INDUSTRY_SUCCESS, payload: res.data.data });
-            if (typeof callback === 'function') callback(res);
+            if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
         yield put({ type: types.ADMIN_UPDATE_INDUSTRY_FAILED, payload: e.response });
@@ -200,7 +200,7 @@ function* admin_addProduct({ payload, callback }) {
         const res = yield call(requests.admin_addProductRequest, payload);
         if (res?.data?.success) {
             yield put({ type: types.ADMIN_ADD_PRODUCT_SUCCESS, payload: res.data });
-            if (typeof callback === 'function') callback(res);
+            if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
         yield put({ type: types.ADMIN_ADD_PRODUCT_FAILED, payload: e.response });
@@ -212,7 +212,7 @@ function* admin_updateProduct({ payload, callback }) {
         const res = yield call(requests.admin_updateProductRequest, payload);
         if (res?.data?.success) {
             yield put({ type: types.ADMIN_UPDATE_PRODUCT_SUCCESS, payload: res.data.data });
-            if (typeof callback === 'function') callback(res);
+            if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
         yield put({ type: types.ADMIN_UPDATE_PRODUCT_FAILED, payload: e.response });
@@ -275,7 +275,7 @@ function* admin_cloneLayout({ payload, callback }) {
         const res = yield call(requests.admin_cloneLayoutRequest, payload);
         if (res?.data?.success) {
             yield put({ type: types.ADMIN_CLONE_LAYOUT_SUCCESS, payload: res.data });
-            if (typeof callback === 'function') callback(res);
+            if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
         yield put({ type: types.ADMIN_CLONE_LAYOUT_FAILED, payload: e.response });
@@ -287,7 +287,7 @@ function* admin_updateLayout({ payload, callback }) {
         const res = yield call(requests.admin_updateLayoutRequest, payload);
         if (res?.data?.success) {
             yield put({ type: types.ADMIN_UPDATE_LAYOUT_SUCCESS, payload: res.data.data });
-            if (typeof callback === 'function') callback(res);
+            if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
         yield put({ type: types.ADMIN_UPDATE_LAYOUT_FAILED, payload: e.response });

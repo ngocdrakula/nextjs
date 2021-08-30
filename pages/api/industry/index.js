@@ -41,8 +41,8 @@ const handler = async (req, res) => {
         const matchIndustry = await industryController.find({ name });
         if (matchIndustry) throw ({ path: 'industry', matchIndustry });
       }
-      catch {
-        if (e.path == 'industry') throw ({ path: 'industry', matchIndustry })
+      catch (e) {
+        if (e.path == 'industry') throw e
       }
       const industryCreated = await industryController.create({ name });
       return res.status(201).send({
@@ -52,6 +52,7 @@ const handler = async (req, res) => {
         messages: lang?.message?.success?.created
       });
     } catch (e) {
+      console.log(e)
       if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({
@@ -68,10 +69,21 @@ const handler = async (req, res) => {
           messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
+      if (e.path == '_id') {
+        return res.status(400).send({
+          success: false,
+          exist: true,
+          current: e.matchIndustry,
+          field: 'name',
+          message: "Ngành nghề đã tồn tại",
+          messages: langConcat(lang?.resources?.industry, lang?.message?.error?.validation?.exist),
+        });
+      }
       if (e.path == 'industry') {
         return res.status(400).send({
           success: false,
           exist: true,
+          field: 'name',
           current: e.matchIndustry,
           message: "Ngành nghề đã tồn tại",
           messages: langConcat(lang?.resources?.industry, lang?.message?.error?.validation?.exist),
