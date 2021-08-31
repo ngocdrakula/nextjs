@@ -38,7 +38,7 @@ class LoginExhibitor extends Component {
                     <span>Mật khẩu</span>
                     <input onChange={this.handleChange} type="password" name="password" placeholder="At least 8 characters" />
                 </label>
-                <input type="submit" onClick={this.handleSubmit} defaultValue="Đăng nhập" />
+                <input type="submit" onClick={this.handleSubmit} value="Đăng nhập"  />
                 <div className="suport-login">
                     <label className="remember-login label-cb">
                         <input type="checkbox" name="remember" />

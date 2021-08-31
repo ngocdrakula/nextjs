@@ -28,7 +28,7 @@ class Login extends Component {
             <div className="login-page">
                 <div className="login-box">
                     <div className="login-logo">
-                        <a href="/">Virtual Autotech</a>
+                        <a href="/">CisVietnam</a>
                     </div>
                     <div className="box login-box-body">
                         <div className="box-header with-border">
@@ -72,7 +72,7 @@ class Login extends Component {
                                         </div>
                                     </div>
                                     <div className="col-xs-5">
-                                        <input className="btn btn-block btn-lg btn-flat btn-primary" type="submit" defaultValue="Login" />
+                                        <input className="btn btn-block btn-lg btn-flat btn-primary" type="submit" value="Đăng nhập" />
                                     </div>
                                 </div>
                             </form>
