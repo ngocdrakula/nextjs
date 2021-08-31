@@ -38,6 +38,26 @@ export const admin_deleteMultiIndustryRequest = async (params) => {
     return axios.delete('industry?_ids=' + _ids);
 }
 
+export const admin_getUserRequest = async (_id) => {
+    return axios.get('user/' + _id);
+}
+export const admin_getCategoriesRequest = async (params) => {
+    return axios.get('category?' + stringify(params))
+}
+export const admin_addCategoryRequest = async (request) => {
+    return axios.post('category', request);
+}
+export const admin_updateCategoryRequest = async ({ _id, ...request }) => {
+    return axios.put('category/' + _id, request);
+}
+export const admin_deleteCategoryRequest = async (_id) => {
+    return axios.delete('category/' + _id);
+}
+export const admin_deleteMultiCategoryRequest = async (params) => {
+    const _ids = params && params.join(",");
+    return axios.delete('category?_ids=' + _ids);
+}
+
 export const admin_getProductsRequest = async (params) => {
     return axios.get('product?' + stringify(params))
 }
@@ -53,36 +73,4 @@ export const admin_deleteProductRequest = async (_id) => {
 export const admin_deleteMultiProductRequest = async (params) => {
     const _ids = params && params.join(",");
     return axios.delete('product?_ids=' + _ids);
-}
-
-
-export const admin_getRoomsRequest = async (params) => {
-    return axios.get('room?' + stringify(params))
-}
-
-export const admin_getLayoutsRequest = async (params) => {
-    return axios.get('layout?' + stringify(params))
-}
-export const admin_cloneLayoutRequest = async (request) => {
-    return axios.post('layout/clone', request);
-}
-export const admin_updateLayoutRequest = async ({ _id, formData }) => {
-    return uploadAxios.post('layout/' + _id, formData);
-}
-export const admin_deleteLayoutRequest = async (_id) => {
-    return axios.delete('layout/' + _id);
-}
-export const admin_deleteMultiLayoutRequest = async (params) => {
-    const _ids = params && params.join(",");
-    return axios.delete('layout?_ids=' + _ids);
-}
-export const admin_getLayoutFromUrl = async (url) => {
-    return axios.get('admin/getUrl?url=' + url);
-}
-
-export const admin_getSettingRequest = async () => {
-    return axios.get('admin/setting');
-}
-export const admin_updateSettingRequest = async (request) => {
-    return axios.post('admin/setting', request);
 }

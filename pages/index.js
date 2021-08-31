@@ -22,10 +22,6 @@ class Home extends Component {
     super(props);
     this.state = {};
   }
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({ type: types.ADMIN_GET_SETTING, });
-  }
   render() {
     return (
       <div id="app" className="user-page">

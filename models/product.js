@@ -14,14 +14,14 @@ const product = new Schema({
         type: String,
         required: true
     },
-    exbihitor: {
+    exhibitor: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'user',
     },
-    industry: {
+    category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'industry'
+        ref: 'category'
     },
     enabled: {
         type: Boolean,
@@ -33,7 +33,7 @@ const product = new Schema({
 
 product.methods.toJSON = function () {
     var obj = this.toObject();
-    delete obj.exbihitor.password;
+    delete obj.exhibitor.password;
     return (obj);
 }
 

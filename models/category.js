@@ -6,9 +6,10 @@ const category = new Schema({
         type: String,
         required: true,
     },
-    index: {
-        type: Number,
+    exhibitor: {
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
+        ref: 'user'
     },
     enabled: {
         type: Boolean,
@@ -18,4 +19,9 @@ const category = new Schema({
     timestamps: { createdAt: 'createdAt' }
 });
 
+category.methods.toJSON = function () {
+    var obj = this.toObject();
+    delete obj.exhibitor.password;
+    return (obj);
+}
 export default category;

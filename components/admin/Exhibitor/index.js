@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import types from '../../../redux/types';
 import { createFormData } from '../../../utils/helper';
-import Pagination from '../Pagination';
+import Pagination from '../../PaginationAdmin';
 import AddExhibitor from './AddExhibitor';
 import UpdateExhibitor from './UpdateExhibitor';
 
@@ -24,8 +24,7 @@ class Exhibitor extends Component {
         const { name } = this.state;
         dispatch({
             type: types.ADMIN_GET_EXHIBITOR,
-            payload: { page, pageSize, name },
-            callback: res => console.log(res)
+            payload: { page, pageSize, name }
         });
     }
     handleDisable = (exhibitor) => {
@@ -98,10 +97,7 @@ class Exhibitor extends Component {
         const formData = createFormData({ enabled: !exhibitor.enabled });
         dispatch({
             type: types.ADMIN_UPDATE_USER,
-            payload: { _id: exhibitor._id, formData },
-            callback: res => {
-                console.log(res)
-            }
+            payload: { _id: exhibitor._id, formData }
         })
     }
     handleOpenForm = () => this.setState({ onAdd: !this.state.onAdd });
@@ -124,6 +120,13 @@ class Exhibitor extends Component {
         else {
             this.setState({ selecteds: [] })
         }
+    }
+    handleSwitch = exhibitor => {
+        const { dispatch } = this.props;
+        dispatch({
+            type: types.ADMIN_GET_USER,
+            payload: exhibitor._id
+        });
     }
     render() {
         const { active, exhibitors, page, total } = this.props;
@@ -220,7 +223,7 @@ class Exhibitor extends Component {
                                                 </td>
                                                 <td title={exhibitor.name}>
                                                     {exhibitor.name?.split(0, 15)}
-                                                    <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={() => { this.handleDisable(exhibitor) }}>
+                                                    <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={e => { e.preventDefault(); this.handleDisable(exhibitor) }}>
                                                         <i className={"fa fa-heart" + (exhibitor.enabled ? "-o" : "")} title={exhibitor.enabled ? "Khóa" : "Hủy khóa"} />
                                                     </a>
                                                 </td>
@@ -237,7 +240,7 @@ class Exhibitor extends Component {
                                                     {/* <a href="/admin/vendor/shop/1/staffs">
                                                         <i title="Staffs" className="fa fa-users" />
                                                     </a>&nbsp; */}
-                                                    <a href="#" onClick={() => null}>
+                                                    <a href="#" onClick={() => this.handleSwitch(exhibitor)}>
                                                         <i title="Đăng nhập bằng tài khoản nhà trưng bày" className="fa fa-user-secret" />
                                                     </a>&nbsp;&nbsp;
                                                     <a onClick={() => this.setState({ onEdit: exhibitor })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>

@@ -10,7 +10,7 @@ const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
       const { id } = req.query;
-      const currentProduct = await productController.get(id).populate('category').populate('exbihitor').populate('industry');
+      const currentProduct = await productController.get(id).populate('category').populate('exhibitor').populate('industry');
       if (!currentProduct) throw ({ path: '_id' })
       return res.status(201).send({
         success: true,
@@ -34,6 +34,7 @@ const handler = async (req, res) => {
     }
   } else if (req.method == 'POST') {
     try {
+      const { id } = req.query
       const contentType = req.headers['content-type'];
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' });
@@ -44,7 +45,7 @@ const handler = async (req, res) => {
       const { body: { name, categoryId, industry, description, enabled }, files, err } = await uploader(req);
       if (err) throw ({ path: 'files' });
       try {
-        const currentProduct = await productController.get(req.query.id);
+        const currentProduct = await productController.get(id);
         if (!currentProduct) throw ({ path: '_id', files });
         if (user._id != currentProduct.exhibitor) throw ({ ...user, path: 'token' });
         if (categoryId) {
@@ -68,7 +69,7 @@ const handler = async (req, res) => {
         }
         if (name) {
           const matchProduct = await productController.find({ name });
-          if (matchProduct) throw ({ path: 'name', files });
+          if (matchProduct && matchProduct._id != id) throw ({ path: 'name', files });
           else currentProduct.name = name;
         }
         if (description) {
@@ -81,7 +82,7 @@ const handler = async (req, res) => {
           await cleanFiles([currentProduct.image]);
           currentProduct.image = files[0];
         }
-        const productUpdated = await (await currentProduct.save()).populate('category').populate('exbihitor').populate('industry').execPopulate();
+        const productUpdated = await (await currentProduct.save()).populate('category').populate('exhibitor').populate('industry').execPopulate();
         return res.status(200).send({
           success: true,
           data: productUpdated,

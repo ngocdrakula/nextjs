@@ -2,6 +2,7 @@ import runMidldleware from '../../../middleware/mongodb';
 import categoryController from '../../../controllers/category';
 import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt';
+import { MODE } from '../../../utils/helper';
 
 const handler = async (req, res) => {
   if (req.method == 'GET') {
@@ -34,26 +35,26 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
       if (user?.mode != MODE.exhibitor && user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
-      const { name, index, enabled } = req.body;
-      try {
-        if (name) {
-          const matchCategory = await categoryController.find({ name });
+      const { id } = req.query;
+      const { name, exhibitor, enabled } = req.body;
+      const currentCategory = await categoryController.get(id);
+      if (name) {
+        try {
+          const matchCategory = await categoryController.find({ name, exhibitor: exhibitor || user._id });
           if (matchCategory) throw ({ path: 'name', matchCategory });
+        } catch (e) {
+          throw e
         }
-        const params = {};
-        if (name) params.name = name;
-        if (enabled != undefined) params.enabled = !!enabled;
-        if (index) params.index = Number(index) || 0;
-        const currentCategory = await categoryController.update(req.query.id, params);
-        return res.status(200).send({
-          success: true,
-          data: currentCategory,
-          message: 'Cập nhật thành công',
-          messages: lang?.message?.success?.updated
-        });
-      } catch (error) {
-        throw error
+        currentCategory.name = name;
       }
+      if (enabled != undefined) currentCategory.enabled = enabled;
+      await currentCategory.save();
+      return res.status(200).send({
+        success: true,
+        data: currentCategory,
+        message: 'Cập nhật thành công',
+        messages: lang?.message?.success?.updated
+      });
     } catch (e) {
       if (e.path == 'token') {
         if (!e.token) {
@@ -75,6 +76,7 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: true,
+          field: 'name',
           current: e.matchCategory,
           message: "Tên chuyên mục đã tồn tại",
           messages: langConcat(lang?.resources?.categoryName, lang?.message?.error?.validation?.exist),
@@ -84,6 +86,7 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: false,
+          field: 'name',
           message: "Chuyên mục không tồn tại hoặc đã bị xóa",
           messages: langConcat(lang?.resources?.category, lang?.message?.error?.validation?.not_exist),
         });
@@ -102,7 +105,7 @@ const handler = async (req, res) => {
       const user = jwt.verify(bearerToken);
       if (user?.mode != MODE.exhibitor && user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
       const currentCategory = await categoryController.get(req.query.id);
-      if (!currentCategory) throw ({ path: '_id' });
+      if (!currentCategory || (user.mode != MODE.admin && user._id != currentCategory.exhibitor)) throw ({ path: '_id' });
       currentCategory.remove();
       return res.status(200).send({
         success: true,

@@ -33,3 +33,6 @@ export const getConversationByIdUserRequest = async (to) => {
 export const postMessageRequest = async (request) => {
     return axios.post('message?', request)
 }
+export const getCategoriesRequest = async (params) => {
+    return axios.get('category?' + stringify(params))
+}

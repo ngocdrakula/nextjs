@@ -41,7 +41,7 @@ const handler = async (req, res) => {
       if (!contentType || contentType.indexOf('multipart/form-data') == -1)
         throw ({ path: 'content-type', contentType });
       const user = bearerToken && jwt.verify(bearerToken);
-      if (user?.mode != MODE.exhibitor && user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
+      if (user?._id != id && user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
       const {
         body: {
           email, password, newpassword, name, phone, industry, address,
@@ -74,7 +74,7 @@ const handler = async (req, res) => {
           }
           else throw ({ path: 'password' })
         }
-        if (email && user.mode == MODE.admin) {
+        if (email) {
           try {
             const matchUser = await userController.find({ email });
             if (matchUser && matchUser._id + "" != currentUser._id) throw ({ path: 'email' });

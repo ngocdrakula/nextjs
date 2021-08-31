@@ -20,8 +20,7 @@ class UpdateVisitor extends Component {
         this.state = { ...this.defaultState };
     }
     componentDidUpdate(prevProps) {
-        if (!prevProps.onEdit && this.props.onEdit?._id) {
-            console.log(this.props.onEdit)
+        if (!prevProps.onEdit && this.props.onEdit?._id) { 
             this.setState({
                 ...this.props.onEdit,
                 selected: this.props.onEdit.industry[0]?._id,
@@ -56,8 +55,7 @@ class UpdateVisitor extends Component {
                 data.image = true;
                 filesTotal.push(files[0])
             }
-            if (filesTotal.length) data.files = filesTotal;
-            console.log(data)
+            if (filesTotal.length) data.files = filesTotal; 
             const formData = createFormData(data);
 
             dispatch({
@@ -104,8 +102,7 @@ class UpdateVisitor extends Component {
         const { onEdit, handleClose, industries } = this.props;
         const { dropActive, email, password, name, phone, product, introduce, contact, enabled,
             selected, dropIndustry, fieldError, message, filesAvatar, files } = this.state;
-        const industrySelected = industries.find(i => i._id === selected) || industries[0] || {};
-        console.log(this.state)
+        const industrySelected = industries.find(i => i._id === selected) || industries[0] || {}; 
         return (
             <div id="vis-edit-myDynamicModal" className={"modal-create modal fade" + (onEdit ? " in" : "")} style={{ display: onEdit ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">

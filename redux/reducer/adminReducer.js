@@ -9,8 +9,10 @@ export const initState = {
     visitor: { data: [], page: 0, total: 0 },
     exhibitor: { data: [], page: 0, total: 0 },
     industries: [],
+    categories: [],
     user: null,
-    setting: {}
+    setting: {},
+    exUser: null
 }
 const appReducer = (state = initState, action) => {
     switch (action.type) {
@@ -33,6 +35,13 @@ const appReducer = (state = initState, action) => {
             return {
                 ...state,
                 user: null,
+                exUser: null
+            };
+        }
+        case types.ADMIN_LOGOUT_SUCCESS: {
+            return {
+                ...state,
+                exUser: null
             };
         }
 
@@ -57,10 +66,12 @@ const appReducer = (state = initState, action) => {
 
         case types.ADMIN_UPDATE_USER_SUCCESS: {
             const user = action.payload.data;
+            if (state.exUser?._id === user._id) {
+                state.exUser = user;
+            }
             if (user.mode === MODE.exhibitor) {
                 const data = state.exhibitor.data.map(e => {
                     if (e._id === user._id) {
-                        console.log(e);
                         return user;
                     }
                     return (e);
@@ -76,7 +87,6 @@ const appReducer = (state = initState, action) => {
             else {
                 const data = state.visitor.data.map(e => {
                     if (e._id === user._id) {
-                        console.log(e);
                         return user;
                     }
                     return (e);
@@ -106,6 +116,37 @@ const appReducer = (state = initState, action) => {
                 industries
             };
         }
+        
+        case types.ADMIN_GET_CATEGORIES_SUCCESS: {
+            return {
+                ...state,
+                categories: action.payload.data
+            };
+        }
+        case types.ADMIN_UPDATE_CATEGORY_SUCCESS: {
+            const categories = state.categories.map(i => {
+                if (i._id === action.payload._id) return action.payload;
+                return (i);
+            });
+            return {
+                ...state,
+                categories
+            };
+        }
+
+        case types.ADMIN_GET_USER_SUCCESS: {
+            return {
+                ...state,
+                exUser: action.payload.data,
+            };
+        }
+        case types.ADMIN_EXHIBITOR_LOGOUT: {
+            return {
+                ...state,
+                exUser: null,
+                user: state.user.mode === MODE.admin ? state.user : null
+            };
+        }
 
         case types.ADMIN_GET_PRODUCTS_SUCCESS: {
             return {
@@ -128,46 +169,6 @@ const appReducer = (state = initState, action) => {
         }
         case types.ADMIN_GET_EXHIBITOR_FAILED: {
             return state
-        }
-        case types.ADMIN_GET_ROOMS_SUCCESS: {
-            return {
-                ...state,
-                room: action.payload
-            };
-        }
-        case types.ADMIN_GET_LAYOUTS_SUCCESS: {
-            return {
-                ...state,
-                layout: action.payload
-            };
-        }
-        case types.ADMIN_UPDATE_LAYOUT_SUCCESS: {
-            const data = state.layout.data.map(p => {
-                if (p._id === action.payload._id) return action.payload;
-                return (p);
-            });
-            return {
-                ...state,
-                layout: {
-                    ...state.layout,
-                    data
-                }
-            };
-        }
-
-        case types.ADMIN_GET_SETTING_SUCCESS: {
-            const { data } = action.payload
-            return {
-                ...state,
-                setting: data || {}
-            };
-        }
-        case types.ADMIN_UPDATE_SETTING_SUCCESS: {
-            const { data } = action.payload
-            return {
-                ...state,
-                setting: data || {}
-            };
         }
         default: {
             return state;

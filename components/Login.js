@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import types from '../../redux/types';
+import types from '../redux/types';
 
 class Login extends Component {
     constructor(props) {
@@ -15,7 +15,6 @@ class Login extends Component {
             type: types.ADMIN_LOGIN,
             payload: { email, password },
             callback: data => {
-                console.log(data)
                 if (!data?.success) {
                     this.setState({ message: data?.message || 'Vui lòng kiểm tra kết nối internet' })
                 }

@@ -10,7 +10,7 @@ class Header extends Component {
     handleLogout = e => {
         e.preventDefault();
         const { dispatch } = this.props;
-        dispatch({ type: types.ADMIN_LOGOUT });
+        dispatch({ type: types.ADMIN_EXHIBITOR_LOGOUT });
     }
     handleToggleMail = () => this.setState({ toggleMail: !this.state.toggleMail })
     handleToggleNoti = () => this.setState({ toggleNoti: !this.state.toggleNoti })
@@ -101,4 +101,4 @@ class Header extends Component {
     }
 }
 
-export default connect(({ admin: { setting, user } }) => ({ setting, user }))(Header)
+export default connect(({ admin: { setting, exUser, user } }) => ({ setting, user: exUser || user }))(Header)

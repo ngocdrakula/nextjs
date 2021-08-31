@@ -35,7 +35,14 @@ class Exhibitor extends Component {
         type: types.GET_USER,
         payload: query.id,
         callback: res => {
-          if (res?.success) this.setState({ exhibitor: res.data }, () => this.gotoPage());
+          if (res?.success) this.setState({ exhibitor: res.data });
+        }
+      });
+      dispatch({
+        type: types.GET_CATEGORIES,
+        payload: { exhibitor: query.id },
+        callback: res => {
+          if (res?.success) this.gotoPage();
         }
       });
     }
@@ -64,19 +71,19 @@ class Exhibitor extends Component {
     const { dispatch } = this.props;
     dispatch({ type: types.OPENFORM, payload: MODE.exhibitor });
   }
-  handleSelect = (e, industry) => {
+  handleSelect = (e, category) => {
     e.preventDefault();
-    this.setState({ industrySelected: industry, active: 1, currentPage: -1 }, () => this.gotoPage());
+    this.setState({ categorySelected: category, active: 1, currentPage: -1 }, () => this.gotoPage());
   }
   gotoPage = (index) => {
     const { dispatch } = this.props;
-    const { exhibitor, industrySelected, currentPage } = this.state;
+    const { exhibitor, categorySelected, currentPage } = this.state;
     const query = {
       page: index !== undefined ? index : currentPage + 1,
       pageSize,
       exhibitorId: exhibitor._id,
     }
-    if (industrySelected) query.industryId = industrySelected;
+    if (categorySelected) query.categoryId = categorySelected;
     dispatch({
       type: types.GET_PRODUCTS,
       payload: query,
@@ -90,10 +97,26 @@ class Exhibitor extends Component {
       }
     });
   }
+  handleChat = (e, toUser) => {
+    e?.preventDefault();
+    const { user, dispatch } = this.props;
+    if (user?._id && user._id !== toUser._id) {
+      dispatch({
+        type: types.GET_CONVERSATION_TO,
+        payload: { ...toUser, open: true },
+      });
+    }
+    else if (user?._id) {
+      dispatch({
+        type: types.OPENFORM,
+        payload: MODE.exhibitor,
+      });
+    }
+  }
   render() {
-    const { exhibitor, active, message, industrySelected, products, currentPage, total } = this.state;
-    const { user } = this.props;
-    const currentIndustry = exhibitor.industry?.find(i => i._id === industrySelected);
+    const { exhibitor, active, message, categorySelected, products, currentPage, total } = this.state;
+    const { categories, user } = this.props;
+    const currentCategory = categories.find(i => i._id === categorySelected);
     return (
       <div id="app" className="user-page">
         <Header />
@@ -104,7 +127,7 @@ class Exhibitor extends Component {
                 <a href="#" className="connect-exhibitor"><img src="images/user2.png" alt="" />Nhà trưng bày</a>
                 <h3>
                   {exhibitor.avatar ?
-                    <img src={`/api/images/${exhibitor.avatar}`} alt="" />
+                    <img src={`/api/images/${exhibitor.avatar}`} alt="" style={{ width: 'auto', height: 'auto', maxWidth: 150, maxHeight: 150 }} />
                     :
                     <img src="/images/logo-showroom.png" alt="" />
                   }
@@ -148,11 +171,11 @@ class Exhibitor extends Component {
                     <div className="sidebar sidebar-left sidebar-menu">
                       <h3>Sản phẩm</h3>
                       <ul>
-                        {exhibitor.industry?.map((indus, index) => {
-                          const active = ((!index && !industrySelected) || industrySelected === indus._id)
+                        {categories.map((cate, index) => {
+                          const active = ((!index && !categorySelected) || categorySelected === cate._id)
                           return (
-                            <li key={indus._id} className={active ? "active" : ""}>
-                              <a href="#" onClick={e => this.handleSelect(e, indus._id)} style={active ? { fontWeight: '500' } : {}}>{indus.name}</a>
+                            <li key={cate._id} className={active ? "active" : ""}>
+                              <a href="#" onClick={e => this.handleSelect(e, cate._id)} style={active ? { fontWeight: '500' } : {}}>{cate.name}</a>
                             </li>
                           );
                         })}
@@ -164,14 +187,22 @@ class Exhibitor extends Component {
                       <h3>Gửi tin nhắn</h3>
                       <form onSubmit={this.handleSubmit}>
                         <div className="form-group">
-                          <textarea className="form-control" rows={4} placeholder="Khoảng 250 từ" name="message" value={message} onChange={this.handleChange} />
+                          <textarea
+                            className="form-control"
+                            rows={4}
+                            placeholder="Khoảng 250 từ"
+                            name="message"
+                            value={message}
+                            onChange={this.handleChange}
+                            onClick={this.openLoginExhibitor}
+                          />
                         </div>
                         <input type="submit" defaultValue="Gửi ngay" />
                       </form>
                       <div className="contact-method">
-                        <a href="#"><img src="images/chat2.png" alt="" />Trò chuyện</a>
+                        <a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, exhibitor)}><img src="images/chat2.png" alt="" />Trò chuyện</a>
                         <a href="#"><img src="images/mail.png" alt="" />Email</a>
-                        <a href="#"><img src="images/connect2.png" alt="" />Kết nối giao thương</a>
+                        <a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, exhibitor)}><img src="images/connect2.png" alt="" />Kết nối giao thương</a>
                       </div>
                     </div>
                   </div>
@@ -202,8 +233,8 @@ class Exhibitor extends Component {
                               return (
                                 <div key={product._id} className="col-sm-6 col-lg-4">
                                   <div className="item-detail">
-                                    <div className="item-thumb">
-                                      <img src={"/api/images/" + product.image} alt="" />
+                                    <div className="item-thumb" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', maxHeight: 270 }}>
+                                      <img src={"/api/images/" + product.image} alt="" style={{ width: 'auto', height: 'auto' }} />
                                     </div>
                                     <div className="item-description">
                                       <p><strong>{product.name}</strong>
@@ -233,11 +264,11 @@ class Exhibitor extends Component {
                     <div className="sidebar sidebar-left sidebar-menu">
                       <h3>Sản phẩm</h3>
                       <ul>
-                        {exhibitor.industry?.map((indus, index) => {
-                          const active = ((!index && !industrySelected) || industrySelected === indus._id)
+                        {categories.map((cate, index) => {
+                          const active = ((!index && !categorySelected) || categorySelected === cate._id)
                           return (
-                            <li key={indus._id} className={active ? "active" : ""}>
-                              <a href="#" onClick={e => this.handleSelect(e, indus._id)} style={active ? { fontWeight: '500' } : {}}>{indus.name}</a>
+                            <li key={cate._id} className={active ? "active" : ""}>
+                              <a href="#" onClick={e => this.handleSelect(e, cate._id)} style={active ? { fontWeight: '500' } : {}}>{cate.name}</a>
                             </li>
                           );
                         })}
@@ -249,29 +280,37 @@ class Exhibitor extends Component {
                       <h3>Gửi tin nhắn</h3>
                       <form onSubmit={this.handleSubmit}>
                         <div className="form-group">
-                          <textarea className="form-control" rows={4} placeholder="Khoảng 250 từ" name="message" value={message} onChange={this.handleChange} />
+                          <textarea
+                            className="form-control"
+                            rows={4}
+                            placeholder="Khoảng 250 từ"
+                            name="message"
+                            value={message}
+                            onChange={this.handleChange}
+                            onClick={this.openLoginExhibitor}
+                          />
                         </div>
                         <input type="submit" defaultValue="Gửi ngay" />
                       </form>
                       <div className="contact-method">
-                        <a href="#"><img src="images/chat2.png" alt="" />Trò chuyện</a>
+                        <a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="images/chat2.png" alt="" />Trò chuyện</a>
                         <a href="#"><img src="images/mail.png" alt="" />Email</a>
-                        <a href="#"><img src="images/connect2.png" alt="" />Kết nối giao thương</a>
+                        <a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="images/connect2.png" alt="" />Kết nối giao thương</a>
                       </div>
                     </div>
                   </div>
                   <div className="col-lg-9" id="product-list">
                     <div className="sidebar-content">
                       <div className="sidebar sidebar-content-bottom sidebar-items">
-                        <h3>{currentIndustry?.name || "Sản phẩm tiêu biểu"}</h3>
+                        <h3>{currentCategory?.name || "Sản phẩm tiêu biểu"}</h3>
                         <div className="items-list">
                           <div className="row">
                             {products.map(product => {
                               return (
                                 <div key={product._id} className="col-sm-6 col-lg-4">
                                   <div className="item-detail">
-                                    <div className="item-thumb">
-                                      <img src={"/api/images/" + product.image} alt="" />
+                                    <div className="item-thumb" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', maxHeight: 270 }}>
+                                      <img src={"/api/images/" + product.image} alt="" style={{ width: 'auto', height: 'auto', }} />
                                     </div>
                                     <div className="item-description">
                                       <p><strong>{product.name}</strong>
@@ -432,9 +471,9 @@ class Exhibitor extends Component {
                         <p className="web-address"><span>Website:</span><span><a href={exhibitor.website || "#"}>{exhibitor.website || ""}</a></span></p>
                         <div className="contact-method">
                           <ul className="ft-semibold">
-                            <li><a href="#"><img src="images/chat2.png" alt="" />Trò chuyện</a></li>
+                            <li><a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="images/chat2.png" alt="" />Trò chuyện</a></li>
                             <li><a href="#"><img src="images/mail.png" alt="" />Email</a></li>
-                            <li><a href="#"><img src="images/connect2.png" alt="" />Kết nối giao
+                            <li><a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="images/connect2.png" alt="" />Kết nối giao
                               thương</a></li>
                           </ul>
                         </div>
@@ -446,10 +485,24 @@ class Exhibitor extends Component {
                           <h3>Gửi tin nhắn cho chúng tôi</h3>
                           <form onSubmit={this.handleSubmit}>
                             <div className="form-group">
-                              <input type="input" name="name" className="form-control" placeholder="Họ và tên" />
+                              <input
+                                type="input"
+                                name="name"
+                                className="form-control"
+                                placeholder="Họ và tên"
+                                onClick={this.openLoginExhibitor}
+                              />
                             </div>
                             <div className="form-group">
-                              <textarea className="form-control" rows={5} placeholder="Tin nhắn (tối đa 250 từ)" name="message" value={message} onChange={this.handleChange} />
+                              <textarea
+                                className="form-control"
+                                rows={4}
+                                placeholder="Khoảng 250 từ"
+                                name="message"
+                                value={message}
+                                onChange={this.handleChange}
+                                onClick={this.openLoginExhibitor}
+                              />
                             </div>
                             <input type="submit" defaultValue="Gửi ngay" />
                           </form>
@@ -477,4 +530,4 @@ export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
   await store.sagaTask.toPromise()
 });
 
-export default connect(({ app: { user } }) => ({ user }))(Exhibitor)
+export default connect(({ app: { user, categories } }) => ({ user, categories }))(Exhibitor)

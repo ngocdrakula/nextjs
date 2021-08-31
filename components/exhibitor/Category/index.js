@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import types from '../../../redux/types';
-import { createFormData } from '../../../utils/helper';
-import Pagination from '../../PaginationAdmin';
-import AddVisitor from './AddVisitor';
-import UpdateVisitor from './UpdateVisitor';
+import PaginationAdmin from '../../PaginationAdmin';
+import AddCategory from './AddCategory';
+import UpdateCategory from './UpdateCategory';
 
-const pageSize = 10;
+const pageSize = 100;
 
-class Visitor extends Component {
+class Category extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -19,39 +18,44 @@ class Visitor extends Component {
     componentDidMount() {
         this.gotoPage();
     }
-    gotoPage = (page = 0) => {
-        const { dispatch } = this.props;
+    componentDidUpdate(prevProps) {
+        if (!prevProps.exUser && this.props.exUser?._id) {
+            this.gotoPage();
+        }
+    }
+    gotoPage = () => {
+        const { dispatch, exUser } = this.props;
         const { name } = this.state;
         dispatch({
-            type: types.ADMIN_GET_VISITOR,
-            payload: { page, pageSize, name }
+            type: types.ADMIN_GET_CATEGORIES,
+            payload: { name, exhibitor: exUser?._id }
         });
     }
-    handleDisable = (visitor) => {
+    handleDisable = (category) => {
         const { dispatch } = this.props;
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận ${visitor.enabled ? 'khóa' : 'hủy khóa'} tài khoản`,
-                message: `Bạn có chắc chắn ${visitor.enabled ? 'khóa' : 'hủy khóa'} tài khoản của ${visitor.name} không?`,
-                confirm: `${visitor.enabled ? 'Khóa' : 'Hủy khóa'} tài khoản`,
-                handleConfirm: () => this.handleConfirm(visitor),
+                title: `Xác nhận ${category.enabled ? 'tắt' : 'bật'} chuyên mục này`,
+                message: `Bạn có chắc chắn ${category.enabled ? 'tắt' : 'bật'} chuyên mục này không?`,
+                confirm: `${category.enabled ? 'Tắt' : 'Bật'} chuyên mục này`,
+                handleConfirm: () => this.handleConfirm(category),
                 cancel: 'Hủy',
             }
         })
     }
-    handleDelete = (visitor) => {
+    handleDelete = (category) => {
         const { dispatch } = this.props;
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa tài khoản`,
-                message: `Bạn có chắc chắn muốn xóa tài khoản của ${visitor.name} không?`,
-                confirm: `Xóa tài khoản`,
+                title: `Xác nhận xóa chuyên mục`,
+                message: `Bạn có chắc chắn muốn xóa chuyên mục này không?`,
+                confirm: `Xóa`,
                 handleConfirm: () => {
                     dispatch({
-                        type: types.ADMIN_DELETE_USER,
-                        payload: visitor._id,
+                        type: types.ADMIN_DELETE_CATEGORY,
+                        payload: category._id,
                         callback: res => {
                             if (res?.success) {
                                 const { page } = this.props;
@@ -72,17 +76,16 @@ class Visitor extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa nhiều tài khoản`,
-                message: `Bạn có chắc chắn muốn xóa ${selecteds.length} tài khoản không?`,
-                confirm: `Xóa tài khoản`,
+                title: `Xác nhận xóa nhiều chuyên mục`,
+                message: `Bạn có chắc chắn muốn xóa ${selecteds.length} chuyên mục không?`,
+                confirm: `Xóa chuyên mục này`,
                 handleConfirm: () => {
                     dispatch({
-                        type: types.ADMIN_DELETE_MULTI_USER,
+                        type: types.ADMIN_DELETE_MULTI_CATEGORY,
                         payload: selecteds,
                         callback: res => {
                             if (res?.success) {
-                                const { page } = this.props;
-                                this.gotoPage(page);
+                                this.gotoPage();
                                 this.setState({ selecteds: [] })
                             }
                         }
@@ -92,12 +95,11 @@ class Visitor extends Component {
             }
         })
     }
-    handleConfirm = (visitor) => {
+    handleConfirm = (category) => {
         const { dispatch } = this.props;
-        const formData = createFormData({ enabled: !visitor.enabled });
         dispatch({
-            type: types.ADMIN_UPDATE_USER,
-            payload: { _id: visitor._id, formData }
+            type: types.ADMIN_UPDATE_CATEGORY,
+            payload: { _id: category._id, enabled: !category.enabled }
         })
     }
     handleOpenForm = () => this.setState({ onAdd: !this.state.onAdd });
@@ -113,25 +115,25 @@ class Visitor extends Component {
     }
     handleSelectAll = () => {
         const { selecteds } = this.state;
-        const { visitors } = this.props;
-        if (selecteds.length < visitors.length) {
-            this.setState({ selecteds: visitors.map(e => e._id) });
+        const { categories } = this.props;
+        if (selecteds.length < categories.length) {
+            this.setState({ selecteds: categories.map(e => e._id) });
         }
         else {
             this.setState({ selecteds: [] })
         }
     }
     render() {
-        const { active, visitors, page, total } = this.props;
+        const { active, categories } = this.props;
         const { onAdd, onEdit, selecteds } = this.state;
         if (!active) return null;
         return (
             <section className="content">
                 <div className="box">
                     <div className="box-header with-border">
-                        <h3 className="box-title">Khách thăm quan</h3>
+                        <h3 className="box-title">Danh sách chuyên mục</h3>
                         <div className="box-tools pull-right">
-                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>Thêm khách thăm quan</a>
+                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>Thêm chuyên mục</a>
                         </div>
                     </div>
                     <div className="box-body">
@@ -139,21 +141,9 @@ class Visitor extends Component {
                             <div className="dt-buttons btn-group">
                                 {selecteds.length ?
                                     <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={this.handleDeleteAll}>
-                                        <span>Xóa {selecteds.length} đã chọn</span>
+                                        <span>Xóa {selecteds.length} mục đã chọn</span>
                                     </button>
                                     : ""}
-                                {/* <button className="btn btn-default buttons-copy buttons-html5 btn-sm" tabIndex={0} aria-controls="DataTables_Table_1">
-                                    <span>Copy</span>
-                                </button>
-                                <button className="btn btn-default buttons-csv buttons-html5 btn-sm" tabIndex={0} aria-controls="DataTables_Table_1">
-                                    <span>CSV</span>
-                                </button> <button className="btn btn-default buttons-excel buttons-html5 btn-sm" tabIndex={0} aria-controls="DataTables_Table_1">
-                                    <span>Excel</span>
-                                </button> <button className="btn btn-default buttons-pdf buttons-html5 btn-sm" tabIndex={0} aria-controls="DataTables_Table_1">
-                                    <span>PDF</span>
-                                </button> <button className="btn btn-default buttons-print btn-sm" tabIndex={0} aria-controls="DataTables_Table_1">
-                                    <span>Print</span>
-                                </button> */}
                             </div>
                             <div id="DataTables_Table_1_filter" className="dataTables_filter">
                                 <label>
@@ -184,57 +174,39 @@ class Visitor extends Component {
                                                 </ul>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Ảnh đại diện" style={{ width: '54.8px' }}>Ảnh đại diện</th>
-                                        <th className="sorting" tabIndex={0} aria-controls="DataTables_Table_1" rowSpan={1} colSpan={1} aria-label="Tên khách hàng: activate to sort column ascending" style={{ width: '142.8px' }}>Tên khách hàng</th>
-                                        <th className="sorting" tabIndex={0} aria-controls="DataTables_Table_1" rowSpan={1} colSpan={1} aria-label="Email: activate to sort column ascending" style={{ width: 218 }}>Email</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '54.8px' }}>STT</th>
+                                        <th className="sorting" tabIndex={0} aria-controls="DataTables_Table_1" rowSpan={1} colSpan={1} aria-label="Tên chuyên mục: activate to sort column ascending" style={{ width: '142.8px' }}>Tên chuyên mục</th>
+                                        <th className="sorting" tabIndex={0} aria-controls="DataTables_Table_1" rowSpan={1} colSpan={1} aria-label="Trạng thái: activate to sort column ascending" style={{ width: 218 }}>Trạng thái</th>
                                         <th style={{ textAlign: 'center !important', width: 130 }} className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Hành động">Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
-                                    {visitors.map((visitor, index) => {
-                                        const checked = (selecteds.indexOf(visitor._id) + 1) ? "checked" : "";
+                                    {categories.map((category, index) => {
+                                        const checked = (selecteds.indexOf(category._id) + 1) ? "checked" : "";
                                         return (
-                                            <tr key={visitor._id} className={index % 2 ? "odd" : "even"} role="row">
+                                            <tr key={category._id} className={index % 2 ? "odd" : "even"} role="row">
                                                 <td>
                                                     <div className={checked ? "icheckbox_minimal-blue checked" : "icheckbox_minimal-blue"} aria-checked="false" aria-disabled="false" style={{ position: 'relative' }}>
                                                         <ins
                                                             className="iCheck-helper"
                                                             style={{ position: 'absolute', top: '0%', left: '0%', display: 'block', width: '100%', height: '100%', margin: 0, padding: 0, background: 'rgb(255, 255, 255)', border: 0, opacity: 0 }}
-                                                            onClick={() => this.handleSelect(visitor._id)}
+                                                            onClick={() => this.handleSelect(category._id)}
                                                         />
                                                     </div>
                                                 </td>
-                                                <td>
-                                                    {visitor.avatar ?
-                                                        <img src={"/api/images/" + visitor.avatar} className="img-circle img-sm" alt="Ảnh đại diện" />
-                                                        :
-                                                        <img src="/images/no-avatar.png" className="img-circle img-sm" alt="Ảnh đại diện" />
-                                                    }
-                                                </td>
-                                                <td title={visitor.name}>
-                                                    {visitor.name?.split(0, 15)}
-                                                    <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={() => { this.handleDisable(visitor) }}>
-                                                        <i className={"fa fa-heart" + (visitor.enabled ? "-o" : "")} title={visitor.enabled ? "Khóa" : "Hủy khóa"} />
+                                                <td>{index + 1}</td>
+                                                <td title={category.name}>
+                                                    {category.name}
+                                                    <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={e => { e.preventDefault(); this.handleDisable(category) }}>
+                                                        <i className={"fa fa-heart" + (category.enabled ? "-o" : "")} title={category.enabled ? "Bật" : "Tắt"} />
                                                     </a>
                                                 </td>
-                                                <td>{visitor.email}</td>
+                                                <td>{category.enabled ? "Hoạt động" : "Không hoạt động"}</td>
                                                 <td className="row-options" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                                    {/* <a onClick={() => this.setState({ onView: visitor })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i title="Detail" className="fa fa-expand" />
-                                                    </a>&nbsp; */}
-                                                    {/* <a href="/admin/vendor/shop/1/staffs">
-                                                        <i title="Staffs" className="fa fa-users" />
-                                                    </a>&nbsp; */}
-                                                    {/* <a href="#" onClick={() => null}>
-                                                    <i title="Đăng nhập bằng tài khoản khách thăm quan này" className="fa fa-user-secret" />
-                                                </a>&nbsp;&nbsp; */}
-                                                    <a onClick={() => this.setState({ onEdit: visitor })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
+                                                    <a onClick={() => this.setState({ onEdit: category })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
                                                         <i title="Chỉnh sửa" className="fa fa-edit" />
                                                     </a>&nbsp;&nbsp;
-                                                    {/* <a data-link="/address/create/shop/1" className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i title="Add address" className="fa fa-plus-square-o" />
-                                                    </a>&nbsp; */}
-                                                    <a onClick={() => this.handleDelete(visitor)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
+                                                    <a onClick={() => this.handleDelete(category)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
                                                         <i className="fa fa-trash-o" title="Xóa" />
                                                     </a>&nbsp;&nbsp;
                                                 </td>
@@ -243,15 +215,15 @@ class Visitor extends Component {
                                     })}
                                 </tbody>
                             </table>
-                            <Pagination currentPage={page} total={total} pageSize={pageSize} gotoPage={this.gotoPage} />
+                            <PaginationAdmin currentPage={0} total={categories.length} pageSize={categories.length} gotoPage={this.gotoPage} />
                         </div>
                     </div>
                 </div>
-                <AddVisitor onAdd={onAdd} handleClose={this.handleOpenForm} onAdded={this.gotoPage} />
-                <UpdateVisitor onEdit={onEdit} handleClose={() => this.setState({ onEdit: null })} />
+                <AddCategory onAdd={onAdd} handleClose={this.handleOpenForm} onAdded={this.gotoPage} />
+                <UpdateCategory onEdit={onEdit} handleClose={() => this.setState({ onEdit: null })} />
             </section>
         )
     }
 }
 
-export default connect(({ admin: { visitor: { data: visitors, page, total } } }) => ({ visitors, page, total }))(Visitor)
+export default connect(({ admin: { categories, exUser } }) => ({ categories, exUser }))(Category)

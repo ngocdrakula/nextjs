@@ -58,6 +58,22 @@ class Visitor extends Component {
     const { dispatch } = this.props;
     dispatch({ type: types.OPENFORM, payload: MODE.exhibitor });
   }
+  handleChat = (e, toUser) => {
+    e?.preventDefault();
+    const { user, dispatch } = this.props;
+    if (user?._id && user._id !== toUser._id) {
+      dispatch({
+        type: types.GET_CONVERSATION_TO,
+        payload: { ...toUser, open: true },
+      });
+    }
+    else if (user?._id) {
+      dispatch({
+        type: types.OPENFORM,
+        payload: MODE.exhibitor,
+      });
+    }
+  }
   render() {
     const { visitor, active, message } = this.state;
     const { user } = this.props;
@@ -113,14 +129,22 @@ class Visitor extends Component {
                         <h3>Gửi tin nhắn</h3>
                         <form onSubmit={this.handleSubmit}>
                           <div className="form-group">
-                            <textarea className="form-control" rows={4} placeholder="Khoảng 250 từ" name="message" value={message} onChange={this.handleChange} />
+                            <textarea
+                              className="form-control"
+                              rows={4}
+                              placeholder="Khoảng 250 từ"
+                              name="message"
+                              value={message}
+                              onChange={this.handleChange}
+                              onClick={this.openLoginExhibitor}
+                            />
                           </div>
                           <input type="submit" defaultValue="Gửi ngay" />
                         </form>
                         <div className="contact-method">
-                          <a href="#"><img src="/images/chat2.png" alt="" />Trò chuyện</a>
+                          <a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a>
                           <a href="#"><img src="/images/mail.png" alt="" />Email</a>
-                          <a href="#"><img src="/images/connect2.png" alt="" />Kết nối giao thương</a>
+                          <a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a>
                         </div>
                       </div>
                     </div>
@@ -199,9 +223,9 @@ class Visitor extends Component {
                           <p className="web-address"><span>Website:</span><span><a href={visitor.website || "#"}>{visitor.website || ""}</a></span></p>
                           <div className="contact-method">
                             <ul className="ft-semibold">
-                              <li><a href="#"><img src="images/chat2.png" alt="" />Trò chuyện</a></li>
+                              <li><a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="images/chat2.png" alt="" />Trò chuyện</a></li>
                               <li><a href="#"><img src="images/mail.png" alt="" />Email</a></li>
-                              <li><a href="#"><img src="images/connect2.png" alt="" />Kết nối giao
+                              <li><a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="images/connect2.png" alt="" />Kết nối giao
                                 thương</a></li>
                             </ul>
                           </div>
@@ -213,10 +237,24 @@ class Visitor extends Component {
                             <h3>Gửi tin nhắn cho chúng tôi</h3>
                             <form onSubmit={this.handleSubmit}>
                               <div className="form-group">
-                                <input type="input" name="name" className="form-control" placeholder="Họ và tên" />
+                                <input
+                                  type="input"
+                                  name="name"
+                                  className="form-control"
+                                  placeholder="Họ và tên"
+                                  onClick={this.openLoginExhibitor}
+                                />
                               </div>
                               <div className="form-group">
-                                <textarea className="form-control" rows={5} placeholder="Tin nhắn (tối đa 250 từ)" name="message" value={message} onChange={this.handleChange} />
+                                <textarea
+                                  className="form-control"
+                                  rows={4}
+                                  placeholder="Khoảng 250 từ"
+                                  name="message"
+                                  value={message}
+                                  onChange={this.handleChange}
+                                  onClick={this.openLoginExhibitor}
+                                />
                               </div>
                               <input type="submit" defaultValue="Gửi ngay" />
                             </form>

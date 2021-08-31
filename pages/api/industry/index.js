@@ -52,7 +52,6 @@ const handler = async (req, res) => {
         messages: lang?.message?.success?.created
       });
     } catch (e) {
-      console.log(e)
       if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({
@@ -101,7 +100,7 @@ const handler = async (req, res) => {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
-      if (!user?.mode) throw ({ ...user, path: 'token' });
+      if (user?.mode!=MODE.admin) throw ({ ...user, path: 'token' });
       const { _ids } = req.query;
       if (!_ids) throw ({ path: '_ids' });
       const query = {

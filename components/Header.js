@@ -5,6 +5,7 @@ import { getQuery, MODE } from '../utils/helper';
 import Head from './Head';
 import LoginVisitor from '../components/LoginVisitor';
 import LoginExhibitor from '../components/LoginExhibitor';
+import RegisterVisitor from '../components/RegisterVisitor';
 import Router from 'next/router';
 import MessageContainer from './Message/MessageContainer';
 import MessageIconNoti from './Message/MessageIconNoti';
@@ -21,7 +22,6 @@ class Header extends Component {
     componentDidMount() {
         const { dispatch } = this.props;
         SocketIO.start();
-        dispatch({ type: types.ADMIN_GET_SETTING });
         dispatch({ type: types.USER_LOGIN_LOCAL });
         const query = getQuery(Router?.router?.asPath);
         if (query.name) this.setState({ name: query.name });
@@ -132,6 +132,7 @@ class Header extends Component {
                     <>
                         <LoginVisitor />
                         <LoginExhibitor />
+                        <RegisterVisitor />
                     </>
                 }
             </>

@@ -10,7 +10,7 @@ const handler = async (req, res) => {
             const { email, password } = req.body;
             if (!email) throw ({ path: 'email' })
             if (!password) throw ({ path: 'password' })
-            const user = await userController.find({ email });
+            const user = await userController.find({ email, enabled: true });
             if (!user) throw ({ path: 'user' });
             const loged = await bcrypt.compare(password, user.password);
             if (!loged) throw ({ path: 'user' });

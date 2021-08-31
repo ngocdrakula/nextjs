@@ -1,6 +1,5 @@
 import runMidldleware from '../../../middleware/mongodb';
 import productController from '../../../controllers/product';
-import industryController from '../../../controllers/industry';
 import categoryController from '../../../controllers/category';
 import userController from '../../../controllers/user';
 import lang, { langConcat } from '../../../lang.config';
@@ -11,7 +10,7 @@ import { MODE } from '../../../utils/helper'
 const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
-      const { page, pageSize, name, description, categoryId, exbihitorId, industryId, enabled, sort } = req.query;
+      const { page, pageSize, name, description, categoryId, exhibitorId, enabled, sort } = req.query;
       const query = {};
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
@@ -22,10 +21,9 @@ const handler = async (req, res) => {
       if (enabled != undefined) query.enabled = (enabled == "true");
       if (description) query.description = new RegExp(description, "i");
       if (categoryId) query.category = categoryId;
-      if (exbihitorId) query.exbihitor = exbihitorId;
-      if (industryId) query.industry = industryId;
+      if (exhibitorId) query.exhibitor = exhibitorId;
       const total = await productController.getlist(query).countDocuments();
-      const list = await productController.getlist(query).skip(skip).limit(limit).sort(sortObj).populate('industry').populate('category');
+      const list = await productController.getlist(query).skip(skip).limit(limit).sort(sortObj);
       return res.status(200).send({
         success: true,
         data: list,
@@ -50,49 +48,41 @@ const handler = async (req, res) => {
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
       if (user?.mode != MODE.exhibitor && user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
-      const { body: { name, categoryId, exbihitorId = user._id, industryId, enabled, description }, files, err } = await uploader(req);
+      const { body: { name, categoryId, exhibitorId = user._id, enabled, description }, files, err } = await uploader(req);
       if (err || !files.length) throw ({ path: 'files' });
-      if (!name || !industryId || !description) {
+
+      if (!name || !categoryId || !description) {
         if (!name) throw ({ path: 'name', files })
-        if (!industryId) throw ({ path: 'industry', files })
+        if (!categoryId) throw ({ path: 'categoryId', files })
         throw ({ path: 'description', files })
       }
-      // if (!categoryId) throw ({ path: 'category', files })
-      // try {
-      //   const category = await categoryController.get(categoryId);
-      //   if (!category) throw ({ path: '_id', files });
-      // } catch (err) {
-      //   if (err.path == '_id') throw ({ path: 'category', files });
-      //   throw ({ err, files })
-      // }
       if (user.mode == MODE.admin) {
         try {
-          if (!exbihitorId) throw ({ path: '_id', files })
-          const exbihitor = await userController.get(exbihitorId);
-          if (!exbihitor) throw ({ path: '_id', files });
+          if (!exhibitorId) throw ({ path: '_id', files })
+          const exhibitor = await userController.get(exhibitorId);
+          if (!exhibitor) throw ({ path: '_id', files });
         } catch (err) {
-          if (err.path == '_id') throw ({ path: 'exbihitor', files });
+          if (err.path == '_id') throw ({ path: 'exhibitor', files });
           throw ({ err, files })
         }
       }
       try {
-        const industry = await industryController.get(industryId);
-        if (!industry) throw ({ path: '_id', files });
+        const category = await categoryController.get(categoryId);
+        if (!category) throw ({ path: '_id', files });
       } catch (err) {
-        if (err.path == '_id') throw ({ path: 'industry', files });
+        if (err.path == '_id') throw ({ path: 'category', files });
         throw ({ err, files })
       }
-      const matchProduct = await productController.find({ name }).populate('category').populate('exbihitor').populate('industry');
+      const matchProduct = await productController.find({ name, category: categoryId });
       if (matchProduct) throw ({ path: 'product', files, matchProduct });
       const productCreated = await (await productController.create({
         name,
         image: files[0],
         description,
-        // category: categoryId,
-        exbihitor: exbihitorId,
-        industry: industryId,
+        exhibitor: exhibitorId,
+        category: categoryId,
         enabled: !(enabled == 'false')
-      })).populate('category').populate('exbihitor').populate('industry').execPopulate();
+      })).execPopulate();
       return res.status(201).send({
         success: true,
         data: productCreated,
@@ -145,15 +135,6 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.productName, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path == 'industryId') {
-        return res.status(400).send({
-          success: false,
-          validation: false,
-          field: 'industryId',
-          message: 'Id ngành nghề không được để trống',
-          messages: langConcat(lang?.resources?.industryId, lang?.message?.error?.validation?.required)
-        });
-      }
       if (e.path == 'categoryId') {
         return res.status(400).send({
           success: false,
@@ -163,30 +144,13 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.categoryId, lang?.message?.error?.validation?.required)
         });
       }
-      if (e.path == 'exbihitor') {
+      if (e.path == 'exhibitorId') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'exbihitor',
+          field: 'exhibitor',
           message: 'Id tài khoản không được để trống',
-          messages: langConcat(lang?.resources?.exbihitorId, lang?.message?.error?.validation?.required)
-        });
-      }
-      if (e.path == 'type') {
-        return res.status(400).send({
-          success: false,
-          validation: false,
-          field: 'type',
-          message: 'Loại sản phẩm không được để trống',
-        });
-      }
-      if (e.path == 'industry') {
-        return res.status(400).send({
-          success: false,
-          exist: false,
-          field: 'industry',
-          message: "Không gian không tồn tại",
-          messages: langConcat(lang?.resources?.industry, lang?.message?.error?.validation?.not_exist),
+          messages: langConcat(lang?.resources?.exhibitorId, lang?.message?.error?.validation?.required)
         });
       }
       if (e.path == 'category') {
@@ -194,17 +158,8 @@ const handler = async (req, res) => {
           success: false,
           exist: false,
           field: 'category',
-          message: "Kiểu bề mặt không tồn tại",
+          message: "Chuyên mục không tồn tại",
           messages: langConcat(lang?.resources?.category, lang?.message?.error?.validation?.not_exist),
-        });
-      }
-      if (e.path == 'exbihitor') {
-        return res.status(400).send({
-          success: false,
-          exist: false,
-          field: 'exbihitor',
-          message: "Kiểu bề mặt không tồn tại",
-          messages: langConcat(lang?.resources?.exbihitor, lang?.message?.error?.validation?.not_exist),
         });
       }
       if (e.path == 'product') {
@@ -212,7 +167,8 @@ const handler = async (req, res) => {
           success: false,
           exist: true,
           current: e.matchProduct,
-          message: "Tên hoặc mã sản phẩm đã tồn tại",
+          field: 'name',
+          message: "Tên sản phẩm đã tồn tại trong chuyên mục này",
           messages: langConcat(lang?.resources?.productName, lang?.message?.error?.validation?.exist),
         });
       }

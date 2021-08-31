@@ -224,6 +224,18 @@ function* postMessage({ payload, callback }) {
         }
     }
 }
+function* getCategories({ payload, callback }) {
+    try {
+        const res = yield call(requests.getCategoriesRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.GET_CATEGORIES_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.GET_CATEGORIES_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
 export default function* appSaga() {
     yield all([
         yield takeEvery(types.GET_INDUSTRIES, getIndustries),
@@ -241,5 +253,6 @@ export default function* appSaga() {
         yield takeEvery(types.READ_MESSAGE, getConversationAndRead),
         yield takeEvery(types.SEND_MESSAGE, postMessage),
         yield takeEvery(types.REVICED_MESSAGE, revicedMessage),
+        yield takeEvery(types.GET_CATEGORIES, getCategories),
     ])
 }

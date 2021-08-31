@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import types from '../../redux/types';
+import types from '../redux/types';
 
 const colors = { success: 'green', failed: 'yellow', error: 'red' };
 class Tootip extends Component {

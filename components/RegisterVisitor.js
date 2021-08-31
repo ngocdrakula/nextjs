@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import types from '../redux/types';
 import { MODE } from '../utils/helper';
 
-class LoginVisitor extends Component {
+class RegisterVisitor extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -16,17 +16,12 @@ class LoginVisitor extends Component {
         const { dispatch } = this.props;
         dispatch({
             type: types.USER_LOGIN,
-            payload: { email, password },
+            payload: { email, password }
         })
     }
     handleClose = (e) => {
         const { dispatch } = this.props;
         dispatch({ type: types.OPENFORM, payload: null });
-    }
-    handleSwitchRegister = (e) => {
-        e.preventDefault();
-        const { dispatch } = this.props;
-        dispatch({ type: types.OPENFORM, payload: 'reg' });
     }
 
     render() {
@@ -58,7 +53,7 @@ class LoginVisitor extends Component {
                 <a href="#" className="with-fb">Đăng nhập bằng Facebook</a>
                 <a href="#" className="with-gg">Đăng nhập bằng Google</a>
                 <label>
-                    Thành viên mới? <a href="#" onClick={this.handleSwitchRegister} className="txt-red">Đăng ký ngay</a>
+                    Thành viên mới? <a href="#" className="txt-red">Đăng ký ngay</a>
                 </label>
             </Modal>
         )
@@ -66,4 +61,4 @@ class LoginVisitor extends Component {
 }
 
 
-export default connect(({ app: { openForm } }) => ({ openForm }))(LoginVisitor)
+export default connect(({ app: { openForm } }) => ({ openForm }))(RegisterVisitor)

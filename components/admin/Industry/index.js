@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import types from '../../../redux/types';
-import { createFormData } from '../../../utils/helper';
-import Pagination from '../Pagination';
+import Pagination from '../../PaginationAdmin';
 import AddIndustry from './AddIndustry';
 import UpdateIndustry from './UpdateIndustry';
 
@@ -24,8 +23,7 @@ class Industry extends Component {
         const { name } = this.state;
         dispatch({
             type: types.ADMIN_GET_INDUSTRIES,
-            payload: { name },
-            callback: res => console.log(res)
+            payload: { name }
         });
     }
     handleDisable = (industry) => {
@@ -96,10 +94,7 @@ class Industry extends Component {
         const { dispatch } = this.props;
         dispatch({
             type: types.ADMIN_UPDATE_INDUSTRY,
-            payload: { _id: industry._id, enabled: !industry.enabled },
-            callback: res => {
-                console.log(res)
-            }
+            payload: { _id: industry._id, enabled: !industry.enabled }
         })
     }
     handleOpenForm = () => this.setState({ onAdd: !this.state.onAdd });
@@ -194,10 +189,10 @@ class Industry extends Component {
                                                         />
                                                     </div>
                                                 </td>
-                                                <td>{index+1}</td>
+                                                <td>{index + 1}</td>
                                                 <td title={industry.name}>
                                                     {industry.name}
-                                                    <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={() => { this.handleDisable(industry) }}>
+                                                    <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={e => { e.preventDefault(); this.handleDisable(industry) }}>
                                                         <i className={"fa fa-heart" + (industry.enabled ? "-o" : "")} title={industry.enabled ? "Bật" : "Tắt"} />
                                                     </a>
                                                 </td>

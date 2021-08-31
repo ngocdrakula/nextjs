@@ -13,7 +13,8 @@ export const initState = {
     conversationsAll: [],
     total: 0,
     page: 0,
-    hydrate: false
+    hydrate: false,
+    categories: [],
 }
 const appReducer = (state = initState, action) => {
     switch (action.type) {
@@ -257,6 +258,12 @@ const appReducer = (state = initState, action) => {
                 conversations: [...state.conversations],
                 conversationsAll: [...state.conversationsAll],
             }
+        }
+        case types.GET_CATEGORIES_SUCCESS: {
+            return {
+                ...state,
+                categories: action.payload.data
+            };
         }
         default: {
             return state;

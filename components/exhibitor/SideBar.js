@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import types from '../../redux/types';
 
 class SideBar extends Component {
     constructor(props) {
@@ -20,13 +21,12 @@ class SideBar extends Component {
                         </li>
                         <li className={active === 1 ? "active" : ""}>
                             <a href="#" onClick={() => handleActive(1)}>
-                                <i className="fa fa-map-marker" />
-                                <span> Danh sách nhà trưng bày</span>
+                                <i className="fa fa-map-marker" /> <span> Danh sách chuyên mục</span>
                             </a>
                         </li>
                         <li className={active === 2 ? "active" : ""}>
                             <a href="#" onClick={() => handleActive(2)}>
-                                <i className="fa fa-user-secret" /> <span>Danh sách khách tham quan</span>
+                                <i className="fa fa-user-secret" /> <span>Danh sách sản phẩm</span>
                             </a>
                         </li>
                         <li className={active === 3 ? "active" : ""}>

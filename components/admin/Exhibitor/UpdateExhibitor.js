@@ -28,7 +28,6 @@ class UpdateExhibitor extends Component {
     }
     componentDidUpdate(prevProps) {
         if (!prevProps.onEdit && this.props.onEdit?._id) {
-            console.log(this.props.onEdit)
             this.setState({
                 ...this.props.onEdit,
                 selected: this.props.onEdit.industry[0]?._id,
@@ -68,7 +67,6 @@ class UpdateExhibitor extends Component {
                 filesTotal.push(files[0])
             }
             if (filesTotal.length) data.files = filesTotal;
-            console.log(data)
             const formData = createFormData(data);
 
             dispatch({
@@ -117,7 +115,6 @@ class UpdateExhibitor extends Component {
             position, mobile, re_email, website, introduce, contact, enabled,
             selected, dropIndustry, fieldError, message, filesAvatar, files } = this.state;
         const industrySelected = industries.find(i => i._id === selected) || industries[0] || {};
-        console.log(this.state)
         return (
             <div id="ex-edit-myDynamicModal" className={"modal-create modal fade" + (onEdit ? " in" : "")} style={{ display: onEdit ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">
