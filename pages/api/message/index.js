@@ -21,6 +21,7 @@ const handler = async (req, res) => {
           { 'leader.user': to, 'member.user': fromId }
         ]
       }
+      const newMessage = await messageController.create({ author: fromId, content: message });
       const currentConversation = await conversationController.find(query)
         .populate({ path: 'messages', options: { limit: 1, sort: { createdAt: -1 } } });
       if (currentConversation) {
@@ -28,7 +29,6 @@ const handler = async (req, res) => {
           currentConversation.member.seen = false;
         }
         else currentConversation.leader.seen = false;
-        const newMessage = await messageController.create({ author: fromId, content: message });
         currentConversation.messages.push(newMessage._id);
         await currentConversation.save();
         const io = req.app.get('socket.io');
@@ -66,6 +66,7 @@ const handler = async (req, res) => {
         });
       }
     } catch (e) {
+      console.log(e)
       if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({
