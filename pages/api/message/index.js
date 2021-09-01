@@ -3,6 +3,7 @@ import conversationController from '../../../controllers/conversation';
 import messageController from '../../../controllers/message';
 import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt'
+import { MODE } from '../../../utils/helper';
 
 const handler = async (req, res) => {
   if (req.method == 'POST') {
@@ -11,27 +12,28 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
       if (!user?._id) throw ({ ...user, path: 'token' });
-      const { to, message } = req.body;
+      const { to, message, from = user._id } = req.body;
+      const fromId = user.mode == MODE.admin ? from : user._id;
       if (!to || !message) throw ({ path: !to ? 'to' : 'message' });
       const query = {
         $or: [
-          { 'leader.user': user._id, 'member.user': to },
-          { 'leader.user': to, 'member.user': user._id }
+          { 'leader.user': fromId, 'member.user': to },
+          { 'leader.user': to, 'member.user': fromId }
         ]
       }
-      const newMessage = await messageController.create({ author: user._id, content: message });
       const currentConversation = await conversationController.find(query)
         .populate({ path: 'messages', options: { limit: 1, sort: { createdAt: -1 } } });
       if (currentConversation) {
-        if (currentConversation.leader.user == user._id) {
+        if (currentConversation.leader.user == fromId) {
           currentConversation.member.seen = false;
         }
         else currentConversation.leader.seen = false;
+        const newMessage = await messageController.create({ author: fromId, content: message });
         currentConversation.messages.push(newMessage._id);
         await currentConversation.save();
         const io = req.app.get('socket.io');
-        io.emit(user._id, { type: "send", to: to });
-        io.emit(to, { type: "new", to: user._id });
+        io.emit(fromId, { type: "send", to: to });
+        io.emit(to, { type: "new", to: fromId });
         return res.status(200).send({
           success: true,
           data: newMessage,
@@ -47,8 +49,8 @@ const handler = async (req, res) => {
           messages: [newMessage._id]
         }
         const conversationCreated = await (await conversationController.create(newConversation))
-          .populate({ path: 'leader.user', select: 'name mode' })
-          .populate({ path: 'member.user', select: 'name mode' })
+          .populate({ path: 'leader.user', select: 'name mode avatar' })
+          .populate({ path: 'member.user', select: 'name mode avatar' })
           .populate({ path: 'messages', options: { $sort: { createdAt: -1 }, limit: 1 } })
           .populate({ path: 'messages.author', }).execPopulate();
         const io = req.app.get('socket.io');

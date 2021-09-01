@@ -74,3 +74,34 @@ export const admin_deleteMultiProductRequest = async (params) => {
     const _ids = params && params.join(",");
     return axios.delete('product?_ids=' + _ids);
 }
+
+
+export const admin_getConversationsRequest = async (params) => {
+    return axios.get('conversation?' + stringify(params))
+}
+export const admin_getConversationByIdRequest = async ({ _id, ...params }) => {
+    return axios.get('conversation/' + _id + "?" + stringify(params))
+}
+export const admin_getConversationByIdUserRequest = async ({ to, from }) => {
+    return axios.get(`conversation/to?to=${to}&from=${from}`)
+}
+export const admin_postMessageRequest = async (request) => {
+    return axios.post('message?', request)
+}
+
+export const admin_getContactsRequest = async (params) => {
+    return axios.get('contact?' + stringify(params))
+}
+export const admin_addContactRequest = async (request) => {
+    return axios.post('contact', request);
+}
+export const admin_updateContactRequest = async ({ _id, ...request }) => {
+    return axios.put('contact/' + _id, request);
+}
+export const admin_deleteContactRequest = async (_id) => {
+    return axios.delete('contact/' + _id);
+}
+export const admin_deleteMultiContactRequest = async (params) => {
+    const _ids = params && params.join(",");
+    return axios.delete('contact?_ids=' + _ids);
+}

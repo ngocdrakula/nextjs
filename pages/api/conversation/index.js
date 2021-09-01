@@ -2,6 +2,7 @@ import runMidldleware from '../../../middleware/mongodb';
 import conversationController from '../../../controllers/conversation';
 import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt'
+import { MODE } from '../../../utils/helper';
 
 const handler = async (req, res) => {
   if (req.method == 'GET') {
@@ -10,36 +11,38 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
       if (!user?._id) throw ({ ...user, path: 'token' });
-      const { page, pageSize, name } = req.query;
-      const query = { $or: [{ 'leader.user': user._id }, { 'member.user': user._id }] };
+      const { page, pageSize, name, from = user._id } = req.query;
+      const fromId = user.mode == MODE.admin ? from : user._id;
+      const query = { $or: [{ 'leader.user': fromId }, { 'member.user': fromId }] };
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
       const populateName = {};
       if (name) populateName.match = { name: new RegExp(name, "i") };
+      if (!fromId) throw ({ path: 'from' })
       const queryNew = {
         $or: [
-          { 'leader.user': user._id, 'leader.seen': false },
-          { 'member.user': user._id, 'member.seen': false }
+          { 'leader.user': fromId, 'leader.seen': false },
+          { 'member.user': fromId, 'member.seen': false }
         ]
       };
       const totalNew = await conversationController.getlist(queryNew).countDocuments();
       const total = await conversationController.getlist(query)
-        .populate({ path: 'leader.user', select: 'name mode', ...populateName })
-        .populate({ path: 'member.user', select: 'name mode', ...populateName })
+        .populate({ path: 'leader.user', select: 'name mode avatar', ...populateName })
+        .populate({ path: 'member.user', select: 'name mode avatar', ...populateName })
         .countDocuments();
       const conversations = await conversationController.getlist(query)
-        .populate({ path: 'leader.user', select: 'name mode', match: { name: new RegExp(name, "i") } })
-        .populate({ path: 'member.user', select: 'name mode', match: { name: new RegExp(name, "i") } })
+        .populate({ path: 'leader.user', select: 'name mode avatar', match: { name: new RegExp(name, "i") } })
+        .populate({ path: 'member.user', select: 'name mode avatar', match: { name: new RegExp(name, "i") } })
         .populate({ path: 'messages', perDocumentLimit: 1, options: { sort: { createdAt: -1 }, limit: 1 } });
       let totalms = 0;
       const cons = conversations.filter(c => {
         totalms += c.messages.length;
-        if (c.leader.user?._id && c.leader.user._id != user._id) {
-          c.member.user = { _id: user._id, name: user.name };
+        if (c.leader.user?._id && c.leader.user._id != fromId) {
+          c.member.user = { _id: fromId, name: user.name };
           return true;
         }
-        if (c.member.user?._id && c.member.user._id != user._id) {
-          c.leader.user = { _id: user._id, name: user.name };
+        if (c.member.user?._id && c.member.user._id != fromId) {
+          c.leader.user = { _id: fromId, name: user.name };
           return true;
         }
         return false

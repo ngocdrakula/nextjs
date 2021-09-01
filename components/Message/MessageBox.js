@@ -45,6 +45,7 @@ class MessageBox extends Component {
     componentWillUnmount() {
         clearTimeout(this.timeout)
         clearInterval(this.interval)
+        SocketIO.socket.removeAllListeners(this.props.user._id)
     }
     readMessage = () => {
         const { conversationsAll, conId, user, dispatch } = this.props;
@@ -70,9 +71,6 @@ class MessageBox extends Component {
             e.preventDefault();
             e.target.style.height = "14px";
             this.sendMessage();
-        }
-        if (e.keyCode === 27) {
-            this.hideBox();
         }
     }
     writeMessage = (e) => {

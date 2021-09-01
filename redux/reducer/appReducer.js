@@ -101,6 +101,7 @@ const appReducer = (state = initState, action) => {
                 openList: state.conId ? !state.openList : true,
             };
         }
+
         case types.GET_CONVERSATIONS_SUCCESS: {
             const { data, total, page, totalNew } = action.payload;
             data.map(c => {
@@ -116,7 +117,6 @@ const appReducer = (state = initState, action) => {
                 newMessage: totalNew
             };
         }
-
         case types.SELECT_CONVERSATION: {
             return {
                 ...state,
@@ -239,20 +239,22 @@ const appReducer = (state = initState, action) => {
             const { data } = action.payload;
             state.conversations = [data, ...state.conversations.filter(c => c._id !== data._id)];
             const indexAll = state.conversationsAll.findIndex(c => c._id === data._id);
+            const { leader, member } = data;
+            const from = leader.user._id === state.user._id ? leader : member;
             if (indexAll + 1) {
                 const conCopy = state.conversationsAll[indexAll];
                 const messagesNew = data.messages.filter(c => !conCopy.messages.find(con => con._id === c._id));
                 conCopy.messages = [...messagesNew, ...conCopy.messages];
-                conCopy.leader = data.leader;
-                conCopy.member = data.member;
+                const fromOld = conCopy.leader.user._id === state.user._id ? conCopy.leader : conCopy.member;
+                if (fromOld.seen && !from.seen) state.newMessage++;
+                conCopy.leader = leader;
+                conCopy.member = member;
                 state.conversationsAll = [conCopy, ...state.conversationsAll.filter(c => c._id !== data._id)];
             }
             else {
                 state.conversationsAll = [data, ...state.conversationsAll.filter(c => c._id !== data._id)];
+                if (!from.seen) state.newMessage++;
             }
-            const { leader, member } = data;
-            const from = leader.user._id === state.user._id ? leader : member;
-            if (!from.seen) state.newMessage++;
             return {
                 ...state,
                 conversations: [...state.conversations],

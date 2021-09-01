@@ -319,7 +319,152 @@ function* admin_deleteMultiProduct({ payload, callback }) {
 }
 
 
+function* admin_getConversations({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_getConversationsRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_GET_CONVERSATIONS_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_GET_CONVERSATIONS_FAILED, payload: e.response });
+        if (typeof callback === 'function') {
+            callback(e.response);
+        }
+    }
+}
+function* admin_getConversationById({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_getConversationByIdRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_GET_ONE_CONVERSATION_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_GET_ONE_CONVERSATION_FAILED, payload: e.response });
+        if (typeof callback === 'function') {
+            callback(e.response);
+        }
+    }
+}
+function* admin_getConversationByIdUser({ payload: { _id, name, open }, callback }) {
+    try {
+        const res = yield call(requests.admin_getConversationByIdUserRequest, _id);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_GET_CONVERSATION_TO_SUCCESS, payload: { ...res.data, open } });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_GET_CONVERSATION_TO_FAILED, payload: { _id, name } });
+        if (typeof callback === 'function') {
+            callback(e.response);
+        }
+    }
+}
+function* admin_getConversationAndRead({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_getConversationByIdRequest, { ...payload, read: true });
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_READ_MESSAGE_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_READ_MESSAGE_FAILED, payload: e.response });
+        if (typeof callback === 'function') {
+            callback(e.response);
+        }
+    }
+}
+function* admin_revicedMessage({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_getConversationByIdUserRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_REVICED_MESSAGE_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_REVICED_MESSAGE_FAILED, payload: e.response });
+        if (typeof callback === 'function') {
+            callback(e.response);
+        }
+    }
+}
+function* admin_postMessage({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_postMessageRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_SEND_MESSAGE_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_SEND_MESSAGE_FAILED, payload: e.response });
+        if (typeof callback === 'function') {
+            callback(e.response);
+        }
+    }
+}
 
+
+function* admin_getContacts({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_getContactsRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_GET_CONTACTS_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_GET_CONTACTS_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_addContact({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_addContactRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_ADD_CONTACT_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_ADD_CONTACT_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_updateContact({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_updateContactRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_UPDATE_CONTACT_SUCCESS, payload: res.data.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_UPDATE_CONTACT_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_deleteContact({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_deleteContactRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_DELETE_CONTACT_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_DELETE_CONTACT_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_deleteMultiContact({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_deleteMultiContactRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_DELETE_MULTI_CONTACT_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_DELETE_MULTI_CONTACT_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
 
 export default function* appSaga() {
     yield all([
@@ -354,5 +499,20 @@ export default function* appSaga() {
         yield takeEvery(types.ADMIN_UPDATE_CATEGORY, admin_updateCategory),
         yield takeEvery(types.ADMIN_DELETE_CATEGORY, admin_deleteCategory),
         yield takeEvery(types.ADMIN_DELETE_MULTI_CATEGORY, admin_deleteMultiCategory),
+
+        yield takeEvery(types.ADMIN_GET_CONVERSATIONS, admin_getConversations),
+        yield takeEvery(types.ADMIN_GET_ONE_CONVERSATION, admin_getConversationById),
+        yield takeEvery(types.ADMIN_GET_CONVERSATION_TO, admin_getConversationByIdUser),
+        yield takeEvery(types.ADMIN_READ_MESSAGE, admin_getConversationAndRead),
+        yield takeEvery(types.ADMIN_SEND_MESSAGE, admin_postMessage),
+        yield takeEvery(types.ADMIN_REVICED_MESSAGE, admin_revicedMessage),
+
+
+        yield takeEvery(types.ADMIN_GET_CONTACTS, admin_getContacts),
+        yield takeEvery(types.ADMIN_ADD_CONTACT, admin_addContact),
+        yield takeEvery(types.ADMIN_UPDATE_CONTACT, admin_updateContact),
+        yield takeEvery(types.ADMIN_DELETE_CONTACT, admin_deleteContact),
+        yield takeEvery(types.ADMIN_DELETE_MULTI_CONTACT, admin_deleteMultiContact),
+
     ])
 }

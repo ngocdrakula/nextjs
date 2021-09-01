@@ -41,4 +41,4 @@ yarn-error.log*
 /upload/
 
 #config
-# next.config.js 
+next.config.js

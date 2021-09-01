@@ -5,13 +5,14 @@ import SideBar from './SideBar';
 import Product from './Product';
 import Overview from './Overview';
 import Category from './Category';
+import Chat from './Chat';
 
 
 class Exhibitor extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            active: 2
+            active: 3
         }
     }
 
@@ -24,14 +25,12 @@ class Exhibitor extends Component {
             <div className={"wrapper " + (toggle ? "skin-purple sidebar-mini sidebar-collapse" : "skin-purple sidebar-mini")}>
                 <Header handleToggle={this.handleToggle} toggle={toggle} />
                 <SideBar handleActive={this.handleActive} active={active} />
-                <div className="content-wrapper" style={{ minHeight: '100vh' }}>
+                <div className="content-wrapper">
                     <Overview active={active === 0} />
                     <Category active={active === 1} />
                     <Product active={active === 2} />
-                    {/* <Exhibitor active={active === 1} /> */}
+                    <Chat active={active === 3} />
                 </div>
-                <footer className="main-footer">
-                </footer>
                 <aside className="control-sidebar control-sidebar-dark">
                     <ul className="nav nav-tabs nav-justified control-sidebar-tabs">
                         <li className="active">
@@ -92,7 +91,7 @@ class Exhibitor extends Component {
                     </div>
                 </aside>
                 <div className="control-sidebar-bg" style={{ position: 'fixed', height: 'auto' }} />
-            </div>
+            </div >
         )
     }
 }

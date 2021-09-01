@@ -25,7 +25,7 @@ class Admin extends Component {
             <div className={"wrapper " + (toggle ? "skin-purple sidebar-mini sidebar-collapse" : "skin-purple sidebar-mini")}>
                 <Header handleToggle={this.handleToggle} toggle={toggle} />
                 <SideBar handleActive={this.handleActive} active={active} />
-                <div className="content-wrapper" style={{ minHeight: '100vh' }}>
+                <div className="content-wrapper" >
                     <Overview active={active === 0} />
                     <Exhibitor active={active === 1} />
                     <Visitor active={active === 2} />

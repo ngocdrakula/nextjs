@@ -139,6 +139,7 @@ function* getProducts({ payload, callback }) {
         }
     }
 }
+
 function* getConversations({ payload, callback }) {
     try {
         const res = yield call(requests.getConversationsRequest, payload);
@@ -153,7 +154,6 @@ function* getConversations({ payload, callback }) {
         }
     }
 }
-
 function* getConversationById({ payload, callback }) {
     try {
         const res = yield call(requests.getConversationByIdRequest, payload);
@@ -224,6 +224,7 @@ function* postMessage({ payload, callback }) {
         }
     }
 }
+
 function* getCategories({ payload, callback }) {
     try {
         const res = yield call(requests.getCategoriesRequest, payload);
@@ -236,6 +237,7 @@ function* getCategories({ payload, callback }) {
         if (typeof callback === 'function') callback(e.response);
     }
 }
+
 export default function* appSaga() {
     yield all([
         yield takeEvery(types.GET_INDUSTRIES, getIndustries),

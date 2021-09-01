@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import SocketIo from '../../utils/SocketIO';
+import SocketIO from '../../utils/SocketIO';
 import types from '../../redux/types';
 import ConversationList from './ConversationList';
 import MessageBox from './MessageBox';
@@ -20,18 +20,6 @@ class MessageContainer extends Component {
       payload: {
         page: 0,
         pageSize
-      },
-      callback: res => {
-        if (res?.success) {
-          SocketIo.socket?.on(user._id, data => {
-            if (data.type === 'message') {
-              dispatch({
-                type: 'OPEN_CONVERSATION',
-                to: data.to,
-              });
-            }
-          });
-        }
       }
     })
   }
@@ -66,4 +54,4 @@ class MessageContainer extends Component {
   }
 }
 
-export default connect(({ app: { openMessage, openList } }) => ({ openMessage, openList }))(MessageContainer);
+export default connect(({ app: { openMessage, openList, user } }) => ({ openMessage, openList, user }))(MessageContainer);

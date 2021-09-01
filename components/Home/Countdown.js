@@ -52,11 +52,9 @@ class Countdown extends Component {
                             <span className="couter-txt">Giây</span>
                         </div>
                     </div>
-                    {!user?._id ?
-                        <div className="register-guest">
-                            <a href="#"><img src="/images/icon-register-guest.png" alt="" />Đăng ký <span>Khách tham quan</span></a>
-                        </div>
-                        : ""}
+                    <div className="register-guest">
+                        <a href="#"><img src="/images/icon-register-guest.png" alt="" />Đăng ký <span>Khách tham quan</span></a>
+                    </div>
                 </div>
             </div>
         )

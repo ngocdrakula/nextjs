@@ -1,8 +1,8 @@
 import runMidldleware from '../../../middleware/mongodb';
 import conversationController from '../../../controllers/conversation';
-import messageController from '../../../controllers/message';
-import lang, { langConcat } from '../../../lang.config';
+import lang from '../../../lang.config';
 import jwt from '../../../middleware/jwt'
+import { MODE } from '../../../utils/helper';
 
 const handler = async (req, res) => {
   if (req.method == 'GET') {
@@ -11,12 +11,14 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
       if (!user?._id) throw ({ ...user, path: 'token' });
-      const { to } = req.query;
+      const { to, from = user._id } = req.query;
       if (!to) throw ({ path: 'to' })
-      const query = { $or: [{ 'leader.user': user._id, 'member.user': to }, { 'member.user': user._id, 'leader.user': to }] }
+      const fromId = user.mode == MODE.admin ? from : user._id;
+      if (!from) throw ({ path: 'from' })
+      const query = { $or: [{ 'leader.user': fromId, 'member.user': to }, { 'member.user': fromId, 'leader.user': to }] }
       const currentConversation = await conversationController.find(query)
-        .populate({ path: 'leader.user', select: 'name mode' })
-        .populate({ path: 'member.user', select: 'name mode' })
+        .populate({ path: 'leader.user', select: 'name mode avatar' })
+        .populate({ path: 'member.user', select: 'name mode avatar' })
         .populate({ path: 'messages', options: { sort: { createdAt: -1 }, limit: 10 } })
         .populate({ path: 'messages.author', });
       if (!currentConversation) throw ({ path: 'to' })

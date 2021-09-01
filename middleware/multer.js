@@ -29,7 +29,6 @@ export const multerDestroys = (files) => {
         try {
             fs.unlinkSync(process.env.FOLDER_UPLOAD + "/" + file);
         } catch (err) {
-            console.log('no such file or directory')
         }
     });
     return true

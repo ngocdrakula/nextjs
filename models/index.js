@@ -5,6 +5,7 @@ import message from "./message";
 import product from "./product";
 import industry from "./industry";
 import user from "./user";
+import contact from "./contact";
 
 mongoose.models = {};
 
@@ -14,3 +15,4 @@ export const messageData = mongoose.model('message', message);
 export const productData = mongoose.model('product', product);
 export const industryData = mongoose.model('industry', industry);
 export const userData = mongoose.model('user', user);
+export const contactData = mongoose.model('contact', contact);

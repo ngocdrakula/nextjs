@@ -2,6 +2,7 @@ import runMidldleware from '../../../middleware/mongodb';
 import conversationController from '../../../controllers/conversation';
 import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt';
+import { MODE } from '../../../utils/helper';
 
 const handler = async (req, res) => {
   if (req.method == 'GET') {
@@ -10,22 +11,23 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
       if (!user?._id) throw ({ ...user, path: 'token' });
-      const { page, pageSize, id, read } = req.query;
+      const { page, pageSize, id, read, from = user._id } = req.query;
+      const fromId = user.mode == MODE.admin ? from : user._id;
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 1;
       const currentConversation = await conversationController.get(id)
-        .populate({ path: 'leader.user', select: 'name mode' })
-        .populate({ path: 'member.user', select: 'name mode' })
+        .populate({ path: 'leader.user', select: 'name mode avatar' })
+        .populate({ path: 'member.user', select: 'name mode avatar' })
         .populate({ path: 'messages', options: { sort: { createdAt: -1 }, skip, limit } })
         .populate({ path: 'messages.author', })
       if (!currentConversation) throw ({ path: '_id' });
-      if (currentConversation.leader.user._id == user._id) {
+      if (currentConversation.leader.user._id == fromId) {
         if (read) {
           currentConversation.leader.seen = true;
           await currentConversation.save();
         }
       }
-      else if (currentConversation.member.user._id == user._id) {
+      else if (currentConversation.member.user._id == fromId) {
         if (read) {
           currentConversation.member.seen = true;
           await currentConversation.save();
