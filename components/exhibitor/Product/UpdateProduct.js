@@ -83,10 +83,10 @@ class UpdateProduct extends Component {
         const { dropActive, name, description, enabled, category, image, dropCategory, fieldError, message, files } = this.state;
         const categorySelected = categories.find(i => i._id === category) || categories[0] || {};
         return (
-            <div id="add-pro-myDynamicModal" className={"modal-create modal fade" + (onEdit ? " in" : "")} style={{ display: onEdit ? 'block' : 'none' }}>
+            <div id="edit-pro-myDynamicModal" className={"modal-create modal fade" + (onEdit ? " in" : "")} style={{ display: onEdit ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">
                     <div className="modal-content">
-                        <form method="POST" action="/" id="add-pro-form" onSubmit={this.handleSubmit} >
+                        <form method="POST" action="/" id="edit-pro-form" onSubmit={this.handleSubmit} >
                             <div className="modal-header">
                                 <button type="button" className="close" onClick={handleClose}>×</button>
                                 Sửa sản phẩm
@@ -95,8 +95,8 @@ class UpdateProduct extends Component {
                                 <div className="row">
                                     <div className="col-md-8 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'name' ? " has-error" : "")}>
-                                            <label htmlFor="add-pro-name">Tên sản phẩm*</label>
-                                            <input className="form-control" placeholder="Nhập tên sản phẩm" required value={name} id="add-pro-name" name="name" type="text" onChange={this.handleChange} />
+                                            <label htmlFor="edit-pro-name">Tên sản phẩm*</label>
+                                            <input className="form-control" placeholder="Nhập tên sản phẩm" required value={name} id="edit-pro-name" name="name" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
                                                 {fieldError === 'name' && message ?
                                                     <ul className="list-unstyled">
@@ -108,11 +108,11 @@ class UpdateProduct extends Component {
                                     </div>
                                     <div className="col-md-4 nopadding-left">
                                         <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
-                                            <label htmlFor="add-pro-active">Trạng thái*</label>
+                                            <label htmlFor="edit-pro-active">Trạng thái*</label>
                                             <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
                                                 <span className="selection" onClick={this.handleDropdown}>
                                                     <span className="select2-selection select2-selection--single"  >
-                                                        <span className="select2-selection__rendered" id="add-pro-select2-active-container" title={enabled ? "Hoạt động" : "Không hoạt động"}>{enabled ? "Hoạt động" : "Không hoạt động"}</span>
+                                                        <span className="select2-selection__rendered" id="edit-pro-select2-active-container" title={enabled ? "Hoạt động" : "Không hoạt động"}>{enabled ? "Hoạt động" : "Không hoạt động"}</span>
                                                         <span className="select2-selection__arrow" role="presentation">
                                                             <b role="presentation" />
                                                         </span>
@@ -142,11 +142,11 @@ class UpdateProduct extends Component {
                                 <div className="row">
                                     <div className="col-md-6 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'category' ? " has-error" : "")}>
-                                            <label htmlFor="add-pro-active">Chuyên mục*</label>
+                                            <label htmlFor="edit-pro-active">Chuyên mục*</label>
                                             <span className={"select2 select2-container select2-container--default" + (dropCategory ? " select2-container--open" : "")} style={{ width: '100%' }}>
                                                 <span className="selection" onClick={this.handleDropdownCategory}>
                                                     <span className="select2-selection select2-selection--single"  >
-                                                        <span className="select2-selection__rendered" id="add-pro-select2-active-container" title={categorySelected.name}>{categorySelected.name}</span>
+                                                        <span className="select2-selection__rendered" id="edit-pro-select2-active-container" title={categorySelected.name}>{categorySelected.name}</span>
                                                         <span className="select2-selection__arrow" role="presentation">
                                                             <b role="presentation" />
                                                         </span>
@@ -174,8 +174,8 @@ class UpdateProduct extends Component {
                                     </div>
                                 </div>
                                 <div className={"form-group" + (fieldError === 'description' ? " has-error" : "")}>
-                                    <label htmlFor="add-pro-description">Mô tả</label>
-                                    <textarea className="form-control summernote" required rows={2} placeholder="Mô tả sơ lược về sản phẩm" value={description} name="description" cols={50} id="add-pro-description" onChange={this.handleChange} />
+                                    <label htmlFor="edit-pro-description">Mô tả</label>
+                                    <textarea className="form-control summernote" required rows={2} placeholder="Mô tả sơ lược về sản phẩm" value={description} name="description" cols={50} id="edit-pro-description" onChange={this.handleChange} />
                                     <div className="help-block with-errors">
                                         {fieldError === 'description' && message ?
                                             <ul className="list-unstyled">
@@ -187,19 +187,19 @@ class UpdateProduct extends Component {
                                 <div className="row">
                                     <div className="col-md-12">
                                         <div className={"form-group" + (fieldError === 'files' ? " has-error" : "")}>
-                                            <label htmlFor="add-pro-uploadBtn" className="with-help">Ảnh sản phẩm</label>
+                                            <label htmlFor="edit-pro-uploadBtn" className="with-help">Ảnh sản phẩm</label>
                                             <label htmlFor="vis-edit-uploadBtn">
                                                 <img src={"/api/images/" + image} alt="Ảnh đại diện sản phẩm" style={{ width: 'auto', maxWidth: 100, height: 'auto', maxHeight: 100 }} />
                                             </label>
                                             <div className="row">
                                                 <div className="col-md-9 nopadding-right">
-                                                    <input id="add-pro-uploadFile" placeholder={files?.length ? "Đã chọn 1 ảnh" : "Ảnh sản phẩm"} className="form-control" style={{ height: 28 }} disabled="disabled" />
+                                                    <input id="edit-pro-uploadFile" placeholder={files?.length ? "Đã chọn 1 ảnh" : "Ảnh sản phẩm"} className="form-control" style={{ height: 28 }} disabled="disabled" />
                                                     <div className="help-block with-errors">Kích thước nhỏ nhất 300 x 300px</div>
                                                 </div>
                                                 <div className="col-md-3 nopadding-left">
                                                     <div className="fileUpload btn btn-primary btn-block btn-flat">
                                                         <span>Tải lên</span>
-                                                        <input type="file" name="ex-avatar" id="add-pro-uploadBtn" className="upload" onChange={this.handleChooseFiles} />
+                                                        <input type="file" name="ex-avatar" id="edit-pro-uploadBtn" className="upload" onChange={this.handleChooseFiles} />
                                                     </div>
                                                 </div>
                                             </div>
