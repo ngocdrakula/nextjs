@@ -34,6 +34,11 @@ class SideBar extends Component {
                                 <i className="fa fa-meetup" /> <span>Danh sách ngành nghề</span>
                             </a>
                         </li>
+                        <li className={active === 4 ? "active" : ""}>
+                            <a href="#" onClick={() => handleActive(4)}>
+                                <i className="fa fa-meetup" /> <span>Liên hệ</span>
+                            </a>
+                        </li>
                     </ul>
                 </section>
             </aside>

@@ -160,7 +160,11 @@ class MessageBox extends Component {
                                         >
                                             <div className="mesAvatar">
                                                 <a href={`/${to.mode === MODE.visitor ? "visitor" : "exhibitor"}?id=${to._id}`}>
-                                                    <img src={"/images/" + (to.avatar || "logo-showroom.png")} />
+                                                    {to.avatar ?
+                                                        <img src={"/api/images/" + to.avatar} />
+                                                        :
+                                                        <img src="/images/logo-showroom.png" />
+                                                    }
                                                 </a>
                                             </div>
                                             <div className="mesOther">

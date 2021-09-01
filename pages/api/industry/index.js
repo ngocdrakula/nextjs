@@ -7,9 +7,10 @@ import { MODE } from '../../../utils/helper';
 const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
-      const { page, pageSize, enabled } = req.query;
+      const { page, pageSize, enabled, name } = req.query;
       const query = {};
-      if (enabled != undefined) query.enabled = (enabled == "true");
+      if (enabled) query.enabled = !(enabled == "false");
+      if (name) query.name = new RegExp(name, "i");
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
       const total = await industryController.getlist(query).countDocuments();
@@ -100,7 +101,7 @@ const handler = async (req, res) => {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
-      if (user?.mode!=MODE.admin) throw ({ ...user, path: 'token' });
+      if (user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
       const { _ids } = req.query;
       if (!_ids) throw ({ path: '_ids' });
       const query = {

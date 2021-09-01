@@ -88,7 +88,7 @@ class Visitor extends Component {
                   <a href="#" className="connect-buyer"><img src="/images/user2.png" alt="" />Người mua</a>
                   <h3>
                     {visitor.avatar ?
-                      <img src={`/images/${visitor.avatar}`} alt="" />
+                      <img src={`/api/images/${visitor.avatar}`} alt="" />
                       :
                       <img src="/images/logo-showroom.png" alt="" />
                     }
@@ -143,7 +143,7 @@ class Visitor extends Component {
                         </form>
                         <div className="contact-method">
                           <a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a>
-                          <a href="#"><img src="/images/mail.png" alt="" />Email</a>
+                          <a href={!user ? "#" : "mailto:" + visitor.email} onClick={!user ? this.openLoginExhibitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />Email</a>
                           <a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a>
                         </div>
                       </div>
@@ -159,7 +159,7 @@ class Visitor extends Component {
                             <div className="col-lg-7">
                               <div className="video">
                                 {visitor.video ?
-                                  <img src={`/images/${visitor.video}`} alt="" />
+                                  <img src={`/api/images/${visitor.video}`} alt="" />
                                   :
                                   <img src="/images/video-thumb.png" alt="" />
                                 }
@@ -223,10 +223,11 @@ class Visitor extends Component {
                           <p className="web-address"><span>Website:</span><span><a href={visitor.website || "#"}>{visitor.website || ""}</a></span></p>
                           <div className="contact-method">
                             <ul className="ft-semibold">
-                              <li><a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="images/chat2.png" alt="" />Trò chuyện</a></li>
-                              <li><a href="#"><img src="images/mail.png" alt="" />Email</a></li>
-                              <li><a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="images/connect2.png" alt="" />Kết nối giao
-                                thương</a></li>
+                              <li><a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a></li>
+                              <li>
+                                <a href={!user ? "#" : "mailto:" + visitor.email} onClick={!user ? this.openLoginExhibitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />Email</a>
+                              </li>
+                              <li><a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a></li>
                             </ul>
                           </div>
                         </div>

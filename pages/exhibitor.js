@@ -51,7 +51,7 @@ class Exhibitor extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const { user, dispatch } = this.props;
-    if (!user) this.openLoginExhibitor();
+    if (!user) this.openLoginVisitor();
     else {
       const { exhibitor, message } = this.state;
       dispatch({
@@ -66,10 +66,10 @@ class Exhibitor extends Component {
       })
     }
   }
-  openLoginExhibitor = e => {
+  openLoginVisitor = e => {
     e?.preventDefault();
     const { dispatch } = this.props;
-    dispatch({ type: types.OPENFORM, payload: MODE.exhibitor });
+    dispatch({ type: types.OPENFORM, payload: MODE.visitor });
   }
   handleSelect = (e, category) => {
     e.preventDefault();
@@ -124,7 +124,7 @@ class Exhibitor extends Component {
           <div id="detail-exhibitor store-detail">
             <div className="store-name">
               <div className="container">
-                <a href="#" className="connect-exhibitor"><img src="images/user2.png" alt="" />Nhà trưng bày</a>
+                <a href="#" className="connect-exhibitor"><img src="/images/user2.png" alt="" />Nhà trưng bày</a>
                 <h3>
                   {exhibitor.avatar ?
                     <img src={`/api/images/${exhibitor.avatar}`} alt="" style={{ width: 'auto', height: 'auto', maxWidth: 150, maxHeight: 150 }} />
@@ -155,7 +155,7 @@ class Exhibitor extends Component {
                           <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 3 }) }}>Liên hệ</a>
                         </li>
                       </ul>
-                      <a href={"/user?filter=" + MODE.exhibitor} className="right"><img src="images/icon-list.png" alt="" />Danh sách</a>
+                      <a href={"/user?filter=" + MODE.exhibitor} className="right"><img src="/images/icon-list.png" alt="" />Danh sách</a>
                     </div>
                   </div>
                 </div>
@@ -164,7 +164,7 @@ class Exhibitor extends Component {
             <div className="store-detail-content bg-body" style={{ display: active === 0 ? 'block' : 'none' }}>
               <div className="container">
                 <div className="banner">
-                  <img src="images/banner.png" alt="" />
+                  <img src="/images/banner.png" alt="" />
                 </div>
                 <div className="row">
                   <div className="col-lg-3">
@@ -194,15 +194,15 @@ class Exhibitor extends Component {
                             name="message"
                             value={message}
                             onChange={this.handleChange}
-                            onClick={this.openLoginExhibitor}
+                            onClick={this.openLoginVisitor}
                           />
                         </div>
                         <input type="submit" defaultValue="Gửi ngay" />
                       </form>
                       <div className="contact-method">
-                        <a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, exhibitor)}><img src="images/chat2.png" alt="" />Trò chuyện</a>
-                        <a href="#"><img src="images/mail.png" alt="" />Email</a>
-                        <a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, exhibitor)}><img src="images/connect2.png" alt="" />Kết nối giao thương</a>
+                        <a href="#" onClick={!user ? this.openLoginVisitor : e => this.handleChat(e, exhibitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a>
+                        <a href={!user ? "#" : "mailto:" + exhibitor.email} onClick={!user ? this.openLoginVisitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />Email</a>
+                        <a href="#" onClick={!user ? this.openLoginVisitor : e => this.handleChat(e, exhibitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a>
                       </div>
                     </div>
                   </div>
@@ -217,7 +217,7 @@ class Exhibitor extends Component {
                           <div className="col-lg-7">
                             <div className="video">
                               {exhibitor.video ?
-                                <img src={`/images/${exhibitor.video}`} alt="" />
+                                <img src={`/api/images/${exhibitor.video}`} alt="" />
                                 :
                                 <img src="/images/video-thumb.png" alt="" />
                               }
@@ -257,7 +257,7 @@ class Exhibitor extends Component {
             <div className="store-detail-content bg-body" style={{ display: active === 1 ? 'block' : 'none' }}>
               <div className="container">
                 <div className="banner">
-                  <img src="images/banner.png" alt="" />
+                  <img src="/images/banner.png" alt="" />
                 </div>
                 <div className="row">
                   <div className="col-lg-3">
@@ -287,15 +287,15 @@ class Exhibitor extends Component {
                             name="message"
                             value={message}
                             onChange={this.handleChange}
-                            onClick={this.openLoginExhibitor}
+                            onClick={this.openLoginVisitor}
                           />
                         </div>
                         <input type="submit" defaultValue="Gửi ngay" />
                       </form>
                       <div className="contact-method">
-                        <a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="images/chat2.png" alt="" />Trò chuyện</a>
-                        <a href="#"><img src="images/mail.png" alt="" />Email</a>
-                        <a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="images/connect2.png" alt="" />Kết nối giao thương</a>
+                        <a href="#" onClick={!user ? this.openLoginVisitor : e => this.handleChat(e, visitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a>
+                        <a href={!user ? "#" : "mailto:" + exhibitor.email} onClick={!user ? this.openLoginVisitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />Email</a>
+                        <a href="#" onClick={!user ? this.openLoginVisitor : e => this.handleChat(e, visitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a>
                       </div>
                     </div>
                   </div>
@@ -335,14 +335,14 @@ class Exhibitor extends Component {
             <div className="livestream-content bg-body" style={{ display: active === 2 ? 'block' : 'none' }}>
               <div className="container">
                 <div className="livestream-head">
-                  <img src="images/livestream-thumb.png" alt="" />
+                  <img src="/images/livestream-thumb.png" alt="" />
                   <div className="row">
                     <div className="col-lg-8">
                       <p className="ft-semibold">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt.</p>
                     </div>
                     <div className="col-lg-4">
                       <div className="like-share">
-                        <button className="like"><img src="images/icon-like.png" alt="" />Thích <span>19</span></button>
+                        <button className="like"><img src="/images/icon-like.png" alt="" />Thích <span>19</span></button>
                         {" "}
                         <button className="share">Chia sẻ</button>
                       </div>
@@ -355,7 +355,7 @@ class Exhibitor extends Component {
                       <div className="livestream-item">
                         <div className="row">
                           <div className="col-lg-5">
-                            <img src="images/video1.png" alt="" />
+                            <img src="/images/video1.png" alt="" />
                           </div>
                           <div className="col-lg-7">
                             <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad </p>
@@ -367,7 +367,7 @@ class Exhibitor extends Component {
                       <div className="livestream-item">
                         <div className="row">
                           <div className="col-lg-5">
-                            <img src="images/video2.png" alt="" />
+                            <img src="/images/video2.png" alt="" />
                           </div>
                           <div className="col-lg-7">
                             <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad </p>
@@ -379,7 +379,7 @@ class Exhibitor extends Component {
                       <div className="livestream-item">
                         <div className="row">
                           <div className="col-lg-5">
-                            <img src="images/video3.png" alt="" />
+                            <img src="/images/video3.png" alt="" />
                           </div>
                           <div className="col-lg-7">
                             <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad </p>
@@ -391,7 +391,7 @@ class Exhibitor extends Component {
                       <div className="livestream-item">
                         <div className="row">
                           <div className="col-lg-5">
-                            <img src="images/video4.png" alt="" />
+                            <img src="/images/video4.png" alt="" />
                           </div>
                           <div className="col-lg-7">
                             <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad </p>
@@ -403,7 +403,7 @@ class Exhibitor extends Component {
                       <div className="livestream-item">
                         <div className="row">
                           <div className="col-lg-5">
-                            <img src="images/video5.png" alt="" />
+                            <img src="/images/video5.png" alt="" />
                           </div>
                           <div className="col-lg-7">
                             <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad </p>
@@ -415,7 +415,7 @@ class Exhibitor extends Component {
                       <div className="livestream-item">
                         <div className="row">
                           <div className="col-lg-5">
-                            <img src="images/video6.png" alt="" />
+                            <img src="/images/video6.png" alt="" />
                           </div>
                           <div className="col-lg-7">
                             <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad </p>
@@ -449,7 +449,7 @@ class Exhibitor extends Component {
                                   <span>Email: {user ? exhibitor.email : ""}</span>
                                 </div>
                                 {!user ?
-                                  <a href="#" className="login-view" onClick={this.openLoginExhibitor}>Đăng nhập để xem</a>
+                                  <a href="#" className="login-view" onClick={this.openLoginVisitor}>Đăng nhập để xem</a>
                                   : ""}
                               </div>
                             </div>
@@ -462,7 +462,7 @@ class Exhibitor extends Component {
                                   <span>Email: {user ? exhibitor.re_email : ""}</span>
                                 </div>
                                 {!user ?
-                                  <a href="#" className="login-view" onClick={this.openLoginExhibitor}>Đăng nhập để xem</a>
+                                  <a href="#" className="login-view" onClick={this.openLoginVisitor}>Đăng nhập để xem</a>
                                   : ""}
                               </div>
                             </div>
@@ -471,9 +471,11 @@ class Exhibitor extends Component {
                         <p className="web-address"><span>Website:</span><span><a href={exhibitor.website || "#"}>{exhibitor.website || ""}</a></span></p>
                         <div className="contact-method">
                           <ul className="ft-semibold">
-                            <li><a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="images/chat2.png" alt="" />Trò chuyện</a></li>
-                            <li><a href="#"><img src="images/mail.png" alt="" />Email</a></li>
-                            <li><a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="images/connect2.png" alt="" />Kết nối giao
+                            <li><a href="#" onClick={!user ? this.openLoginVisitor : e => this.handleChat(e, visitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a></li>
+                            <li>
+                              <a href={!user ? "#" : "mailto:" + exhibitor.email} onClick={!user ? this.openLoginVisitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />Email</a>
+                            </li>
+                            <li><a href="#" onClick={!user ? this.openLoginVisitor : e => this.handleChat(e, visitor)}><img src="/images/connect2.png" alt="" />Kết nối giao
                               thương</a></li>
                           </ul>
                         </div>
@@ -490,7 +492,7 @@ class Exhibitor extends Component {
                                 name="name"
                                 className="form-control"
                                 placeholder="Họ và tên"
-                                onClick={this.openLoginExhibitor}
+                                onClick={this.openLoginVisitor}
                               />
                             </div>
                             <div className="form-group">
@@ -501,7 +503,7 @@ class Exhibitor extends Component {
                                 name="message"
                                 value={message}
                                 onChange={this.handleChange}
-                                onClick={this.openLoginExhibitor}
+                                onClick={this.openLoginVisitor}
                               />
                             </div>
                             <input type="submit" defaultValue="Gửi ngay" />

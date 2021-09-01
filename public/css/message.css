@@ -521,3 +521,8 @@ input[type=submit] {
 	-webkit-line-clamp: 3;
 	overflow: hidden;
 }
+
+.contact-form .disabled-btn {
+	cursor: not-allowed;
+	background-color: #c57528;
+}

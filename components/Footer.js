@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import ContactForm from './ContactForm';
 
 class Footer extends Component {
     scrollTop = () => {
@@ -51,21 +52,7 @@ class Footer extends Component {
                                 </div>
                             </div>
                             <div className="col-md-6">
-                                <div className="form">
-                                    <div className="form-group">
-                                        <input type="text" className="form-control" placeholder="Họ và tên" />
-                                    </div>
-                                    <div className="form-group">
-                                        <input type="email" className="form-control" placeholder="Email" />
-                                    </div>
-                                    <div className="form-group">
-                                        <input type="text" className="form-control" placeholder="Chủ đề" />
-                                    </div>
-                                    <div className="form-group">
-                                        <textarea className="form-control" placeholder="Tin nhắn" rows={5} defaultValue={""} />
-                                    </div>
-                                    <input type="submit" placeholder="Gửi" />
-                                </div>
+                                <ContactForm />
                             </div>
                         </div>
                     </div>

@@ -13,7 +13,8 @@ class Exhibitor extends Component {
         super(props);
         this.state = {
             onAdd: false,
-            selecteds: []
+            selecteds: [],
+            name: ''
         }
     }
     componentDidMount() {
@@ -24,7 +25,10 @@ class Exhibitor extends Component {
         const { name } = this.state;
         dispatch({
             type: types.ADMIN_GET_EXHIBITOR,
-            payload: { page, pageSize, name }
+            payload: { page, pageSize, name },
+            callback: res => {
+                this.setState({ selecteds: [] })
+            }
         });
     }
     handleDisable = (exhibitor) => {
@@ -56,7 +60,6 @@ class Exhibitor extends Component {
                             if (res?.success) {
                                 const { page } = this.props;
                                 this.gotoPage(page);
-                                this.setState({ selecteds: [] })
                             }
                         }
                     });
@@ -128,9 +131,14 @@ class Exhibitor extends Component {
             payload: exhibitor._id
         });
     }
+    handleChange = e => {
+        this.setState({ name: e.target.value });
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(this.gotoPage, 1000);
+    }
     render() {
         const { active, exhibitors, page, total } = this.props;
-        const { onAdd, onEdit, selecteds } = this.state;
+        const { onAdd, onEdit, selecteds, name } = this.state;
         if (!active) return null;
         return (
             <section className="content">
@@ -164,7 +172,7 @@ class Exhibitor extends Component {
                             </div>
                             <div id="DataTables_Table_1_filter" className="dataTables_filter">
                                 <label>
-                                    <input type="search" className="form-control input-sm" aria-controls="DataTables_Table_1" />
+                                    <input type="search" className={"form-control input-sm" + (name ? " active" : "")} value={name} onChange={this.handleChange} placeholder="Tìm kiếm" />
                                 </label>
                             </div>
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">

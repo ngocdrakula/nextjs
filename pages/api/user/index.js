@@ -11,7 +11,7 @@ const handler = async (req, res) => {
         try {
             const { page, pageSize, enabled, mode, name, industry, sort } = req.query;
             const query = {};
-            if (enabled) query.enabled = (enabled == "true");
+            if (enabled) query.enabled = !(enabled == "false");
             if (mode != undefined) query.mode = Number(mode);
             if (industry) query.industry = { $in: industry.split(',') };
             if (name) query.name = new RegExp(name, "i");

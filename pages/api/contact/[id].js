@@ -61,13 +61,14 @@ const handler = async (req, res) => {
       const user = jwt.verify(bearerToken);
       if (user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
       const { id } = req.query;
-      const { email, name, message, title } = req.body;
+      const { email, name, message, title, read } = req.body;
       const currentContact = await contactController.get(id);
       if (!currentContact) throw ({ path: '_id', matchContact });
-      if (name) currentContact.name = name
-      if (message) currentContact.message = message
-      if (email) currentContact.email = email
-      if (title) currentContact.title = title
+      if (name) currentContact.name = name;
+      if (message) currentContact.message = message;
+      if (email) currentContact.email = email;
+      if (title) currentContact.title = title;
+      if (read !== undefined) currentContact.read = read;
       await currentContact.save();
       return res.status(200).send({
         success: true,

@@ -543,3 +543,29 @@ html body {
     width: 0;
     height: 0;
 }
+
+.contact-btn {
+    margin-left: 10px;
+    background-color: #a3a3a3!important;
+}
+
+.contact-btn.active {
+    margin-left: 10px;
+    background-color: #555!important;
+}
+
+.table-hover>tbody>tr.contact-unread {
+    background-color: #FCFCFC;
+}
+
+.table-hover>tbody>tr.contact-unread:hover {
+    background-color: #f5f5f5;
+}
+
+.contact-detail {
+    padding-bottom: 20px;
+}
+
+.dataTables_filter input[type=search].active {
+    width: 150px!important;
+}

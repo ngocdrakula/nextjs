@@ -11,7 +11,7 @@ const handler = async (req, res) => {
       const query = {};
       if (name) query.name = new RegExp(name, "i");
       if (exhibitor) query.exhibitor = exhibitor;
-      if (enabled != undefined) query.enabled = (enabled == "true");
+      if (enabled) query.enabled = !(enabled == "false");
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
       const total = await categoryController.getlist(query).countDocuments();

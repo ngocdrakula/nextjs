@@ -18,7 +18,7 @@ const handler = async (req, res) => {
       if (sort == 'name') sortObj.name = 1;
       if (sort == 'namereverse') sortObj.name = -1;
       if (name) query.name = new RegExp(name, "i");
-      if (enabled != undefined) query.enabled = (enabled == "true");
+      if (enabled) query.enabled = !(enabled == "false");
       if (description) query.description = new RegExp(description, "i");
       if (categoryId) query.category = categoryId;
       if (exhibitorId) query.exhibitor = exhibitorId;

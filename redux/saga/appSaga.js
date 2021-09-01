@@ -46,6 +46,7 @@ function* getExhibitors({ payload, callback }) {
             if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
+        console.log(e)
         yield put({ type: types.GET_EXHIBITORS_FAILED, payload: e.response });
         if (typeof callback === 'function') {
             callback(e.response);
@@ -237,6 +238,20 @@ function* getCategories({ payload, callback }) {
         if (typeof callback === 'function') callback(e.response);
     }
 }
+function* postContact({ payload, callback }) {
+    try {
+        const res = yield call(requests.postContactRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.SEND_CONTACT_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.SEND_CONTACT_SUCCESS, payload: e.response });
+        if (typeof callback === 'function') {
+            callback(e.response);
+        }
+    }
+}
 
 export default function* appSaga() {
     yield all([
@@ -256,5 +271,6 @@ export default function* appSaga() {
         yield takeEvery(types.SEND_MESSAGE, postMessage),
         yield takeEvery(types.REVICED_MESSAGE, revicedMessage),
         yield takeEvery(types.GET_CATEGORIES, getCategories),
+        yield takeEvery(types.SEND_CONTACT, postContact),
     ])
 }

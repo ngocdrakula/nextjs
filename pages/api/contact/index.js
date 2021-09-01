@@ -11,11 +11,15 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
       if (user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
-      const { page, pageSize, read, name, email } = req.query;
+      const { page, pageSize, read, name } = req.query;
       const query = {};
-      if (read) query.read = !(read == "false");
-      if (email) query.email = email;
-      if (name) query.name = name;
+      if (name) {
+        query.$and = [{
+          $or: [{ name: new RegExp(name, "i") }, { email: new RegExp(name, "i") }, { title: new RegExp(name, "i") }]
+        }];
+        if (read) query.$and.push({ read: !(read == "false") })
+      }
+      else if (read) query.read = !(read == "false");
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 100;
       const total = await contactController.getlist(query).countDocuments();

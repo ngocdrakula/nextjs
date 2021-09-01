@@ -1,18 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import types from '../../../redux/types';
-import { createFormData } from '../../../utils/helper';
 import Pagination from '../../PaginationAdmin';
-import AddProduct from './AddProduct';
-import UpdateProduct from './UpdateProduct';
+import DetailContact from './DetailContact';
+import UpdateContact from './UpdateContact';
 
 const pageSize = 10;
 
-class Product extends Component {
+class Contact extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            onAdd: false,
+            onView: false,
             selecteds: [],
             name: ''
         }
@@ -20,42 +19,45 @@ class Product extends Component {
     componentDidMount() {
         this.gotoPage();
     }
+    componentWillUnmount() {
+        clearTimeout(this.timeout)
+    }
     gotoPage = (page = 0) => {
         const { dispatch } = this.props;
-        const { name } = this.state;
+        const { name, read } = this.state;
         dispatch({
-            type: types.ADMIN_GET_PRODUCTS,
-            payload: { page, pageSize, name },
+            type: types.ADMIN_GET_CONTACTS,
+            payload: { page, pageSize, name, read },
             callback: res => {
                 this.setState({ selecteds: [] })
             }
         });
     }
-    handleDisable = (product) => {
+    handleDisable = (contact) => {
         const { dispatch } = this.props;
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận ${product.enabled ? 'tắt' : 'bật'} sản phẩm`,
-                message: `Bạn có chắc chắn ${product.enabled ? 'tắt' : 'bật'} sản phẩm này không?`,
-                confirm: `${product.enabled ? 'Tắt' : 'Bật'} sản phẩm`,
-                handleConfirm: () => this.handleConfirm(product),
+                title: `Xác nhận di chuyển tin nhắn`,
+                message: `Di chuyển tin nhắn sang hộp thư ${contact.read ? 'chưa đọc' : 'đã đọc'}?`,
+                confirm: `Di chuyển`,
+                handleConfirm: () => this.handleConfirm(contact),
                 cancel: 'Hủy',
             }
         })
     }
-    handleDelete = (product) => {
+    handleDelete = (contact) => {
         const { dispatch } = this.props;
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa sản phẩm`,
-                message: `Bạn có chắc chắn muốn xóa sản phẩm này không?`,
-                confirm: `Xóa sản phẩm`,
+                title: `Xác nhận xóa tin nhắn`,
+                message: `Bạn có chắc chắn muốn xóa tin nhắn ${contact.read ? "này" : "chưa đọc"} không?`,
+                confirm: `Xóa tin nhắn`,
                 handleConfirm: () => {
                     dispatch({
-                        type: types.ADMIN_DELETE_PRODUCT,
-                        payload: product._id,
+                        type: types.ADMIN_DELETE_CONTACT,
+                        payload: contact._id,
                         callback: res => {
                             if (res?.success) {
                                 const { page } = this.props;
@@ -75,12 +77,12 @@ class Product extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa nhiều sản phẩm`,
-                message: `Bạn có chắc chắn muốn xóa ${selecteds.length} sản phẩm không?`,
-                confirm: `Xóa sản phẩm`,
+                title: `Xác nhận xóa nhiều tin nhắn`,
+                message: `Bạn có chắc chắn muốn xóa ${selecteds.length} tin nhắn không?`,
+                confirm: `Xóa tin nhắn`,
                 handleConfirm: () => {
                     dispatch({
-                        type: types.ADMIN_DELETE_MULTI_PRODUCT,
+                        type: types.ADMIN_DELETE_MULTI_CONTACT,
                         payload: selecteds,
                         callback: res => {
                             if (res?.success) {
@@ -95,15 +97,24 @@ class Product extends Component {
             }
         })
     }
-    handleConfirm = (product) => {
+    handleConfirm = (contact) => {
         const { dispatch } = this.props;
-        const formData = createFormData({ enabled: !product.enabled });
         dispatch({
-            type: types.ADMIN_UPDATE_PRODUCT,
-            payload: { _id: product._id, formData }
+            type: types.ADMIN_UPDATE_CONTACT,
+            payload: { _id: contact._id, read: !contact.read }
         })
     }
-    handleOpenForm = () => this.setState({ onAdd: !this.state.onAdd });
+    handleViewDetail = (contact, e) => {
+        e?.preventDefault?.();
+        this.setState({ onView: contact });
+        if (!contact.read) {
+            const { dispatch } = this.props;
+            dispatch({
+                type: types.ADMIN_UPDATE_CONTACT,
+                payload: { _id: contact._id, read: true }
+            })
+        }
+    }
     handleSelect = (id) => {
         const { selecteds } = this.state;
         if (selecteds.indexOf(id) + 1) {
@@ -116,13 +127,16 @@ class Product extends Component {
     }
     handleSelectAll = () => {
         const { selecteds } = this.state;
-        const { products } = this.props;
-        if (selecteds.length < products.length) {
-            this.setState({ selecteds: products.map(e => e._id) });
+        const { contacts } = this.props;
+        if (selecteds.length < contacts.length) {
+            this.setState({ selecteds: contacts.map(e => e._id) });
         }
         else {
             this.setState({ selecteds: [] })
         }
+    }
+    handleFilter = (read) => {
+        this.setState({ read }, this.gotoPage)
     }
     handleChange = e => {
         this.setState({ name: e.target.value });
@@ -130,16 +144,18 @@ class Product extends Component {
         this.timeout = setTimeout(this.gotoPage, 1000);
     }
     render() {
-        const { active, products, page, total, categories } = this.props;
-        const { onAdd, onEdit, selecteds, name } = this.state;
+        const { active, contacts, page, total } = this.props;
+        const { onView, onEdit, selecteds, read, name } = this.state;
         if (!active) return null;
         return (
             <section className="content">
                 <div className="box">
                     <div className="box-header with-border">
-                        <h3 className="box-title">Khách thăm quan</h3>
+                        <h3 className="box-title">Danh sách liên hệ</h3>
                         <div className="box-tools pull-right">
-                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>Thêm sản phẩm</a>
+                            <a onClick={e => this.handleFilter()} className={"ajax-modal-btn btn btn-new btn-flat contact-btn" + (read === undefined ? " active" : "")}>Hộp thư đến</a>
+                            <a onClick={e => this.handleFilter(false)} className={"ajax-modal-btn btn btn-new btn-flat contact-btn" + (read === false ? " active" : "")}>Tin nhắn chưa đọc</a>
+                            <a onClick={e => this.handleFilter(true)} className={"ajax-modal-btn btn btn-new btn-flat contact-btn" + (read === true ? " active" : "")}>Tin nhắn đã đọc</a>
                         </div>
                     </div>
                     <div className="box-body">
@@ -147,19 +163,19 @@ class Product extends Component {
                             <div className="dt-buttons btn-group">
                                 {selecteds.length ?
                                     <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={this.handleDeleteAll}>
-                                        <span>Xóa {selecteds.length} đã chọn</span>
+                                        <span>Xóa {selecteds.length} mục đã chọn</span>
                                     </button>
                                     : ""}
                             </div>
                             <div id="DataTables_Table_1_filter" className="dataTables_filter">
                                 <label>
-                                    <input type="search" className={"form-control input-sm" + (name ? " active" : "")} value={name} onChange={this.handleChange} placeholder="Tìm kiếm" />
+                                    <input type="search" className={"form-control input-sm" + (name ? " active" : "")} value={name} onChange={this.handleChange} placeholder="Tìm theo tên, emai, chủ đề" />
                                 </label>
                             </div>
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
                                 <thead>
                                     <tr role="row">
-                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} aria-label="Toggle Dropdown Trash Delete permanently" style={{ width: '44.8px ' }}>
+                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '7%' }}>
                                             <div className="btn-group ">
                                                 <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
                                                     <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
@@ -180,48 +196,51 @@ class Product extends Component {
                                                 </ul>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Ảnh sản phẩm" style={{ width: '20%', minWidth: 150 }}>Ảnh sản phẩm</th>
-                                        <th className="sorting" tabIndex={0} aria-controls="DataTables_Table_1" rowSpan={1} colSpan={1} aria-label="Tên sản phẩm: activate to sort column ascending" style={{ width: '30%' }}>Tên sản phẩm</th>
-                                        <th className="sorting" tabIndex={0} aria-controls="DataTables_Table_1" rowSpan={1} colSpan={1} aria-label="Chuyên mục: activate to sort column ascending" style={{ width: '20%' }}>Chuyên mục</th>
-                                        <th className="sorting" tabIndex={0} aria-controls="DataTables_Table_1" rowSpan={1} colSpan={1} aria-label="Trạng thái: activate to sort column ascending" style={{ width: '10%' }}>Trạng thái</th>
-                                        <th style={{ textAlign: 'center !important', }} className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Hành động">Hành động</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '8%' }}>STT</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Tên</th>
+                                        <th className="sorting_disabled" tabIndex={0} rowSpan={1} colSpan={1} style={{ width: '15%' }}>Email</th>
+                                        <th className="sorting_disabled" tabIndex={0} rowSpan={1} colSpan={1} style={{ width: '15%' }}>Chủ đề</th>
+                                        <th className="sorting_disabled" tabIndex={0} rowSpan={1} colSpan={1} style={{ width: '20%' }}>Nội dung</th>
+                                        <th className="sorting_disabled" tabIndex={0} rowSpan={1} colSpan={1} style={{ width: '10%' }}>Trạng thái</th>
+                                        <th style={{ textAlign: 'center !important', width: '10%' }} className="sorting_disabled" rowSpan={1} colSpan={1}>Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
-                                    {products.map((product, index) => {
-                                        const checked = (selecteds.indexOf(product._id) + 1) ? "checked" : "";
-                                        const category = categories.find(c => c._id === product.category) || {};
+                                    {contacts.map((contact, index) => {
+                                        if (read !== undefined && contact.read !== read) return null;
+                                        const checked = (selecteds.indexOf(contact._id) + 1) ? "checked" : "";
                                         return (
-                                            <tr key={product._id} className={index % 2 ? "odd" : "even"} role="row">
+                                            <tr key={contact._id} className={(index % 2 ? "odd" : "even") + (contact.read ? "" : "contact-unread")} role="row">
                                                 <td>
                                                     <div className={checked ? "icheckbox_minimal-blue checked" : "icheckbox_minimal-blue"} aria-checked="false" aria-disabled="false" style={{ position: 'relative' }}>
                                                         <ins
                                                             className="iCheck-helper"
                                                             style={{ position: 'absolute', top: '0%', left: '0%', display: 'block', width: '100%', height: '100%', margin: 0, padding: 0, background: 'rgb(255, 255, 255)', border: 0, opacity: 0 }}
-                                                            onClick={() => this.handleSelect(product._id)}
+                                                            onClick={() => this.handleSelect(contact._id)}
                                                         />
                                                     </div>
                                                 </td>
-                                                <td>
-                                                    {product.image ?
-                                                        <img src={"/api/images/" + product.image} style={{ width: 'auto', maxWidth: 150, height: 'auto', maxHeight: 150 }} alt="Ảnh sản phẩm" />
-                                                        :
-                                                        <img src="/images/no-avatar.png" style={{ width: 'auto', maxWidth: 150, height: 'auto', maxHeight: 150 }} alt="Ảnh sản phẩm" />
-                                                    }
-                                                </td>
-                                                <td title={product.name}>
-                                                    {product.name?.split(0, 15)}
-                                                    <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={e => { e.preventDefault(); this.handleDisable(product) }}>
-                                                        <i className={"fa fa-heart" + (product.enabled ? "-o" : "")} title={product.enabled ? "Tắt" : "Bật"} />
+                                                <td>{index + 1}</td>
+                                                <td title={contact.name}>
+                                                    {contact.name?.slice(0, 15)}{contact.name.length > 15 ? "..." : ""}{'  '}
+                                                    <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={e => { e.preventDefault(); this.handleDisable(contact) }}>
+                                                        <i className={"fa fa-heart" + (contact.read ? "-o" : "")} title={contact.read ? "Đánh dấu là chưa đọc" : "Đánh dấu là đã đọc"} />
                                                     </a>
                                                 </td>
-                                                <td>{category.name}</td>
-                                                <td>{product.enabled ? 'Hoạt động' : 'Không hoạt động'}</td>
+                                                <td>
+                                                    <a href={"mailto:" + contact.email} target="_blank" title="Gửi email">{contact.email}</a>
+                                                </td>
+                                                <td>{contact.title}</td>
+                                                <td>{contact.message?.slice(0, 50)}{contact.message.length > 50 ? "..." : ""}</td>
+                                                <td>{contact.read ? "Đã đọc" : "Chưa đọc"}</td>
                                                 <td className="row-options">
-                                                    <a onClick={() => this.setState({ onEdit: product })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
+                                                    <a onClick={() => this.handleViewDetail(contact)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
+                                                        <i title="Detail" className="fa fa-expand" />
+                                                    </a>&nbsp;&nbsp;
+                                                    <a onClick={() => this.setState({ onEdit: contact })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
                                                         <i title="Chỉnh sửa" className="fa fa-edit" />
                                                     </a>&nbsp;&nbsp;
-                                                    <a onClick={() => this.handleDelete(product)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
+                                                    <a onClick={() => this.handleDelete(contact)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
                                                         <i className="fa fa-trash-o" title="Xóa" />
                                                     </a>&nbsp;&nbsp;
                                                 </td>
@@ -234,11 +253,11 @@ class Product extends Component {
                         </div>
                     </div>
                 </div>
-                <AddProduct onAdd={onAdd} handleClose={this.handleOpenForm} onAdded={this.gotoPage} />
-                <UpdateProduct onEdit={onEdit} handleClose={() => this.setState({ onEdit: null })} />
-            </section >
+                <DetailContact onView={onView} handleClose={() => this.setState({ onView: null })} />
+                <UpdateContact onEdit={onEdit} handleClose={() => this.setState({ onEdit: null })} />
+            </section>
         )
     }
 }
 
-export default connect(({ admin: { product: { data: products, page, total }, categories } }) => ({ products, page, total, categories }))(Product)
+export default connect(({ admin: { contact: { data: contacts, page, total } } }) => ({ contacts, page, total }))(Contact)

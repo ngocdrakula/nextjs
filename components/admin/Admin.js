@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import types from '../../redux/types';
 import Header from './Header';
 import SideBar from './SideBar';
 import Visitor from './Visitor';
 import Exhibitor from './Exhibitor';
 import Overview from './Overview';
 import Industry from './Industry';
+import Contact from './Contact';
 
 
 class Admin extends Component {
@@ -30,6 +30,7 @@ class Admin extends Component {
                     <Exhibitor active={active === 1} />
                     <Visitor active={active === 2} />
                     <Industry active={active === 3} />
+                    <Contact active={active === 4} />
                 </div>
                 <footer className="main-footer">
                 </footer>

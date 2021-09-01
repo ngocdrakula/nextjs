@@ -8,6 +8,7 @@ export const initState = {
     layout: { data: [], page: 0, total: 0 },
     visitor: { data: [], page: 0, total: 0 },
     exhibitor: { data: [], page: 0, total: 0 },
+    contact: { data: [], page: 0, total: 0 },
     industries: [],
     categories: [],
     user: null,

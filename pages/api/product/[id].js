@@ -76,7 +76,7 @@ const handler = async (req, res) => {
           currentProduct.description = description;
         }
         if (enabled != undefined) {
-          currentProduct.enabled = (enabled == "true");
+          currentProduct.enabled = !(enabled == "false");
         }
         if (files.length) {
           await cleanFiles([currentProduct.image]);
