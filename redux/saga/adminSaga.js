@@ -466,6 +466,32 @@ function* admin_deleteMultiContact({ payload, callback }) {
     }
 }
 
+
+function* admin_getSetting({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_getSettingRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_GET_SETTING_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_GET_SETTING_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_updateSetting({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_updateSettingRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_UPDATE_SETTING_SUCCESS, payload: res.data.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_UPDATE_SETTING_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+
 export default function* appSaga() {
     yield all([
         yield takeEvery(types.ADMIN_LOGIN_LOCAL, admin_LoginLocal),
@@ -513,6 +539,9 @@ export default function* appSaga() {
         yield takeEvery(types.ADMIN_UPDATE_CONTACT, admin_updateContact),
         yield takeEvery(types.ADMIN_DELETE_CONTACT, admin_deleteContact),
         yield takeEvery(types.ADMIN_DELETE_MULTI_CONTACT, admin_deleteMultiContact),
+
+        yield takeEvery(types.ADMIN_GET_SETTING, admin_getSetting),
+        yield takeEvery(types.ADMIN_UPDATE_SETTING, admin_updateSetting),
 
     ])
 }

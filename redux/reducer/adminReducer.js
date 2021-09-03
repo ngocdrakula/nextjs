@@ -19,6 +19,7 @@ export const initState = {
     newMessage: 0,
     total: 0,
     page: 0,
+    setting: {}
 }
 const appReducer = (state = initState, action) => {
     switch (action.type) {
@@ -374,6 +375,18 @@ const appReducer = (state = initState, action) => {
                     ...state.contact,
                     data
                 }
+            };
+        }
+        case types.ADMIN_GET_SETTING_SUCCESS: {
+            return {
+                ...state,
+                setting: action.payload.data
+            };
+        }
+        case types.ADMIN_UPDATE_SETTING_SUCCESS: {
+            return {
+                ...state,
+                setting: action.payload.data
             };
         }
 

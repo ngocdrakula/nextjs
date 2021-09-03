@@ -15,6 +15,7 @@ export const initState = {
     page: 0,
     hydrate: false,
     categories: [],
+    setting: {}
 }
 const appReducer = (state = initState, action) => {
     switch (action.type) {

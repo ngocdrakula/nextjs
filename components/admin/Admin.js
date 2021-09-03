@@ -7,6 +7,7 @@ import Exhibitor from './Exhibitor';
 import Overview from './Overview';
 import Industry from './Industry';
 import Contact from './Contact';
+import Setting from './Setting';
 
 
 class Admin extends Component {
@@ -31,6 +32,7 @@ class Admin extends Component {
                     <Visitor active={active === 2} />
                     <Industry active={active === 3} />
                     <Contact active={active === 4} />
+                    <Setting active={active === 5} />
                 </div>
                 <footer className="main-footer">
                 </footer>

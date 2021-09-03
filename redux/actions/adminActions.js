@@ -105,3 +105,10 @@ export const admin_deleteMultiContactRequest = async (params) => {
     const _ids = params && params.join(",");
     return axios.delete('contact?_ids=' + _ids);
 }
+
+export const admin_getSettingRequest = async () => {
+    return axios.get('setting');
+}
+export const admin_updateSettingRequest = async (request) => {
+    return axios.post('setting', request);
+}
