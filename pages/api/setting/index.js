@@ -5,7 +5,7 @@ import lang, { langConcat } from '../../../lang.config';
 import uploader, { cleanFiles } from '../../../middleware/multer';
 import jwt from '../../../middleware/jwt';
 import { MODE } from '../../../utils/helper';
-const settingName = 'setting1.json'
+const settingName = 'setting.json'
 
 const handler = async (req, res) => {
     if (req.method == 'GET') {
