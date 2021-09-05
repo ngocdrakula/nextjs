@@ -12,7 +12,8 @@ class Countdown extends Component {
         }
     }
     componentDidMount() {
-        const deadline = (new Date('09/02/2021')).getTime();
+        const { setting } = this.props;
+        const deadline = (new Date(setting.countDown)).getTime();
         if (deadline > Date.now()) {
             this.interval = setInterval(() => {
                 const current = Date.now();
@@ -30,7 +31,6 @@ class Countdown extends Component {
     }
     render() {
         const { d, h, m, s } = this.state;
-        const { user } = this.props;
         return (
             <div id="counter">
                 <div className="container">
@@ -61,4 +61,4 @@ class Countdown extends Component {
     }
 }
 
-export default connect(({ app: { user } }) => ({ user }))(Countdown)
+export default connect(({ app: { setting } }) => ({ setting }))(Countdown)

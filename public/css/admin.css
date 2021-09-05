@@ -279,7 +279,6 @@ html body {
 .message {
     padding: 20px 0 !important;
     margin: 0 !important;
-    background: url("w.jpg") no-repeat fixed center;
     background-size: cover;
     overflow-y: auto;
     border: 1px solid #f7f7f7;
@@ -568,4 +567,83 @@ html body {
 
 .dataTables_filter input[type=search].active {
     width: 150px!important;
+}
+
+.set-logo {
+    margin-bottom: 10px;
+}
+
+.set-logo .select-option-active {
+    text-align: center;
+}
+
+.upload-button {
+    display: block;
+    cursor: pointer;
+    text-align: center;
+    height: 34px;
+    border: 1px solid #dddddd;
+    background: #cecece;
+    line-height: 34px;
+    letter-spacing: normal;
+}
+
+label.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 180px;
+    border: 1px solid #dddddd;
+    padding: 10px;
+    margin-bottom: 5px;
+    max-width: 200px;
+    cursor: pointer;
+}
+
+label.image-container.favicon-preview {
+    max-width: 180px;
+}
+
+label.image-container.logo-preview {
+    max-width: 400px;
+}
+
+.image-preview {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.form-group .col-form-label {
+    min-height: 34px;
+    align-items: center;
+    display: flex;
+}
+
+.devider {
+    border-bottom: 1px solid #dddddd;
+    padding-bottom: 10px;
+}
+
+.control-button {
+    display: block;
+    cursor: pointer;
+    text-align: center;
+    height: 30px;
+    margin-bottom: 4;
+    border: 1px solid #dddddd;
+    background: #cecece;
+    line-height: 30px;
+    letter-spacing: normal;
+}
+
+.control-button.del {
+    background-color: #e20000;
+    color: #FFF;
+}
+
+.setting-error {
+    color: red;
 }

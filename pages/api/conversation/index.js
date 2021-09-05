@@ -26,10 +26,6 @@ const handler = async (req, res) => {
         ]
       };
       const totalNew = await conversationController.getlist(queryNew).countDocuments();
-      const total = await conversationController.getlist(query)
-        .populate({ path: 'leader.user', select: 'name mode avatar', ...populateName })
-        .populate({ path: 'member.user', select: 'name mode avatar', ...populateName })
-        .countDocuments();
       const conversations = await conversationController.getlist(query)
         .populate({ path: 'leader.user', select: 'name mode avatar', match: { name: new RegExp(name, "i") } })
         .populate({ path: 'member.user', select: 'name mode avatar', match: { name: new RegExp(name, "i") } })

@@ -5,7 +5,7 @@ import SideBar from './SideBar';
 import Product from './Product';
 import Overview from './Overview';
 import Category from './Category';
-import Chat from './Chat';
+import Chat from '../Chat';
 
 
 class Exhibitor extends Component {

@@ -8,7 +8,7 @@ class SideBar extends Component {
     }
 
     render() {
-        const { active, handleActive } = this.props;
+        const { active, handleActive, newMessage } = this.props;
         return (
             <aside className="main-sidebar">
                 <section className="sidebar">
@@ -40,7 +40,12 @@ class SideBar extends Component {
                             </a>
                         </li>
                         <li className={active === 5 ? "active" : ""}>
-                            <a href="#" onClick={() => handleActive(4)}>
+                            <a href="#" onClick={() => handleActive(5)}>
+                                <i className="fa fa-meetup" /> <span>Chat{newMessage ? ` (${newMessage})` : ""}</span>
+                            </a>
+                        </li>
+                        <li className={active === 6 ? "active" : ""}>
+                            <a href="#" onClick={() => handleActive(6)}>
                                 <i className="fa fa-meetup" /> <span>Cài đặt trang web</span>
                             </a>
                         </li>
@@ -51,4 +56,4 @@ class SideBar extends Component {
     }
 }
 
-export default connect(({ admin: { setting, user } }) => ({ setting, user }))(SideBar)
+export default connect(({ admin: {  newMessage } }) => ({  newMessage }))(SideBar)

@@ -6,7 +6,7 @@ export const initState = {
     exhibitors: [],
     visitors: [],
     user: null,
-    openMessage: false,
+    openMessage: true,
     openList: true,
     newMessage: 0,
     conversations: [],
@@ -266,6 +266,19 @@ const appReducer = (state = initState, action) => {
             return {
                 ...state,
                 categories: action.payload.data
+            };
+        }
+        case types.GET_SETTING_SUCCESS: {
+            return {
+                ...state,
+                setting: action.payload.data
+            };
+        }
+        case types.GET_ADMIN_INFO_SUCCESS: {
+            console.log(action.payload)
+            return {
+                ...state,
+                admin: action.payload
             };
         }
         default: {

@@ -3,20 +3,25 @@ import { connect } from 'react-redux';
 
 class Slider extends Component {
     render() {
+        const { setting } = this.props;
+        const { bannerStatus, bannerSubTitle, bannerTitle, bannerStartTime, bannerEndTime, bannerLocation,
+            bannerSlogan, bannerDescription, bannerBackground, bannerUpdated, bannerLogoThumb } = setting;
+        if (!bannerStatus) return null;
+        const image = `${bannerUpdated ? "/api" : ""}/images/${bannerLogoThumb}`;
         return (
-            <div id="slider">
+            <div id="slider" style={bannerBackground ? { backgroundColor: bannerBackground } : {}}>
                 <div className="container">
                     <div className="slide-thumb">
-                        <img src="/images/slide-thumb.png" alt =""/>
+                        <img src={image} alt={bannerTitle} />
                     </div>
                     <div className="slide-text">
-                        <h1>Triển lãm trực tuyến <span>VIMEXPO 2021</span></h1>
+                        <h1>{bannerSubTitle}<span>{bannerTitle}</span></h1>
                         <div className="time-location">
-                            <p className="time">27 <img src="/images/icon-right.png" alt =""/> 29.01.2021</p>
-                            <p className="location">Trung tâm Triển lãm Quốc tế I.C.E Hanoi <br />Cung VHHN, số 91 Trần Hưng Đạo, Hoàn Kiếm, Hà Nội</p>
+                            <p className="time">{bannerStartTime} <img src="/images/icon-right.png" alt="" /> {bannerEndTime}</p>
+                            <p className="location">{bannerLocation?.split('\n').map((d, i) => <React.Fragment key={i}>{i ? <br /> : ""}{d}</React.Fragment>)}</p>
                         </div>
-                        <p className="txt-white">Kết nối để phát triển</p>
-                        <p className="txt-last">Triển lãm trực tuyến VIMEXPO 2021 là kênh Triển lãm <br />online để tăng kết nối, xúc tiến thương mại và phục vụ các <br />nhà trưng bày trong và ngoài nước</p>
+                        <p className="txt-white">{bannerSlogan}</p>
+                        <p className="txt-last">{bannerDescription?.split('\n').map((d, i) => <React.Fragment key={i}>{i ? <br /> : ""}{d}</React.Fragment>)}</p>
                     </div>
                 </div>
             </div>
@@ -24,4 +29,4 @@ class Slider extends Component {
     }
 }
 
-export default connect(() => ({}))(Slider)
+export default connect(({ app: { setting } }) => ({ setting }))(Slider)

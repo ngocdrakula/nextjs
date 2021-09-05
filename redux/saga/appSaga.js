@@ -252,6 +252,36 @@ function* postContact({ payload, callback }) {
         }
     }
 }
+function* getSetting({ payload, callback }) {
+    try {
+        const res = yield call(requests.getSettingRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.GET_SETTING_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.GET_SETTING_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* getAdminInfo({ payload, callback }) {
+    try {
+        const res = yield call(requests.getUserRequest, { mode: MODE.admin });
+        if (res?.data?.success && res.data.data.length) {
+            yield put({ type: types.GET_ADMIN_INFO_SUCCESS, payload: res.data.data[0] });
+            if (typeof callback === 'function') callback(res.data);
+        }
+        else {
+            yield put({ type: types.GET_ADMIN_INFO_FAILED, payload: null });
+            if (typeof callback === 'function') callback();
+        }
+    } catch (e) {
+        yield put({ type: types.GET_ADMIN_INFO_FAILED, payload: e.response });
+        if (typeof callback === 'function') {
+            callback(e.response);
+        }
+    }
+}
 
 export default function* appSaga() {
     yield all([
@@ -272,5 +302,7 @@ export default function* appSaga() {
         yield takeEvery(types.REVICED_MESSAGE, revicedMessage),
         yield takeEvery(types.GET_CATEGORIES, getCategories),
         yield takeEvery(types.SEND_CONTACT, postContact),
+        yield takeEvery(types.GET_SETTING, getSetting),
+        yield takeEvery(types.GET_ADMIN_INFO, getAdminInfo),
     ])
 }

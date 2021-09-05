@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getTime } from '../../../utils/helper';
+import { getTime } from '../../utils/helper';
 
 
 export default class Time extends Component {

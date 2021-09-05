@@ -10,50 +10,115 @@ class RegisterVisitor extends Component {
         this.state = {};
     }
 
-    handleChange = e => this.setState({ [e.target.name]: e.target.value, message: '' });
+    handleChange = e => this.setState({ [e.target.name]: e.target.value, field: null, message: '' });
     handleSubmit = e => {
-        const { email, password } = this.state;
-        const { dispatch } = this.props;
-        dispatch({
-            type: types.USER_LOGIN,
-            payload: { email, password }
-        })
+        const { email, password, repassword, name, phone, address,
+            representative, position, mobile, website, product
+        } = this.state;
+        if (!representative) {
+            this.setState({ field: 'representative', message: 'Họ tên không được để trống' })
+        } else if (!name) {
+            this.setState({ field: 'name', message: 'Tên công ty không được để trống' })
+        } else if (!email) {
+            this.setState({ field: 'email', message: 'Email không được để trống' })
+        } else if (!password) {
+            this.setState({ field: 'password', message: 'Mật khẩu không được để trống' })
+        } else if (password.length < 8) {
+            this.setState({ field: 'password', message: 'Mật khẩu phải trên 8 ký tự' })
+        } else if (password !== repassword) {
+            this.setState({ field: 'password', message: 'Mật khẩu nhập lại không trùng khớp' })
+        } else {
+            const { dispatch } = this.props;
+            dispatch({
+                type: types.USER_REGISTER,
+                payload: {
+                    email, password, name, phone, address,
+                    representative, position, mobile, website, product
+                },
+                callback: res => {
+                    if (!res?.success) {
+                        this.setState({
+                            field: res?.field, message: res?.message||"Đăng ky không thành công"
+                        });
+                    }
+                }
+            })
+        }
     }
     handleClose = (e) => {
         const { dispatch } = this.props;
         dispatch({ type: types.OPENFORM, payload: null });
     }
 
+    handleSwitchLogin = (e) => {
+        e.preventDefault();
+        const { dispatch } = this.props;
+        dispatch({ type: types.OPENFORM, payload: MODE.visitor });
+    }
     render() {
         const { message } = this.state;
         const { openForm } = this.props;
         return (
-            <Modal show={openForm === MODE.visitor} id="guestModal" className="login-modal" centered contentClassName="" onHide={this.handleClose}>
+            <Modal show={openForm === 'reg'} id="guestModal" className="login-modal register-vis" centered contentClassName="" onHide={this.handleClose}>
                 <a href="/"><img src="images/logo.png" alt="" /></a>
                 <label className="tk">
-                    <span>Tài khoản</span>
-                    <input onChange={this.handleChange} type="text" name="email" placeholder="Phone Number, Name or Email" />
+                    <span>Họ và Tên</span>
+                    <input onChange={this.handleChange} type="text" required name="representative" placeholder="Nhập tên bạn" />
+                </label>
+                <label className="tk">
+                    <span>Tên công ty</span>
+                    <input onChange={this.handleChange} type="text" required name="name" placeholder="Nhập tên công ty" />
+                </label>
+                <label className="tk">
+                    <span>Địa chỉ</span>
+                    <input onChange={this.handleChange} type="text" name="address" placeholder="Nhập địa chỉ công ty" />
+                </label>
+                <label className="tk">
+                    <span>Điện thoại</span>
+                    <input onChange={this.handleChange} type="text" name="phone" placeholder="Nhập số điện thoại công ty" />
+                </label>
+                <label className="tk">
+                    <span>Di động</span>
+                    <input onChange={this.handleChange} type="text" name="mobile" placeholder="Nhập số điện thoại cá nhân" />
+                </label>
+                <label className="tk">
+                    <span>Website</span>
+                    <input onChange={this.handleChange} type="text" name="website" placeholder="Nhập website công ty" />
+                </label>
+                <label className="tk">
+                    <span>Chức vụ</span>
+                    <input onChange={this.handleChange} type="text" name="position" placeholder="Nhập chức vụ của bạn trong công ty" />
+                </label>
+                <label className="tk">
+                    <span>Sản phẩm</span>
+                    <input onChange={this.handleChange} type="text" name="product" placeholder="Nhập sản phẩm mà bạn muốn mua (nếu có)" />
+                </label>
+                <label className="tk">
+                    <span>Email</span>
+                    <input onChange={this.handleChange} type="text" required name="email" placeholder="Nhập email công ty" />
                 </label>
                 <label className="mk">
                     <span>Mật khẩu</span>
-                    <input onChange={this.handleChange} type="password" name="password" placeholder="At least 8 characters" />
+                    <input onChange={this.handleChange} type="password" required name="password" placeholder="Nhập mật khẩu" />
                 </label>
-                <input type="submit" onClick={this.handleSubmit} defaultValue="Đăng nhập" />
-                <div className="suport-login">
+                <label className="mk">
+                    <span>Nhập lại</span>
+                    <input onChange={this.handleChange} type="password" required name="repassword" placeholder="Nhập lại mật khẩu" />
+                </label>
+                {/* <div className="suport-login">
                     <label className="remember-login label-cb">
                         <input type="checkbox" name="remember" />
                         <span className="checkbox-checkmark" />
-                        Nhớ đăng nhập
+                        Chấp nhận điều khoản
                     </label>
                     <label className="fogot-mk">
                         Quên mật khẩu? <a href="#" className="txt-red">Nhấn vào đây</a>
                     </label>
-                </div>
-                <p className="other-login">Hoặc</p>
-                <a href="#" className="with-fb">Đăng nhập bằng Facebook</a>
-                <a href="#" className="with-gg">Đăng nhập bằng Google</a>
+                </div> */}
+                <div className="error-form">{message}</div>
+                <input type="submit" onClick={this.handleSubmit} value="Đăng ký" />
                 <label>
-                    Thành viên mới? <a href="#" className="txt-red">Đăng ký ngay</a>
+                    Bạn đã có tài khoản? <a href="#" onClick={this.handleSwitchLogin} className="txt-red"> Đăng nhập ngay</a>
                 </label>
             </Modal>
         )

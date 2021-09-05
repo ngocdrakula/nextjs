@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import types from '../../redux/types';
+import { MODE } from '../../utils/helper';
 
 const pageSize = 10;
 
@@ -84,12 +85,36 @@ class ConversationList extends Component {
       }
     }
   }
+  handleChat = () => {
+    const { user, admin, dispatch } = this.props;
+    if (user?._id && admin?._id) {
+      dispatch({
+        type: types.GET_CONVERSATION_TO,
+        payload: { ...admin, open: true },
+      });
+    }
+    else if (user?._id) {
+      dispatch({
+        type: types.OPENFORM,
+        payload: MODE.exhibitor,
+      });
+    }
+  }
   render() {
-    const { conversations, user, openList } = this.props;
+    const { conversations, user, openList, admin } = this.props;
     const { name } = this.state;
     return (
       <>
-        <div className={"messageListHead" + (openList ? "" : " hidden")}>Cuộc hội thoại</div>
+        <div className={"messageListHead" + (openList ? "" : " hidden")} onClick={user?.mode !== MODE.admin ? this.handleChat : undefined}>
+          <div className="mes-admin-icon">
+            <img src="/images/user2.png" />
+          </div>
+          {user?.mode !== MODE.admin ?
+            <span>Nhắn tin với Admin</span>
+            :
+            <span>Cuộc hội thoại</span>
+          }
+        </div>
         <div className={"messageList" + (openList ? "" : " hidden")} onScroll={this.handleScroll}>
           {conversations.map((conversation, index) => {
             const toUser = conversation.leader.user._id === user._id ? conversation.member.user : conversation.leader.user;
@@ -100,7 +125,11 @@ class ConversationList extends Component {
             return (
               <div key={index} className={"inboxLine" + inboxNew} onClick={() => this.handleSelect(conversation._id)}  >
                 <div className="inboxAvatar">
-                  <img src={"/images/" + (toUser.avatar || "logo-showroom.png")} />
+                  {toUser.avatar ?
+                    <img src={"/api/images/" + toUser.avatar} />
+                    :
+                    <img src={"/images/logo-showroom.png"} />
+                  }
                 </div>
                 <div className="inboxContent">
                   <div className="inboxUsername">
@@ -121,11 +150,11 @@ class ConversationList extends Component {
         </div>
         <form className={"search-con" + (openList ? "" : " hidden")} onSubmit={this.handleSubmit}>
           <button type="submit"><img src="/images/icon-search.png" alt="" /></button>
-          <input name="inbox-name"autoComplete={"inbox-name"} value={name} onChange={this.handleChange} />
+          <input name="inbox-name" autoComplete={"inbox-name"} value={name} onChange={this.handleChange} />
         </form>
       </>
     );
   }
 }
 
-export default connect(({ app: { conversations, user, openList, total } }) => ({ conversations, user, openList, total }))(ConversationList);
+export default connect(({ app: { conversations, user, openList, total, admin } }) => ({ conversations, user, openList, total, admin }))(ConversationList);

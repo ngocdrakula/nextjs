@@ -41,14 +41,14 @@ class Buyer extends Component {
         }
     }
     render() {
-        const { industries, visitors } = this.props
+        const { setting, industries, visitors } = this.props
         const { selected } = this.state;
         return (
             <div id="buyers">
                 <div className="main-title hd-bg-orange">
-                    <h2 className="heading">Người mua</h2>
+                    <h2 className="heading">{setting.visitorTitle}</h2>
                     <div className="heading-bottom"><img src="/images/heading-bottom-sm.png" alt="" /></div>
-                    <p>Giới thiệu chung về Gian hàng trực tuyến của Người mua tại Vimexpo 2021</p>
+                    <p>{setting.visitorDescription}</p>
                 </div>
                 <div className="buyer-menu">
                     <ul className="menu">
@@ -111,4 +111,4 @@ class Buyer extends Component {
     }
 }
 
-export default connect(({ app: { industries, visitors, user } }) => ({ industries, visitors, user }))(Buyer)
+export default connect(({ app: { setting, industries, visitors, user } }) => ({ setting, industries, visitors, user }))(Buyer)

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import types from '../../../redux/types';
-import { MODE } from '../../../utils/helper';
+import types from '../../redux/types';
+import { MODE } from '../../utils/helper';
 import Time from './Time';
 
 const pageSize = 10;
@@ -19,7 +19,8 @@ class ConversationList extends Component {
   }
   handleSelect = (e, _id) => {
     e?.preventDefault();
-    const { dispatch, conversations, exUser } = this.props;
+    const { dispatch, conversations, exUser, user } = this.props;
+    const currentUser = exUser || user;
     const conCurrent = conversations.find(c => c._id === _id);
     if (conCurrent?.currentPage >= 0) {
       dispatch({
@@ -30,7 +31,7 @@ class ConversationList extends Component {
     else {
       dispatch({
         type: types.ADMIN_GET_ONE_CONVERSATION,
-        payload: { _id, page: 0, pageSize, from: exUser._id },
+        payload: { _id, page: 0, pageSize, from: currentUser._id },
         callback: res => {
           if (res?.success) {
             dispatch({
@@ -54,7 +55,8 @@ class ConversationList extends Component {
     this.gotoPage();
   }
   gotoPage = (page) => {
-    const { dispatch, exUser } = this.props;
+    const { dispatch, exUser, user } = this.props;
+    const currentUser = exUser || user;
     const { name } = this.state;
     dispatch({
       type: types.ADMIN_GET_CONVERSATIONS,
@@ -62,13 +64,14 @@ class ConversationList extends Component {
         page: page || 0,
         pageSize,
         name,
-        from: exUser._id
+        from: currentUser._id
       }
     })
   }
   handleScroll = e => {
     if (!this.loading && e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight - 10) {
-      const { conversations, total, dispatch, exUser } = this.props;
+      const { conversations, total, dispatch, exUser, user } = this.props;
+      const currentUser = exUser || user;
       const { name } = this.state;
       if (conversations.length < total) {
         this.loading = true;
@@ -78,7 +81,7 @@ class ConversationList extends Component {
             page: Math.round((conversations.length) / pageSize),
             pageSize,
             name,
-            from: exUser._id
+            from: currentUser._id
           },
           callback: res => {
             if (res?.success) {
@@ -91,6 +94,7 @@ class ConversationList extends Component {
   }
   render() {
     const { conversations, user, exUser, conId } = this.props;
+    const currentUser = exUser || user;
     return (<div className="col-sm-4 side">
       <div id="leftsidebar">
         <div className="row heading">
@@ -100,7 +104,7 @@ class ConversationList extends Component {
         </div>
         <div className="row sidebarContent" onScroll={this.handleScroll}>
           {conversations.map(conversation => {
-            const fromId = user?.mode === MODE.admin ? user._id : exUser?._id
+            const fromId = currentUser?._id
             const toUser = conversation.leader.user._id === fromId ? conversation.member.user : conversation.leader.user;
             const from = conversation.leader.user._id === fromId ? conversation.leader : conversation.member;
             const lastMessage = conversation.messages?.[0];
@@ -148,4 +152,4 @@ class ConversationList extends Component {
   }
 }
 
-export default connect(({ admin: { conversations, exUser, total, conId } }) => ({ conversations, exUser, total, conId }))(ConversationList);
+export default connect(({ admin: { conversations, exUser, user, total, conId } }) => ({ conversations, exUser, user, total, conId }))(ConversationList);

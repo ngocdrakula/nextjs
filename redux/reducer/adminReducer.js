@@ -12,7 +12,6 @@ export const initState = {
     industries: [],
     categories: [],
     user: null,
-    setting: {},
     exUser: null,
     conversations: [],
     conversationsAll: [],
@@ -327,15 +326,16 @@ const appReducer = (state = initState, action) => {
         }
         case types.ADMIN_REVICED_MESSAGE_SUCCESS: {
             const { data } = action.payload;
+            const currentUser = state.exUser || state.user;
             state.conversations = [data, ...state.conversations.filter(c => c._id !== data._id)];
             const indexAll = state.conversationsAll.findIndex(c => c._id === data._id);
             const { leader, member } = data;
-            const from = leader.user._id === (state.exUser._id || state.user._id) ? leader : member;
+            const from = leader.user._id === currentUser._id ? leader : member;
             if (indexAll + 1) {
                 const conCopy = state.conversationsAll[indexAll];
                 const messagesNew = data.messages.filter(c => !conCopy.messages.find(con => con._id === c._id));
                 conCopy.messages = [...messagesNew, ...conCopy.messages];
-                const fromOld = conCopy.leader.user._id === (state.exUser._id || state.user._id) ? conCopy.leader : conCopy.member;
+                const fromOld = conCopy.leader.user._id === currentUser._id ? conCopy.leader : conCopy.member;
                 if (fromOld.seen && !from.seen) state.newMessage++;
                 conCopy.leader = leader;
                 conCopy.member = member;
@@ -386,7 +386,7 @@ const appReducer = (state = initState, action) => {
         case types.ADMIN_UPDATE_SETTING_SUCCESS: {
             return {
                 ...state,
-                setting: action.payload.data
+                admin: action.payload.data
             };
         }
 

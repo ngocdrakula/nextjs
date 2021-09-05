@@ -5626,7 +5626,7 @@ label {
     display: inline-block;
     max-width: 100%;
     margin-bottom: 5px;
-    font-weight: 700
+    font-weight: 700;
 }
 
 input[type=search] {
@@ -16416,7 +16416,7 @@ fieldset legend {
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    display: block
+    display: block;
 }
 
 .form-control {

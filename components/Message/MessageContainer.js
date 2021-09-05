@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import SocketIO from '../../utils/SocketIO';
 import types from '../../redux/types';
 import ConversationList from './ConversationList';
 import MessageBox from './MessageBox';
@@ -21,7 +20,7 @@ class MessageContainer extends Component {
         page: 0,
         pageSize
       }
-    })
+    });
   }
   handleClose = () => {
     const { dispatch } = this.props;

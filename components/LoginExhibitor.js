@@ -16,7 +16,14 @@ class LoginExhibitor extends Component {
         const { dispatch } = this.props;
         dispatch({
             type: types.USER_LOGIN,
-            payload: { email, password }
+            payload: { email, password },
+            callback: res => {
+                if (!res?.success) {
+                    this.setState({
+                        field: res?.field, message: res?.message || "Đăng nhập không thành công"
+                    });
+                }
+            }
         })
     }
     handleClose = (e) => {
@@ -38,7 +45,8 @@ class LoginExhibitor extends Component {
                     <span>Mật khẩu</span>
                     <input onChange={this.handleChange} type="password" name="password" placeholder="At least 8 characters" />
                 </label>
-                <input type="submit" onClick={this.handleSubmit} value="Đăng nhập"  />
+                {message ? <div className="error-form">{message}</div> : ""}
+                <input type="submit" onClick={this.handleSubmit} value="Đăng nhập" />
                 <div className="suport-login">
                     <label className="remember-login label-cb">
                         <input type="checkbox" name="remember" />

@@ -152,7 +152,7 @@ ul {
 .header-content .search {
 	position: absolute;
 	width: 42.3%;
-	top: 40px;
+	top: 30%;
 	left: 345px;
 }
 
@@ -712,6 +712,7 @@ footer input[type="submit"] {
 	position: absolute;
 	bottom: 170px;
 	right: 152px;
+	cursor: pointer;
 }
 
 /* Danh sách */

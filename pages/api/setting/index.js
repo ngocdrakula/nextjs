@@ -37,8 +37,10 @@ const handler = async (req, res) => {
                 body: {
                     title, countDown, logoStatus, logo, favicon, banner,
                     bannerStatus, bannerSubTitle, bannerTitle, bannerStartTime, bannerEndTime,
-                    bannerLocation, bannerSlogan, bannerDescription, bannerBackground, featuresTitle, features,
-                    exhibitorTitle, exhibitorDescription, visitorTitle, visitorDescription
+                    bannerLocation, bannerSlogan, bannerDescription, bannerBackground,
+                    featureStatus, featuresTitle, features,
+                    exhibitorTitle, exhibitorDescription, visitorTitle, visitorDescription,
+                    facebook, zalo, spyke, youtube,
                 },
                 files, err } = await uploader(req);
             if (err) throw ({ path: 'files' });
@@ -76,7 +78,6 @@ const handler = async (req, res) => {
             }
             if (title !== undefined) data.title = title;
             if (logoStatus) data.logoStatus = !(logoStatus == 'false');
-            if (countDown !== undefined) data.countDown = countDown;
             if (bannerStatus) data.bannerStatus = !(bannerStatus == 'false');
             if (bannerSubTitle !== undefined) data.bannerSubTitle = bannerSubTitle;
             if (bannerTitle !== undefined) data.bannerTitle = bannerTitle;
@@ -86,16 +87,31 @@ const handler = async (req, res) => {
             if (bannerSlogan !== undefined) data.bannerSlogan = bannerSlogan;
             if (bannerDescription !== undefined) data.bannerDescription = bannerDescription;
             if (bannerBackground !== undefined) data.bannerBackground = bannerBackground;
+            if (countDown !== undefined) data.countDown = countDown;
+            if (featureStatus) data.featureStatus = !(featureStatus == 'false');
             if (featuresTitle !== undefined) data.featuresTitle = featuresTitle;
-            if (features !== undefined) data.features = features;
+            if (features) {
+                try {
+                    const newFeatures = JSON.parse(features)
+                    if (newFeatures.length >= 0) data.features = newFeatures;
+                    else throw ({})
+                }
+                catch (e) {
+                    throw ({ path: 'features' })
+                }
+            }
             if (exhibitorTitle !== undefined) data.exhibitorTitle = exhibitorTitle;
             if (exhibitorDescription !== undefined) data.exhibitorDescription = exhibitorDescription;
             if (visitorTitle !== undefined) data.visitorTitle = visitorTitle;
             if (visitorDescription !== undefined) data.visitorDescription = visitorDescription;
-
+            if (facebook !== undefined) data.facebook = facebook;
+            if (zalo !== undefined) data.zalo = zalo;
+            if (spyke !== undefined) data.spyke = spyke;
+            if (youtube !== undefined) data.youtube = youtube;
+            data.timestamp = Date.now();
             fs.writeFileSync(settingName, JSON.stringify(data));
 
-            return res.status(401).send({
+            return res.status(200).send({
                 success: true,
                 data,
                 message: 'Cập nhật thành công',
@@ -139,76 +155,11 @@ const handler = async (req, res) => {
                     messages: lang?.message?.error?.upload_failed,
                 });
             }
-            if (e.path == 'email') {
+            if (e.path == 'features') {
                 return res.status(400).send({
                     success: false,
                     field: e.path,
-                    exist: true,
-                    message: "Email đã tồn tại",
-                });
-            }
-            if (e.path == 'industry') {
-                return res.status(400).send({
-                    success: false,
-                    require: true,
-                    field: e.path,
-                    message: "Ngành nghề là bắt buộc",
-                });
-            }
-            if (e.path == '_id') {
-                return res.status(400).send({
-                    success: false,
-                    exist: true,
-                    field: e.path,
-                    message: "Tài khoản không tồn tại",
-                });
-            }
-            if (e.path == 'industry') {
-                return res.status(400).send({
-                    success: false,
-                    exist: true,
-                    field: e.path,
-                    message: "Ngành nghề không tồn tại",
-                });
-            }
-            if (e.path == 'phone') {
-                return res.status(400).send({
-                    success: false,
-                    require: true,
-                    field: e.path,
-                    message: "Số điện thoại là bắt buộc",
-                });
-            }
-            if (e.path == 'representative') {
-                return res.status(400).send({
-                    success: false,
-                    require: true,
-                    field: e.path,
-                    message: "Người đại diện là bắt buộc",
-                });
-            }
-            if (e.path == 'position') {
-                return res.status(400).send({
-                    success: false,
-                    require: true,
-                    field: e.path,
-                    message: "Chức vụ người đại diện là bắt buộc",
-                });
-            }
-            if (e.path == 'mobile') {
-                return res.status(400).send({
-                    success: false,
-                    require: true,
-                    field: e.path,
-                    message: "Số điện thoại người đại diện là bắt buộc",
-                });
-            }
-            if (e.path == 're_email') {
-                return res.status(400).send({
-                    success: false,
-                    require: true,
-                    field: e.path,
-                    message: "Email người đại diện là bắt buộc",
+                    message: "Tính năng phải là một danh sách",
                 });
             }
             return res.status(500).send({

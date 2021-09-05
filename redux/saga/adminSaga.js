@@ -483,10 +483,11 @@ function* admin_updateSetting({ payload, callback }) {
     try {
         const res = yield call(requests.admin_updateSettingRequest, payload);
         if (res?.data?.success) {
-            yield put({ type: types.ADMIN_UPDATE_SETTING_SUCCESS, payload: res.data.data });
+            yield put({ type: types.ADMIN_UPDATE_SETTING_SUCCESS, payload: res.data });
             if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
+        console.log(e)
         yield put({ type: types.ADMIN_UPDATE_SETTING_FAILED, payload: e.response });
         if (typeof callback === 'function') callback(e.response);
     }

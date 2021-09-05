@@ -39,3 +39,6 @@ export const getCategoriesRequest = async (params) => {
 export const postContactRequest = async (request) => {
     return axios.post('contact?', request)
 }
+export const getSettingRequest = async () => {
+    return axios.get('setting');
+}

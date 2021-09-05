@@ -41,16 +41,16 @@ class Exhibitor extends Component {
         }
     }
     render() {
-        const { industries, exhibitors } = this.props
+        const {setting, industries, exhibitors } = this.props
         const { selected } = this.state;
         return (
             <div id="exhibitors">
                 <div className="main-title hd-bg-orange">
-                    <h2 className="heading">Nhà trưng bày</h2>
+                    <h2 className="heading">{setting.exhibitorTitle}</h2>
                     <div className="heading-bottom">
                         <img src="/images/heading-bottom-sm.png" alt="" />
                     </div>
-                    <p>Giới thiệu chung về Gian hàng trực tuyến của Nhà trưng bày tại VIMEXPO 2021</p>
+                    <p>{setting.exhibitorDescription}</p>
                 </div>
                 <div className="exhibitor-menu">
                     <ul className="menu">
@@ -115,4 +115,4 @@ class Exhibitor extends Component {
     }
 }
 
-export default connect(({ app: { industries, exhibitors, user } }) => ({ industries, exhibitors, user }))(Exhibitor)
+export default connect(({ app: { setting, industries, exhibitors, user } }) => ({ setting, industries, exhibitors, user }))(Exhibitor)

@@ -6,13 +6,32 @@ class Partner extends Component {
         return (
             <div id="partner">
                 <div className="container">
-                    <div className="row">
+                    <div className="row partner-info">
                         <div className="col-md-6">
-                            <div className="partner-info">
-                                <p><span>Cơ quan chỉ đạo</span><span>: BỘ CÔNG THƯƠNG</span></p>
-                                <p><span>Đơn vị trủ chì</span><span>: Cục Công nghiệp (Bộ Công Thương)</span><br />
-                                    <span style={{ float: 'right' }} className="mobile-left">Trung tâm Hỗ trợ phát triển công nghiệp (IDC)</span></p>
-                                <p><span>Đơn vị tổ chức</span><span>: Công ty QC &amp; HC Triển lãm C.I.S Vietnam</span></p>
+                            <div className="row" style={{ marginBottom: 10 }}>
+                                <div className="col-sm-4">
+                                    <p>Cơ quan chỉ đạo:</p>
+                                </div>
+                                <div className="col-sm-8">
+                                    <p>BỘ CÔNG THƯƠNG</p>
+                                </div>
+                            </div>
+                            <div className="row" style={{ marginBottom: 10 }}>
+                                <div className="col-sm-4">
+                                    <p>Đơn vị trủ chì:</p>
+                                </div>
+                                <div className="col-sm-8">
+                                    <p>Cục Công nghiệp (Bộ Công Thương)</p>
+                                    <p>Trung tâm Hỗ trợ phát triển công nghiệp (IDC)</p>
+                                </div>
+                            </div>
+                            <div className="row" style={{ marginBottom: 10 }}>
+                                <div className="col-sm-4">
+                                    <p>Đơn vị tổ chức:</p>
+                                </div>
+                                <div className="col-sm-8">
+                                    <p>Công ty QC &amp; HC Triển lãm C.I.S Vietnam</p>
+                                </div>
                             </div>
                         </div>
                         <div className="col-md-6">

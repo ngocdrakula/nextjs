@@ -186,10 +186,30 @@ input[type=submit] {
 	background-color: #FDFDFD;
 	color: #1d7be7;
 	font-size: 13px;
-	font-weight: 600;
+	font-weight: 500;
 	line-height: 30px;
 	box-shadow: 0px 2px 3px 0px #d8d8d8;
 	z-index: 1000;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.messageListHead .mes-admin-icon {
+	background-color: #1d7be7;
+	border-radius: 18px;
+	width: 18px;
+	height: 18px;
+	display: flex;
+	justify-self: center;
+	align-items: center;
+	margin-right: 5px;
+}
+
+.messageListHead img {
+	margin: auto;
+	width: 10px;
 }
 
 .inboxLine {
@@ -333,7 +353,9 @@ input[type=submit] {
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 1;
-	font-size: 12px;
+	font-size: 13px;
+	font-weight: 500;
+	color: #1d7be7;
 }
 
 .mesConversation {
@@ -525,4 +547,106 @@ input[type=submit] {
 .contact-form .disabled-btn {
 	cursor: not-allowed;
 	background-color: #c57528;
+}
+
+.login-modal.register-vis .modal-content .tk, .login-modal.register-vis .modal-content .mk {
+	display: flex;
+	align-items: center;
+}
+
+.login-modal.register-vis .modal-content .mk {
+	margin-top: 0;
+	margin-bottom: .5rem;
+}
+
+.login-modal.register-vis .modal-content .tk span, .login-modal.register-vis .modal-content .mk span {
+	width: 25%;
+}
+
+.login-modal.register-vis .modal-content .tk input, .login-modal.register-vis .modal-content .mk input {
+	width: 75%;
+}
+
+.error-form {
+	margin: 10px;
+	color: red;
+	font-style: italic;
+}
+
+.mes-admin-info {
+	width: 100%;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	padding: 10px;
+    background: #f7f7f7
+}
+
+.mes-admin-logo {
+	display: flex;
+	width: 60px;
+	height: 60px;
+	background: #f1f1f1;
+	justify-content: center;
+	align-items: center;
+	border-radius: 60px;
+}
+
+.mes-admin-avatar {
+	width: auto;
+	height: auto;
+	max-width: 40px;
+	max-height: 40px;
+}
+
+.mes-admin-default {
+	width: auto;
+	height: 40px;
+}
+
+.mes-admin-status {
+	flex: 1;
+	padding: 5px 10px;
+}
+
+.mes-admin-name {
+	text-transform: uppercase;
+	color: #212657;
+	font-weight: 600;
+	margin-bottom: 5px;
+}
+
+.mes-admin-onl {
+	color: #7de747;
+	font-weight: 500;
+}
+
+.mes-login-container {
+	flex: 1;
+	display: flex;
+	justify-self: center;
+	align-items: center;
+}
+
+.mes-login {
+	text-align: center;
+	padding: 20px;
+}
+
+.mes-log-des {
+	font-size: 12px;
+	line-height: 18px;
+	font-weight: 500;
+	color: #888;
+	margin-bottom: 15px;
+}
+
+.mes-log-button {
+	background-color: #1d7be7;
+	color: #FFF;
+	font-weight: 500;
+	padding: 7px 15px;
+	border-radius: 7px;
+	cursor: pointer;
+	margin-bottom: 50px;
 }

@@ -7,6 +7,7 @@ class Footer extends Component {
         document.documentElement.scrollTop = 0;
     }
     render() {
+        const { setting: { facebook, zalo, spyke, youtube, } } = this.props;
         return (
             <>
                 <footer id="footer" className="site-footer">
@@ -45,10 +46,10 @@ class Footer extends Component {
                                     </p>
                                 </div>
                                 <div className="social">
-                                    <a href="#"><img src="images/fb.png" alt="" /></a>
-                                    <a href="#"><img src="images/zalo.png" alt="" /></a>
-                                    <a href="#"><img src="images/skype.png" alt="" /></a>
-                                    <a href="#"><img src="images/youtube.png" alt="" /></a>
+                                    <a href={facebook || "#"} target="_blank"><img src="images/fb.png" alt="Facebook" title="Facebook" /></a>
+                                    <a href={zalo || "#"} target="_blank"><img src="images/zalo.png" alt="Zalo" title="Zalo" /></a>
+                                    <a href={spyke || "#"} target="_blank"><img src="images/skype.png" alt="Spyke" title="Spyke" /></a>
+                                    <a href={youtube || "#"} target="_blank"><img src="images/youtube.png" alt="Spyke" title="Spyke" /></a>
                                 </div>
                             </div>
                             <div className="col-md-6">
@@ -71,4 +72,4 @@ class Footer extends Component {
 
 
 
-export default connect(({ admin: { setting } }) => ({ setting }))(Footer)
+export default connect(({ app: { setting } }) => ({ setting }))(Footer)

@@ -9,39 +9,29 @@ import { MODE } from '../../../utils/helper';
 const handler = async (req, res) => {
     if (req.method == 'POST') {
         try {
-            const {
-                email, password, name, phone, mode, industry, address,
-                hotline, fax, representative, position, mobile, re_email, website, introduce,
-                product, contact
-            } = req.body;
-            if (!email || !password) throw ({ path: !email ? 'email' : 'password', required: true });
-            if (mode != MODE.visitor && mode != MODE.exhibitor) throw ({ path: 'mode', required: true });
-            if (!industry) throw ({ path: 'industry', required: true });
+            const { email, password, name, phone, address,
+                representative, position, mobile, website, product } = req.body;
+            if (!email) throw ({ path: 'email', required: true });
+            if (!password) throw ({ path: 'password', required: true });
+            if (!name) throw ({ path: 'name', required: true });
             const user = await userController.find({ email });
             if (user) throw ({ path: 'user' });
             const hash = await bcrypt.create(password);
-            try {
-                const currentIndustry = await industryController.get(industry);
-                if (!currentIndustry) throw ({ path: '_id' })
-            }
-            catch (e) { throw ({ path: '_id' }); };
             const userInfo = {
-                password: hash,
-                email, name, phone, mode, address, industry: [industry],
-                hotline, fax, representative, position, mobile, re_email, website, introduce,
-                product, contact
+                password: hash, email, name, phone, mode: MODE.visitor, address,
+                representative, position, mobile, website, product,
             };
             const userCreated = await userController.create(userInfo);
             const { _id } = userCreated;
-            const token = jwt.create({ email, _id, name, mode });
+            const token = jwt.create({ email, _id, name, mode: MODE.visitor });
             return res.status(201).send({
                 success: true,
                 token,
-                data: { email, _id, name, mode },
+                data: { email, _id, name, mode: MODE.visitor },
                 message: 'Đăng ký thành công',
             });
         } catch (e) {
-            if (e.path == 'email' || e.path == 'password') {
+            if (['email', 'name', 'password'].includes(e.path)) {
                 return res.status(400).send({
                     success: false,
                     required: false,
@@ -53,21 +43,8 @@ const handler = async (req, res) => {
                 return res.status(400).send({
                     success: false,
                     exist: true,
+                    field: 'email',
                     message: "Email đã tồn tại",
-                });
-            }
-            if (e.path == 'industry') {
-                return res.status(400).send({
-                    success: false,
-                    exist: true,
-                    message: "Ngành nghề là bắt buộc",
-                });
-            }
-            if (e.path == '_id') {
-                return res.status(400).send({
-                    success: false,
-                    exist: true,
-                    message: "Ngành nghề không tồn tại",
                 });
             }
             return res.status(500).send({

@@ -11,6 +11,7 @@ import MessageContainer from './Message/MessageContainer';
 import MessageIconNoti from './Message/MessageIconNoti';
 import SocketIO from '../utils/SocketIO';
 import { stringify } from 'qs';
+import MessageCustomer from './Message/MessageCustomer';
 
 class Header extends Component {
     constructor(props) {
@@ -23,6 +24,7 @@ class Header extends Component {
         const { dispatch } = this.props;
         SocketIO.start();
         dispatch({ type: types.USER_LOGIN_LOCAL });
+        dispatch({ type: types.GET_ADMIN_INFO });
         const query = getQuery(Router?.router?.asPath);
         if (query.name) this.setState({ name: query.name });
     }
@@ -60,7 +62,9 @@ class Header extends Component {
     }
     render() {
         const { name } = this.state;
-        const { user } = this.props;
+        const { user, setting } = this.props;
+        const { logo, logoUpdated, title, logoStatus } = setting;
+        const image = `${logoUpdated ? "/api" : ""}/images/${logo}`;
         return (
             <>
                 <Head />
@@ -79,7 +83,11 @@ class Header extends Component {
                                 <div className="row">
                                     <div className="col-5 col-md-3">
                                         <div className="logo">
-                                            <a href="/"><img src="/images/logo.png" alt="" /></a>
+                                            <a href="/">
+                                                {logoStatus ?
+                                                    <img src={image} alt={title} />
+                                                    : ""}
+                                            </a>
                                         </div>
                                     </div>
                                     <div className="col-7 col-md-9 choose-login">
@@ -124,20 +132,19 @@ class Header extends Component {
                     </div>
                 </header>
                 {user?._id ?
-                    <>
-                        <MessageContainer />
-                        <MessageIconNoti />
-                    </>
+                    <MessageContainer />
                     :
                     <>
                         <LoginVisitor />
                         <LoginExhibitor />
                         <RegisterVisitor />
+                        <MessageCustomer />
                     </>
                 }
+                <MessageIconNoti />
             </>
         )
     }
 }
 
-export default connect(({ app: { user }, admin: { setting } }) => ({ user, setting }))(Header)
+export default connect(({ app: { user, setting } }) => ({ user, setting }))(Header)

@@ -527,6 +527,7 @@ class Exhibitor extends Component {
 export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
   //call all data for SSR
   store.dispatch({ type: types.GET_INDUSTRIES, payload: { page: 0, pageSize: 0, enabled: true } });
+  store.dispatch({ type: types.GET_SETTING});
 
   store.dispatch(END)
   await store.sagaTask.toPromise()

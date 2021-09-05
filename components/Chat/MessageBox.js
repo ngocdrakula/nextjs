@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import types from '../../../redux/types';
-import { getTime, MODE } from '../../../utils/helper';
-import SocketIO from '../../../utils/SocketIO';
+import types from '../../redux/types';
+import SocketIO from '../../utils/SocketIO';
 import Time from './Time';
 
 const pageSize = 10;
@@ -17,17 +16,18 @@ class MessageBox extends Component {
         }
     }
     componentDidMount() {
-        const { dispatch, exUser } = this.props;
+        const { dispatch, exUser, user } = this.props;
+        const currentUser = exUser || user;
         this.listen = data => {
             if (data?.type === 'new' || data?.type === 'send') {
                 dispatch({
                     type: types.ADMIN_REVICED_MESSAGE,
-                    payload: { to: data.to, from: exUser._id },
+                    payload: { to: data.to, from: currentUser._id },
                     callback: res => {
                         if (res?.success) {
-                            const { conversationsAll, conId, exUser } = this.props;
+                            const { conversationsAll, conId } = this.props;
                             const conCurrent = conversationsAll.find(c => c.leader.user._id === data.to || c.member.user._id === data.to);
-                            if (conCurrent._id === conId && !exUser) {
+                            if (conCurrent._id === conId && !currentUser) {
                                 this.readMessage();
                                 this.scrollToBottom();
                             }
@@ -36,7 +36,7 @@ class MessageBox extends Component {
                 })
             }
         };
-        SocketIO.socket.on(exUser._id, this.listen);
+        SocketIO.socket.on(currentUser._id, this.listen);
     }
     componentDidUpdate(prevProps) {
         if (prevProps.conId !== this.props.conId || prevProps.conversationsAll !== this.props.conversationsAll) {
@@ -47,19 +47,21 @@ class MessageBox extends Component {
     }
     componentWillUnmount() {
         clearTimeout(this.timeout)
-        const { exUser } = this.props;
-        SocketIO.socket.off(exUser._id, this.listen)
+        const { exUser, user } = this.props;
+        const currentUser = exUser || user;
+        SocketIO.socket.off(currentUser._id, this.listen)
     }
     readMessage = () => {
-        const { conversationsAll, conId, exUser, dispatch } = this.props;
+        const { conversationsAll, conId, exUser, user, dispatch } = this.props;
+        const currentUser = exUser || user;
         const conCurrent = conversationsAll.find(con => con._id === conId);
         if (conCurrent) {
             const { leader, member } = conCurrent;
-            const from = leader.user._id === exUser._id ? leader : member;
+            const from = leader.user._id === currentUser._id ? leader : member;
             if (!from.seen) {
                 dispatch({
                     type: types.ADMIN_READ_MESSAGE,
-                    payload: { _id: conCurrent._id, from: exUser._id },
+                    payload: { _id: conCurrent._id, from: currentUser._id },
                     callback: res => {
                         if (res?.success) {
                             this.scrollToBottom();
@@ -80,15 +82,16 @@ class MessageBox extends Component {
     }
     sendMessage = (e) => {
         if (e) e.preventDefault();
-        const { dispatch, conversationsAll, conId, exUser } = this.props;
+        const { dispatch, conversationsAll, conId, exUser, user } = this.props;
+        const currentUser = exUser || user;
         const { message } = this.state;
         const conCurrent = conversationsAll.find(con => con._id === conId) || {};
         const { leader, member } = conCurrent;
-        const to = (leader?.user?._id === exUser._id ? member?.user : leader?.user) || {};
+        const to = (leader?.user?._id === currentUser._id ? member?.user : leader?.user) || {};
         if (message && to?._id) {
             dispatch({
                 type: types.ADMIN_SEND_MESSAGE,
-                payload: { message, to: to._id, conId, from: exUser._id },
+                payload: { message, to: to._id, conId, from: currentUser._id },
                 callback: res => {
                     if (res?.success) this.setState({ message: "" })
                     this.scrollToBottom()
@@ -108,7 +111,8 @@ class MessageBox extends Component {
     }
     handleScroll = e => {
         if (!this.loading && !e.target.scrollTop) {
-            const { conversationsAll, conId, dispatch, exUser } = this.props;
+            const { conversationsAll, conId, dispatch, exUser, user } = this.props;
+            const currentUser = exUser || user;
             const conCurrent = conversationsAll.find(con => con._id === conId);
             if (conCurrent && !conCurrent.loadAll) {
                 this.loading = true;
@@ -119,7 +123,7 @@ class MessageBox extends Component {
                         _id: conCurrent._id,
                         page: Math.floor((conCurrent.messages.length - 1) / pageSize) + 1,
                         pageSize,
-                        from: exUser._id
+                        from: currentUser._id
                     },
                     callback: res => {
                         if (res?.success) {
@@ -132,12 +136,13 @@ class MessageBox extends Component {
         }
     }
     render() {
-        const { conversationsAll, conId, exUser } = this.props;
+        const { conversationsAll, conId, exUser, user } = this.props;
+        const currentUser = exUser || user;
         const { message } = this.state;
         const conCurrent = conversationsAll.find(con => con._id === conId) || {};
         const { leader, member, messages } = conCurrent;
-        const toUser = (leader?.user?._id === exUser._id ? member?.user : leader?.user) || {};
-        const fromUser = (leader?.user?._id !== exUser._id ? member?.user : leader?.user) || {};
+        const toUser = (leader?.user?._id === currentUser._id ? member?.user : leader?.user) || {};
+        const fromUser = (leader?.user?._id !== currentUser._id ? member?.user : leader?.user) || {};
         const messagesReverse = messages ? [...messages].reverse() : [];
         return (
             <div id="chatConversation" className="col-sm-8 conversation">
@@ -159,8 +164,8 @@ class MessageBox extends Component {
                     {messagesReverse.map(mes => {
                         return (
                             <div className="row message-body" key={mes._id}>
-                                <div className={"col-sm-12 message-main-" + (mes.author === exUser._id ? "sender" : "receiver")}>
-                                    <div className={mes.author === exUser._id ? "sender" : "receiver"}>
+                                <div className={"col-sm-12 message-main-" + (mes.author === currentUser._id ? "sender" : "receiver")}>
+                                    <div className={mes.author === currentUser._id ? "sender" : "receiver"}>
                                         <div className="message-text">{mes.content}</div>
                                     </div>
                                     <Time className="message-time" title="2" value="3" createdAt={mes.createdAt} />
