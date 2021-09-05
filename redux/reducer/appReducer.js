@@ -275,7 +275,6 @@ const appReducer = (state = initState, action) => {
             };
         }
         case types.GET_ADMIN_INFO_SUCCESS: {
-            console.log(action.payload)
             return {
                 ...state,
                 admin: action.payload

@@ -487,7 +487,6 @@ function* admin_updateSetting({ payload, callback }) {
             if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
-        console.log(e)
         yield put({ type: types.ADMIN_UPDATE_SETTING_FAILED, payload: e.response });
         if (typeof callback === 'function') callback(e.response);
     }

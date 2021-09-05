@@ -191,7 +191,6 @@ class Overview extends Component {
         this.setState({ features: [...features] })
     }
     handleChangeTime = e => {
-        console.log(e.target.value)
         this.setState({ [e.target.name]: e.target.value, fieldError: null })
     }
     render() {

@@ -56,4 +56,4 @@ class SideBar extends Component {
     }
 }
 
-export default connect(({ admin: {  newMessage } }) => ({  newMessage }))(SideBar)
+export default connect(({ admin: { newMessage } }) => ({ newMessage }))(SideBar)

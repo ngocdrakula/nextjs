@@ -46,7 +46,6 @@ function* getExhibitors({ payload, callback }) {
             if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
-        console.log(e)
         yield put({ type: types.GET_EXHIBITORS_FAILED, payload: e.response });
         if (typeof callback === 'function') {
             callback(e.response);
