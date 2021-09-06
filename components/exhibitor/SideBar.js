@@ -19,6 +19,11 @@ class SideBar extends Component {
                                 <i className="fa fa-dashboard" /> <span>Tổng quan</span>
                             </a>
                         </li>
+                        <li className={active === 4 ? "active" : ""}>
+                            <a href="#" onClick={() => handleActive(4)}>
+                                <i className="fa fa-calendar" /> <span>Lịch giao thương</span>
+                            </a>
+                        </li>
                         <li className={active === 1 ? "active" : ""}>
                             <a href="#" onClick={() => handleActive(1)}>
                                 <i className="fa fa-map-marker" /> <span> Danh sách chuyên mục</span>
@@ -31,7 +36,7 @@ class SideBar extends Component {
                         </li>
                         <li className={active === 3 ? "active" : ""}>
                             <a href="#" onClick={() => handleActive(3)}>
-                                <i className="fa fa-meetup" /> <span>Chat{newMessage ? ` (${newMessage})` : ""}</span>
+                                <i className="fa fa-wechatwechat" /> <span>Chat{newMessage ? ` (${newMessage})` : ""}</span>
                             </a>
                         </li>
                     </ul>

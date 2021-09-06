@@ -150,16 +150,16 @@ class Visitor extends Component {
                                         <span>Xóa {selecteds.length} đã chọn</span>
                                     </button>
                                     : ""}
-                                {/* <button className="btn btn-default buttons-copy buttons-html5 btn-sm" tabIndex={0} aria-controls="DataTables_Table_1">
+                                {/* <button className="btn btn-default buttons-copy buttons-html5 btn-sm" >
                                     <span>Copy</span>
                                 </button>
-                                <button className="btn btn-default buttons-csv buttons-html5 btn-sm" tabIndex={0} aria-controls="DataTables_Table_1">
+                                <button className="btn btn-default buttons-csv buttons-html5 btn-sm" >
                                     <span>CSV</span>
-                                </button> <button className="btn btn-default buttons-excel buttons-html5 btn-sm" tabIndex={0} aria-controls="DataTables_Table_1">
+                                </button> <button className="btn btn-default buttons-excel buttons-html5 btn-sm" >
                                     <span>Excel</span>
-                                </button> <button className="btn btn-default buttons-pdf buttons-html5 btn-sm" tabIndex={0} aria-controls="DataTables_Table_1">
+                                </button> <button className="btn btn-default buttons-pdf buttons-html5 btn-sm" >
                                     <span>PDF</span>
-                                </button> <button className="btn btn-default buttons-print btn-sm" tabIndex={0} aria-controls="DataTables_Table_1">
+                                </button> <button className="btn btn-default buttons-print btn-sm" >
                                     <span>Print</span>
                                 </button> */}
                             </div>
@@ -193,8 +193,8 @@ class Visitor extends Component {
                                             </div>
                                         </th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Ảnh đại diện" style={{ width: '54.8px' }}>Ảnh đại diện</th>
-                                        <th className="sorting" tabIndex={0} aria-controls="DataTables_Table_1" rowSpan={1} colSpan={1} aria-label="Tên khách hàng: activate to sort column ascending" style={{ width: '142.8px' }}>Tên khách hàng</th>
-                                        <th className="sorting" tabIndex={0} aria-controls="DataTables_Table_1" rowSpan={1} colSpan={1} aria-label="Email: activate to sort column ascending" style={{ width: 218 }}>Email</th>
+                                        <th className="sorting"  rowSpan={1} colSpan={1} aria-label="Tên khách hàng: activate to sort column ascending" style={{ width: '142.8px' }}>Tên khách hàng</th>
+                                        <th className="sorting"  rowSpan={1} colSpan={1} aria-label="Email: activate to sort column ascending" style={{ width: 218 }}>Email</th>
                                         <th style={{ textAlign: 'center !important', width: 130 }} className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Hành động">Hành động</th>
                                     </tr>
                                 </thead>

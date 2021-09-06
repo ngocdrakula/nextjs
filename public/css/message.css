@@ -579,7 +579,7 @@ input[type=submit] {
 	justify-content: flex-start;
 	align-items: center;
 	padding: 10px;
-    background: #f7f7f7
+	background: #f7f7f7
 }
 
 .mes-admin-logo {
@@ -649,4 +649,262 @@ input[type=submit] {
 	border-radius: 7px;
 	cursor: pointer;
 	margin-bottom: 50px;
+}
+
+.container-DKGiaoThuong {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+	z-index: 1000;
+	display: none;
+	justify-content: center;
+	align-items: center;
+	background: #00000099;
+}
+
+.container-DKGiaoThuong {
+	/* max-width: 60rem; */
+	margin: 0 auto;
+}
+
+.overlay {
+	font-size: 50px;
+	color: white;
+	float: right;
+	display: flex;
+	justify-content: flex-end;
+	padding-right: 32px;
+	cursor: pointer;
+}
+
+.overlay {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	background: #00000096;
+}
+
+.card {
+	position: relative;
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-direction: column;
+	flex-direction: column;
+	min-width: 0;
+	word-wrap: break-word;
+	background-color: #fff;
+	background-clip: border-box;
+	border: 1px solid rgba(0, 0, 0, .125);
+	border-radius: .25rem;
+}
+
+.card {
+	border-radius: 5px;
+	max-width: 33rem;
+	margin: 0 auto;
+	margin-top: 0;
+	min-height: 300px;
+	max-height: 800px;
+	background-color: #fff;
+	font-weight: 700;
+	text-transform: uppercase;
+	box-shadow: 0 27px 24px 0 rgb(0 0 0 / 22%), 0 40px 77px 0 rgb(0 0 0 / 22%);
+	transform: scale(0.85);
+	overflow-y: auto;
+	height: 90%;
+	overflow: auto;
+}
+
+.form__name {
+	font-family: system-ui;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	font-weight: 900;
+	background-color: #003277;
+	padding: 15px;
+	color: #fff;
+	font-size: 1.2rem;
+	padding: 15px 50px;
+}
+
+.time__container, .message__container, .contact__container {
+	padding: 5px 50px 15px;
+}
+
+.section .box {
+	vertical-align: middle;
+	cursor: default;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	display: inline-block;
+	font-size: 10px;
+	font-weight: 900;
+	height: 20px;
+	width: 20px;
+	line-height: 20px;
+	border-radius: 50px;
+	border: 1px solid #47536A;
+	background-color: #47536A;
+	text-align: center;
+	color: #fff;
+}
+
+.section span {
+	vertical-align: middle;
+	margin-left: 10px;
+}
+
+.form__time, .form__contact {
+	color: #47536A;
+	font-size: 0.7rem;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	font-weight: 700;
+	margin-top: 10px;
+	display: flex;
+	/* flex-wrap: wrap; */
+	width: 100%;
+}
+
+form.form__contact {
+	display: flex;
+	/* flex-wrap: nowrap; */
+	justify-content: space-between;
+}
+
+.contact__container form.form__contact {
+	/* flex-wrap: nowrap; */
+}
+
+.form__time .date, .form__time .time, .form__time .timezone, .form__time .cname, .form__time .cnum, .form__time .email, .form__contact .date, .form__contact .time, .form__contact .timezone, .form__contact .cname, .form__contact .cnum, .form__contact .email {
+	display: inline-block;
+	width: 100%;
+}
+
+form.form__contact .cname {
+	width: 48%;
+}
+
+.form__time .date label, .form__time .date input, .form__time .time label, .form__time .time input, .form__time .timezone label, .form__time .timezone input, .form__time .cname label, .form__time .cname input, .form__time .cnum label, .form__time .cnum input, .form__time .email label, .form__time .email input, .form__contact .date label, .form__contact .date input, .form__contact .time label, .form__contact .time input, .form__contact .timezone label, .form__contact .timezone input, .form__contact .cname label, .form__contact .cname input, .form__contact .cnum label, .form__contact .cnum input, .form__contact .email label, .form__contact .email input {
+	display: block;
+	width: 200px;
+}
+
+.form__time .date label, .form__time .time label, .form__time .timezone label, .form__time .cname label, .form__time .cnum label, .form__time .email label, .form__contact .date label, .form__contact .time label, .form__contact .timezone label, .form__contact .cname label, .form__contact .cnum label, .form__contact .email label {
+	margin-bottom: 10px;
+}
+
+.container-DKGiaoThuong input {
+	font-size: 0.8rem;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+	background: transparent;
+	border: 1px solid #A4A9C5;
+	border-radius: 3px;
+	outline: none;
+	padding: 10px;
+	transition: border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	color: #003277;
+}
+
+.form__time .date, .form__time .time, .form__time .timezone, .form__time .cname, .form__time .cnum, .form__time .email, .form__contact .date, .form__contact .time, .form__contact .timezone, .form__contact .cname, .form__contact .cnum, .form__contact .email {
+	display: inline-block;
+	width: 100%;
+}
+
+.form__time .time, .form__time .cnum, .form__contact .time, .form__contact .cnum {
+	margin-left: 0px;
+}
+
+form.form__contact .cnum {
+	width: 48%;
+}
+
+.form__time, .form__contact {
+	color: #47536A;
+	font-size: 0.7rem;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	font-weight: 700;
+	margin-top: 10px;
+	display: flex;
+	/* flex-wrap: wrap; */
+	width: 100%;
+}
+
+div#reservationdate {
+	width: 100%;
+}
+
+textarea {
+	box-sizing: border-box;
+	font-weight: normal;
+	padding: 5px;
+	margin-top: 20px;
+	border: 1px solid #A4A9C5;
+	border-radius: 3px;
+	outline: none;
+	transition: border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	color: #15A4FA;
+	width: calc(100% - 3px);
+}
+
+form.form__contact {
+	display: flex;
+	/* flex-wrap: nowrap; */
+	justify-content: space-between;
+}
+
+.form__time .timezone, .form__time .email, .form__contact .timezone, .form__contact .email {
+	margin-top: 10px;
+	display: block;
+}
+
+.form__time .timezone input, .form__time .email input, .form__contact .timezone input, .form__contact .email input {
+	width: calc(100% - 3px);
+}
+
+.form__confirmation {
+	padding: 10px 50px;
+}
+
+.container-DKGiaoThuong button {
+	font-size: 12px;
+	text-transform: uppercase;
+	font-weight: 700;
+	letter-spacing: 1px;
+	background-color: #003277;
+	border: 1px solid #DADDE8;
+	color: #fff;
+	padding: 15px;
+	border-radius: 10px;
+	border-radius: 5px!important;
+	outline: none;
+	transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	position: relative;
+	margin-bottom: 20px;
+}
+
+.card::-webkit-scrollbar {
+	border-radius: 4px;
+	width: 4px;
+	background: hsla(0, 0%, 48.6%, .36)
+}
+
+.card::-webkit-scrollbar-track {
+	border-radius: 4px
+}
+
+.card::-webkit-scrollbar-thumb {
+	border-radius: 4px;
+	background: rgba(0, 0, 0, .22)
+}
+
+.card::-webkit-scrollbar-thumb:hover {
+	background: rgba(0, 0, 0, .38)
 }

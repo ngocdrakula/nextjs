@@ -40,8 +40,24 @@ class Exhibitor extends Component {
             });
         }
     }
+    handleConnect = (e, toUser) => {
+        e.preventDefault();
+        const { user, dispatch } = this.props;
+        if (user?._id && user._id !== toUser._id) {
+            dispatch({
+                type: types.CREATE_TRADE,
+                payload: toUser,
+            });
+        }
+        else if (user?._id) {
+            dispatch({
+                type: types.OPENFORM,
+                payload: MODE.exhibitor,
+            });
+        }
+    }
     render() {
-        const {setting, industries, exhibitors } = this.props
+        const { setting, industries, exhibitors } = this.props
         const { selected } = this.state;
         return (
             <div id="exhibitors">
@@ -98,7 +114,7 @@ class Exhibitor extends Component {
                                             </div>
                                             <div className="store-bottom">
                                                 <a href="#" onClick={e => this.handleChat(e, exhibitor)}><img src="/images/talk.png" alt="" />Trò chuyện</a>
-                                                <a href="#" onClick={e => this.handleChat(e, exhibitor)}><img src="/images/connect.png" alt="" />Kết nối giao thương</a>
+                                                <a href="#" onClick={e => this.handleConnect(e, exhibitor)}><img src="/images/connect.png" alt="" />Kết nối giao thương</a>
                                             </div>
                                         </div>
                                     </div>

@@ -4,11 +4,10 @@ import { MODE } from '../../utils/helper';
 
 export const initState = {
     product: { data: [], page: 0, total: 0 },
-    room: { data: [], page: 0, total: 0 },
-    layout: { data: [], page: 0, total: 0 },
     visitor: { data: [], page: 0, total: 0 },
     exhibitor: { data: [], page: 0, total: 0 },
     contact: { data: [], page: 0, total: 0 },
+    trade: { data: [], page: 0, total: 0 },
     industries: [],
     categories: [],
     user: null,
@@ -41,13 +40,13 @@ const appReducer = (state = initState, action) => {
             return {
                 ...state,
                 user: null,
-                exUser: null
-            };
-        }
-        case types.ADMIN_LOGOUT_SUCCESS: {
-            return {
-                ...state,
-                exUser: null
+                exUser: null,
+                conversations: [],
+                conversationsAll: [],
+                newMessage: 0,
+                total: 0,
+                page: 0,
+                conId: null
             };
         }
 
@@ -390,6 +389,25 @@ const appReducer = (state = initState, action) => {
             };
         }
 
+        case types.ADMIN_GET_TRADES_SUCCESS: {
+            return {
+                ...state,
+                trade: action.payload
+            };
+        }
+        case types.ADMIN_UPDATE_TRADE_SUCCESS: {
+            const data = state.trade.data.map(c => {
+                if (c._id === action.payload._id) return action.payload;
+                return (c);
+            });
+            return {
+                ...state,
+                trade: {
+                    ...state.trade,
+                    data
+                }
+            };
+        }
         default: {
             return state;
         }

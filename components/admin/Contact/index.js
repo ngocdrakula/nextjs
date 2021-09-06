@@ -198,10 +198,10 @@ class Contact extends Component {
                                         </th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '8%' }}>STT</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Tên</th>
-                                        <th className="sorting_disabled" tabIndex={0} rowSpan={1} colSpan={1} style={{ width: '15%' }}>Email</th>
-                                        <th className="sorting_disabled" tabIndex={0} rowSpan={1} colSpan={1} style={{ width: '15%' }}>Chủ đề</th>
-                                        <th className="sorting_disabled" tabIndex={0} rowSpan={1} colSpan={1} style={{ width: '20%' }}>Nội dung</th>
-                                        <th className="sorting_disabled" tabIndex={0} rowSpan={1} colSpan={1} style={{ width: '10%' }}>Trạng thái</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Email</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Chủ đề</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>Nội dung</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Trạng thái</th>
                                         <th style={{ textAlign: 'center !important', width: '10%' }} className="sorting_disabled" rowSpan={1} colSpan={1}>Hành động</th>
                                     </tr>
                                 </thead>

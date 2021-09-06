@@ -492,6 +492,67 @@ function* admin_updateSetting({ payload, callback }) {
     }
 }
 
+function* admin_getTrades({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_getTradesRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_GET_TRADES_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_GET_TRADES_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_addTrade({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_addTradeRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_ADD_TRADE_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_ADD_TRADE_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_updateTrade({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_updateTradeRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_UPDATE_TRADE_SUCCESS, payload: res.data.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_UPDATE_TRADE_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_deleteTrade({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_deleteTradeRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_DELETE_TRADE_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_DELETE_TRADE_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_deleteMultiTrade({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_deleteMultiTradeRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_DELETE_MULTI_TRADE_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_DELETE_MULTI_TRADE_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+
 export default function* appSaga() {
     yield all([
         yield takeEvery(types.ADMIN_LOGIN_LOCAL, admin_LoginLocal),
@@ -543,5 +604,11 @@ export default function* appSaga() {
         yield takeEvery(types.ADMIN_GET_SETTING, admin_getSetting),
         yield takeEvery(types.ADMIN_UPDATE_SETTING, admin_updateSetting),
 
+
+        yield takeEvery(types.ADMIN_GET_TRADES, admin_getTrades),
+        yield takeEvery(types.ADMIN_ADD_TRADE, admin_addTrade),
+        yield takeEvery(types.ADMIN_UPDATE_TRADE, admin_updateTrade),
+        yield takeEvery(types.ADMIN_DELETE_TRADE, admin_deleteTrade),
+        yield takeEvery(types.ADMIN_DELETE_MULTI_TRADE, admin_deleteMultiTrade),
     ])
 }

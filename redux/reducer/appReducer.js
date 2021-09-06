@@ -15,7 +15,9 @@ export const initState = {
     page: 0,
     hydrate: false,
     categories: [],
-    setting: {}
+    setting: {},
+    trade: { data: [], page: 0, total: 0 },
+    onCreate: null,
 }
 const appReducer = (state = initState, action) => {
     switch (action.type) {
@@ -32,6 +34,7 @@ const appReducer = (state = initState, action) => {
                 openMessage: state.openMessage || action.payload.app.openMessage,
                 openList: state.user ? state.openList : action.payload.app.openList,
                 newMessage: state.user ? state.newMessage : action.payload.app.newMessage,
+                trade: state.user ? state.trade : action.payload.app.trade,
             };
         }
         case types.GET_INDUSTRIES_SUCCESS: {
@@ -280,6 +283,33 @@ const appReducer = (state = initState, action) => {
                 admin: action.payload
             };
         }
+
+        case types.CREATE_TRADE: {
+            return {
+                ...state,
+                onCreate: action.payload
+            };
+        }
+        case types.GET_TRADES_SUCCESS: {
+            return {
+                ...state,
+                trade: action.payload
+            };
+        }
+        case types.UPDATE_TRADE_SUCCESS: {
+            const data = state.trade.data.map(c => {
+                if (c._id === action.payload._id) return action.payload;
+                return (c);
+            });
+            return {
+                ...state,
+                trade: {
+                    ...state.trade,
+                    data
+                }
+            };
+        }
+
         default: {
             return state;
         }

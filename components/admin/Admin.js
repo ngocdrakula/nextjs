@@ -9,13 +9,14 @@ import Industry from './Industry';
 import Contact from './Contact';
 import Setting from './Setting';
 import Chat from '../Chat';
+import Trade from '../Trade';
 
 
 class Admin extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            active: 5
+            active: 7
         }
     }
     handleToggle = () => this.setState({ toggle: !this.state.toggle })
@@ -35,6 +36,7 @@ class Admin extends Component {
                     <Contact active={active === 4} />
                     <Chat active={active === 5} />
                     <Setting active={active === 6} />
+                    <Trade active={active === 7} />
                 </div>
                 <footer className="main-footer">
                 </footer>

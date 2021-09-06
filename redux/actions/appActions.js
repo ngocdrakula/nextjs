@@ -42,3 +42,19 @@ export const postContactRequest = async (request) => {
 export const getSettingRequest = async () => {
     return axios.get('setting');
 }
+export const getTradesRequest = async (params) => {
+    return axios.get('trade?' + stringify(params))
+}
+export const addTradeRequest = async (request) => {
+    return axios.post('trade', request);
+}
+export const updateTradeRequest = async ({ _id, ...request }) => {
+    return axios.put('trade/' + _id, request);
+}
+export const deleteTradeRequest = async (_id) => {
+    return axios.delete('trade/' + _id);
+}
+export const deleteMultiTradeRequest = async (params) => {
+    const _ids = params && params.join(",");
+    return axios.delete('trade?_ids=' + _ids);
+}

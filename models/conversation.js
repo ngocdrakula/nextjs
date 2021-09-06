@@ -33,8 +33,8 @@ const conversation = new Schema({
 });
 conversation.methods.toJSON = function () {
     var obj = this.toObject();
-    delete obj.leader.password;
-    delete obj.member.password;
+    delete obj.leader.user.password;
+    delete obj.leader.user.password;
     return (obj);
 }
 

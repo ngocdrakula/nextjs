@@ -12,6 +12,7 @@ import MessageIconNoti from './Message/MessageIconNoti';
 import SocketIO from '../utils/SocketIO';
 import { stringify } from 'qs';
 import MessageCustomer from './Message/MessageCustomer';
+import TradeForm from './TradeForm';
 
 class Header extends Component {
     constructor(props) {
@@ -102,7 +103,7 @@ class Header extends Component {
                                         }
                                         {user?._id ?
                                             <div className="login-guest">
-                                                <a href={`/${user.mode === MODE.visitor ? 'visitor' : 'exhibitor'}?id=${user._id}`}>
+                                                <a href={`/${user.mode === MODE.visitor ? 'profile' : 'admin'}`}>
                                                     <span style={{ textTransform: 'uppercase' }}>{user.name || user.email?.split('@')[0]?.slice(0, 10)}</span>
                                                 </a>
                                             </div>
@@ -132,7 +133,10 @@ class Header extends Component {
                     </div>
                 </header>
                 {user?._id ?
-                    <MessageContainer />
+                    <>
+                        <MessageContainer />
+                        <TradeForm />
+                    </>
                     :
                     <>
                         <LoginVisitor />

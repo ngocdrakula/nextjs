@@ -112,3 +112,22 @@ export const admin_getSettingRequest = async () => {
 export const admin_updateSettingRequest = async (request) => {
     return axios.post('setting', request);
 }
+
+
+export const admin_getTradesRequest = async (params) => {
+    return axios.get('trade?' + stringify(params))
+}
+export const admin_addTradeRequest =async (request) => {
+    return axios.post('trade', request);
+}
+export const admin_updateTradeRequest =  async ({ _id, ...request }) => {
+    return axios.put('trade/' + _id, request);
+}
+export const admin_deleteTradeRequest =  async (_id) => {
+    return axios.delete('trade/' + _id);
+}
+export const admin_deleteMultiTradeRequest = async (params) => {
+    const _ids = params && params.join(",");
+    return axios.delete('trade?_ids=' + _ids);
+}
+ 
