@@ -16,7 +16,7 @@ class Admin extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            active: 7
+            active: 0
         }
     }
     handleToggle = () => this.setState({ toggle: !this.state.toggle })

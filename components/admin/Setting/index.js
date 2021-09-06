@@ -423,7 +423,7 @@ class Overview extends Component {
                                                 </div>
                                                 <div className="form-group row">
                                                     <label htmlFor="setting-bannerLocation" className="col-sm-3 col-form-label">Địa điểm:</label>
-                                                    <div className="col-sm-9"> 
+                                                    <div className="col-sm-9">
                                                         <textarea
                                                             type="text"
                                                             id="setting-bannerLocation"

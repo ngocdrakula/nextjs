@@ -196,7 +196,7 @@ class Trade extends Component {
                                         <th className="sorting" rowSpan={1} colSpan={1} style={{ width: 218 }}>Thời gian</th>
                                         <th className="sorting" rowSpan={1} colSpan={1} style={{ width: 218 }}>Link giao thương</th>
                                         {user?.mode !== MODE.admin || exUser ?
-                                            <th className="sorting" rowSpan={1} colSpan={1} style={{ width: 218 }}>Link giao thương</th>
+                                            <th className="sorting" rowSpan={1} colSpan={1} style={{ width: 218 }}>Thời gian đăng ký</th>
                                             : null}
                                         <th className="sorting" rowSpan={1} colSpan={1} style={{ width: 218 }}>Trạng thái</th>
                                         <th style={{ textAlign: 'center !important', width: 130 }} className="sorting_disabled" rowSpan={1} colSpan={1} >Hành động</th>
@@ -208,7 +208,7 @@ class Trade extends Component {
                                         const from = trade.leader._id === fromUser._id ? trade.leader : trade.member;
                                         const to = trade.leader._id === fromUser._id ? trade.member : trade.leader;
                                         const tradeTime = formatTime(trade.deadline, "YYYY-MM-DD HH:II:SS");
-                                        const createTime = formatTime(trade.createAt, "YYYY-MM-DD HH:II:SS")
+                                        const createTime = formatTime(trade.createdAt, "YYYY-MM-DD HH:II:SS")
                                         return (
                                             <tr key={trade._id} className={index % 2 ? "odd" : "even"} role="row">
                                                 <td>

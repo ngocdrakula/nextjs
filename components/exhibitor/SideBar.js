@@ -36,7 +36,7 @@ class SideBar extends Component {
                         </li>
                         <li className={active === 3 ? "active" : ""}>
                             <a href="#" onClick={() => handleActive(3)}>
-                                <i className="fa fa-wechatwechat" /> <span>Chat{newMessage ? ` (${newMessage})` : ""}</span>
+                                <i className="fa fa-wechat" /> <span>Chat{newMessage ? ` (${newMessage})` : ""}</span>
                             </a>
                         </li>
                     </ul>

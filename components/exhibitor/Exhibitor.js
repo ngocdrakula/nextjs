@@ -13,7 +13,7 @@ class Exhibitor extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            active: 3
+            active: 0
         }
     }
 
