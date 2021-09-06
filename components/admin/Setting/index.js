@@ -423,15 +423,17 @@ class Overview extends Component {
                                                 </div>
                                                 <div className="form-group row">
                                                     <label htmlFor="setting-bannerLocation" className="col-sm-3 col-form-label">Địa điểm:</label>
-                                                    <div className="col-sm-9">
-                                                        <input
+                                                    <div className="col-sm-9"> 
+                                                        <textarea
                                                             type="text"
-                                                            className="form-control"
                                                             id="setting-bannerLocation"
-                                                            placeholder="Nhập địa điểm"
+                                                            className="form-control summernote"
+                                                            rows={2}
+                                                            cols={50}
+                                                            placeholder="Nhập mô tả ngắn"
                                                             value={bannerLocation}
-                                                            onChange={this.handleChange}
                                                             name="bannerLocation"
+                                                            onChange={this.handleChange}
                                                             readOnly={!onEdit}
                                                         />
                                                     </div>
