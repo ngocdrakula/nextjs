@@ -15,10 +15,17 @@ const handler = async (req, res) => {
             const info = await getDataFromUrl("https://graph.facebook.com/me?fields=id,email,first_name,last_name&access_token=" + accessToken)
             if (!info) throw ({ path: 'accessToken' });
             const { email, name, picture } = info;
+            return res.status(200).send({
+                success: false,
+                field: 'enabled',
+                info,
+                message: 'Tài khoản của bạn đã bị khóa',
+                messages: lang?.message?.error?.unauthorized
+            });
             const user = await userController.find({ email });
             if (user) {
                 if (!user.enabled) {
-                    return res.status(200).send({
+                    return res.status(400).send({
                         success: false,
                         field: 'enabled',
                         info,

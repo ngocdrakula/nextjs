@@ -8,6 +8,7 @@ import { MODE } from '../utils/helper';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const FACEBOOK_CLIENT_ID = process.env.FACEBOOK_CLIENT_ID;
+console.log(FACEBOOK_CLIENT_ID)
 
 
 class LoginVisitor extends Component {
