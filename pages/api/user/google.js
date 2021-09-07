@@ -48,7 +48,6 @@ const handler = async (req, res) => {
                 messages: lang?.message?.success?.loged
             });
         } catch (e) {
-            console.log(e)
             if (e.path == 'accessToken') {
                 return res.status(400).send({
                     success: false,

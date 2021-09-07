@@ -78,7 +78,6 @@ const handler = async (req, res) => {
         if (!(new Date(deadline)).getTime()) throw ({ path: 'deadline' })
         currentTrade.deadline = deadline;
       }
-      console.log(currentTrade)
       const productUpdated = await (await currentTrade.save())
         .populate({ path: 'leader', select: 'name email' })
         .populate({ path: 'member', select: 'name email' })

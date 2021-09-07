@@ -1,7 +1,6 @@
-import https from 'https';
 import runMidldleware from '../../../middleware/mongodb';
 import userController from '../../../controllers/user';
-import lang, { langConcat } from '../../../lang.config';
+import lang from '../../../lang.config';
 import jwt from '../../../middleware/jwt';
 import bcrypt from '../../../middleware/bcrypt';
 import { downloadImageFromUrl, getDataFromUrl } from '../../../middleware/cloneHelper';
@@ -14,14 +13,8 @@ const handler = async (req, res) => {
             if (!accessToken) throw ({ path: 'accessToken' });
             const info = await getDataFromUrl("https://graph.facebook.com/me?fields=id,email,first_name,last_name&access_token=" + accessToken)
             if (!info) throw ({ path: 'accessToken' });
-            const { email, name, picture } = info;
-            return res.status(200).send({
-                success: false,
-                field: 'enabled',
-                info,
-                message: 'Tài khoản của bạn đã bị khóa',
-                messages: lang?.message?.error?.unauthorized
-            });
+            const { email, first_name, last_name, picture } = info;
+            const name = first_name || last_name;
             const user = await userController.find({ email });
             if (user) {
                 if (!user.enabled) {

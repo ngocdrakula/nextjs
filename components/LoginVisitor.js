@@ -3,12 +3,12 @@ import { Modal } from 'react-bootstrap';
 import { connect } from 'react-redux'
 import types from '../redux/types';
 import GoogleLogin from 'react-google-login';
-import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+import FacebookLogin from 'react-facebook-login';
+// import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { MODE } from '../utils/helper';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const FACEBOOK_CLIENT_ID = process.env.FACEBOOK_CLIENT_ID;
-console.log(FACEBOOK_CLIENT_ID)
 
 
 class LoginVisitor extends Component {
@@ -94,9 +94,9 @@ class LoginVisitor extends Component {
                     autoLoad={false}
                     fields="name,email,picture"
                     callback={this.handleLoginFacebook}
-                    render={({ onClick, disabled }) => (
-                        <a href="#" onClick={onClick} disabled={disabled} className="with-fb">Đăng nhập bằng Facebook</a>
-                    )}
+                    tag="a"
+                    cssClass="with-fb"
+                    textButton="Đăng nhập bằng Facebook"
                 />
                 <GoogleLogin
                     clientId={GOOGLE_CLIENT_ID}

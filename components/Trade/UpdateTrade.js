@@ -71,7 +71,6 @@ class UpdateTrade extends Component {
     render() {
         const { onEdit, handleClose } = this.props;
         const { dropActive, link, deadline, enabled, fieldError, message } = this.state;
-        console.log(deadline)
         return (
             <div id="trade-edit-myDynamicModal" className={"modal-create modal fade" + (onEdit ? " in" : "")} style={{ display: onEdit ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">

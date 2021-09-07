@@ -51,7 +51,6 @@ class TradeForm extends Component {
     render() {
         const { onCreate, user } = this.props;
         const { link, deadline, message, success } = this.state;
-        console.log(onCreate)
         return (
             <div className="container-DKGiaoThuong" style={{ display: onCreate ? 'block' : 'none' }}>
                 <div className="overlay" />
