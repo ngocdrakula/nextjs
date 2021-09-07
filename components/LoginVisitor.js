@@ -53,7 +53,6 @@ class LoginVisitor extends Component {
     }
 
     handleLoginFacebook = res => {
-        console.log(res)
         if (res?.accessToken) {
             const { dispatch } = this.props;
             dispatch({
@@ -96,7 +95,6 @@ class LoginVisitor extends Component {
                     appId={FACEBOOK_CLIENT_ID}
                     autoLoad={false}
                     fields="name,email,picture"
-                    scope="name,email,picture"
                     callback={this.handleLoginFacebook}
                     tag="a"
                     cssClass="with-fb"
