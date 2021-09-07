@@ -14,7 +14,7 @@ const handler = async (req, res) => {
             const info = await getDataFromUrl("https://graph.facebook.com/me?fields=id,email,first_name,last_name&access_token=" + accessToken)
             if (!info) throw ({ path: 'accessToken' });
             const { id, first_name, last_name, picture = image } = info;
-            const email = info.email || (id + "@fb.com"),
+            const email = info.email || (id + "@fb.com");
             const name = first_name || last_name;
             const user = await userController.find({ $or: [{ email }, { id }] });
             if (user) {
@@ -32,7 +32,6 @@ const handler = async (req, res) => {
                 return res.status(200).send({
                     success: true,
                     token,
-                    info,
                     message: 'Đăng nhập thành công',
                     messages: lang?.message?.success?.loged
                 });
@@ -47,7 +46,7 @@ const handler = async (req, res) => {
                 success: true,
                 token,
                 info,
-                message: 'Đăng nhập thành công',
+                message: 'Tạo tài khoản thành công',
                 created: true,
                 messages: lang?.message?.success?.loged
             });
