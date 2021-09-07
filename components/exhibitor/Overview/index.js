@@ -128,9 +128,9 @@ class Overview extends Component {
                                     <div className="pic">
                                         <div className="afta-logo-user">
                                             {exUser?.avatar ?
-                                                <img className="profile-user-img img-fluid img-circle" src={"/api/image/" + exUser.avatar} alt="Store Logo" />
+                                                <img className="profile-user-img img-fluid img-circle" src={"/api/images/" + exUser.avatar} alt="Store Logo" />
                                                 :
-                                                <img className="profile-user-img img-fluid img-circle" src="/image/no-avatar.png" alt="Store Logo" />
+                                                <img className="profile-user-img img-fluid img-circle" src="/images/no-avatar.png" alt="Store Logo" />
                                             }
                                         </div>
                                     </div>

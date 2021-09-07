@@ -14,7 +14,7 @@ const handler = async (req, res) => {
       if (!user?._id) throw ({ ...user, path: 'token' });
       const { page, pageSize, name, from = user._id } = req.query;
       const fromId = user.mode == MODE.admin ? from : user._id;
-      const query = fromId ? {} : { $or: [{ 'leader': fromId }, { 'member': fromId }] };
+      const query = fromId ? { $or: [{ 'leader': fromId }, { 'member': fromId }] } : {};
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
       const populateName = {};
@@ -67,9 +67,10 @@ const handler = async (req, res) => {
       if (!user?._id) throw ({ ...user, path: 'token' });
       const { to, deadline, link, from = user._id } = req.body;
       const fromId = user.mode == MODE.admin ? from : user._id;
+      if (fromId === to) throw ({ path: 'match' })
       if (!to) throw ({ path: 'to' });
       if (!deadline) throw ({ path: 'deadline' });
-      if (!fromId) throw ({ path: 'fromId' });
+      if (!fromId) throw ({ path: 'from' });
       if (!new Date(deadline).getTime()) throw ({ path: 'deadline' });
       try {
         const fromUser = userController.get(fromId);
@@ -111,13 +112,20 @@ const handler = async (req, res) => {
           messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path == 'message') {
+      if (e.path == 'match') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'message',
-          message: 'Tin nhắn không được để trống',
-          messages: langConcat(lang?.resources?.conversationName, lang?.message?.error?.validation?.required)
+          field: 'from',
+          message: 'Bạn không thể kết nối tới chính mình',
+        });
+      }
+      if (e.path == 'from') {
+        return res.status(400).send({
+          success: false,
+          validation: false,
+          field: 'from',
+          message: 'Người dùng không tồn tại',
         });
       }
       if (e.path == 'to') {
@@ -125,8 +133,15 @@ const handler = async (req, res) => {
           success: false,
           validation: false,
           field: 'to',
-          message: 'Id người nhận không được để trống',
-          messages: langConcat(lang?.resources?.roomId, lang?.message?.error?.validation?.required)
+          message: 'Đối tác không tồn tại',
+        });
+      }
+      if (e.path == 'deadline') {
+        return res.status(400).send({
+          success: false,
+          validation: false,
+          field: 'deadline',
+          message: 'Lịch hẹn là bắt buộc',
         });
       }
       return res.status(500).send({

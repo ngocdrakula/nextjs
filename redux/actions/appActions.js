@@ -1,5 +1,5 @@
 import { stringify } from 'qs';
-import axios from "../../utils/axios";
+import axios, { uploadAxios } from "../../utils/axios";
 
 
 
@@ -12,11 +12,20 @@ export const getUserRequest = async (params) => {
 export const postLoginRequest = async (request) => {
     return axios.post('user/login', request)
 }
+export const postLoginGoogleRequest = async (request) => {
+    return axios.post('user/google', request)
+}
+export const postLoginFacebookRequest = async (request) => {
+    return axios.post('user/facebook', request)
+}
 export const postRegisterRequest = async (request) => {
     return axios.post('user/register', request)
 }
-export const getUserByIdRequest = async (id) => {
-    return axios.get('user/' + id)
+export const getUserByIdRequest = async (_id) => {
+    return axios.get('user/' + _id)
+}
+export const updateUserRequest = async ({ _id, formData }) => {
+    return uploadAxios.post('user/' + _id, formData);
 }
 export const getProductsRequest = async (params) => {
     return axios.get('product?enabled=true&' + stringify(params))

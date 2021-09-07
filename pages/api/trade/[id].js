@@ -64,7 +64,6 @@ const handler = async (req, res) => {
       const { id } = req.query;
       const { link, deadline, enabled } = req.body;
       const currentTrade = await tradeController.get(id);
-      console.log(currentTrade)
       if (!currentTrade || (!currentTrade.enabled && user.mode != MODE.admin)) throw ({ path: '_id' });
       if (user.mode != MODE.admin && user._id != currentTrade.leader && user._id != currentTrade.member) {
         throw ({ ...user, path: 'token' });

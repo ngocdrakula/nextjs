@@ -60,16 +60,52 @@ function* loginLocal({ callback }) {
             const time = new Date().getTime();
             if (time < user.exp * 1000) {
                 yield put({ type: types.USER_LOGIN_SUCCESS, payload: user });
-            }
-        }
-        if (typeof callback === 'function') callback(token);
+                if (typeof callback === 'function') callback(user);
+            } else if (typeof callback === 'function') callback();
+        } else if (typeof callback === 'function') callback();
     } catch (e) {
-        if (typeof callback === 'function') callback(e);
+        if (typeof callback === 'function') callback();
     }
 }
 function* postLogin({ payload, callback }) {
     try {
         const res = yield call(requests.postLoginRequest, payload);
+        if (res?.data?.success) {
+            localStorage.setItem('token', res.data.token);
+            const user = jwt.decode(res.data.token);
+            yield put({ type: types.USER_LOGIN_SUCCESS, payload: user });
+            yield call(getUserById, { payload: user._id });
+        }
+        else {
+            yield put({ type: types.USER_LOGIN_FAILED, payload: res?.data });
+        }
+        if (typeof callback === 'function') callback(res.data);
+    } catch (e) {
+        yield put({ type: types.USER_LOGIN_FAILED, payload: e?.response?.data });
+        if (typeof callback === 'function') callback(e?.response?.data);
+    }
+}
+function* postLoginGoogle({ payload, callback }) {
+    try {
+        const res = yield call(requests.postLoginGoogleRequest, payload);
+        if (res?.data?.success) {
+            localStorage.setItem('token', res.data.token);
+            const user = jwt.decode(res.data.token);
+            yield put({ type: types.USER_LOGIN_SUCCESS, payload: user });
+            yield call(getUserById, { payload: user._id });
+        }
+        else {
+            yield put({ type: types.USER_LOGIN_FAILED, payload: res?.data });
+        }
+        if (typeof callback === 'function') callback(res.data);
+    } catch (e) {
+        yield put({ type: types.USER_LOGIN_FAILED, payload: e?.response?.data });
+        if (typeof callback === 'function') callback(e?.response?.data);
+    }
+}
+function* postLoginFacebook({ payload, callback }) {
+    try {
+        const res = yield call(requests.postLoginFacebookRequest, payload);
         if (res?.data?.success) {
             localStorage.setItem('token', res.data.token);
             const user = jwt.decode(res.data.token);
@@ -123,6 +159,18 @@ function* getUserById({ payload, callback }) {
         if (typeof callback === 'function') {
             callback(e.response);
         }
+    }
+}
+function* updateUser({ payload, callback }) {
+    try {
+        const res = yield call(requests.updateUserRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.UPDATE_USER_SUCCESS, payload: res.data.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.UPDATE_USER_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
     }
 }
 function* getProducts({ payload, callback }) {
@@ -349,9 +397,12 @@ export default function* appSaga() {
         yield takeEvery(types.GET_EXHIBITORS, getExhibitors),
         yield takeEvery(types.USER_LOGIN_LOCAL, loginLocal),
         yield takeEvery(types.USER_LOGIN, postLogin),
+        yield takeEvery(types.USER_LOGIN_GOOGLE, postLoginGoogle),
+        yield takeEvery(types.USER_LOGIN_FACEBOOK, postLoginFacebook),
         yield takeEvery(types.USER_REGISTER, postRegister),
         yield takeEvery(types.USER_LOGOUT, postLogout),
         yield takeEvery(types.GET_USER, getUserById),
+        yield takeEvery(types.UPDATE_USER, updateUser),
         yield takeEvery(types.GET_PRODUCTS, getProducts),
         yield takeEvery(types.GET_CONVERSATIONS, getConversations),
         yield takeEvery(types.GET_ONE_CONVERSATION, getConversationById),

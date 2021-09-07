@@ -16,8 +16,8 @@ class Pagination extends Component {
             <div>
                 <ul className="pagination">
                     <li><a href="#" onClick={e => this.handleSelect(e, currentPage - 1, currentPage > 0)} ><img src="images/icon-left.png" /></a></li>
-                    {currentPage > 2 ? <li><a href="#" onClick={e => this.handleSelect(e, 0, true)}>1</a></li> : ""}
-                    {currentPage > 3 ? <li><a href="#" onClick={e => this.handleSelect(e, 1, true)}  >...</a></li> : ""}
+                    {currentPage > 2 && totalPage > 5 ? <li><a href="#" onClick={e => this.handleSelect(e, 0, true)}>1</a></li> : ""}
+                    {currentPage > 3 && totalPage > 6 ? <li><a href="#" onClick={e => this.handleSelect(e, 1, true)}  >...</a></li> : ""}
                     {(new Array(5)).fill(0).map((item, index) => {
                         let pageIndex = currentPage + index - (numberButton - 1) / 2;
                         if (currentPage < 2) pageIndex += 1;
@@ -33,9 +33,9 @@ class Pagination extends Component {
                             </li>
                         );
                     })}
-                    {currentPage < totalPage - 4 && totalPage > 5 ? <li><a href="#" onClick={e => this.handleSelect(e, totalPage - 2, true)}  >...</a></li> : ""}
+                    {currentPage < totalPage - 4 && totalPage > 6 ? <li><a href="#" onClick={e => this.handleSelect(e, totalPage - 2, true)}  >...</a></li> : ""}
                     {currentPage < totalPage - 3 && totalPage > 5 ? <li><a href="#" onClick={e => this.handleSelect(e, totalPage - 1, true)} >{totalPage}</a></li> : ""}
-                    <li><a href="#"><img src="images/icon-right2.png" /></a></li>
+                    <li><a href="#" onClick={e => this.handleSelect(e, currentPage + 1, currentPage < totalPage - 2)} ><img src="images/icon-right2.png" /></a></li>
                 </ul>
             </div>
         )

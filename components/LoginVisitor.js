@@ -2,7 +2,13 @@ import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap';
 import { connect } from 'react-redux'
 import types from '../redux/types';
+import GoogleLogin from 'react-google-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { MODE } from '../utils/helper';
+
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const FACEBOOK_CLIENT_ID = process.env.FACEBOOK_CLIENT_ID;
+
 
 class LoginVisitor extends Component {
     constructor(props) {
@@ -35,7 +41,26 @@ class LoginVisitor extends Component {
         const { dispatch } = this.props;
         dispatch({ type: types.OPENFORM, payload: 'reg' });
     }
+    handleLoginGoogle = res => {
+        if (res?.accessToken) {
+            const { dispatch } = this.props;
+            dispatch({
+                type: types.USER_LOGIN_GOOGLE,
+                payload: { accessToken: res.accessToken }
+            });
+        }
+    }
 
+    handleLoginFacebook = res => {
+        console.log(res)
+        if (res?.accessToken) {
+            const { dispatch } = this.props;
+            dispatch({
+                type: types.USER_LOGIN_FACEBOOK,
+                payload: { accessToken: res.accessToken }
+            });
+        }
+    }
     render() {
         const { message } = this.state;
         const { openForm } = this.props;
@@ -63,8 +88,25 @@ class LoginVisitor extends Component {
                     </label>
                 </div>
                 <p className="other-login">Hoặc</p>
-                <a href="#" className="with-fb">Đăng nhập bằng Facebook</a>
-                <a href="#" className="with-gg">Đăng nhập bằng Google</a>
+                <FacebookLogin
+                    appId={FACEBOOK_CLIENT_ID}
+                    autoLoad={false}
+                    fields="name,email,picture"
+                    callback={this.handleLoginFacebook}
+                    render={({ onClick, disabled }) => (
+                        <a href="#" onClick={onClick} disabled={disabled} className="with-fb">Đăng nhập bằng Facebook</a>
+                    )}
+                />
+                <GoogleLogin
+                    clientId={GOOGLE_CLIENT_ID}
+                    render={({ onClick, disabled }) => (
+                        <a href="#" onClick={onClick} disabled={disabled} className="with-gg">Đăng nhập bằng Google</a>
+                    )}
+                    buttonText="Đăng nhập bằng Google"
+                    onSuccess={this.handleLoginGoogle}
+                    onFailure={this.handleLoginGoogle}
+                    cookiePolicy={'single_host_origin'}
+                />
                 <label>
                     Thành viên mới? <a href="#" onClick={this.handleSwitchRegister} className="txt-red">Đăng ký ngay</a>
                 </label>

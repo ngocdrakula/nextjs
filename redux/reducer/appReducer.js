@@ -71,6 +71,12 @@ const appReducer = (state = initState, action) => {
                 openForm: null
             };
         }
+        case types.USER_LOGIN_FAILED: {
+            return {
+                ...state,
+                logErr: true
+            };
+        }
         case types.USER_LOGOUT_SUCCESS: {
             return {
                 ...initState,
@@ -91,6 +97,12 @@ const appReducer = (state = initState, action) => {
                 ...state,
                 user: action.payload.data?._id === state.user._id ? action.payload.data : state.user,
             };
+        }
+        case types.UPDATE_USER_SUCCESS: {
+            return {
+                ...state,
+                user: action.payload
+            }
         }
         case types.OPEN_MESSAGE: {
             return {

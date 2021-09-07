@@ -18956,8 +18956,9 @@ li.dt-button.button-page-length.active a {
 .profile-user-img {
     margin: 0 auto;
     width: 100px;
+    height: 100px;
     padding: 3px;
-    border: 3px solid #d2d6de
+    border: 3px solid #d2d6de;
 }
 
 .profile-username {

@@ -91,6 +91,7 @@ input[type=submit] {
 	overflow: hidden;
 	background-color: #FDFDFD;
 	box-shadow: 0px 0px 10px 0px #333;
+	z-index: 1000;
 }
 
 .mesContainerHead {
@@ -907,4 +908,185 @@ form.form__contact {
 
 .card::-webkit-scrollbar-thumb:hover {
 	background: rgba(0, 0, 0, .38)
+}
+
+.profile-page {
+	padding: 30px 0px 50px;
+	font-family: "Roboto", Arial, sans-serif!important;
+	font-size: 0.875rem;
+}
+
+.profile-info-container {
+	width: 100%;
+	border-radius: 5px;
+	border: 1px solid rgba(0, 0, 0, .125);
+	border-top: 3px solid #E26608;
+	width: 100%;
+	text-align: center;
+	padding: 20px;
+	margin-bottom: 10px;
+	background-color: #FFF;
+}
+
+.profile-avatar {
+	border: 1px solid #adb5bd;
+	margin: 0px auto 5px;
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.user-avatar, .user-no-avatar {
+	width: auto;
+	height: auto;
+	min-width: 100%;
+	min-height: 100%;
+}
+
+.profile-name {
+	font-size: 20px;
+	font-weight: 500;
+	line-height: 1.2;
+	width: 100%;
+	overflow: hidden;
+}
+
+.profile-list-select {
+	background: white;
+	width: 100%;
+	border-radius: 0px 0px 5px 5px;
+	padding-bottom: 7px;
+}
+
+.profile-select-item {
+	padding: 12px 5px 12px 6px;
+	text-transform: uppercase;
+	font-weight: 500;
+	letter-spacing: .5px;
+	font-size: 14px;
+	border-left: 3px solid transparent;
+	cursor: pointer;
+}
+
+.profile-select-item.active, .profile-select-item:hover {
+	color: #fff;
+	background: #1e282c;
+	border-left-color: #9358df;
+}
+
+.profile-content {
+	border-radius: 5px;
+	border: 1px solid rgba(0, 0, 0, .125);
+	background-color: #FFF;
+	padding: 20px;
+}
+
+.profile-content input, .profile-content button {
+	font-size: 14px;
+}
+
+.user-avatar-preview {
+	width: 250px;
+	height: 250px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+	margin-bottom: 10px;
+	border: 1px solid #D9D9D9;
+}
+
+.user-avatar-preview img {
+	width: auto;
+	height: auto;
+	min-width: 250px;
+	max-width: 250px;
+}
+
+.user-image-preview {
+	width: 750px;
+	height: 250px;
+	max-width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+	margin-bottom: 10px;
+	border: 1px solid #D9D9D9;
+}
+
+.user-image-preview img {
+	width: auto;
+	height: auto;
+	min-width: 250px;
+	max-width: 100%;
+}
+
+.profile-page .custom-file-label {
+	position: relative;
+	width: 100%;
+	cursor: pointer;
+}
+
+.success {
+	margin: 10px 0px;
+	color: #01b401;
+	font-size: 15px;
+}
+
+.fieldError {
+	margin: 10px 0px;
+	color: #F00;
+}
+
+.profile-trade {
+	position: relative;
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-direction: column;
+	flex-direction: column;
+	min-width: 0;
+	word-wrap: break-word;
+	background-color: #fff;
+	background-clip: border-box;
+	border: 1px solid rgba(0, 0, 0, .125);
+	border-radius: .25rem;
+}
+
+.profile-trade-header {
+	padding: .75rem 1.25rem;
+	margin-bottom: 0;
+	background-color: rgba(0, 0, 0, .03);
+	border-bottom: 1px solid rgba(0, 0, 0, .125);
+	color: #E26608;
+	text-transform: uppercase;
+}
+
+.profile-trade-body {
+	flex: 1 1 auto;
+	min-height: 1px;
+	padding: 1.25rem;
+}
+
+.profile-trade .table td, .profile-trade .table th {
+	vertical-align: middle;
+}
+
+.profile-trade-body td a {
+	color: #00F;
+	text-decoration: underline;
+}
+
+.trade-action {
+	text-align: center;
+}
+
+.btnActionEdit {
+	text-align: center;
+	color: red;
+	cursor: pointer;
 }
