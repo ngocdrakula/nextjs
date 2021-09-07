@@ -33,10 +33,10 @@ class Exhibitor extends Component {
                 payload: { ...toUser, open: true },
             });
         }
-        else if (user?._id) {
+        else if (!user?._id) {
             dispatch({
                 type: types.OPENFORM,
-                payload: MODE.exhibitor,
+                payload: MODE.visitor,
             });
         }
     }
@@ -49,10 +49,10 @@ class Exhibitor extends Component {
                 payload: toUser,
             });
         }
-        else if (user?._id) {
+        else if (!user?._id) {
             dispatch({
                 type: types.OPENFORM,
-                payload: MODE.exhibitor,
+                payload: MODE.visitor,
             });
         }
     }

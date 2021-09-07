@@ -106,10 +106,26 @@ class Exhibitor extends Component {
         payload: { ...toUser, open: true },
       });
     }
-    else if (user?._id) {
+    else if (!user?._id) {
       dispatch({
         type: types.OPENFORM,
-        payload: MODE.exhibitor,
+        payload: MODE.visitor,
+      });
+    }
+  }
+  handleConnect = (e, toUser) => {
+    e.preventDefault();
+    const { user, dispatch } = this.props;
+    if (user?._id && user._id !== toUser._id) {
+      dispatch({
+        type: types.CREATE_TRADE,
+        payload: toUser,
+      });
+    }
+    else if (!user?._id) {
+      dispatch({
+        type: types.OPENFORM,
+        payload: MODE.visitor,
       });
     }
   }
@@ -200,9 +216,9 @@ class Exhibitor extends Component {
                         <input type="submit" defaultValue="Gửi ngay" />
                       </form>
                       <div className="contact-method">
-                        <a href="#" onClick={!user ? this.openLoginVisitor : e => this.handleChat(e, exhibitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a>
+                        <a href="#" onClick={e => this.handleChat(e, exhibitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a>
                         <a href={!user ? "#" : "mailto:" + exhibitor.email} onClick={!user ? this.openLoginVisitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />Email</a>
-                        <a href="#" onClick={!user ? this.openLoginVisitor : e => this.handleChat(e, exhibitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a>
+                        <a href="#" onClick={e => this.handleConnect(e, exhibitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a>
                       </div>
                     </div>
                   </div>
@@ -293,9 +309,9 @@ class Exhibitor extends Component {
                         <input type="submit" defaultValue="Gửi ngay" />
                       </form>
                       <div className="contact-method">
-                        <a href="#" onClick={!user ? this.openLoginVisitor : e => this.handleChat(e, visitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a>
+                        <a href="#" onClick={e => this.handleChat(e, visitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a>
                         <a href={!user ? "#" : "mailto:" + exhibitor.email} onClick={!user ? this.openLoginVisitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />Email</a>
-                        <a href="#" onClick={!user ? this.openLoginVisitor : e => this.handleChat(e, visitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a>
+                        <a href="#" onClick={e => this.handleConnect(e, visitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a>
                       </div>
                     </div>
                   </div>
@@ -527,7 +543,7 @@ class Exhibitor extends Component {
 export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
   //call all data for SSR
   store.dispatch({ type: types.GET_INDUSTRIES, payload: { page: 0, pageSize: 0, enabled: true } });
-  store.dispatch({ type: types.GET_SETTING});
+  store.dispatch({ type: types.GET_SETTING });
 
   store.dispatch(END)
   await store.sagaTask.toPromise()

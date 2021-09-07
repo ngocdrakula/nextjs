@@ -122,6 +122,22 @@ class User extends Component {
       });
     }
   }
+  handleConnect = (e, toUser) => {
+    e.preventDefault();
+    const { user, dispatch } = this.props;
+    if (user?._id && user._id !== toUser._id) {
+      dispatch({
+        type: types.CREATE_TRADE,
+        payload: toUser,
+      });
+    }
+    else if (!user?._id) {
+      dispatch({
+        type: types.OPENFORM,
+        payload: MODE.exhibitor,
+      });
+    }
+  }
   render() {
     const { industries } = this.props
     const { industrySelected, sortSelected, users, filter, total, currentPage, loaded } = this.state;
@@ -220,7 +236,7 @@ class User extends Component {
                           </div>
                           <div className="store-bottom">
                             <a href="#" onClick={e => this.handleChat(e, user)}><img src="/images/talk.png" alt="" />Trò chuyện</a>
-                            <a href="#" onClick={e => this.handleChat(e, user)}><img src="/images/connect.png" alt="" />Kết nối giao thương</a>
+                            <a href="#" onClick={e => this.handleConnect(e, user)}><img src="/images/connect.png" alt="" />Kết nối giao thương</a>
                           </div>
                         </div>
                       </div>
@@ -242,7 +258,7 @@ class User extends Component {
 export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
   //call all data for SSR
   store.dispatch({ type: types.GET_INDUSTRIES, payload: { page: 0, pageSize: 0, enabled: true } });
-  store.dispatch({ type: types.GET_SETTING});
+  store.dispatch({ type: types.GET_SETTING });
 
   store.dispatch(END)
   await store.sagaTask.toPromise()
