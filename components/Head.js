@@ -19,9 +19,9 @@ export class Head extends Component {
                 <meta name="description" content={title || process.env.TITLE} />
                 <meta name="robots" content="noodp,index,follow" />
                 <link href={icon} rel="shortcut icon" type="image/x-icon" />
-                <link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap.min.css" />
-                <link rel="stylesheet" href="css/message.css" />
-                <link rel="stylesheet" href="css/style.css" />
+                <link rel="stylesheet" href="/css/bootstrap.min.css" />
+                <link rel="stylesheet" href="/css/message.css" />
+                <link rel="stylesheet" href="/css/style.css" />
             </NextHead>
         )
     }
