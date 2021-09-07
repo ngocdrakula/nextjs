@@ -9,11 +9,11 @@ import { MODE } from '../../../utils/helper';
 const handler = async (req, res) => {
     if (req.method == 'POST') {
         try {
-            const { accessToken } = req.body;
+            const { accessToken, image } = req.body;
             if (!accessToken) throw ({ path: 'accessToken' });
             const info = await getDataFromUrl("https://graph.facebook.com/me?fields=id,email,first_name,last_name&access_token=" + accessToken)
             if (!info) throw ({ path: 'accessToken' });
-            const { email, first_name, last_name, picture } = info;
+            const { email, first_name, last_name, picture = image } = info;
             const name = first_name || last_name;
             const user = await userController.find({ email });
             if (user) {

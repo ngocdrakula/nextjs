@@ -58,7 +58,10 @@ class LoginVisitor extends Component {
             const { dispatch } = this.props;
             dispatch({
                 type: types.USER_LOGIN_FACEBOOK,
-                payload: { accessToken: res.accessToken }
+                payload: {
+                    accessToken: res.accessToken,
+                    image: res.picture?.data?.url
+                }
             });
         }
     }
@@ -93,6 +96,7 @@ class LoginVisitor extends Component {
                     appId={FACEBOOK_CLIENT_ID}
                     autoLoad={false}
                     fields="name,email,picture"
+                    scope="name,email,picture"
                     callback={this.handleLoginFacebook}
                     tag="a"
                     cssClass="with-fb"
