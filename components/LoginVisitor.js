@@ -23,7 +23,7 @@ class LoginVisitor extends Component {
         const { dispatch } = this.props;
         dispatch({
             type: types.USER_LOGIN,
-            payload: { email, password },
+            payload: { email, password, mode: MODE.visitor },
             callback: res => {
                 if (!res?.success) {
                     this.setState({

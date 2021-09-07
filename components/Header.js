@@ -54,7 +54,12 @@ class Header extends Component {
     handleLogout = e => {
         e.preventDefault();
         const { dispatch } = this.props;
-        dispatch({ type: types.USER_LOGOUT });
+        dispatch({
+            type: types.USER_LOGOUT,
+            callback: e => {
+                if (Router.router.route = "/profile") Router.push("/", undefined, { scroll: false })
+            }
+        });
     }
     checkKeyDown = (e) => {
         if (e.keyCode === 13) {

@@ -16,7 +16,7 @@ class LoginExhibitor extends Component {
         const { dispatch } = this.props;
         dispatch({
             type: types.USER_LOGIN,
-            payload: { email, password },
+            payload: { email, password, mode: MODE.exhibitor },
             callback: res => {
                 if (!res?.success) {
                     this.setState({

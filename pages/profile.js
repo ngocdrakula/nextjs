@@ -48,7 +48,7 @@ class Profile extends Component {
         <div className="profile-page" style={{ backgroundColor: '#ededed' }}>
           <div className="container">
             {!user ?
-              "Ban chua dang nhap"
+              "Vui lòng đăng nhập để tiếp tục"
               :
               <div className="row">
                 <div className="col-sm-3">
