@@ -13,9 +13,10 @@ const handler = async (req, res) => {
             if (!accessToken) throw ({ path: 'accessToken' });
             const info = await getDataFromUrl("https://graph.facebook.com/me?fields=id,email,first_name,last_name&access_token=" + accessToken)
             if (!info) throw ({ path: 'accessToken' });
-            const { email, first_name, last_name, picture = image } = info;
+            const { id, first_name, last_name, picture = image } = info;
+            const email = info.email || (id + "@fb.com"),
             const name = first_name || last_name;
-            const user = await userController.find({ email });
+            const user = await userController.find({ $or: [{ email }, { id }] });
             if (user) {
                 if (!user.enabled) {
                     return res.status(400).send({
@@ -39,7 +40,7 @@ const handler = async (req, res) => {
             const password = await bcrypt.create(`${Math.random() * 1000000}`);
             const avatar = picture && (await downloadImageFromUrl(picture))
             const userCreated = await userController.create({
-                name, email, avatar, password, mode: MODE.visitor
+                name, email, avatar, password, mode: MODE.visitor, id
             })
             const token = jwt.create({ _id: userCreated._id, email, name, mode: MODE.visitor });
             return res.status(200).send({

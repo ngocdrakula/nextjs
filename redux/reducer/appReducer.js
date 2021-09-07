@@ -26,6 +26,7 @@ const appReducer = (state = initState, action) => {
                 ...initState,
                 ...state,
                 ...action.payload.app,
+                hydrate: true,
                 conversations: state.conversations.length ? state.conversations : action.payload.app.conversations,
                 conversationsAll: state.conversationsAll.length ? state.conversationsAll : action.payload.app.conversationsAll,
                 user: state.user || action.payload.app.user,
@@ -79,10 +80,17 @@ const appReducer = (state = initState, action) => {
         }
         case types.USER_LOGOUT_SUCCESS: {
             return {
-                ...initState,
-                industries: state.industries,
-                exhibitors: state.exhibitors,
-                visitors: state.visitors,
+                ...state,
+                user: null,
+                openMessage: true,
+                openList: true,
+                newMessage: 0,
+                conversations: [],
+                conversationsAll: [],
+                total: 0,
+                page: 0,
+                trade: { data: [], page: 0, total: 0 },
+                onCreate: null,
             };
         }
         case types.USER_REGISTER_SUCCESS: {

@@ -96,6 +96,7 @@ class LoginVisitor extends Component {
                     autoLoad={false}
                     fields="name,email,picture"
                     callback={this.handleLoginFacebook}
+                    onFailure={this.handleLoginFacebook}
                     tag="a"
                     cssClass="with-fb"
                     textButton="Đăng nhập bằng Facebook"

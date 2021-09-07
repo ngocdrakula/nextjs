@@ -371,7 +371,7 @@ input[type=submit] {
 .mesLine {
 	display: flex;
 	align-items: flex-start;
-	margin: 0px 0px 10px;
+	margin: 0px 5px 10px;
 	flex-wrap: nowrap;
 }
 
@@ -1089,4 +1089,66 @@ form.form__contact {
 	text-align: center;
 	color: red;
 	cursor: pointer;
+}
+
+.industry-select {
+	position: relative;
+	width: 100%;
+}
+
+.industry-placeholder {
+	position: relative;
+	font-family: inherit;
+	font-size: 14px;
+	cursor: pointer;
+	padding-right: 20px;
+}
+
+.industry-placeholder:not(.disabled)::after {
+	content: "";
+	background-image: url(/images/icon-down2.png);
+	background-repeat: no-repeat;
+	background-size: 90% 50%;
+	background-position: center;
+	width: 15px;
+	height: 15px;
+	position: absolute;
+	top: 50%;
+	right: 10px;
+	margin-top: -7px;
+}
+
+.industry-placeholder.disabled {
+	background-color: #e9ecef;
+	cursor: default;
+}
+
+.dropdown-select {
+	position: absolute;
+	display: none;
+	top: 100%;
+	left: 0;
+	width: 100%;
+	z-index: 1051;
+	border: 1px solid #d2d6de;
+}
+
+.dropdown-select.active {
+	display: block;
+}
+
+.industry-option {
+	padding: 6px 12px;
+	background-color: #fff;
+	color: #444;
+	cursor: pointer;
+}
+
+.industry-option.active {
+	background-color: #ddd;
+}
+
+.industry-option:hover {
+	background-color: #3c8dbc;
+	color: #fff;
 }

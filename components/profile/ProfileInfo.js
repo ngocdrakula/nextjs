@@ -28,6 +28,7 @@ class ProfileInfo extends Component {
                 if (res?.success) {
                     this.setState({
                         ...res.data,
+                        selected: res.data?.industry?.[0]?._id,
                         loaded: true
                     })
                 }
@@ -48,6 +49,7 @@ class ProfileInfo extends Component {
             position: user?.position || '',
             product: user?.product || '',
             email: user?.email || '',
+            selected: user?.industry?.[0]?._id,
             onEdit: false
         })
     }
@@ -79,7 +81,6 @@ class ProfileInfo extends Component {
             }
             if (filesTotal.length) data.files = filesTotal;
             const formData = createFormData(data);
-            const payload = { _id: user._id, formData };
             this.setState({ loading: true })
             dispatch({
                 type: types.UPDATE_USER,
@@ -122,62 +123,97 @@ class ProfileInfo extends Component {
             reader.readAsDataURL(files[0]);
         }
     }
+
+    handleDropdownIndustry = () => this.setState({ dropIndustry: !this.state.dropIndustry })
+
     render() {
-        const { active, user } = this.props;
-        const { onEdit, success } = this.state;
+        const { active, user, industries } = this.props;
+        const { onEdit, success, dropIndustry, selected } = this.state;
         const { representative, name, address, phone, mobile, website, position, product, email } = this.state;
         const { local, localImage, fieldError, message, loading } = this.state;
+        const industrySelected = industries.find(i => i._id === selected) || industries[0] || {};
         const preview = local || (user?.avatar ? "/api/images/" + user.avatar : "/images/no-avatar.png");
         const previewImage = localImage || (user?.image ? "/api/images/" + user.image : "/images/banner.png");
         return (
             <div className="profile-content" style={{ display: active ? 'block' : 'none' }}>
                 <form className="profile-update form-horizontal" onSubmit={this.handleSubmit}>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="representative">Họ và Tên:</label>
+                        <label className="col-sm-2 col-form-label" htmlFor="representative">Họ và Tên: </label>
                         <div className="col-sm-10">
                             <input type="text" className="form-control" placeholder="Nhập tên bạn" name="representative" value={representative} required readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="name">Tên công ty:</label>
+                        <label className="col-sm-2 col-form-label" htmlFor="name">Tên công ty: </label>
                         <div className="col-sm-10">
                             <input type="text" className="form-control" placeholder="Nhập tên công ty" name="name" value={name} required readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="address">Địa chỉ:</label>
+                        <label className="col-sm-2 col-form-label" htmlFor="address">Địa chỉ: </label>
                         <div className="col-sm-10">
                             <input type="text" className="form-control" placeholder="Nhập địa chỉ công ty" name="address" value={address} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="phone">Điện thoại:</label>
+                        <label className="col-sm-2 col-form-label" htmlFor="phone">Điện thoại: </label>
                         <div className="col-sm-10">
                             <input type="text" className="form-control" placeholder="Nhập số điện thoại công ty" name="phone" value={phone} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="mobile">Di động:</label>
+                        <label className="col-sm-2 col-form-label" htmlFor="mobile">Di động: </label>
                         <div className="col-sm-10">
                             <input type="text" className="form-control" placeholder="Nhập số điện thoại cá nhân" name="mobile" value={mobile} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="website">Website:</label>
+                        <label className="col-sm-2 col-form-label" htmlFor="website">Website: </label>
                         <div className="col-sm-10">
                             <input type="text" className="form-control" placeholder="Nhập website công ty" name="website" value={website} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="position">Chức vụ:</label>
+                        <label className="col-sm-2 col-form-label" htmlFor="position">Chức vụ: </label>
                         <div className="col-sm-10">
                             <input type="text" className="form-control" placeholder="Nhập chức vụ của bạn trong công ty" name="position" value={position} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="product">Sản phẩm:</label>
+                        <label className="col-sm-2 col-form-label" htmlFor="product">Sản phẩm: </label>
                         <div className="col-sm-10">
                             <input type="text" className="form-control" placeholder="Nhập sản phẩm mà bạn muốn mua (nếu có)" name="product" value={product} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
+                        </div>
+                    </div>
+                    <div className="form-group row industry">
+                        <label className="col-sm-2 col-form-label" htmlFor="industry">Ngành nghề: </label>
+                        <div className="col-sm-10">
+                            <div className={"industry-select" + (dropIndustry ? " open" : "")}>
+                                <div
+                                    className={"form-control industry-placeholder" + (!onEdit ? " disabled" : "")}
+                                    onClick={onEdit ? this.handleDropdownIndustry : undefined}
+                                    title={industrySelected.name}
+                                >
+                                    {industrySelected.name}
+                                </div>
+                                <div className={"dropdown-select" + (dropIndustry ? " active" : "")}>
+                                    {industries.map(industry => {
+                                        return (
+                                            <div key={industry._id}
+                                                className={"industry-option" + (selected === industry._id ? " active" : "")}
+                                                onClick={() => this.setState({ selected: industry._id, dropIndustry: false })}
+                                            >{industry.name}</div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                            <div className="help-block with-errors">
+                                {fieldError === 'industry' && message ?
+                                    <ul className="list-unstyled">
+                                        <li>{message}.</li>
+                                    </ul>
+                                    : ""}
+                            </div>
                         </div>
                     </div>
                     <div className="form-group row">
