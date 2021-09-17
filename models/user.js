@@ -83,7 +83,11 @@ const user = new Schema({
     industry: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'industry'
-    }]
+    }],
+    code: {
+        type: Number,
+        default: 0
+    }
 }, {
     timestamps: { createdAt: 'createdAt' }
 });

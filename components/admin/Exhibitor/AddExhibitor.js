@@ -349,7 +349,7 @@ class AddExhibitor extends Component {
                                 </div>
                                 <div className={"form-group" + (fieldError === 'contact' ? " has-error" : "")}>
                                     <label htmlFor="contact">Thông tin liên hệ</label>
-                                    <textarea className="form-control summernote" rows={2} placeholder="Thông tin liên hệ khác của nhà trưng bày" value={contact} name="contact" cols={50} id="contact" onChange={this.handleChange} />
+                                    <textarea className="form-control summernote" rows={2} placeholder="Thông tin liên hệ khác của nhà trưng bày" value={contact} name="contact" cols={50} maxLength={40} id="contact" onChange={this.handleChange} />
                                     <div className="help-block with-errors">
                                         {fieldError === 'contact' && message ?
                                             <ul className="list-unstyled">

@@ -17,6 +17,7 @@ export const initState = {
     categories: [],
     setting: {},
     trade: { data: [], page: 0, total: 0 },
+    livestream: { data: [], page: 0, total: 0 },
     onCreate: null,
 }
 const appReducer = (state = initState, action) => {
@@ -36,6 +37,7 @@ const appReducer = (state = initState, action) => {
                 openList: state.user ? state.openList : action.payload.app.openList,
                 newMessage: state.user ? state.newMessage : action.payload.app.newMessage,
                 trade: state.user ? state.trade : action.payload.app.trade,
+                livestream: state.user ? state.livestream : action.payload.app.livestream,
             };
         }
         case types.GET_INDUSTRIES_SUCCESS: {
@@ -327,6 +329,12 @@ const appReducer = (state = initState, action) => {
                     ...state.trade,
                     data
                 }
+            };
+        }
+        case types.GET_LIVESTREAM_SUCCESS: {
+            return {
+                ...state,
+                livestream: action.payload
             };
         }
 

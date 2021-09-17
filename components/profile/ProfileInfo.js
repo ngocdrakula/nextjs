@@ -170,7 +170,7 @@ class ProfileInfo extends Component {
                     <div className="form-group row">
                         <label className="col-sm-2 col-form-label" htmlFor="website">Website: </label>
                         <div className="col-sm-10">
-                            <input type="text" className="form-control" placeholder="Nhập website công ty" name="website" value={website} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
+                            <input type="text" className="form-control" placeholder="Nhập website công ty (phân cách bằng dấu phẩy ',')" name="website" value={website} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row">

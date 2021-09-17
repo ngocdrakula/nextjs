@@ -235,7 +235,7 @@ class Overview extends Component {
                                                         type="text"
                                                         className="form-control"
                                                         id="ex-up-website"
-                                                        placeholder="Nhập website nhà trưng bày"
+                                                        placeholder="Nhập website nhà trưng bày (phân cách bằng dấu phẩy ',')"
                                                         value={website}
                                                         onChange={this.handleChange}
                                                         name="website"
@@ -374,6 +374,7 @@ class Overview extends Component {
                                                         value={contact}
                                                         name="contact"
                                                         cols={50}
+                                                        maxLength={40}
                                                         id="ex-up-contact"
                                                         readOnly={!onEdit}
                                                         onChange={this.handleChange}

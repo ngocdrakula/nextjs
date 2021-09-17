@@ -553,6 +553,67 @@ function* admin_deleteMultiTrade({ payload, callback }) {
     }
 }
 
+function* admin_getLivestreams({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_getLivestreamsRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_GET_LIVESTREAMS_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_GET_LIVESTREAMS_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_addLivestream({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_addLivestreamRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_ADD_LIVESTREAM_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_ADD_LIVESTREAM_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_updateLivestream({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_updateLivestreamRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_UPDATE_LIVESTREAM_SUCCESS, payload: res.data.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_UPDATE_LIVESTREAM_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_deleteLivestream({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_deleteLivestreamRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_DELETE_LIVESTREAM_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_DELETE_LIVESTREAM_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* admin_deleteMultiLivestream({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_deleteMultiLivestreamRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_DELETE_MULTI_LIVESTREAM_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_DELETE_MULTI_LIVESTREAM_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+
 export default function* appSaga() {
     yield all([
         yield takeEvery(types.ADMIN_LOGIN_LOCAL, admin_LoginLocal),
@@ -610,5 +671,11 @@ export default function* appSaga() {
         yield takeEvery(types.ADMIN_UPDATE_TRADE, admin_updateTrade),
         yield takeEvery(types.ADMIN_DELETE_TRADE, admin_deleteTrade),
         yield takeEvery(types.ADMIN_DELETE_MULTI_TRADE, admin_deleteMultiTrade),
+
+        yield takeEvery(types.ADMIN_GET_LIVESTREAMS, admin_getLivestreams),
+        yield takeEvery(types.ADMIN_ADD_LIVESTREAM, admin_addLivestream),
+        yield takeEvery(types.ADMIN_UPDATE_LIVESTREAM, admin_updateLivestream),
+        yield takeEvery(types.ADMIN_DELETE_LIVESTREAM, admin_deleteLivestream),
+        yield takeEvery(types.ADMIN_DELETE_MULTI_LIVESTREAM, admin_deleteMultiLivestream),
     ])
 }

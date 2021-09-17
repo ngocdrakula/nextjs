@@ -1,5 +1,5 @@
 import runMidldleware from '../../../middleware/mongodb';
-import tradeController from '../../../controllers/trade';
+import livestreamController from '../../../controllers/livestream';
 import userController from '../../../controllers/user';
 import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt'
@@ -8,50 +8,24 @@ import { MODE } from '../../../utils/helper';
 const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
-      const bearerToken = req.headers['authorization'];
-      if (!bearerToken) throw ({ path: 'token' });
-      const user = jwt.verify(bearerToken);
-      if (!user?._id) throw ({ ...user, path: 'token' });
-      const { page, pageSize, name, from = user._id } = req.query;
-      const fromId = user.mode == MODE.admin ? from : user._id;
-      const query = fromId ? { $or: [{ 'leader': fromId }, { 'member': fromId }] } : {};
+      const { page, pageSize, title, author, enabled } = req.query;
+      const query = {};
+      if (title) query.title = new RegExp(title, "i");
+      if (author) query.author = author;
+      if (enabled) query.enabled = !(enabled == "false");
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
-      const populateName = {};
-      if (name) populateName.match = { $or: [{ name: new RegExp(name, "i") }, { email: new RegExp(name, "i") }] };
-      const total = await tradeController.getlist(query)
-        .populate({ path: 'leader', select: 'name email', ...populateName })
-        .populate({ path: 'member', select: 'name email', ...populateName })
-        .countDocuments();
-      const data = await tradeController.getlist(query)
-        .populate({ path: 'leader', select: 'name email', ...populateName })
-        .populate({ path: 'member', select: 'name email', ...populateName })
-        .skip(skip).limit(limit);
+      const total = await livestreamController.getlist(query).countDocuments();
+      const data = await livestreamController.getlist(query).skip(skip).limit(limit);
       return res.status(200).send({
         success: true,
         data,
         total,
         page: Number(page) || 0,
         pageSize: Number(pageSize) || 0,
-        query: { name },
+        query: { title, author },
       });
     } catch (error) {
-      if (error.path == 'token') {
-        if (!error.token) {
-          return res.status(401).send({
-            success: false,
-            authentication: false,
-            message: 'Bạn không có quyền truy cập',
-            messages: lang?.message?.error?.unauthorized
-          });
-        }
-        return res.status(400).send({
-          success: false,
-          name: e.name,
-          message: e.name == 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
-          messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
-        });
-      }
       return res.status(500).send({
         success: false,
         message: error.message,
@@ -64,38 +38,34 @@ const handler = async (req, res) => {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
-      if (!user?._id) throw ({ ...user, path: 'token' });
-      const { to, deadline, link, from = user._id } = req.body;
-      const fromId = user.mode == MODE.admin ? from : user._id;
-      if (fromId == to) throw ({ path: 'match' })
-      if (!to) throw ({ path: 'to' });
-      if (!deadline) throw ({ path: 'deadline' });
-      if (!fromId) throw ({ path: 'from' });
-      if (!new Date(deadline).getTime()) throw ({ path: 'deadline' });
-      try {
-        const fromUser = userController.get(fromId);
-        if (!fromUser) throw ({});
+      if (user?.mode != MODE.admin && user?.mode != MODE.exhibitor) throw ({ ...user, path: 'token' });
+      const { author, description, link, title, embed } = req.body;
+      if (!link) throw ({ path: 'link' });
+      if (!description) throw ({ path: 'description' });
+      if (user.mode == MODE.admin) {
+        if (!author) throw ({ path: 'author' })
+        try {
+          const currentUser = userController.get(author);
+          if (!currentUser) throw ({});
+        }
+        catch (e) {
+          throw ({ path: 'author' })
+        }
       }
-      catch (e) {
-        throw ({ path: 'from' })
-      }
-      try {
-        const toUser = userController.get(fromId);
-        if (!toUser) throw ({});
-      }
-      catch (e) {
-        throw ({ path: 'user' })
-      }
-      const tradeCreated = await (await tradeController.create({ leader: fromId, member: to, deadline, link }))
-        .populate({ path: 'leader', select: 'name email' })
-        .populate({ path: 'member', select: 'name email' });
+      console.log(1)
+      const livestreamCreated = await livestreamController.create({
+        author: user.mode == MODE.admin ? author : user._id,
+        description, link, title, embed
+      })
+      console.log(2, livestreamCreated)
       return res.status(201).send({
         success: true,
-        data: tradeCreated,
+        data: livestreamCreated,
         message: 'Thêm thành công',
         messages: lang?.message?.success?.created
       });
     } catch (e) {
+      console.log(e)
       if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({
@@ -112,36 +82,28 @@ const handler = async (req, res) => {
           messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path == 'match') {
+      if (e.path == 'link') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'from',
-          message: 'Bạn không thể kết nối tới chính mình',
+          field: 'link',
+          message: 'Link livestream không được để trống',
         });
       }
-      if (e.path == 'from') {
+      if (e.path == 'author') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'from',
+          field: 'author',
           message: 'Người dùng không tồn tại',
         });
       }
-      if (e.path == 'to') {
+      if (e.path == 'description') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'to',
-          message: 'Đối tác không tồn tại',
-        });
-      }
-      if (e.path == 'deadline') {
-        return res.status(400).send({
-          success: false,
-          validation: false,
-          field: 'deadline',
-          message: 'Lịch hẹn là bắt buộc',
+          field: 'description',
+          message: 'Mô tả không được để trống',
         });
       }
       return res.status(500).send({
@@ -156,19 +118,14 @@ const handler = async (req, res) => {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
-      if (!user?._id) throw ({ ...user, path: 'token' });
+      if (user?.mode != MODE.admin && user?.mode != MODE.exhibitor) throw ({ ...user, path: 'token' });
       const { _ids } = req.query;
       if (!_ids) throw ({ path: '_ids' });
-      const query = {};
-      if (user.mode == MODE.admin) {
-        query._id = { $in: _ids.split(",") }
-      } else {
-        query.$or = [
-          { _id: { $in: _ids.split(",") }, leader: user._id },
-          { _id: { $in: _ids.split(",") }, member: user._id },
-        ]
+      const query = { _id: { $in: _ids.split(",") } };
+      if (user.mode != MODE.admin) {
+        query.author = user._id;
       }
-      await tradeController.removeMany(query);
+      await livestreamController.removeMany(query);
       return res.status(200).send({
         success: true,
         message: 'Xóa thành công',

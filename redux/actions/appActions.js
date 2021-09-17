@@ -67,3 +67,7 @@ export const deleteMultiTradeRequest = async (params) => {
     const _ids = params && params.join(",");
     return axios.delete('trade?_ids=' + _ids);
 }
+
+export const getLivestreamsRequest = async (params) => {
+    return axios.get('livestream?' + stringify(params))
+}

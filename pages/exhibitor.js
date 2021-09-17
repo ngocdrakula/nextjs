@@ -7,6 +7,7 @@ import { wrapper } from '../redux/store';
 import types from '../redux/types'
 import { getQuery, MODE } from '../utils/helper';
 import Pagination from '../components/Pagination';
+import Livestream from '../components/exhibitorPage/Livestream';
 
 const pageSize = 9;
 
@@ -129,8 +130,12 @@ class Exhibitor extends Component {
       });
     }
   }
+  handleToggle = (e) => {
+    e.preventDefault();
+    this.setState({ toggle: !this.state.toggle })
+  }
   render() {
-    const { exhibitor, active, message, categorySelected, products, currentPage, total } = this.state;
+    const { exhibitor, active, message, categorySelected, products, currentPage, total, toggle } = this.state;
     const { categories, user } = this.props;
     const currentCategory = categories.find(i => i._id === categorySelected);
     return (
@@ -142,33 +147,35 @@ class Exhibitor extends Component {
               <div className="container">
                 <a href="#" className="connect-exhibitor"><img src="/images/user2.png" alt="" />Nhà trưng bày</a>
                 <h3>
-                  {exhibitor.avatar ?
-                    <img src={`/api/images/${exhibitor.avatar}`} alt="" style={{ width: 'auto', height: 'auto', maxWidth: 150, maxHeight: 150 }} />
-                    :
-                    <img src="/images/logo-showroom.png" alt="" />
-                  }
+                  <div className="exhibiton-avatar">
+                    {exhibitor.avatar ?
+                      <img src={`/api/images/${exhibitor.avatar}`} alt="" />
+                      :
+                      <img src="/images/logo-showroom.png" alt="" />
+                    }
+                  </div>
                   <span>{exhibitor.name || ""}</span>
                 </h3>
               </div>
               <div className="navbar navbar-expand-lg">
-                <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive">
+                <button className={"navbar-toggler navbar-toggler-right" + (toggle ? "" : " collapsed")} type="button" onClick={this.handleToggle}>
                   <span className="navbar-toggler-icon" />
                 </button>
                 <div id="navigation">
                   <div className="container">
-                    <div className="collapse navbar-collapse" id="navbarResponsive">
+                    <div className={"collapse navbar-collapse" + (toggle ? " show" : "")} id="navbarResponsive">
                       <ul className="navigation">
                         <li className={active === 0 ? "active" : ""}>
-                          <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 0 }) }}>Giới thiệu</a>
+                          <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 0, toggle: !toggle }) }}>Giới thiệu</a>
                         </li>
                         <li className={active === 1 ? "active" : ""}>
-                          <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 1 }) }}>Sản phẩm</a>
+                          <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 1, toggle: !toggle }) }}>Sản phẩm</a>
                         </li>
                         <li className={active === 2 ? "active" : ""}>
-                          <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 2 }) }}>Live stream</a>
+                          <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 2, toggle: !toggle }) }}>Live stream</a>
                         </li>
                         <li className={active === 3 ? "active" : ""}>
-                          <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 3 }) }}>Liên hệ</a>
+                          <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 3, toggle: !toggle }) }}>Liên hệ</a>
                         </li>
                       </ul>
                       <a href={"/user?filter=" + MODE.exhibitor} className="right"><img src="/images/icon-list.png" alt="" />Danh sách</a>
@@ -185,7 +192,7 @@ class Exhibitor extends Component {
                 <div className="row">
                   <div className="col-lg-3">
                     <div className="sidebar sidebar-left sidebar-menu">
-                      <h3>Sản phẩm</h3>
+                      <h3>Lĩnh vực trưng bày</h3>
                       <ul>
                         {categories.map((cate, index) => {
                           const active = ((!index && !categorySelected) || categorySelected === cate._id)
@@ -199,7 +206,7 @@ class Exhibitor extends Component {
                     </div>
                     <div className="sidebar sidebar-left">
                       <h3>Liên hệ</h3>
-                      <p>{exhibitor.contact || ""}</p>
+                      <p>{(exhibitor.contact || "")?.split('\n').map((d, i) => <React.Fragment key={i}>{i ? <br /> : ""}{d}</React.Fragment>)}</p>
                       <h3>Gửi tin nhắn</h3>
                       <form onSubmit={this.handleSubmit}>
                         <div className="form-group">
@@ -262,6 +269,7 @@ class Exhibitor extends Component {
                                 </div>
                               );
                             })}
+                            {!products.length ? <div className="col-sm-12"><h5>Chưa có sản phẩm tiêu biểu nào</h5></div> : ""}
                           </div>
                         </div>
                       </div>
@@ -278,7 +286,7 @@ class Exhibitor extends Component {
                 <div className="row">
                   <div className="col-lg-3">
                     <div className="sidebar sidebar-left sidebar-menu">
-                      <h3>Sản phẩm</h3>
+                      <h3>Lĩnh vực trưng bày</h3>
                       <ul>
                         {categories.map((cate, index) => {
                           const active = ((!index && !categorySelected) || categorySelected === cate._id)
@@ -292,7 +300,7 @@ class Exhibitor extends Component {
                     </div>
                     <div className="sidebar sidebar-left">
                       <h3>Liên hệ</h3>
-                      <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation.</p>
+                      <p>{(exhibitor.contact || "")?.split('\n').map((d, i) => <React.Fragment key={i}>{i ? <br /> : ""}{d}</React.Fragment>)}</p>
                       <h3>Gửi tin nhắn</h3>
                       <form onSubmit={this.handleSubmit}>
                         <div className="form-group">
@@ -318,7 +326,7 @@ class Exhibitor extends Component {
                   <div className="col-lg-9" id="product-list">
                     <div className="sidebar-content">
                       <div className="sidebar sidebar-content-bottom sidebar-items">
-                        <h3>{currentCategory?.name || "Sản phẩm tiêu biểu"}</h3>
+                        <h3>{currentCategory?.name || "Sản phẩm"}</h3>
                         <div className="items-list">
                           <div className="row">
                             {products.map(product => {
@@ -338,6 +346,7 @@ class Exhibitor extends Component {
                                 </div>
                               );
                             })}
+                            {!products.length ? <div className="col-sm-12"><h5>Danh mục chưa có sản phẩm nào</h5></div> : ""}
                           </div>
                         </div>
                         <Pagination gotoPage={this.gotoPage} {...{ currentPage, pageSize, total }} />
@@ -348,101 +357,7 @@ class Exhibitor extends Component {
                 </div>
               </div>
             </div>
-            <div className="livestream-content bg-body" style={{ display: active === 2 ? 'block' : 'none' }}>
-              <div className="container">
-                <div className="livestream-head">
-                  <img src="/images/livestream-thumb.png" alt="" />
-                  <div className="row">
-                    <div className="col-lg-8">
-                      <p className="ft-semibold">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt.</p>
-                    </div>
-                    <div className="col-lg-4">
-                      <div className="like-share">
-                        <button className="like"><img src="/images/icon-like.png" alt="" />Thích <span>19</span></button>
-                        {" "}
-                        <button className="share">Chia sẻ</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="livestream-list">
-                  <div className="row">
-                    <div className="col-sm-6">
-                      <div className="livestream-item">
-                        <div className="row">
-                          <div className="col-lg-5">
-                            <img src="/images/video1.png" alt="" />
-                          </div>
-                          <div className="col-lg-7">
-                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
-                      <div className="livestream-item">
-                        <div className="row">
-                          <div className="col-lg-5">
-                            <img src="/images/video2.png" alt="" />
-                          </div>
-                          <div className="col-lg-7">
-                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
-                      <div className="livestream-item">
-                        <div className="row">
-                          <div className="col-lg-5">
-                            <img src="/images/video3.png" alt="" />
-                          </div>
-                          <div className="col-lg-7">
-                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
-                      <div className="livestream-item">
-                        <div className="row">
-                          <div className="col-lg-5">
-                            <img src="/images/video4.png" alt="" />
-                          </div>
-                          <div className="col-lg-7">
-                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
-                      <div className="livestream-item">
-                        <div className="row">
-                          <div className="col-lg-5">
-                            <img src="/images/video5.png" alt="" />
-                          </div>
-                          <div className="col-lg-7">
-                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
-                      <div className="livestream-item">
-                        <div className="row">
-                          <div className="col-lg-5">
-                            <img src="/images/video6.png" alt="" />
-                          </div>
-                          <div className="col-lg-7">
-                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {exhibitor?._id ? <Livestream active={active === 2} exhibitor={exhibitor} /> : ""}
             <div className="contact-content bg-body" style={{ display: active === 3 ? 'block' : 'none' }}>
               <div className="container">
                 <div className="contact-info">
@@ -484,7 +399,19 @@ class Exhibitor extends Component {
                             </div>
                           </div>
                         </div>
-                        <p className="web-address"><span>Website:</span><span><a href={exhibitor.website || "#"}>{exhibitor.website || ""}</a></span></p>
+                        <div className="row web-address">
+                          <div className="col-md-2 col-sm-4">Website:</div>
+                          <div className="col-md-10 col-sm-8">
+                            <ul>
+                              {exhibitor.website?.split(",").map((web, index) => {
+                                return (
+                                  <li key={index}>
+                                    <a href={web || "#"} target="_blank">{web || ""}</a>
+                                  </li>)
+                              })}
+                            </ul>
+                          </div>
+                        </div>
                         <div className="contact-method">
                           <ul className="ft-semibold">
                             <li><a href="#" onClick={!user ? this.openLoginVisitor : e => this.handleChat(e, visitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a></li>

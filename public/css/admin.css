@@ -647,3 +647,7 @@ label.image-container.logo-preview {
 .setting-error {
     color: red;
 }
+
+.livestream-link {
+    line-break: anywhere;
+}

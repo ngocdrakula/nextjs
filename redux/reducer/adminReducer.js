@@ -8,6 +8,7 @@ export const initState = {
     exhibitor: { data: [], page: 0, total: 0 },
     contact: { data: [], page: 0, total: 0 },
     trade: { data: [], page: 0, total: 0 },
+    livestream: { data: [], page: 0, total: 0 },
     industries: [],
     categories: [],
     user: null,
@@ -404,6 +405,25 @@ const appReducer = (state = initState, action) => {
                 ...state,
                 trade: {
                     ...state.trade,
+                    data
+                }
+            };
+        }
+        case types.ADMIN_GET_LIVESTREAMS_SUCCESS: {
+            return {
+                ...state,
+                livestream: action.payload
+            };
+        }
+        case types.ADMIN_UPDATE_LIVESTREAM_SUCCESS: {
+            const data = state.livestream.data.map(c => {
+                if (c._id === action.payload._id) return action.payload;
+                return (c);
+            });
+            return {
+                ...state,
+                livestream: {
+                    ...state.livestream,
                     data
                 }
             };

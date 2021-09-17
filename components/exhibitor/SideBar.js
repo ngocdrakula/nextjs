@@ -34,6 +34,11 @@ class SideBar extends Component {
                                 <i className="fa fa-user-secret" /> <span>Danh sách sản phẩm</span>
                             </a>
                         </li>
+                        <li className={active === 5 ? "active" : ""}>
+                            <a href="#" onClick={() => handleActive(5)}>
+                                <i className="fa fa-user-secret" /> <span>Danh sách livestream</span>
+                            </a>
+                        </li>
                         <li className={active === 3 ? "active" : ""}>
                             <a href="#" onClick={() => handleActive(3)}>
                                 <i className="fa fa-wechat" /> <span>Chat{newMessage ? ` (${newMessage})` : ""}</span>
