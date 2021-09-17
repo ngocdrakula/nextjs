@@ -17,7 +17,7 @@ class Slider extends Component {
                     <div className="slide-text">
                         <h1>{bannerSubTitle}<span>{bannerTitle}</span></h1>
                         <div className="time-location">
-                            <p className="time">{bannerStartTime} <img src="/images/icon-right.png" alt="" /> {bannerEndTime}</p>
+                            <p className="time">{bannerStartTime} - {bannerEndTime}</p>
                             <p className="location">{bannerLocation?.split('\n').map((d, i) => <React.Fragment key={i}>{i ? <br /> : ""}{d}</React.Fragment>)}</p>
                         </div>
                         <p className="txt-white">{bannerSlogan}</p>

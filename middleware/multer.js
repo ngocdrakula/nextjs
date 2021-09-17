@@ -1,7 +1,6 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import cloudUploads, { cloudDestroys } from './cloudUploads';
 
 
 const diskStorage = multer.diskStorage({
@@ -9,7 +8,7 @@ const diskStorage = multer.diskStorage({
         callback(null, process.env.FOLDER_UPLOAD);
     },
     filename: (req, file, callback) => {
-        const match = ["image/png", "image/jpeg", "image/gif"];
+        const match = ["image/png", "image/jpeg", "image/gif", "image/x-icon"];
         if (match.indexOf(file.mimetype) == -1) {
             const errorMess = "This type file is not allowed";
             return callback(errorMess, null);
@@ -28,20 +27,14 @@ export const multerDestroys = (files) => {
     files.map(file => {
         try {
             fs.unlinkSync(process.env.FOLDER_UPLOAD + "/" + file);
-        } catch (err) {
-        }
+        } catch (err) { }
     });
     return true
 }
 
 export const cleanFiles = async (files) => {
     return new Promise(resolve => {
-        if (process.env.HOST_NAME !== 'production' && process.env.HOST_NAME !== 'localhost') {
-            return cloudDestroys(files, clean => resolve(clean));
-        }
-        else {
-            return resolve(multerDestroys(files));
-        }
+        return resolve(multerDestroys(files));
     });
 }
 
@@ -50,12 +43,6 @@ export default async (req) => {
         multerUpload.array("files", 5)(req, {}, err => {
             if (err || !req.files) {
                 return resolve({ err, body: req.body, files: [] });
-            }
-            if (process.env.HOST_NAME !== 'production' && process.env.HOST_NAME !== 'localhost') {
-                return cloudUploads(req.files, files => {
-                    multerDestroys(files);
-                    return resolve({ err, body: req.body, files })
-                });
             }
             const files = req.files.map(({ filename }) => filename);
             return resolve({ err, body: req.body, files });

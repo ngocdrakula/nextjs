@@ -90,8 +90,12 @@ class Visitor extends Component {
       });
     }
   }
+  handleToggle = (e) => {
+    e.preventDefault();
+    this.setState({ toggle: !this.state.toggle })
+  }
   render() {
-    const { visitor, active, message } = this.state;
+    const { visitor, active, message, toggle } = this.state;
     const { user } = this.props;
     return (
       <div id="app" className="user-page">
@@ -112,15 +116,15 @@ class Visitor extends Component {
                   </h3>
                 </div>
                 <div className="navbar navbar-expand-lg">
-                  <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive">
+                  <button className={"navbar-toggler navbar-toggler-right" + (toggle ? "" : " collapsed")} type="button" onClick={this.handleToggle}>
                     <span className="navbar-toggler-icon" />
                   </button>
                   <div id="navigation">
                     <div className="container">
-                      <div className="collapse navbar-collapse" id="navbarResponsive">
+                      <div className={"collapse navbar-collapse" + (toggle ? " show" : "")} id="navbarResponsive">
                         <ul className="navigation">
-                          <li className={active === 0 ? "active" : ""}><a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 0 }) }}>Giới thiệu</a></li>
-                          <li className={active === 1 ? "active" : ""}><a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 1 }) }}>Liên hệ</a></li>
+                          <li className={active === 0 ? "active" : ""}><a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 0, toggle: !toggle }) }}>Giới thiệu</a></li>
+                          <li className={active === 1 ? "active" : ""}><a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 1, toggle: !toggle }) }}>Liên hệ</a></li>
                         </ul>
                         <a href={"/user?filter=" + MODE.visitor} className="right"><img src="/images/icon-list.png" alt="" />Danh sách</a>
                       </div>

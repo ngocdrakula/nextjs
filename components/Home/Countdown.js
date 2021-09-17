@@ -53,7 +53,7 @@ class Countdown extends Component {
                         </div>
                     </div>
                     <div className="register-guest">
-                        <a href="#"><img src="/images/icon-register-guest.png" alt="" />Đăng ký <span>Khách tham quan</span></a>
+                        <a href="https://vimexpo.com.vn/khach-tham-quan/dang-ky-tham-quan/" target="_blank"><img src="/images/icon-register-guest.png" alt="" />Đăng ký <span>Khách tham quan</span></a>
                     </div>
                 </div>
             </div>

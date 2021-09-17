@@ -7,6 +7,7 @@ import industry from "./industry";
 import user from "./user";
 import contact from "./contact";
 import trade from "./trade";
+import livestream from "./livestream";
 
 mongoose.models = {};
 
@@ -18,3 +19,4 @@ export const industryData = mongoose.model('industry', industry);
 export const userData = mongoose.model('user', user);
 export const contactData = mongoose.model('contact', contact);
 export const tradeData = mongoose.model('trade', trade);
+export const livestreamData = mongoose.model('livestream', livestream);

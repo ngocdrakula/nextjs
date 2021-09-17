@@ -334,11 +334,11 @@ function* getTrades({ payload, callback }) {
     try {
         const res = yield call(requests.getTradesRequest, payload);
         if (res?.data?.success) {
-            yield put({ type: types.ADMIN_GET_TRADES_SUCCESS, payload: res.data });
+            yield put({ type: types.GET_TRADES_SUCCESS, payload: res.data });
             if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
-        yield put({ type: types.ADMIN_GET_TRADES_FAILED, payload: e.response });
+        yield put({ type: types.GET_TRADES_FAILED, payload: e.response });
         if (typeof callback === 'function') callback(e.response);
     }
 }
@@ -346,11 +346,11 @@ function* addTrade({ payload, callback }) {
     try {
         const res = yield call(requests.addTradeRequest, payload);
         if (res?.data?.success) {
-            yield put({ type: types.ADMIN_ADD_TRADE_SUCCESS, payload: res.data });
+            yield put({ type: types.ADD_TRADE_SUCCESS, payload: res.data });
             if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
-        yield put({ type: types.ADMIN_ADD_TRADE_FAILED, payload: e.response });
+        yield put({ type: types.ADD_TRADE_FAILED, payload: e.response });
         if (typeof callback === 'function') callback(e.response);
     }
 }
@@ -358,11 +358,11 @@ function* updateTrade({ payload, callback }) {
     try {
         const res = yield call(requests.updateTradeRequest, payload);
         if (res?.data?.success) {
-            yield put({ type: types.ADMIN_UPDATE_TRADE_SUCCESS, payload: res.data.data });
+            yield put({ type: types.UPDATE_TRADE_SUCCESS, payload: res.data.data });
             if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
-        yield put({ type: types.ADMIN_UPDATE_TRADE_FAILED, payload: e.response });
+        yield put({ type: types.UPDATE_TRADE_FAILED, payload: e.response });
         if (typeof callback === 'function') callback(e.response);
     }
 }
@@ -370,11 +370,11 @@ function* deleteTrade({ payload, callback }) {
     try {
         const res = yield call(requests.deleteTradeRequest, payload);
         if (res?.data?.success) {
-            yield put({ type: types.ADMIN_DELETE_TRADE_SUCCESS, payload: res.data });
+            yield put({ type: types.DELETE_TRADE_SUCCESS, payload: res.data });
             if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
-        yield put({ type: types.ADMIN_DELETE_TRADE_FAILED, payload: e.response });
+        yield put({ type: types.DELETE_TRADE_FAILED, payload: e.response });
         if (typeof callback === 'function') callback(e.response);
     }
 }
@@ -382,11 +382,23 @@ function* deleteMultiTrade({ payload, callback }) {
     try {
         const res = yield call(requests.deleteMultiTradeRequest, payload);
         if (res?.data?.success) {
-            yield put({ type: types.ADMIN_DELETE_MULTI_TRADE_SUCCESS, payload: res.data });
+            yield put({ type: types.DELETE_MULTI_TRADE_SUCCESS, payload: res.data });
             if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {
-        yield put({ type: types.ADMIN_DELETE_MULTI_TRADE_FAILED, payload: e.response });
+        yield put({ type: types.DELETE_MULTI_TRADE_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* getLivestreams({ payload, callback }) {
+    try {
+        const res = yield call(requests.getLivestreamsRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.GET_LIVESTREAM_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.GET_LIVESTREAM_FAILED, payload: e.response });
         if (typeof callback === 'function') callback(e.response);
     }
 }
@@ -420,5 +432,7 @@ export default function* appSaga() {
         yield takeEvery(types.UPDATE_TRADE, updateTrade),
         yield takeEvery(types.DELETE_TRADE, deleteTrade),
         yield takeEvery(types.DELETE_MULTI_TRADE, deleteMultiTrade),
+
+        yield takeEvery(types.GET_LIVESTREAM, getLivestreams),
     ])
 }

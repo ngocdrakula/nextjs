@@ -7,6 +7,7 @@ import Overview from './Overview';
 import Category from './Category';
 import Chat from '../Chat';
 import Trade from '../Trade';
+import Livestream from './Livestream';
 
 
 class Exhibitor extends Component {
@@ -32,6 +33,7 @@ class Exhibitor extends Component {
                     <Product active={active === 2} />
                     <Chat active={active === 3} />
                     <Trade active={active === 4} />
+                    <Livestream active={active === 5} />
                 </div>
                 <aside className="control-sidebar control-sidebar-dark">
                     <ul className="nav nav-tabs nav-justified control-sidebar-tabs">
