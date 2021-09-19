@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import types from '../redux/types';
 import GoogleLogin from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
-// import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { MODE } from '../utils/helper';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -64,6 +63,11 @@ class LoginVisitor extends Component {
             });
         }
     }
+    handleResetPassword = (e) => {
+        e.preventDefault();
+        const { dispatch } = this.props;
+        dispatch({ type: types.OPENFORM, payload: 'reset' });
+    }
     render() {
         const { message } = this.state;
         const { openForm } = this.props;
@@ -87,7 +91,7 @@ class LoginVisitor extends Component {
                         Nhớ đăng nhập
                     </label>
                     <label className="fogot-mk">
-                        Quên mật khẩu? <a href="#" className="txt-red">Nhấn vào đây</a>
+                        Quên mật khẩu? <a href="#" className="txt-red" onClick={this.handleResetPassword}>Nhấn vào đây</a>
                     </label>
                 </div>
                 <p className="other-login">Hoặc</p>

@@ -71,3 +71,7 @@ export const deleteMultiTradeRequest = async (params) => {
 export const getLivestreamsRequest = async (params) => {
     return axios.get('livestream?' + stringify(params))
 }
+
+export const postResetPasswordRequest = async (request) => {
+    return axios.post('user/reset', request)
+}

@@ -651,3 +651,6 @@ label.image-container.logo-preview {
 .livestream-link {
     line-break: anywhere;
 }
+label.rdw-link-modal-target-option{
+    margin-bottom: 10px
+}

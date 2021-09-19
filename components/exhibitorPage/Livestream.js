@@ -19,13 +19,11 @@ class Livestream extends Component {
     }
     gotoPage = (page = 0) => {
         const { exhibitor, dispatch } = this.props;
-        console.log(exhibitor)
         if (exhibitor?._id) {
             dispatch({
                 type: types.GET_LIVESTREAM,
                 payload: { page, pageSize, author: exhibitor._id, enabled: true },
                 callback: res => {
-                    console.log(res)
                     if (res?.success) {
                         const { data, total } = res;
                         this.setState({

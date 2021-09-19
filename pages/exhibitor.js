@@ -260,10 +260,8 @@ class Exhibitor extends Component {
                                       <img src={"/api/images/" + product.image} alt="" style={{ width: 'auto', height: 'auto' }} />
                                     </div>
                                     <div className="item-description">
-                                      <p><strong>{product.name}</strong>
-                                        <br />
-                                        {product.description}
-                                      </p>
+                                      <p><strong>{product.name}</strong></p>
+                                      <div className="dangerously" dangerouslySetInnerHTML={{ __html: product.description }} />
                                     </div>
                                   </div>
                                 </div>
@@ -337,10 +335,8 @@ class Exhibitor extends Component {
                                       <img src={"/api/images/" + product.image} alt="" style={{ width: 'auto', height: 'auto', }} />
                                     </div>
                                     <div className="item-description">
-                                      <p><strong>{product.name}</strong>
-                                        <br />
-                                        {product.description}
-                                      </p>
+                                      <p><strong>{product.name}</strong></p>
+                                      <div className="dangerously" dangerouslySetInnerHTML={{ __html: product.description }} />
                                     </div>
                                   </div>
                                 </div>
@@ -365,10 +361,14 @@ class Exhibitor extends Component {
                     <div className="col-lg-7">
                       <div className="contact-exhibitor">
                         <h3>Liên hệ Nhà trưng bày</h3>
-                        <p className="address">
-                          <span>Địa chỉ:</span>
-                          <span>{exhibitor.address}</span>
-                        </p>
+                        <div className="row address">
+                          <div className="col-md-2 col-sm-4">
+                            <span>Địa chỉ:</span>
+                          </div>
+                          <div className="col-md-10 col-sm-8">
+                            <div className="dangerously" dangerouslySetInnerHTML={{ __html: exhibitor.address || '' }} />
+                          </div>
+                        </div>
                         <div className="exhibitor-info">
                           <div className="row">
                             <div className="col-md-6">

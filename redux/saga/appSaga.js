@@ -402,6 +402,26 @@ function* getLivestreams({ payload, callback }) {
         if (typeof callback === 'function') callback(e.response);
     }
 }
+function* postResetPassword({ payload, callback }) {
+    try {
+        const res = yield call(requests.postResetPasswordRequest, payload);
+        if (res?.data?.success) {
+            if (res.data.token) {
+                localStorage.setItem('token', res.data.token);
+                const user = jwt.decode(res.data.token);
+                yield put({ type: types.USER_LOGIN_SUCCESS, payload: user });
+                yield call(getUserById, { payload: user._id });
+            }
+            else {
+                yield put({ type: types.RESET_PASSWORD_SUCCESS, payload: res.data });
+            }
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.RESET_PASSWORD_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
 export default function* appSaga() {
     yield all([
         yield takeEvery(types.GET_INDUSTRIES, getIndustries),
@@ -434,5 +454,7 @@ export default function* appSaga() {
         yield takeEvery(types.DELETE_MULTI_TRADE, deleteMultiTrade),
 
         yield takeEvery(types.GET_LIVESTREAM, getLivestreams),
+
+        yield takeEvery(types.RESET_PASSWORD, postResetPassword),
     ])
 }

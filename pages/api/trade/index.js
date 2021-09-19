@@ -4,6 +4,7 @@ import userController from '../../../controllers/user';
 import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt'
 import { MODE } from '../../../utils/helper';
+import { tradeSuccess } from '../../../middleware/mailer';
 
 const handler = async (req, res) => {
   if (req.method == 'GET') {
@@ -87,12 +88,16 @@ const handler = async (req, res) => {
         throw ({ path: 'user' })
       }
       const tradeCreated = await (await tradeController.create({ leader: fromId, member: to, deadline, link }))
-        .populate({ path: 'leader', select: 'name email' })
-        .populate({ path: 'member', select: 'name email' });
+        .populate({ path: 'leader', select: 'name email mode' })
+        .populate({ path: 'member', select: 'name email mode' })
+        .execPopulate();
+      const send1 = await tradeSuccess({ mode: tradeCreated.leader.mode, email: tradeCreated.leader.email, name: tradeCreated.leader.name, company: tradeCreated.member.name, deadline, link });
+      const send2 = await tradeSuccess({ mode: tradeCreated.member.mode, email: tradeCreated.member.email, name: tradeCreated.member.name, company: tradeCreated.leader.name, deadline, link });
       return res.status(201).send({
         success: true,
         data: tradeCreated,
         message: 'Thêm thành công',
+        send1, send2,
         messages: lang?.message?.success?.created
       });
     } catch (e) {

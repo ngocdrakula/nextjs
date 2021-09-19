@@ -5,6 +5,7 @@ import lang, { langConcat } from '../../../lang.config';
 import bcrypt from '../../../middleware/bcrypt';
 import jwt from '../../../middleware/jwt';
 import { MODE } from '../../../utils/helper';
+import { registerSuccess } from '../../../middleware/mailer';
 
 const handler = async (req, res) => {
     if (req.method == 'POST') {
@@ -22,6 +23,9 @@ const handler = async (req, res) => {
                 representative, position, mobile, website, product,
             };
             const userCreated = await userController.create(userInfo);
+            const registed = await registerSuccess({ email, password });
+            const { success, error } = registed;
+            if (!success) throw ({ path: 'send', error })
             const { _id } = userCreated;
             const token = jwt.create({ email, _id, name, mode: MODE.visitor });
             return res.status(201).send({

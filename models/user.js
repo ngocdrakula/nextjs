@@ -87,7 +87,11 @@ const user = new Schema({
     code: {
         type: Number,
         default: 0
-    }
+    },
+    expired: {
+        type: Date,
+        required: false,
+    },
 }, {
     timestamps: { createdAt: 'createdAt' }
 });

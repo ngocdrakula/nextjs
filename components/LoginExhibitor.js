@@ -30,6 +30,11 @@ class LoginExhibitor extends Component {
         const { dispatch } = this.props;
         dispatch({ type: types.OPENFORM, payload: null });
     }
+    handleResetPassword = (e) => {
+        e.preventDefault();
+        const { dispatch } = this.props;
+        dispatch({ type: types.OPENFORM, payload: 'reset' });
+    }
 
     render() {
         const { message } = this.state;
@@ -54,7 +59,7 @@ class LoginExhibitor extends Component {
                         Nhớ đăng nhập
                     </label>
                     <label className="fogot-mk">
-                        Quên mật khẩu? <a href="#" className="txt-red">Nhấn vào đây</a>
+                        Quên mật khẩu? <a href="#" className="txt-red" onClick={this.handleResetPassword}>Nhấn vào đây</a>
                     </label>
                 </div>
             </Modal>
