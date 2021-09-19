@@ -52,12 +52,10 @@ const handler = async (req, res) => {
           throw ({ path: 'author' })
         }
       }
-      console.log(1)
       const livestreamCreated = await livestreamController.create({
         author: user.mode == MODE.admin ? author : user._id,
         description, link, title, embed
       })
-      console.log(2, livestreamCreated)
       return res.status(201).send({
         success: true,
         data: livestreamCreated,
@@ -65,7 +63,6 @@ const handler = async (req, res) => {
         messages: lang?.message?.success?.created
       });
     } catch (e) {
-      console.log(e)
       if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({

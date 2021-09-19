@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import types from '../../../redux/types';
 import { createFormData, MODE } from '../../../utils/helper';
+import TextEditor from '../../TextEditor';
 
 
 class AddProduct extends Component {
@@ -175,7 +176,14 @@ class AddProduct extends Component {
                                 </div>
                                 <div className={"form-group" + (fieldError === 'description' ? " has-error" : "")}>
                                     <label htmlFor="add-pro-description">Mô tả</label>
-                                    <textarea className="form-control summernote" required rows={2} placeholder="Mô tả sơ lược về sản phẩm" value={description} name="description" cols={50} id="add-pro-description" onChange={this.handleChange} />
+                                    <TextEditor
+                                        className="form-control summernote"
+                                        placeholder="Mô tả sơ lược về sản phẩm"
+                                        value={description}
+                                        name="description"
+                                        id="add-pro-description"
+                                        onChange={this.handleChange}
+                                    />
                                     <div className="help-block with-errors">
                                         {fieldError === 'description' && message ?
                                             <ul className="list-unstyled">

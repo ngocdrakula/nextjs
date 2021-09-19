@@ -21,7 +21,8 @@ class Login extends Component {
             }
         })
     }
-    handleChange = e => this.setState({ [e.target.name]: e.target.value, message: '' })
+    handleChange = e => this.setState({ [e.target.name]: e.target.value, message: '' });
+
     render() {
         const { message } = this.state;
         return (
@@ -77,8 +78,8 @@ class Login extends Component {
                                 </div>
                             </form>
                         </div>
-                        <a className="btn btn-link" href={"/password/reset"}>Quên mật khẩu?</a>
-                        <a className="btn btn-link" href={"/register"}>Đăng ký</a>
+                        <a className="btn btn-link" href={"/"}>Quên mật khẩu?</a>
+                        <a className="btn btn-link" href={"/"}>Đăng ký</a>
                     </div>
                 </div>
             </div>

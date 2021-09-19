@@ -13,6 +13,7 @@ import SocketIO from '../utils/SocketIO';
 import { stringify } from 'qs';
 import MessageCustomer from './Message/MessageCustomer';
 import TradeForm from './TradeForm';
+import ResetPassword from './ResetPassword';
 
 class Header extends Component {
     constructor(props) {
@@ -147,6 +148,7 @@ class Header extends Component {
                         <LoginVisitor />
                         <LoginExhibitor />
                         <RegisterVisitor />
+                        <ResetPassword />
                         <MessageCustomer />
                     </>
                 }

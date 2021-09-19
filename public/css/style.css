@@ -251,18 +251,18 @@ ul {
 }
 
 .slide-text .time-location p {
-	display: inline-block;
+	display: block;
 }
 
 .slide-text .time-location .time {
-	font-size: 45px;
+	font-size: 44px;
 	font-weight: 600;
 	line-height: 63px;
 	color: #DA2128;
 }
 
 .slide-text .time-location .location {
-	font-size: 17.5px;
+	font-size: 17px;
 	line-height: 20px;
 	margin-left: 10px;
 }
@@ -275,13 +275,17 @@ ul {
 	color: #FFF;
 	background-image: url('images/bg-text.png');
 	background-repeat: no-repeat;
-	background-size: contain;
-	margin-bottom: 22.5px;
+	background-size: 100% 100%;
+	margin-bottom: 20px;
+	padding: 10px 50px;
+	width: fit-content;
+	margin-left: -50px;
 }
 
 .slide-text .txt-last {
 	font-size: 29px;
 	line-height: 38px;
+	margin-bottom: 0px;
 }
 
 #counter {
@@ -1440,8 +1444,8 @@ label input[type='checkbox']:checked~.checkbox-checkmark {
 		border-left: none;
 	}
 	#slider .slide-text {
-		width: 58%;
-		top: 20%;
+		/* width: 58%; */
+		margin-left: 40%;
 	}
 	.slide-thumb img {
 		width: 50%;
@@ -1455,19 +1459,19 @@ label input[type='checkbox']:checked~.checkbox-checkmark {
 		line-height: 60px;
 	}
 	.slide-text .time-location .time {
-		font-size: 30px;
+		font-size: 28px;
 		line-height: 30px;
 	}
 	.slide-text .time-location .location br {
 		display: block;
 	}
 	.slide-text .time-location .location {
-		font-size: 14.5px;
-		line-height: 15px;
+		font-size: 14px;
+		line-height: 17px;
 	}
 	.slide-text .txt-white {
 		font-size: 45px;
-		line-height: 60px;
+		line-height: 45px;
 		margin-bottom: 15px;
 	}
 	.slide-text .txt-last {
@@ -1522,15 +1526,15 @@ label input[type='checkbox']:checked~.checkbox-checkmark {
 		margin-top: 15px;
 	}
 	#slider .slide-text {
-		width: 60%;
+		width: 70%;
 	}
 	.slide-thumb {
 		width: 50%;
 	}
 	#slider .slide-text h1, .slide-text .time-location .time {
-		font-size: 25px;
+		font-size: 20px;
 		line-height: initial;
-		margin-bottom: 3px;
+		margin-bottom: 5px;
 	}
 	.slide-text .time-location .time img {
 		width: 8px;
@@ -1540,19 +1544,19 @@ label input[type='checkbox']:checked~.checkbox-checkmark {
 		line-height: initial;
 	}
 	.slide-text .time-location .location {
-		margin-left: 0;
-		margin-bottom: 10px;
+		margin-left: 5px;
+		margin-bottom: 5px;
 	}
 	.slide-text .time-location .location br {
 		display: block;
 	}
 	.slide-text .time-location .location {
-		font-size: 11.5px;
-		line-height: 15px;
+		font-size: 10px;
+		line-height: 12px;
 	}
 	.slide-text .txt-white {
 		font-size: 30px;
-		line-height: 45px;
+		line-height: 35px;
 		margin-bottom: 10px;
 	}
 	.slide-text .txt-last {
@@ -1825,7 +1829,7 @@ label input[type='checkbox']:checked~.checkbox-checkmark {
 		right: 10px;
 	}
 	#slider .slide-text h1, .slide-text .time-location .time {
-		font-size: 20px;
+		font-size: 16px;
 	}
 	#slider .slide-text h1 span {
 		font-size: 40px;

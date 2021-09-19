@@ -105,16 +105,6 @@ class RegisterVisitor extends Component {
                     <span>Nhập lại</span>
                     <input onChange={this.handleChange} type="password" required name="repassword" placeholder="Nhập lại mật khẩu" />
                 </label>
-                {/* <div className="suport-login">
-                    <label className="remember-login label-cb">
-                        <input type="checkbox" name="remember" />
-                        <span className="checkbox-checkmark" />
-                        Chấp nhận điều khoản
-                    </label>
-                    <label className="fogot-mk">
-                        Quên mật khẩu? <a href="#" className="txt-red">Nhấn vào đây</a>
-                    </label>
-                </div> */}
                 <div className="error-form">{message}</div>
                 <input type="submit" onClick={this.handleSubmit} value="Đăng ký" />
                 <label>

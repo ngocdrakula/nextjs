@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import types from '../../../redux/types';
 import { createFormData } from '../../../utils/helper';
+import TextEditor from '../../TextEditor';
 
 class Overview extends Component {
     constructor(props) {
@@ -22,7 +23,7 @@ class Overview extends Component {
             contact: '',
             enabled: true,
             fieldError: null,
-            message: ''
+            message: '',
         }
     }
     componentDidMount() {
@@ -102,7 +103,7 @@ class Overview extends Component {
         filesAvatar: null,
         fieldError: null,
         message: '',
-        onEdit: false
+        onEdit: false,
     })
 
     handleChooseFilesAvatar = e => {
@@ -216,7 +217,8 @@ class Overview extends Component {
                                             <div className="form-group row">
                                                 <label htmlFor="ex-up-address" className="col-sm-3 col-form-label">Địa chỉ nhà trưng bày:</label>
                                                 <div className="col-sm-9">
-                                                    <input
+                                                    <TextEditor
+                                                        key={onEdit}
                                                         type="text"
                                                         className="form-control"
                                                         id="ex-up-address"
@@ -354,10 +356,11 @@ class Overview extends Component {
                                                     <textarea
                                                         className="form-control summernote"
                                                         rows={2}
-                                                        placeholder="Giới thiệu sơ lược về nhà trưng bày"
+                                                        placeholder="Giới thiệu sơ lược về nhà trưng bày  (tối đa 800 kí tự)"
                                                         value={introduce}
                                                         name="introduce"
                                                         cols={50}
+                                                        maxLength={800}
                                                         id="ex-up-introduce"
                                                         readOnly={!onEdit}
                                                         onChange={this.handleChange}
@@ -369,15 +372,15 @@ class Overview extends Component {
                                                 <div className="col-sm-9">
                                                     <textarea
                                                         className="form-control summernote"
-                                                        rows={2}
-                                                        placeholder="Nhập thông tin liên hệ khác"
+                                                        placeholder="Nhập thông tin liên hệ khác (tối đa 160 kí tự)"
                                                         value={contact}
                                                         name="contact"
-                                                        cols={50}
-                                                        maxLength={40}
                                                         id="ex-up-contact"
                                                         readOnly={!onEdit}
                                                         onChange={this.handleChange}
+                                                        rows={3}
+                                                        cols={50}
+                                                        maxLength={160}
                                                     />
                                                 </div>
                                             </div>

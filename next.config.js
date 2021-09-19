@@ -21,7 +21,7 @@ module.exports = {
         FACEBOOK_CLIENT_ID: '220142543419713',
 
         EMAIL_SERVICE: 'gmail',
-        EMAIL_USER: 'bigboy19502@gmail.com',
-        EMAIL_PASS: '090901111995'
+        EMAIL_USER: 'online.vimexpo@gmail.com',
+        EMAIL_PASS: 'vim@12345678'
     }
 };

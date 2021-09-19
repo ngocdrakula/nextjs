@@ -587,6 +587,12 @@ input[type=submit] {
 	font-style: italic;
 }
 
+.success-form {
+	margin: 10px;
+	color: green;
+	font-style: italic;
+}
+
 .mes-admin-info {
 	width: 100%;
 	display: flex;
@@ -1219,4 +1225,71 @@ form.form__contact {
 .user-page .navbar-toggler {
 	padding: 2px;
 	outline: none;
+}
+
+div.dangerously p {
+	margin-bottom: 0;
+}
+
+.contact-exhibitor .address {
+	margin-bottom: 15px;
+}
+
+.contact-info .web-address a {
+	color: #3c8dbc;
+}
+
+.banner-container {
+	background-repeat: no-repeat;
+	background-size: auto 100%;
+	background-position: left center;
+	background-position-x: left;
+	background-position-y: center;
+	padding-top: 50px;
+	padding-bottom: 50px;
+}
+
+#slider .slide-text {
+	margin-left: 40%;
+}
+
+@media only screen and (max-width: 992px) {
+	.banner-container {
+		background-size: 50% auto;
+		padding-top: 30px;
+		padding-bottom: 30px;
+	}
+	.banner-container .slide-text .txt-white {
+		padding: 5px 30px;
+		margin-left: -30px;
+	}
+	#slider .banner-container .slide-text {
+		width: 60%;
+		margin-left: 40%;
+	}
+}
+
+@media (min-width: 500px) and (max-width: 735px) {
+	.banner-container {
+		background-size: 40% auto;
+		padding-top: 30px;
+		padding-bottom: 30px;
+	}
+	#slider .banner-container .slide-text {
+		top: unset;
+		right: unset;
+	}
+	#slider .banner-container .slide-text {
+		margin-left: 35%;
+	}
+	.banner-container .slide-text .txt-white {
+		padding: 5px 20px;
+		margin-left: -20px;
+	}
+}
+
+.time-location {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }

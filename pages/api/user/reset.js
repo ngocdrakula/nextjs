@@ -3,7 +3,6 @@ import userController from '../../../controllers/user';
 import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt';
 import bcrypt from '../../../middleware/bcrypt';
-import { MODE } from '../../../utils/helper';
 import { resetPassword } from '../../../middleware/mailer';
 
 const handler = async (req, res) => {
@@ -15,18 +14,18 @@ const handler = async (req, res) => {
             if (!user) throw ({ path: 'user' });
             if (!code) {
                 const newCode = Math.floor(Math.random() * 900000) + 100000;
-                console.log(newCode)
                 user.code = newCode;
+                const expired = Date.now() + 10 * 60 * 1000;
+                user.expired = expired;
                 await user.save();
-                const reseted = await resetPassword({ email, name: user.name, code: newCode });
-                const { success, info, error } = reseted;
+                const reseted = await resetPassword({ email, name: user.name, code: newCode, expired });
+                const { success, error } = reseted;
                 if (!success) throw ({ path: 'send', error })
                 return res.status(200).send({
                     success: true,
-                    message: 'Vui lòng kiểm tra email để mấy mã bảo mật',
-                    info
+                    message: 'Vui lòng kiểm tra email để mấy mã bảo mật'
                 });
-            } else if (code == user.code) {
+            } else if (code == user.code && user.expired > Date.now()) {
                 if (!password) throw ({ path: 'password' })
                 user.code = 0;
                 user.password = await bcrypt.create(password);
@@ -40,7 +39,6 @@ const handler = async (req, res) => {
                 });
             } else throw ({ path: 'code' })
         } catch (e) {
-            console.log(e)
             if (e.path == 'email') {
                 return res.status(400).send({
                     success: false,
