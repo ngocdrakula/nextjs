@@ -210,7 +210,7 @@ class Category extends Component {
                                                     </a>
                                                 </td>
                                                 <td>{category.enabled ? "Hoạt động" : "Không hoạt động"}</td>
-                                                <td className="row-options" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                                <td className="row-options">
                                                     <a onClick={() => this.setState({ onEdit: category })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
                                                         <i title="Chỉnh sửa" className="fa fa-edit" />
                                                     </a>&nbsp;&nbsp;

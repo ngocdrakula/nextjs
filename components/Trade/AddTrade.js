@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import types from '../../redux/types';
+import { MODE } from '../../utils/helper';
 
 
 class AddTrade extends Component {
@@ -23,8 +24,8 @@ class AddTrade extends Component {
     handleChange = e => this.setState({ [e.target.name]: e.target.value, fieldError: false })
     handleSubmit = e => {
         e.preventDefault();
-        const { link, deadline, enabled } = this.state;
-        const data = { link, deadline, enabled }
+        const { link, deadline, enabled, approved } = this.state;
+        const data = { link, deadline, enabled, approved }
         const dataRequied = { link, deadline }
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
@@ -65,10 +66,13 @@ class AddTrade extends Component {
     handleSelectEnable = () => this.setState({ enabled: true, dropActive: false })
     handleSelectDisable = () => this.setState({ enabled: false, dropActive: false })
 
+    handleDropdownApproved = () => this.setState({ dropApproved: !this.state.dropApproved })
+    handleSelectApproved = () => this.setState({ approved: true, dropApproved: false })
+    handleSelectNotApproved = () => this.setState({ approved: false, dropApproved: false })
 
     render() {
-        const { onAdd, handleClose } = this.props;
-        const { dropActive, link, deadline, enabled, fieldError, message } = this.state;
+        const { onAdd, handleClose, user, exUser } = this.props;
+        const { dropActive, dropApproved, link, deadline, approved, enabled, fieldError, message } = this.state;
         return (
             <div id="add-vis-myDynamicModal" className={"modal-create modal fade" + (onAdd ? " in" : "")} style={{ display: onAdd ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">
@@ -138,8 +142,43 @@ class AddTrade extends Component {
                                             </div>
                                         </div>
                                     </div>
+                                    {user.mode === MODE.admin && !exUser ?
+                                        <div className="col-md-4 nopadding-right">
+                                            <div className={"form-group" + (fieldError === 'approved' ? " has-error" : "")}>
+                                                <label htmlFor="add-vis-active">Trạng thái duyệt*</label>
+                                                <span className={"select2 select2-container select2-container--default" + (dropApproved ? " select2-container--open" : "")} style={{ width: '100%' }}>
+                                                    <span className="selection" onClick={this.handleDropdownApproved}>
+                                                        <span className="select2-selection select2-selection--single"  >
+                                                            <span className="select2-selection__rendered" id="add-vis-select2-active-container" title={approved ? "Đã duyệt" : "Chưa duyệt"}>{approved ? "Đã duyệt" : "Chưa duyệt"}</span>
+                                                            <span className="select2-selection__arrow" role="presentation">
+                                                                <b role="presentation" />
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                    <div className={"dropdown-select" + (dropApproved ? " active" : "")}>
+                                                        <div
+                                                            className={"select-option-active" + (approved ? " active" : "")}
+                                                            onClick={this.handleSelectApproved}
+                                                        >Đã duyệt</div>
+                                                        <div
+                                                            className={"select-option-active" + (!approved ? " active" : "")}
+                                                            onClick={this.handleSelectNotApproved}
+                                                        >Chưa duyệt</div>
+                                                    </div>
+                                                </span>
+                                                <div className="help-block with-errors" >
+                                                    {fieldError === 'approved' && message ?
+                                                        <ul className="list-unstyled">
+                                                            <li>{message}.</li>
+                                                        </ul>
+                                                        : ""}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        : ""}
                                 </div>
-                            </div><div className="modal-footer">
+                            </div>
+                            <div className="modal-footer">
                                 <input className="btn btn-flat btn-new" type="submit" value="Thêm" />
                             </div>
                         </form>
@@ -150,4 +189,4 @@ class AddTrade extends Component {
     }
 }
 
-export default connect(({ admin: { industries } }) => ({ industries }))(AddTrade)
+export default connect(({ admin: { user, exUser } }) => ({ user, exUser }))(AddTrade)

@@ -68,7 +68,7 @@ class Overview extends Component {
                         </p>
                     </div>
                     : ""}
-                <div id="chatbox" style={user.mode === MODE.admin ? { height: 'calc(100% - 115px)' } : {}}>
+                <div id="chatbox" style={user.mode === MODE.admin && exUser ? { height: 'calc(100% - 115px)' } : {}}>
                     <div className="row chatContent">
                         <ConversationList />
                         <MessageBox />

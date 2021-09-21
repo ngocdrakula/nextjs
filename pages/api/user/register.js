@@ -26,12 +26,12 @@ const handler = async (req, res) => {
             const registed = await registerSuccess({ email, password });
             const { success, error } = registed;
             if (!success) throw ({ path: 'send', error })
-            const { _id } = userCreated;
-            const token = jwt.create({ email, _id, name, mode: MODE.visitor });
+            const { createdAt, _id } = userCreated;
+            const token = jwt.create({ email, createdAt, _id, name, mode: MODE.visitor });
             return res.status(201).send({
                 success: true,
                 token,
-                data: { email, _id, name, mode: MODE.visitor },
+                data: { email, createdAt, _id, name, mode: MODE.visitor },
                 message: 'Đăng ký thành công',
             });
         } catch (e) {

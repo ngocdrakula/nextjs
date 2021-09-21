@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import types from '../../redux/types';
-import { formatTime } from '../../utils/helper';
+import { formatTime, MODE } from '../../utils/helper';
 
 
 class UpdateTrade extends Component {
@@ -11,6 +11,7 @@ class UpdateTrade extends Component {
             link: '',
             deadline: '',
             enabled: true,
+            approved: false,
         }
         this.state = { ...this.defaultState };
     }
@@ -27,7 +28,7 @@ class UpdateTrade extends Component {
     handleChange = e => this.setState({ [e.target.name]: e.target.value, fieldError: false })
     handleSubmit = e => {
         e.preventDefault();
-        const { _id, link, deadline, enabled } = this.state;
+        const { _id, link, deadline, enabled, approved } = this.state;
         const dataRequied = { deadline }
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
@@ -36,7 +37,7 @@ class UpdateTrade extends Component {
         }
         else {
             const { dispatch, handleClose } = this.props;
-            const data = { _id, link, deadline, enabled }
+            const data = { _id, link, deadline, enabled, approved }
             dispatch({
                 type: types.ADMIN_UPDATE_TRADE,
                 payload: data,
@@ -68,9 +69,13 @@ class UpdateTrade extends Component {
     handleDropdown = () => this.setState({ dropActive: !this.state.dropActive })
     handleSelectEnable = () => this.setState({ enabled: true, dropActive: false })
     handleSelectDisable = () => this.setState({ enabled: false, dropActive: false })
+
+    handleDropdownApproved = () => this.setState({ dropApproved: !this.state.dropApproved })
+    handleSelectApproved = () => this.setState({ approved: true, dropApproved: false })
+    handleSelectNotApproved = () => this.setState({ approved: false, dropApproved: false })
     render() {
-        const { onEdit, handleClose } = this.props;
-        const { dropActive, link, deadline, enabled, fieldError, message } = this.state;
+        const { onEdit, handleClose, user, exUser } = this.props;
+        const { dropActive, dropApproved, link, deadline, approved, enabled, fieldError, message } = this.state;
         return (
             <div id="trade-edit-myDynamicModal" className={"modal-create modal fade" + (onEdit ? " in" : "")} style={{ display: onEdit ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">
@@ -156,6 +161,40 @@ class UpdateTrade extends Component {
                                             </div>
                                         </div>
                                     </div>
+                                    {user.mode === MODE.admin && !exUser ?
+                                        <div className="col-md-6 nopadding-left">
+                                            <div className={"form-group" + (fieldError === 'approved' ? " has-error" : "")}>
+                                                <label htmlFor="add-vis-active">Trạng thái duyệt*</label>
+                                                <span className={"select2 select2-container select2-container--default" + (dropApproved ? " select2-container--open" : "")} style={{ width: '100%' }}>
+                                                    <span className="selection" onClick={this.handleDropdownApproved}>
+                                                        <span className="select2-selection select2-selection--single"  >
+                                                            <span className="select2-selection__rendered" id="add-vis-select2-active-container" title={approved ? "Đã duyệt" : "Chưa duyệt"}>{approved ? "Đã duyệt" : "Chưa duyệt"}</span>
+                                                            <span className="select2-selection__arrow" role="presentation">
+                                                                <b role="presentation" />
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                    <div className={"dropdown-select" + (dropApproved ? " active" : "")}>
+                                                        <div
+                                                            className={"select-option-active" + (approved ? " active" : "")}
+                                                            onClick={this.handleSelectApproved}
+                                                        >Đã duyệt</div>
+                                                        <div
+                                                            className={"select-option-active" + (!approved ? " active" : "")}
+                                                            onClick={this.handleSelectNotApproved}
+                                                        >Chưa duyệt</div>
+                                                    </div>
+                                                </span>
+                                                <div className="help-block with-errors" >
+                                                    {fieldError === 'approved' && message ?
+                                                        <ul className="list-unstyled">
+                                                            <li>{message}.</li>
+                                                        </ul>
+                                                        : ""}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        : ""}
                                 </div>
                             </div>
                             <div className="modal-footer">
@@ -169,4 +208,4 @@ class UpdateTrade extends Component {
     }
 }
 
-export default connect(({ }) => ({}))(UpdateTrade)
+export default connect(({ admin: { user, exUser } }) => ({ user, exUser }))(UpdateTrade)

@@ -241,7 +241,7 @@ class Exhibitor extends Component {
                                                 </td>
                                                 <td>
                                                 </td>
-                                                <td className="row-options" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                                <td className="row-options">
                                                     {/* <a onClick={() => this.setState({ onView: exhibitor })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
                                                         <i title="Detail" className="fa fa-expand" />
                                                     </a>&nbsp; */}

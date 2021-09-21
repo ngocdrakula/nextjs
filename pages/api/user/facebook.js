@@ -27,8 +27,8 @@ const handler = async (req, res) => {
                         messages: lang?.message?.error?.unauthorized
                     });
                 }
-                const { _id, email, name, mode } = user;
-                const token = jwt.create({ _id, email, name, mode });
+                const { _id, email, name, createdAt, mode } = user;
+                const token = jwt.create({ _id, email, name, createdAt, mode });
                 return res.status(200).send({
                     success: true,
                     token,
@@ -41,7 +41,7 @@ const handler = async (req, res) => {
             const userCreated = await userController.create({
                 name, email, avatar, password, mode: MODE.visitor, id
             })
-            const token = jwt.create({ _id: userCreated._id, email, name, mode: MODE.visitor });
+            const token = jwt.create({ _id: userCreated._id, email, name, createdAt: userCreated.createdAt, mode: MODE.visitor });
             return res.status(200).send({
                 success: true,
                 token,

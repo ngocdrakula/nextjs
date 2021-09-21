@@ -13,9 +13,11 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
       if (!user?._id) throw ({ ...user, path: 'token' });
-      const { page, pageSize, name, from = user._id } = req.query;
+      const { page, pageSize, name, from, enabled } = req.query;
+      const queryEnabled = {};
+      if (enabled != undefined) queryEnabled.enabled = !(enabled == "true");
       const fromId = user.mode == MODE.admin ? from : user._id;
-      const query = fromId ? { $or: [{ 'leader': fromId }, { 'member': fromId }] } : {};
+      const query = fromId ? { $or: [{ 'leader': fromId, approved: true, ...queryEnabled }, { 'member': fromId, approved: true, ...queryEnabled }] } : queryEnabled;
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
       const populateName = {};
@@ -66,7 +68,7 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
       if (!user?._id) throw ({ ...user, path: 'token' });
-      const { to, deadline, link, from = user._id } = req.body;
+      const { to, deadline, link, from = user._id, approved, enabled } = req.body;
       const fromId = user.mode == MODE.admin ? from : user._id;
       if (fromId == to) throw ({ path: 'match' })
       if (!to) throw ({ path: 'to' });
@@ -87,7 +89,14 @@ const handler = async (req, res) => {
       catch (e) {
         throw ({ path: 'user' })
       }
-      const tradeCreated = await (await tradeController.create({ leader: fromId, member: to, deadline, link }))
+      const tradeCreated = await (await tradeController.create({
+        leader: fromId,
+        member: to,
+        deadline,
+        link,
+        enabled,
+        approved: user.mode == MODE.admin ? approved : false
+      }))
         .populate({ path: 'leader', select: 'name email mode' })
         .populate({ path: 'member', select: 'name email mode' })
         .execPopulate();
