@@ -75,6 +75,9 @@ const appReducer = (state = initState, action) => {
             if (state.exUser?._id === user._id) {
                 state.exUser = user;
             }
+            else if (state.user?._id === user._id) {
+                state.user = user;
+            }
             if (user.mode === MODE.exhibitor) {
                 const data = state.exhibitor.data.map(e => {
                     if (e._id === user._id) {
@@ -141,16 +144,24 @@ const appReducer = (state = initState, action) => {
         }
 
         case types.ADMIN_GET_USER_SUCCESS: {
-            return {
-                ...state,
-                exUser: action.payload.data,
-                conversations: [],
-                conversationsAll: [],
-                newMessage: 0,
-                total: 0,
-                page: 0,
-                conId: null
-            };
+            console.log(action.payload.data)
+            if (state.user?.mode === MODE.admin && action.payload.data._id === state.user._id) {
+                return {
+                    ...state,
+                    user: action.payload.data
+                }
+            } else {
+                return {
+                    ...state,
+                    exUser: action.payload.data,
+                    conversations: [],
+                    conversationsAll: [],
+                    newMessage: 0,
+                    total: 0,
+                    page: 0,
+                    conId: null
+                };
+            }
         }
         case types.ADMIN_EXHIBITOR_LOGOUT: {
             return {

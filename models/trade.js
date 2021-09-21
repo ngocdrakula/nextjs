@@ -20,6 +20,10 @@ const trade = new Schema({
         type: Boolean,
         default: true
     },
+    approved: {
+        type: Boolean,
+        default: false
+    },
     link: {
         type: String,
         default: ''

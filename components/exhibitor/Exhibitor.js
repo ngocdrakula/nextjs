@@ -25,7 +25,7 @@ class Exhibitor extends Component {
         const { toggle, active } = this.state;
         return (
             <div className={"wrapper " + (toggle ? "skin-purple sidebar-mini sidebar-collapse" : "skin-purple sidebar-mini")}>
-                <Header handleToggle={this.handleToggle} toggle={toggle} />
+                <Header handleToggle={this.handleToggle} handleActiveMessage={() => this.handleActive(3)} toggle={toggle} />
                 <SideBar handleActive={this.handleActive} active={active} />
                 <div className="content-wrapper">
                     <Overview active={active === 0} />

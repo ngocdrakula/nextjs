@@ -226,7 +226,7 @@ class Visitor extends Component {
                                                     </a>
                                                 </td>
                                                 <td>{visitor.email}</td>
-                                                <td className="row-options" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                                <td className="row-options">
                                                     {/* <a onClick={() => this.setState({ onView: visitor })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
                                                         <i title="Detail" className="fa fa-expand" />
                                                     </a>&nbsp; */}

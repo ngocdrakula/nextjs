@@ -48,6 +48,11 @@ class SideBar extends Component {
                                 <i className="fa fa-wechat" /> <span>Chat{newMessage ? ` (${newMessage})` : ""}</span>
                             </a>
                         </li>
+                        <li className={active === 8 ? "active" : ""}>
+                            <a href="#" onClick={() => handleActive(8)}>
+                                <i className="fa fa-support" /> <span>Thông tin quản trị viên</span>
+                            </a>
+                        </li>
                         <li className={active === 6 ? "active" : ""}>
                             <a href="#" onClick={() => handleActive(6)}>
                                 <i className="fa fa-support" /> <span>Cài đặt trang web</span>

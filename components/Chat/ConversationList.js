@@ -116,24 +116,24 @@ class ConversationList extends Component {
                 className={"row sidebarBody" + (from.seen ? "" : " unread") + (conId === conversation._id ? " active" : "")}
                 onClick={e => this.handleSelect(e, conversation._id)}
               >
-                <a href="#" className="get-content" style={{}}>
-                  <div className="col-sm-3 col-xs-3">
+                <a href="#" className="get-content" style={{ display: 'flex', alignItems: 'center' }}>
+                  <div className="chat-avatar" style={{ paddingRight: 10, minWidth: 60 }}>
                     {toUser.avatar ?
                       <img src={"/api/images/" + toUser.avatar} className="img-circle" alt="Avatar" />
                       :
                       <img src="/images/no-avatar.png" className="img-circle" alt="No Avatar" />
                     }
                   </div>
-                  <div className="col-sm-9 col-xs-9 sideBar-main nopadding">
+                  <div className="sideBar-main nopadding" style={{ width: "100%", overflow: "hidden" }}>
                     <div className="row">
                       <div className="col-sm-8 col-xs-8 sideBar-name">
                         <span className="name-meta">
                           {toUser.name}
 
                         </span>
-                        <p className="excerpt">
+                        <span className="excerpt">
                           <span className="small text-muted">{author?.slice(0, 15)}{author?.length > 15 ? "..." : ""}: </span>{lastMessage?.content}
-                        </p>
+                        </span>
                       </div>
                       <div className="col-sm-4 col-xs-4 pull-right time">
                         {lastMessage ?

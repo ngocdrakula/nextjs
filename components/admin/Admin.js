@@ -10,6 +10,7 @@ import Contact from './Contact';
 import Setting from './Setting';
 import Chat from '../Chat';
 import Trade from '../Trade';
+import AdminInfo from './AdminInfo';
 
 
 class Admin extends Component {
@@ -26,7 +27,7 @@ class Admin extends Component {
         const { toggle, active } = this.state;
         return (
             <div className={"wrapper " + (toggle ? "skin-purple sidebar-mini sidebar-collapse" : "skin-purple sidebar-mini")}>
-                <Header handleToggle={this.handleToggle} toggle={toggle} />
+                <Header handleToggle={this.handleToggle} handleActiveMessage={() => this.handleActive(5)} toggle={toggle} />
                 <SideBar handleActive={this.handleActive} active={active} />
                 <div className="content-wrapper" >
                     <Overview active={active === 0} />
@@ -37,6 +38,7 @@ class Admin extends Component {
                     <Chat active={active === 5} />
                     <Setting active={active === 6} />
                     <Trade active={active === 7} />
+                    <AdminInfo active={active === 8} />
                 </div>
                 <footer className="main-footer">
                 </footer>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import types from '../../redux/types';
+import { getTime } from '../../utils/helper';
 
 class Header extends Component {
     constructor(props) {
@@ -19,7 +20,7 @@ class Header extends Component {
 
     render() {
         const { toggleMail, toggleNoti, toggleUser } = this.state;
-        const { setting, handleToggle, user } = this.props;
+        const { setting, handleToggle, user, newMessage, handleActiveMessage } = this.props;
         return (
 
             <header className="main-header">
@@ -38,12 +39,12 @@ class Header extends Component {
                                     <i className="fa fa-envelope-o" />
                                 </a>
                                 <ul className="dropdown-menu">
-                                    <li className="header">You have 0 messages</li>
+                                    <li className="header">Bạn có {newMessage} tin nhắn mới</li>
                                     <li>
                                         <ul className="menu">
                                         </ul>
                                     </li>
-                                    <li className="footer"><a href="#">See All Messages</a></li>
+                                    <li className="footer"><a href="#" onClick={handleActiveMessage}>Xem tất cả tin nhắn</a></li>
                                 </ul>
                             </li>
                             <li className={"dropdown notifications-menu" + (toggleNoti ? " open" : "")} id="notifications-dropdown" onClick={this.handleToggleNoti}>
@@ -51,12 +52,12 @@ class Header extends Component {
                                     <i className="fa fa-bell-o" />
                                 </a>
                                 <ul className="dropdown-menu">
-                                    <li className="header">You have 0 unread notifications</li>
+                                    <li className="header">Bạn có 0 thông báo</li>
                                     <li>
                                         <ul className="menu">
                                         </ul>
                                     </li>
-                                    <li className="footer"><a href="#">View all notifications</a></li>
+                                    <li className="footer"><a href="#">Xem tất cả thông báo</a></li>
                                 </ul>
                             </li>
                             <li className={"dropdown user user-menu" + (toggleUser ? " open" : "")} id="notifications-dropdown" onClick={this.handleToggleUser}>
@@ -75,18 +76,18 @@ class Header extends Component {
                                             :
                                             <img src="/images/no-avatar.png" className="user-image" alt="Avatar" />
                                         }
-                                        <h4>Super Admin</h4>
+                                        <h4>{user.name}</h4>
                                         <p>
-                                            Super Admin
-                                            <small>Member since 4 months ago</small>
+                                            {user.name}
+                                            <small>Thành viên từ {getTime(user.createdAt)[1]}</small>
                                         </p>
                                     </li>
                                     <li className="user-footer">
                                         <div className="pull-left">
-                                            <a href="#" className="btn btn-default btn-flat"><i className="fa fa-user" /> Account</a>
+                                            <a href="#" className="btn btn-default btn-flat"><i className="fa fa-user" /> Tài khoản</a>
                                         </div>
                                         <div className="pull-right" onClick={this.handleLogout}>
-                                            <a href="#" className="btn btn-default btn-flat"><i className="fa fa-sign-out" /> Log out</a>
+                                            <a href="#" className="btn btn-default btn-flat"><i className="fa fa-sign-out" /> Đăng xuất</a>
                                         </div>
                                     </li>
                                 </ul>
@@ -101,4 +102,4 @@ class Header extends Component {
     }
 }
 
-export default connect(({ admin: { setting, exUser, user } }) => ({ setting, user: exUser || user }))(Header)
+export default connect(({ admin: { setting, exUser, user, newMessage } }) => ({ setting, user: exUser || user, newMessage }))(Header)

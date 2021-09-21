@@ -62,7 +62,7 @@ const handler = async (req, res) => {
       const user = jwt.verify(bearerToken);
       if (!user?._id) throw ({ ...user, path: 'token' });
       const { id } = req.query;
-      const { link, deadline, enabled } = req.body;
+      const { link, deadline, enabled, approved } = req.body;
       const currentTrade = await tradeController.get(id);
       if (!currentTrade || (!currentTrade.enabled && user.mode != MODE.admin)) throw ({ path: '_id' });
       if (user.mode != MODE.admin && user._id != currentTrade.leader && user._id != currentTrade.member) {
@@ -73,6 +73,9 @@ const handler = async (req, res) => {
       }
       if (enabled != undefined) {
         currentTrade.enabled = enabled
+      }
+      if (approved != undefined) {
+        currentTrade.approved = approved
       }
       if (deadline) {
         if (!(new Date(deadline)).getTime()) throw ({ path: 'deadline' })

@@ -165,7 +165,7 @@ class Trade extends Component {
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
                                 <thead>
                                     <tr role="row">
-                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} aria-label="Toggle Dropdown Trash Delete permanently" style={{ width: '44.8px' }}>
+                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 44.8, minWidth: 44.8 }}>
                                             <div className="btn-group ">
                                                 <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
                                                     <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
@@ -188,17 +188,20 @@ class Trade extends Component {
                                         </th>
                                         {user.mode === MODE.admin && !exUser ?
                                             <>
-                                                <th className="sorting" rowSpan={1} colSpan={1} style={{ width: '142.8px' }}>Thành viên 1</th>
-                                                <th className="sorting" rowSpan={1} colSpan={1} style={{ width: '142.8px' }}>Thành viên 2</th>
+                                                <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '142.8px' }}>Thành viên 1</th>
+                                                <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '142.8px' }}>Thành viên 2</th>
                                             </>
-                                            : <th className="sorting" rowSpan={1} colSpan={1} style={{ width: '142.8px' }}>Thông tin khách hàng</th>
+                                            : <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '142.8px' }}>Thông tin khách hàng</th>
                                         }
-                                        <th className="sorting" rowSpan={1} colSpan={1} style={{ width: 218 }}>Thời gian</th>
-                                        <th className="sorting" rowSpan={1} colSpan={1} style={{ width: 218 }}>Link giao thương</th>
+                                        <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 218 }}>Thời gian</th>
+                                        <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 218 }}>Link giao thương</th>
                                         {user?.mode !== MODE.admin || exUser ?
-                                            <th className="sorting" rowSpan={1} colSpan={1} style={{ width: 218 }}>Thời gian đăng ký</th>
+                                            <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 218 }}>Thời gian đăng ký</th>
                                             : null}
-                                        <th className="sorting" rowSpan={1} colSpan={1} style={{ width: 218 }}>Trạng thái</th>
+                                        {user.mode === MODE.admin && !exUser ?
+                                            <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 218 }}>Duyệt</th>
+                                            : null}
+                                        <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 218 }}>Trạng thái</th>
                                         <th style={{ textAlign: 'center !important', width: 130 }} className="sorting_disabled" rowSpan={1} colSpan={1} >Hành động</th>
                                     </tr>
                                 </thead>
@@ -208,7 +211,8 @@ class Trade extends Component {
                                         const from = trade.leader._id === fromUser._id ? trade.leader : trade.member;
                                         const to = trade.leader._id === fromUser._id ? trade.member : trade.leader;
                                         const tradeTime = formatTime(trade.deadline, "YYYY-MM-DD HH:II:SS");
-                                        const createTime = formatTime(trade.createdAt, "YYYY-MM-DD HH:II:SS")
+                                        const createTime = formatTime(trade.createdAt, "YYYY-MM-DD HH:II:SS");
+                                        const approved = trade.approved ? "Đã duyệt" : "Chưa duyệt"
                                         return (
                                             <tr key={trade._id} className={index % 2 ? "odd" : "even"} role="row">
                                                 <td>
@@ -224,9 +228,10 @@ class Trade extends Component {
                                                 <td title={to.name}>{to.name} - {to.email}</td>
                                                 <td title={tradeTime}>{tradeTime}</td>
                                                 <td><a href={trade.link} title={trade.link} target="_blank">{trade.link}</a></td>
+                                                {user.mode === MODE.admin && !exUser ? <td title={approved}>{approved}</td> : null}
                                                 {user.mode !== MODE.admin || exUser ? <td title={createTime}>{createTime}</td> : null}
                                                 <td>{trade.enabled ? "Hoạt động" : "Không hoạt động"}</td>
-                                                <td className="row-options" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                                <td className="row-options">
                                                     <a onClick={() => this.setState({ onEdit: trade })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
                                                         <i title="Chỉnh sửa" className="fa fa-edit" />
                                                     </a>&nbsp;&nbsp;
