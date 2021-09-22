@@ -76,5 +76,30 @@ export const tradeSuccess = async ({ email, name, company, deadline, link }) => 
         });
     })
 }
-
+export const tradeNotification = async ({ emailFrom, nameFrom, emailTo, nameTo, deadline, link }) => {
+    const formatted = formatTime(deadline, "HH:II:SS DD/MM/YYYY")
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
+        subject: '[VIMEXPO] Báo cáo đăng ký kết nối giao thương thành công',
+        html: `<h2 style="with:100%;text-align:center">BÁO CÁO ĐĂNG KÝ</h2>`
+            + `<p>Thành viên đã đăng ký kết nối giao thương thành công.</p>`
+            + `<p>Tên tài khoản đăng ký: <b>${emailFrom}</b>.</p>`
+            + `<p>Email đăng ký: <b>${nameFrom}</b>.</p>`
+            + `<p>Tên tài khoản kết nối: <b>${emailTo}</b>.</p>`
+            + `<p>Email kết nối: <b>${nameTo}</b>.</p>`
+            + `<p>Thời gian: <b>${formatted}</b>.</p>`
+            + `<p>Liên kết: <b>${link}</b>.</p>`
+            + `<p>Bạn có thể kiểm tra và xét duyệt lịch giao thương tại trang admin.</p>`
+    };
+    return new Promise(resolve => {
+        mailer.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                resolve({ success: false, error });
+            } else {
+                resolve({ success: true, info });
+            }
+        });
+    })
+}
 export default mailer;
