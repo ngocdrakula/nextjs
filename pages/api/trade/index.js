@@ -4,7 +4,7 @@ import userController from '../../../controllers/user';
 import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt'
 import { MODE } from '../../../utils/helper';
-import { tradeSuccess } from '../../../middleware/mailer';
+import { tradeNotification, tradeSuccess } from '../../../middleware/mailer';
 
 const handler = async (req, res) => {
   if (req.method == 'GET') {
@@ -100,13 +100,21 @@ const handler = async (req, res) => {
         .populate({ path: 'leader', select: 'name email mode' })
         .populate({ path: 'member', select: 'name email mode' })
         .execPopulate();
-      const send1 = await tradeSuccess({ mode: tradeCreated.leader.mode, email: tradeCreated.leader.email, name: tradeCreated.leader.name, company: tradeCreated.member.name, deadline, link });
-      const send2 = await tradeSuccess({ mode: tradeCreated.member.mode, email: tradeCreated.member.email, name: tradeCreated.member.name, company: tradeCreated.leader.name, deadline, link });
+      await tradeSuccess({ mode: tradeCreated.leader.mode, email: tradeCreated.leader.email, name: tradeCreated.leader.name, company: tradeCreated.member.name, deadline, link });
+      await tradeNotification({
+        emailFrom: tradeCreated.leader.email,
+        nameFrom: tradeCreated.leader.name,
+        emailTo: tradeCreated.member.email,
+        nameTo: tradeCreated.member.name,
+        deadline, link
+      });
+      if (tradeCreated.member.mode !== MODE.exhibitor) {
+        await tradeSuccess({ mode: tradeCreated.member.mode, email: tradeCreated.member.email, name: tradeCreated.member.name, company: tradeCreated.leader.name, deadline, link });
+      }
       return res.status(201).send({
         success: true,
         data: tradeCreated,
         message: 'Thêm thành công',
-        send1, send2,
         messages: lang?.message?.success?.created
       });
     } catch (e) {
