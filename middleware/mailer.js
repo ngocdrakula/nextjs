@@ -51,7 +51,7 @@ export const registerSuccess = async ({ email, password }) => {
         });
     })
 }
-export const tradeSuccess = async ({ email, name, company, deadline, link }) => {
+export const tradeSuccess = async ({ email, fromEmail, fromName, toEmail, toName, deadline, content }) => {
     const formatted = formatTime(deadline, "HH:II:SS DD/MM/YYYY")
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -59,11 +59,12 @@ export const tradeSuccess = async ({ email, name, company, deadline, link }) => 
         subject: '[VIMEXPO] Đăng ký kết nối giao thương thành công',
         html: `<h2 style="with:100%;text-align:center">XIN CHÚC MỪNG</h2>`
             + `<p>Bạn đã đăng ký kết nối giao thương thành công.</p>`
-            + `<p>Tên đăng ký: <b>${name}</b>.</p>`
-            + `<p>Email: <b>${email}</b>.</p>`
-            + `<p>Tên công ty đăng ký: <b>${company}</b>.</p>`
+            + `<p>Tên đăng ký: <b>${fromName}</b>.</p>`
+            + `<p>Email đăng ký: <b>${fromEmail}</b>.</p>`
+            + `<p>Tên đối tác: <b>${toName}</b>.</p>`
+            + `<p>Email đối tác: <b>${toEmail}</b>.</p>`
             + `<p>Thời gian: <b>${formatted}</b>.</p>`
-            + `<p>Liên kết: <b>${link}</b>.</p>`
+            + `<p>Nội dung: <b>${content}</b>.</p>`
             + `<p>Cảm ơn bạn đã đăng ký, mọi thông tin sẽ được chúng tôi liên hệ và thông báo tới bạn.</p>`
     };
     return new Promise(resolve => {
@@ -76,7 +77,7 @@ export const tradeSuccess = async ({ email, name, company, deadline, link }) => 
         });
     })
 }
-export const tradeNotification = async ({ emailFrom, nameFrom, emailTo, nameTo, deadline, link }) => {
+export const tradeNotification = async ({ fromEmail, fromName, toEmail, toName, deadline, content }) => {
     const formatted = formatTime(deadline, "HH:II:SS DD/MM/YYYY")
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -84,12 +85,12 @@ export const tradeNotification = async ({ emailFrom, nameFrom, emailTo, nameTo, 
         subject: '[VIMEXPO] Báo cáo đăng ký kết nối giao thương thành công',
         html: `<h2 style="with:100%;text-align:center">BÁO CÁO ĐĂNG KÝ</h2>`
             + `<p>Thành viên đã đăng ký kết nối giao thương thành công.</p>`
-            + `<p>Tên tài khoản đăng ký: <b>${emailFrom}</b>.</p>`
-            + `<p>Email đăng ký: <b>${nameFrom}</b>.</p>`
-            + `<p>Tên tài khoản kết nối: <b>${emailTo}</b>.</p>`
-            + `<p>Email kết nối: <b>${nameTo}</b>.</p>`
+            + `<p>Tên tài khoản đăng ký: <b>${fromName}</b>.</p>`
+            + `<p>Email đăng ký: <b>${fromEmail}</b>.</p>`
+            + `<p>Tên tài khoản đối tác: <b>${toName}</b>.</p>`
+            + `<p>Email đối tác: <b>${toEmail}</b>.</p>`
             + `<p>Thời gian: <b>${formatted}</b>.</p>`
-            + `<p>Liên kết: <b>${link}</b>.</p>`
+            + `<p>Nội dung: <b>${content}</b>.</p>`
             + `<p>Bạn có thể kiểm tra và xét duyệt lịch giao thương tại trang admin.</p>`
     };
     return new Promise(resolve => {

@@ -16,7 +16,7 @@ function remove(tradeId) {
     return (tradeData.findByIdAndRemove(tradeId));
 }
 function getlist(query) {
-    return (tradeData.find(query))
+    return (tradeData.find(query).sort({ createdAt: -1 }));
 }
 function removeMany(query) {
     return (tradeData.deleteMany(query));

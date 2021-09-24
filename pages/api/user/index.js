@@ -9,7 +9,7 @@ import { MODE } from '../../../utils/helper';
 const handler = async (req, res) => {
     if (req.method == 'GET') {
         try {
-            const { page, pageSize, enabled, mode, name, industry, sort } = req.query;
+            const { page, pageSize = 100, enabled, mode, name, industry, sort } = req.query;
             const query = {};
             if (enabled) query.enabled = !(enabled == "false");
             if (mode != undefined) query.mode = Number(mode);

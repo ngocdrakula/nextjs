@@ -63,12 +63,11 @@ class ProfileTrade extends Component {
                     <table id="example2" className="table table-bordered table-hover dataTable no-footer">
                         <thead>
                             <tr>
-                                <th style={{ width: '25%' }}>Tên đối tác</th>
-                                <th style={{ width: '15%' }}>Thời gian</th>
-                                <th style={{ width: '15%' }}>Liên kết</th>
-                                <th style={{ width: '15%' }}>Trạng thái</th>
-                                <th style={{ width: '15%' }}>Ngày đang ký</th>
-                                <th style={{ width: '15%' }}>Tùy chọn</th>
+                                <th className="text-center" style={{ width: '25%' }}>Tên đối tác</th>
+                                <th className="text-center" style={{ width: '20%' }}>Thời gian</th>
+                                <th className="text-center" style={{ width: '20%' }}>Nội dung</th>
+                                <th className="text-center" style={{ width: '20%' }}>Ngày đăng ký</th>
+                                <th className="text-center" style={{ width: '15%' }}>Tùy chọn</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -80,8 +79,7 @@ class ProfileTrade extends Component {
                                     <tr key={trade._id}>
                                         <td>{to.name} - {to.email}</td>
                                         <td>{tradeTime}</td>
-                                        <td><a href={trade.link || "#"} target="_blank">{trade.link}</a></td>
-                                        <td>{trade.enabled ? "Hoạt động" : "Không hoạt động"}</td>
+                                        <td>{trade.content}</td>
                                         <td>{createTime}</td>
                                         <td>
                                             <div className="trade-action">
@@ -102,5 +100,5 @@ class ProfileTrade extends Component {
     }
 }
 
-export default connect(({ app: { user } }) => ({ user  }))(ProfileTrade)
+export default connect(({ app: { user } }) => ({ user }))(ProfileTrade)
 

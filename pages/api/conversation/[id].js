@@ -11,7 +11,7 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
       if (!user?._id) throw ({ ...user, path: 'token' });
-      const { page, pageSize, id, read, from = user._id } = req.query;
+      const { page, pageSize = 100, id, read, from = user._id } = req.query;
       const fromId = user.mode == MODE.admin ? from : user._id;
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 1;

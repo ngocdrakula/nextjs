@@ -136,7 +136,7 @@ class Exhibitor extends Component {
   }
   render() {
     const { exhibitor, active, message, categorySelected, products, currentPage, total, toggle } = this.state;
-    const { categories, user } = this.props;
+    const { categories, user, livestream } = this.props;
     const currentCategory = categories.find(i => i._id === categorySelected);
     return (
       <div id="app" className="user-page">
@@ -187,7 +187,10 @@ class Exhibitor extends Component {
             <div className="store-detail-content bg-body" style={{ display: active === 0 ? 'block' : 'none' }}>
               <div className="container">
                 <div className="banner">
-                  <img src="/images/banner.png" alt="" />
+                  {exhibitor.image ?
+                    <img src={`/api/images/${exhibitor.image}`} alt="" />
+                    :
+                    <img src="/images/banner.png" alt="" />}
                 </div>
                 <div className="row">
                   <div className="col-lg-3">
@@ -213,7 +216,7 @@ class Exhibitor extends Component {
                           <textarea
                             className="form-control"
                             rows={4}
-                            placeholder="Khoảng 250 từ"
+                            placeholder="Tối đa 250 từ"
                             name="message"
                             value={message}
                             onChange={this.handleChange}
@@ -238,13 +241,25 @@ class Exhibitor extends Component {
                             <p>{exhibitor.introduce || ""}</p>
                           </div>
                           <div className="col-lg-7">
-                            <div className="video">
-                              {exhibitor.video ?
-                                <img src={`/api/images/${exhibitor.video}`} alt="" />
-                                :
+                            {livestream?.data?.[0] ?
+                              <div className="video" dangerouslySetInnerHTML={{
+                                __html:
+                                  `<iframe
+                                      src="${livestream?.data?.[0].link}"
+                                      width="100%"
+                                      height="300"
+                                      style="border:none;overflow:hidden"
+                                      scrolling="no"
+                                      frameborder="0"
+                                      allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                                      allowfullScreen={true}
+                                  ></iframe>`
+                              }} />
+                              :
+                              <div className="video">
                                 <img src="/images/video-thumb.png" alt="" />
-                              }
-                            </div>
+                              </div>
+                            }
                           </div>
                         </div>
                       </div>
@@ -305,7 +320,7 @@ class Exhibitor extends Component {
                           <textarea
                             className="form-control"
                             rows={4}
-                            placeholder="Khoảng 250 từ"
+                            placeholder="Tối đa 250 từ"
                             name="message"
                             value={message}
                             onChange={this.handleChange}
@@ -315,9 +330,9 @@ class Exhibitor extends Component {
                         <input type="submit" defaultValue="Gửi ngay" />
                       </form>
                       <div className="contact-method">
-                        <a href="#" onClick={e => this.handleChat(e, visitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a>
+                        <a href="#" onClick={e => this.handleChat(e, exhibitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a>
                         <a href={!user ? "#" : "mailto:" + exhibitor.email} onClick={!user ? this.openLoginVisitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />Email</a>
-                        <a href="#" onClick={e => this.handleConnect(e, visitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a>
+                        <a href="#" onClick={e => this.handleConnect(e, exhibitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a>
                       </div>
                     </div>
                   </div>
@@ -414,12 +429,10 @@ class Exhibitor extends Component {
                         </div>
                         <div className="contact-method">
                           <ul className="ft-semibold">
-                            <li><a href="#" onClick={!user ? this.openLoginVisitor : e => this.handleChat(e, visitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a></li>
-                            <li>
-                              <a href={!user ? "#" : "mailto:" + exhibitor.email} onClick={!user ? this.openLoginVisitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />Email</a>
+                            <li><a href="#" onClick={e => this.handleChat(e, exhibitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a></li>
+                            <li><a href={!user ? "#" : "mailto:" + exhibitor.email} onClick={!user ? this.openLoginVisitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />Email</a>
                             </li>
-                            <li><a href="#" onClick={!user ? this.openLoginVisitor : e => this.handleChat(e, visitor)}><img src="/images/connect2.png" alt="" />Kết nối giao
-                              thương</a></li>
+                            <li><a href="#" onClick={e => this.handleConnect(e, exhibitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a></li>
                           </ul>
                         </div>
                       </div>
@@ -442,7 +455,7 @@ class Exhibitor extends Component {
                               <textarea
                                 className="form-control"
                                 rows={4}
-                                placeholder="Khoảng 250 từ"
+                                placeholder="Tối đa 250 từ"
                                 name="message"
                                 value={message}
                                 onChange={this.handleChange}
@@ -476,4 +489,4 @@ export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
   await store.sagaTask.toPromise()
 });
 
-export default connect(({ app: { user, categories } }) => ({ user, categories }))(Exhibitor)
+export default connect(({ app: { user, categories, livestream } }) => ({ user, categories, livestream }))(Exhibitor)

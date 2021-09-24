@@ -105,6 +105,9 @@ export const admin_deleteMultiContactRequest = async (params) => {
     const _ids = params && params.join(",");
     return axios.delete('contact?_ids=' + _ids);
 }
+export const admin_createContactCSVRequest = async (params) => {
+    return axios.get('contact/createCSV?' + stringify(params))
+}
 
 export const admin_getSettingRequest = async () => {
     return axios.get('setting');
@@ -129,6 +132,9 @@ export const admin_deleteTradeRequest = async (_id) => {
 export const admin_deleteMultiTradeRequest = async (params) => {
     const _ids = params && params.join(",");
     return axios.delete('trade?_ids=' + _ids);
+}
+export const admin_createTradeCSVRequest = async (params) => {
+    return axios.get('trade/createCSV?' + stringify(params))
 }
 
 

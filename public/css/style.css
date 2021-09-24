@@ -960,6 +960,14 @@ footer input[type="submit"] {
 
 .banner {
 	margin-bottom: 22.8px;
+	max-height: 400px;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.banner img {
+	width:100%
 }
 
 .store-detail-content .container>.row {

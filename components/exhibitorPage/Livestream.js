@@ -60,15 +60,8 @@ class Livestream extends Component {
                                     ></iframe>`
                             }} />
                             <div className="row">
-                                <div className="col-lg-8">
+                                <div className="col-lg-12">
                                     <p className="ft-semibold">{firstLive.description}</p>
-                                </div>
-                                <div className="col-lg-4">
-                                    <div className="like-share">
-                                        <button className="like"><img src="/images/icon-like.png" alt="" />Thích <span>19</span></button>
-                                        {" "}
-                                        <button className="share">Chia sẻ</button>
-                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -104,7 +104,7 @@ const handler = async (req, res) => {
           }
           catch (e) { throw ({ path: 'industry' }); };
         }
-        const userUpdated = (await currentUser.save()).populate('industry');
+        const userUpdated = await (await currentUser.save()).populate('industry').execPopulate();
         return res.status(200).send({
           success: true,
           data: userUpdated,

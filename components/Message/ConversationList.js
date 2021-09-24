@@ -128,7 +128,7 @@ class ConversationList extends Component {
                   {toUser.avatar ?
                     <img src={"/api/images/" + toUser.avatar} />
                     :
-                    <img src={"/images/logo-showroom.png"} />
+                    <img src="/images/logo-showroom.png" />
                   }
                 </div>
                 <div className="inboxContent">

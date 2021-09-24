@@ -465,6 +465,18 @@ function* admin_deleteMultiContact({ payload, callback }) {
         if (typeof callback === 'function') callback(e.response);
     }
 }
+function* admin_createContactCSV({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_createContactCSVRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_CREATE_CONTACT_FILE_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_CREATE_CONTACT_FILE_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
 
 
 function* admin_getSetting({ payload, callback }) {
@@ -553,6 +565,18 @@ function* admin_deleteMultiTrade({ payload, callback }) {
     }
 }
 
+function* admin_createTradeCSV({ payload, callback }) {
+    try {
+        const res = yield call(requests.admin_createTradeCSVRequest, payload);
+        if (res?.data?.success) {
+            yield put({ type: types.ADMIN_CREATE_TRADE_FILE_SUCCESS, payload: res.data });
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.ADMIN_CREATE_TRADE_FILE_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
 function* admin_getLivestreams({ payload, callback }) {
     try {
         const res = yield call(requests.admin_getLivestreamsRequest, payload);
@@ -661,6 +685,7 @@ export default function* appSaga() {
         yield takeEvery(types.ADMIN_UPDATE_CONTACT, admin_updateContact),
         yield takeEvery(types.ADMIN_DELETE_CONTACT, admin_deleteContact),
         yield takeEvery(types.ADMIN_DELETE_MULTI_CONTACT, admin_deleteMultiContact),
+        yield takeEvery(types.ADMIN_CREATE_CONTACT_FILE, admin_createContactCSV),
 
         yield takeEvery(types.ADMIN_GET_SETTING, admin_getSetting),
         yield takeEvery(types.ADMIN_UPDATE_SETTING, admin_updateSetting),
@@ -671,6 +696,7 @@ export default function* appSaga() {
         yield takeEvery(types.ADMIN_UPDATE_TRADE, admin_updateTrade),
         yield takeEvery(types.ADMIN_DELETE_TRADE, admin_deleteTrade),
         yield takeEvery(types.ADMIN_DELETE_MULTI_TRADE, admin_deleteMultiTrade),
+        yield takeEvery(types.ADMIN_CREATE_TRADE_FILE, admin_createTradeCSV),
 
         yield takeEvery(types.ADMIN_GET_LIVESTREAMS, admin_getLivestreams),
         yield takeEvery(types.ADMIN_ADD_LIVESTREAM, admin_addLivestream),

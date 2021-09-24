@@ -136,7 +136,7 @@ class Visitor extends Component {
                 <div className="container">
                   <div className="banner">
                     {visitor.image ?
-                      <img src={`/images/${visitor.image}`} alt="" />
+                      <img src={`/api/images/${visitor.image}`} alt="" />
                       :
                       <img src="/images/banner.png" alt="" />
                     }
@@ -152,7 +152,7 @@ class Visitor extends Component {
                             <textarea
                               className="form-control"
                               rows={4}
-                              placeholder="Khoảng 250 từ"
+                              placeholder="Tối đa 250 từ"
                               name="message"
                               value={message}
                               onChange={this.handleChange}
@@ -268,7 +268,7 @@ class Visitor extends Component {
                                 <textarea
                                   className="form-control"
                                   rows={4}
-                                  placeholder="Khoảng 250 từ"
+                                  placeholder="Tối đa 250 từ"
                                   name="message"
                                   value={message}
                                   onChange={this.handleChange}

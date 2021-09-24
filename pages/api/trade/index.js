@@ -13,30 +13,34 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
       if (!user?._id) throw ({ ...user, path: 'token' });
-      const { page, pageSize, name, from, enabled } = req.query;
-      const queryEnabled = {};
-      if (enabled != undefined) queryEnabled.enabled = !(enabled == "true");
+      const { page, pageSize = 100, name, from } = req.query;
+      const query = {}, and = [];
       const fromId = user.mode == MODE.admin ? from : user._id;
-      const query = fromId ? { $or: [{ 'leader': fromId, approved: true, ...queryEnabled }, { 'member': fromId, approved: true, ...queryEnabled }] } : queryEnabled;
+      if (fromId) {
+        and.push({ $or: [{ 'leader.user': fromId }, { 'member.user': fromId, approved: true }] });
+      }
+      if (name) {
+        and.push({
+          $or: [
+            { 'leader.name': new RegExp(name, "i") },
+            { 'leader.email': new RegExp(name, "i") },
+            { 'member.name': new RegExp(name, "i") },
+            { 'member.email': new RegExp(name, "i") }
+          ]
+        });
+      }
+      if (and.length) query.$and = and;
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
-      const populateName = {};
-      if (name) populateName.match = { $or: [{ name: new RegExp(name, "i") }, { email: new RegExp(name, "i") }] };
-      const total = await tradeController.getlist(query)
-        .populate({ path: 'leader', select: 'name email', ...populateName })
-        .populate({ path: 'member', select: 'name email', ...populateName })
-        .countDocuments();
-      const data = await tradeController.getlist(query)
-        .populate({ path: 'leader', select: 'name email', ...populateName })
-        .populate({ path: 'member', select: 'name email', ...populateName })
-        .skip(skip).limit(limit);
+      const total = await tradeController.getlist(query).countDocuments();
+      const data = await tradeController.getlist(query).skip(skip).limit(limit);
       return res.status(200).send({
         success: true,
         data,
         total,
         page: Number(page) || 0,
         pageSize: Number(pageSize) || 0,
-        query: { name },
+        query: query,
       });
     } catch (error) {
       if (error.path == 'token') {
@@ -68,12 +72,16 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
       if (!user?._id) throw ({ ...user, path: 'token' });
-      const { to, deadline, link, from = user._id, approved, enabled } = req.body;
+      const { from = user._id, fromName, fromEmail, to, toName, toEmail, deadline, content, approved } = req.body;
       const fromId = user.mode == MODE.admin ? from : user._id;
       if (fromId == to) throw ({ path: 'match' })
+      if (!fromId) throw ({ path: 'from' });
+      if (!fromName) throw ({ path: 'fromName' });
+      if (!fromEmail) throw ({ path: 'fromEmail' });
+      if (!toName) throw ({ path: 'toName' });
+      if (!toEmail) throw ({ path: 'toEmail' });
       if (!to) throw ({ path: 'to' });
       if (!deadline) throw ({ path: 'deadline' });
-      if (!fromId) throw ({ path: 'from' });
       if (!new Date(deadline).getTime()) throw ({ path: 'deadline' });
       try {
         const fromUser = userController.get(fromId);
@@ -90,27 +98,17 @@ const handler = async (req, res) => {
         throw ({ path: 'user' })
       }
       const tradeCreated = await (await tradeController.create({
-        leader: fromId,
-        member: to,
+        leader: { user: fromId, name: fromName, email: fromEmail },
+        member: { user: to, name: toName, email: toEmail },
         deadline,
-        link,
-        enabled,
+        content,
         approved: user.mode == MODE.admin ? approved : false
       }))
-        .populate({ path: 'leader', select: 'name email mode' })
-        .populate({ path: 'member', select: 'name email mode' })
+        .populate({ path: 'leader.user', select: 'email' })
         .execPopulate();
-      await tradeSuccess({ mode: tradeCreated.leader.mode, email: tradeCreated.leader.email, name: tradeCreated.leader.name, company: tradeCreated.member.name, deadline, link });
-      await tradeNotification({
-        emailFrom: tradeCreated.leader.email,
-        nameFrom: tradeCreated.leader.name,
-        emailTo: tradeCreated.member.email,
-        nameTo: tradeCreated.member.name,
-        deadline, link
-      });
-      if (tradeCreated.member.mode !== MODE.exhibitor) {
-        await tradeSuccess({ mode: tradeCreated.member.mode, email: tradeCreated.member.email, name: tradeCreated.member.name, company: tradeCreated.leader.name, deadline, link });
-      }
+
+      await tradeSuccess({ email: tradeCreated.leader.user.email, fromEmail, fromName, toEmail, toName, deadline, content });
+      await tradeNotification({ fromEmail, fromName, toEmail, toName, deadline, content });
       return res.status(201).send({
         success: true,
         data: tradeCreated,
@@ -166,6 +164,38 @@ const handler = async (req, res) => {
           message: 'Lịch hẹn là bắt buộc',
         });
       }
+      if (e.path == 'fromName') {
+        return res.status(400).send({
+          success: false,
+          validation: false,
+          field: 'fromName',
+          message: 'Tên của bạn là bắt buộc',
+        });
+      }
+      if (e.path == 'fromEmail') {
+        return res.status(400).send({
+          success: false,
+          validation: false,
+          field: 'fromEmail',
+          message: 'Email của bạn là bắt buộc',
+        });
+      }
+      if (e.path == 'toName') {
+        return res.status(400).send({
+          success: false,
+          validation: false,
+          field: 'toName',
+          message: 'Tên đối tác là bắt buộc',
+        });
+      }
+      if (e.path == 'toEmail') {
+        return res.status(400).send({
+          success: false,
+          validation: false,
+          field: 'toEmail',
+          message: 'Email đối tác là bắt buộc',
+        });
+      }
       return res.status(500).send({
         success: false,
         message: 'Máy chủ không phản hồi',
@@ -186,8 +216,8 @@ const handler = async (req, res) => {
         query._id = { $in: _ids.split(",") }
       } else {
         query.$or = [
-          { _id: { $in: _ids.split(",") }, leader: user._id },
-          { _id: { $in: _ids.split(",") }, member: user._id },
+          { _id: { $in: _ids.split(",") }, 'leader.user': user._id },
+          { _id: { $in: _ids.split(",") }, 'member.user': user._id },
         ]
       }
       await tradeController.removeMany(query);
