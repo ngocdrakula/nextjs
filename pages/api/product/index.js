@@ -10,7 +10,7 @@ import { MODE } from '../../../utils/helper'
 const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
-      const { page, pageSize, name, description, categoryId, exhibitorId, enabled, sort } = req.query;
+      const { page, pageSize = 100, name, description, categoryId, exhibitorId, enabled, sort } = req.query;
       const query = {};
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;

@@ -7,7 +7,7 @@ import { MODE } from '../../../utils/helper';
 const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
-      const { page, pageSize, enabled, exhibitor, name } = req.query;
+      const { page, pageSize = 100, enabled, exhibitor, name } = req.query;
       const query = {};
       if (name) query.name = new RegExp(name, "i");
       if (exhibitor) query.exhibitor = exhibitor;

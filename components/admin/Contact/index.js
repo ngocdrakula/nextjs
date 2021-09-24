@@ -143,6 +143,22 @@ class Contact extends Component {
         clearTimeout(this.timeout);
         this.timeout = setTimeout(this.gotoPage, 1000);
     }
+    handleDownload = (type) => {
+        const { dispatch } = this.props;
+        dispatch({
+            type: types.ADMIN_CREATE_CONTACT_FILE,
+            payload: { type },
+            callback: res => {
+                if (res?.success) {
+                    const URL = process.env.HOST_NAME === "localhost" ? process.env.API_URL_LOCAL : process.env.API_URL;
+                    var a = document.createElement("a");
+                    a.href = `${URL}contact/download?fileName=${res.fileName}`;
+                    a.setAttribute("download", res.fileName);
+                    a.click();
+                }
+            }
+        })
+    }
     render() {
         const { active, contacts, page, total } = this.props;
         const { onView, onEdit, selecteds, read, name } = this.state;
@@ -162,10 +178,21 @@ class Contact extends Component {
                         <div id="DataTables_Table_1_wrapper" className="dataTables_wrapper form-inline dt-bootstrap no-footer">
                             <div className="dt-buttons btn-group">
                                 {selecteds.length ?
-                                    <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={this.handleDeleteAll}>
-                                        <span>Xóa {selecteds.length} mục đã chọn</span>
-                                    </button>
+                                    <>
+                                        <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={this.handleDeleteAll}>
+                                            <span>Xóa {selecteds.length} mục đã chọn</span>
+                                        </button>
+                                        <button className="btn btn-default buttons-copy buttons-html5 btn-sm" disabled>
+                                            <span>{'I'}</span>
+                                        </button>
+                                    </>
                                     : ""}
+                                <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={() => this.handleDownload("csv")}>
+                                    <span>CSV</span>
+                                </button>
+                                <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={() => this.handleDownload("xls")}>
+                                    <span>EXCEL</span>
+                                </button>
                             </div>
                             <div id="DataTables_Table_1_filter" className="dataTables_filter">
                                 <label>

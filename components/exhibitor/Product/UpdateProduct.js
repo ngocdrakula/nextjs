@@ -197,7 +197,11 @@ class UpdateProduct extends Component {
                                         <div className={"form-group" + (fieldError === 'files' ? " has-error" : "")}>
                                             <label htmlFor="edit-pro-uploadBtn" className="with-help">Ảnh sản phẩm</label>
                                             <label htmlFor="vis-edit-uploadBtn">
-                                                <img src={"/api/images/" + image} alt="Ảnh đại diện sản phẩm" style={{ width: 'auto', maxWidth: 100, height: 'auto', maxHeight: 100 }} />
+                                                {image ?
+                                                    <img src={"/api/images/" + image} alt="Ảnh sản phẩm" style={{ width: 'auto', maxWidth: 100, height: 'auto', maxHeight: 100 }} />
+                                                    :
+                                                    <img src="/images/no-avatar.png" alt="Ảnh sản phẩm" style={{ width: 'auto', maxWidth: 100, height: 'auto', maxHeight: 100 }} />
+                                                }
                                             </label>
                                             <div className="row">
                                                 <div className="col-md-9 nopadding-right">

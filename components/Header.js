@@ -72,6 +72,7 @@ class Header extends Component {
         const { user, setting } = this.props;
         const { logo, logoUpdated, title, logoStatus } = setting;
         const image = `${logoUpdated ? "/api" : ""}/images/${logo}`;
+        console.log(image)
         return (
             <>
                 <Head />
@@ -79,8 +80,8 @@ class Header extends Component {
                     <div className="header-top">
                         <div className="container">
                             <p>
-                                <a href="#" className="online-exhibition"><img src="/images/online.png" alt="" />Triển lãm trực tuyến</a>
-                                <a href="#" className="lang"><img src="/images/lang-vn.png" alt="" /><img src="/images/icon-down.png" alt="" /></a>
+                                <a href="http://www.vimexpo.com.vn" className="online-exhibition"><img src="/images/online.png" alt="" />vimexpo.com.vn</a>
+                                {/* <a href="#" className="lang"><img src="/images/lang-vn.png" alt="" /><img src="/images/icon-down.png" alt="" /></a> */}
                             </p>
                         </div>
                     </div>

@@ -171,7 +171,7 @@ class Visitor extends Component {
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
                                 <thead>
                                     <tr role="row">
-                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} aria-label="Toggle Dropdown Trash Delete permanently" style={{ width: '44.8px' }}>
+                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>
                                             <div className="btn-group ">
                                                 <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
                                                     <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
@@ -192,10 +192,11 @@ class Visitor extends Component {
                                                 </ul>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Ảnh đại diện" style={{ width: '54.8px' }}>Ảnh đại diện</th>
-                                        <th className="sorting"  rowSpan={1} colSpan={1} aria-label="Tên khách hàng: activate to sort column ascending" style={{ width: '142.8px' }}>Tên khách hàng</th>
-                                        <th className="sorting"  rowSpan={1} colSpan={1} aria-label="Email: activate to sort column ascending" style={{ width: 218 }}>Email</th>
-                                        <th style={{ textAlign: 'center !important', width: 130 }} className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Hành động">Hành động</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: "15%" }}>Ảnh đại diện</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>Tên khách hàng</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>Email</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Trạng thái</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%', textAlign: 'center !important' }} >Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
@@ -226,22 +227,11 @@ class Visitor extends Component {
                                                     </a>
                                                 </td>
                                                 <td>{visitor.email}</td>
+                                                <td>{visitor.enabled ? "Hoạt động" : "Không hoạt động"}</td>
                                                 <td className="row-options">
-                                                    {/* <a onClick={() => this.setState({ onView: visitor })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i title="Detail" className="fa fa-expand" />
-                                                    </a>&nbsp; */}
-                                                    {/* <a href="/admin/vendor/shop/1/staffs">
-                                                        <i title="Staffs" className="fa fa-users" />
-                                                    </a>&nbsp; */}
-                                                    {/* <a href="#" onClick={() => null}>
-                                                    <i title="Đăng nhập bằng tài khoản khách thăm quan này" className="fa fa-user-secret" />
-                                                </a>&nbsp;&nbsp; */}
                                                     <a onClick={() => this.setState({ onEdit: visitor })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
                                                         <i title="Chỉnh sửa" className="fa fa-edit" />
                                                     </a>&nbsp;&nbsp;
-                                                    {/* <a data-link="/address/create/shop/1" className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i title="Add address" className="fa fa-plus-square-o" />
-                                                    </a>&nbsp; */}
                                                     <a onClick={() => this.handleDelete(visitor)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
                                                         <i className="fa fa-trash-o" title="Xóa" />
                                                     </a>&nbsp;&nbsp;

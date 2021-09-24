@@ -8,7 +8,7 @@ class AddTrade extends Component {
     constructor(props) {
         super(props);
         this.defaultState = {
-            link: '',
+            content: '',
             deadline: '',
             enabled: true,
             fieldError: null,
@@ -24,9 +24,9 @@ class AddTrade extends Component {
     handleChange = e => this.setState({ [e.target.name]: e.target.value, fieldError: false })
     handleSubmit = e => {
         e.preventDefault();
-        const { link, deadline, enabled, approved } = this.state;
-        const data = { link, deadline, enabled, approved }
-        const dataRequied = { link, deadline }
+        const { content, deadline, enabled, approved } = this.state;
+        const data = { content, deadline, enabled, approved }
+        const dataRequied = { content, deadline }
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
         if (fieldError) {
@@ -72,12 +72,12 @@ class AddTrade extends Component {
 
     render() {
         const { onAdd, handleClose, user, exUser } = this.props;
-        const { dropActive, dropApproved, link, deadline, approved, enabled, fieldError, message } = this.state;
+        const { dropActive, dropApproved, content, deadline, approved, enabled, fieldError, message } = this.state;
         return (
-            <div id="add-vis-myDynamicModal" className={"modal-create modal fade" + (onAdd ? " in" : "")} style={{ display: onAdd ? 'block' : 'none' }}>
+            <div id="add-trade-myDynamicModal" className={"modal-create modal fade" + (onAdd ? " in" : "")} style={{ display: onAdd ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">
                     <div className="modal-content">
-                        <form method="POST" action="/" id="add-vis-form" onSubmit={this.handleSubmit} >
+                        <form method="POST" action="/" id="add-trade-form" onSubmit={this.handleSubmit} >
                             <div className="modal-header">
                                 <button type="button" className="close" onClick={handleClose}>×</button>
                                 Thêm lịch giao thương
@@ -85,11 +85,11 @@ class AddTrade extends Component {
                             <div className="modal-body">
                                 <div className="row">
                                     <div className="col-md-6 nopadding-right">
-                                        <div className={"form-group" + (fieldError === 'link' ? " has-error" : "")}>
-                                            <label htmlFor="add-vis-link">Tên lịch giao thương*</label>
-                                            <input className="form-control" placeholder="Nhập tên lịch giao thương" required value={name} id="add-vis-name" name="name" type="text" onChange={this.handleChange} />
+                                        <div className={"form-group" + (fieldError === 'content' ? " has-error" : "")}>
+                                            <label htmlFor="add-trade-content">Tên lịch giao thương*</label>
+                                            <input className="form-control" placeholder="Nhập tên lịch giao thương" required value={name} id="add-trade-name" name="name" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
-                                                {fieldError === 'link' && message ?
+                                                {fieldError === 'content' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>
@@ -98,11 +98,11 @@ class AddTrade extends Component {
                                         </div>
                                     </div>
                                     <div className="col-md-6 nopadding-right">
-                                        <div className={"form-group" + (fieldError === 'link' ? " has-error" : "")}>
-                                            <label htmlFor="add-vis-link">Tên lịch giao thương*</label>
-                                            <input className="form-control" placeholder="Nhập tên lịch giao thương" required value={name} id="add-vis-name" name="name" type="text" onChange={this.handleChange} />
+                                        <div className={"form-group" + (fieldError === 'content' ? " has-error" : "")}>
+                                            <label htmlFor="add-trade-content">Tên lịch giao thương*</label>
+                                            <input className="form-control" placeholder="Nhập tên lịch giao thương" required value={name} id="add-trade-name" name="name" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
-                                                {fieldError === 'link' && message ?
+                                                {fieldError === 'content' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>
@@ -112,11 +112,11 @@ class AddTrade extends Component {
                                     </div>
                                     <div className="col-md-4 nopadding-left">
                                         <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
-                                            <label htmlFor="add-vis-active">Trạng thái*</label>
+                                            <label htmlFor="add-trade-active">Trạng thái*</label>
                                             <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
                                                 <span className="selection" onClick={this.handleDropdown}>
                                                     <span className="select2-selection select2-selection--single"  >
-                                                        <span className="select2-selection__rendered" id="add-vis-select2-active-container" title={enabled ? "Hoạt động" : "Không hoạt động"}>{enabled ? "Hoạt động" : "Không hoạt động"}</span>
+                                                        <span className="select2-selection__rendered" id="add-trade-select2-active-container" title={enabled ? "Hoạt động" : "Không hoạt động"}>{enabled ? "Hoạt động" : "Không hoạt động"}</span>
                                                         <span className="select2-selection__arrow" role="presentation">
                                                             <b role="presentation" />
                                                         </span>
@@ -145,11 +145,11 @@ class AddTrade extends Component {
                                     {user.mode === MODE.admin && !exUser ?
                                         <div className="col-md-4 nopadding-right">
                                             <div className={"form-group" + (fieldError === 'approved' ? " has-error" : "")}>
-                                                <label htmlFor="add-vis-active">Trạng thái duyệt*</label>
+                                                <label htmlFor="add-trade-active">Trạng thái duyệt*</label>
                                                 <span className={"select2 select2-container select2-container--default" + (dropApproved ? " select2-container--open" : "")} style={{ width: '100%' }}>
                                                     <span className="selection" onClick={this.handleDropdownApproved}>
                                                         <span className="select2-selection select2-selection--single"  >
-                                                            <span className="select2-selection__rendered" id="add-vis-select2-active-container" title={approved ? "Đã duyệt" : "Chưa duyệt"}>{approved ? "Đã duyệt" : "Chưa duyệt"}</span>
+                                                            <span className="select2-selection__rendered" id="add-trade-select2-active-container" title={approved ? "Đã duyệt" : "Chưa duyệt"}>{approved ? "Đã duyệt" : "Chưa duyệt"}</span>
                                                             <span className="select2-selection__arrow" role="presentation">
                                                                 <b role="presentation" />
                                                             </span>

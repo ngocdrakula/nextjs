@@ -16,6 +16,7 @@ class Trade extends Component {
             selecteds: [],
             name: ''
         }
+        this.ref = React.createRef();
     }
     componentDidMount() {
         this.gotoPage();
@@ -25,10 +26,10 @@ class Trade extends Component {
             this.gotoPage();
         }
     }
-    gotoPage = () => {
+    gotoPage = (page) => {
         const { dispatch, exUser, user } = this.props;
         const { name } = this.state;
-        const query = { name }
+        const query = { name, pageSize, page: page || 0 }
         if (user.mode === MODE.admin && exUser) query.from = exUser._id
         dispatch({
             type: types.ADMIN_GET_TRADES,
@@ -37,19 +38,6 @@ class Trade extends Component {
                 this.setState({ selecteds: [] })
             }
         });
-    }
-    handleDisable = (trade) => {
-        const { dispatch } = this.props;
-        dispatch({
-            type: types.SET_TOOLTIP,
-            payload: {
-                title: `Xác nhận ${trade.enabled ? 'tắt' : 'bật'} lịch giao thương này`,
-                message: `Bạn có chắc chắn ${trade.enabled ? 'tắt' : 'bật'} lịch giao thương này không?`,
-                confirm: `${trade.enabled ? 'Tắt' : 'Bật'} lịch giao thương này`,
-                handleConfirm: () => this.handleConfirm(trade),
-                cancel: 'Hủy',
-            }
-        })
     }
     handleDelete = (trade) => {
         const { dispatch } = this.props;
@@ -101,13 +89,6 @@ class Trade extends Component {
             }
         })
     }
-    handleConfirm = (trade) => {
-        const { dispatch } = this.props;
-        dispatch({
-            type: types.ADMIN_UPDATE_TRADE,
-            payload: { _id: trade._id, enabled: !trade.enabled }
-        })
-    }
     handleOpenForm = () => this.setState({ onAdd: !this.state.onAdd });
     handleSelect = (id) => {
         const { selecteds } = this.state;
@@ -134,6 +115,22 @@ class Trade extends Component {
         clearTimeout(this.timeout);
         this.timeout = setTimeout(this.gotoPage, 1000);
     }
+    handleDownload = (type) => {
+        const { dispatch, exUser } = this.props;
+        dispatch({
+            type: types.ADMIN_CREATE_TRADE_FILE,
+            payload: exUser?._id ? { from: exUser._id, type } : { type },
+            callback: res => {
+                if (res?.success) {
+                    const URL = process.env.HOST_NAME === "localhost" ? process.env.API_URL_LOCAL : process.env.API_URL;
+                    var a = document.createElement("a");
+                    a.href = `${URL}trade/download?fileName=${res.fileName}`;
+                    a.setAttribute("download", res.fileName);
+                    a.click();
+                }
+            }
+        })
+    }
     render() {
         const { active, trades, user, exUser, page, total } = this.props;
         if (!active) return null;
@@ -152,10 +149,21 @@ class Trade extends Component {
                         <div id="DataTables_Table_1_wrapper" className="dataTables_wrapper form-inline dt-bootstrap no-footer">
                             <div className="dt-buttons btn-group">
                                 {selecteds.length ?
-                                    <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={this.handleDeleteAll}>
-                                        <span>Xóa {selecteds.length} mục đã chọn</span>
-                                    </button>
+                                    <>
+                                        <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={this.handleDeleteAll}>
+                                            <span>Xóa {selecteds.length} mục đã chọn</span>
+                                        </button>
+                                        <button className="btn btn-default buttons-copy buttons-html5 btn-sm" disabled>
+                                            <span>{'I'}</span>
+                                        </button>
+                                    </>
                                     : ""}
+                                <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={() => this.handleDownload("csv")}>
+                                    <span>CSV</span>
+                                </button>
+                                <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={() => this.handleDownload("xls")}>
+                                    <span>EXCEL</span>
+                                </button>
                             </div>
                             <div id="DataTables_Table_1_filter" className="dataTables_filter">
                                 <label>
@@ -176,11 +184,11 @@ class Trade extends Component {
                                                 </button>
                                                 <ul className="dropdown-menu" role="menu">
                                                     <li>
-                                                        <a href="#" data-link="/admin/vendor/shop/massTrash" className="massAction " data-doafter="reload">
+                                                        <a href="#" className="massAction ">
                                                             <i className="fa fa-trash" /> Trash</a>
                                                     </li>
                                                     <li>
-                                                        <a href="#" data-link="/admin/vendor/shop/massDestroy" className="massAction " data-doafter="reload">
+                                                        <a href="#" className="massAction ">
                                                             <i className="fa fa-times" /> Delete permanently</a>
                                                     </li>
                                                 </ul>
@@ -194,22 +202,21 @@ class Trade extends Component {
                                             : <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '142.8px' }}>Thông tin khách hàng</th>
                                         }
                                         <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 218 }}>Thời gian</th>
-                                        <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 218 }}>Link giao thương</th>
+                                        <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 218 }}>Nội dung giao thương</th>
                                         {user?.mode !== MODE.admin || exUser ?
                                             <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 218 }}>Thời gian đăng ký</th>
                                             : null}
                                         {user.mode === MODE.admin && !exUser ?
-                                            <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 218 }}>Duyệt</th>
+                                            <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 218 }}>Trạng thái</th>
                                             : null}
-                                        <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 218 }}>Trạng thái</th>
                                         <th style={{ textAlign: 'center !important', width: 130 }} className="sorting_disabled" rowSpan={1} colSpan={1} >Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
                                     {trades.map((trade, index) => {
                                         const checked = (selecteds.indexOf(trade._id) + 1) ? "checked" : "";
-                                        const from = trade.leader._id === fromUser._id ? trade.leader : trade.member;
-                                        const to = trade.leader._id === fromUser._id ? trade.member : trade.leader;
+                                        const from = trade.leader.user === fromUser._id ? trade.leader : trade.member;
+                                        const to = trade.leader.user === fromUser._id ? trade.member : trade.leader;
                                         const tradeTime = formatTime(trade.deadline, "YYYY-MM-DD HH:II:SS");
                                         const createTime = formatTime(trade.createdAt, "YYYY-MM-DD HH:II:SS");
                                         const approved = trade.approved ? "Đã duyệt" : "Chưa duyệt"
@@ -227,10 +234,9 @@ class Trade extends Component {
                                                 {user.mode === MODE.admin && !exUser ? <td title={from.name}>{from.name} - {from.email}</td> : null}
                                                 <td title={to.name}>{to.name} - {to.email}</td>
                                                 <td title={tradeTime}>{tradeTime}</td>
-                                                <td><a href={trade.link} title={trade.link} target="_blank">{trade.link}</a></td>
+                                                <td>{trade.content}</td>
                                                 {user.mode === MODE.admin && !exUser ? <td title={approved}>{approved}</td> : null}
                                                 {user.mode !== MODE.admin || exUser ? <td title={createTime}>{createTime}</td> : null}
-                                                <td>{trade.enabled ? "Hoạt động" : "Không hoạt động"}</td>
                                                 <td className="row-options">
                                                     <a onClick={() => this.setState({ onEdit: trade })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
                                                         <i title="Chỉnh sửa" className="fa fa-edit" />

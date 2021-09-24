@@ -11,7 +11,7 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' });
       const user = jwt.verify(bearerToken);
       if (!user?._id) throw ({ ...user, path: 'token' });
-      const { page, pageSize, name, from = user._id } = req.query;
+      const { page, pageSize = 100, name, from = user._id } = req.query;
       const fromId = user.mode == MODE.admin ? from : user._id;
       const query = { $or: [{ 'leader.user': fromId }, { 'member.user': fromId }] };
       const skip = Number(page * pageSize) || 0;

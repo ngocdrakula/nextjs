@@ -11,7 +11,7 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
       if (user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
-      const { page, pageSize, read, name } = req.query;
+      const { page, pageSize = 100, read, name } = req.query;
       const query = {};
       if (name) {
         query.$and = [{

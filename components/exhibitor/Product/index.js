@@ -181,9 +181,9 @@ class Product extends Component {
                                             </div>
                                         </th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Ảnh sản phẩm" style={{ width: '20%', minWidth: 100 }}>Ảnh sản phẩm</th>
-                                        <th className="sorting" rowSpan={1} colSpan={1} aria-label="Tên sản phẩm: activate to sort column ascending" style={{ width: '30%' }}>Tên sản phẩm</th>
-                                        <th className="sorting" rowSpan={1} colSpan={1} aria-label="Chuyên mục: activate to sort column ascending" style={{ width: '20%' }}>Chuyên mục</th>
-                                        <th className="sorting" rowSpan={1} colSpan={1} aria-label="Trạng thái: activate to sort column ascending" style={{ width: '10%' }}>Trạng thái</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Tên sản phẩm: activate to sort column ascending" style={{ width: '30%' }}>Tên sản phẩm</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Chuyên mục: activate to sort column ascending" style={{ width: '20%' }}>Chuyên mục</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Trạng thái: activate to sort column ascending" style={{ width: '10%' }}>Trạng thái</th>
                                         <th style={{ textAlign: 'center !important', }} className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Hành động">Hành động</th>
                                     </tr>
                                 </thead>

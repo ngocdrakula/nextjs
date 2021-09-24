@@ -183,8 +183,8 @@ class Category extends Component {
                                             </div>
                                         </th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '54.8px' }}>STT</th>
-                                        <th className="sorting"  rowSpan={1} colSpan={1} aria-label="Tên chuyên mục: activate to sort column ascending" style={{ width: '142.8px' }}>Tên chuyên mục</th>
-                                        <th className="sorting"  rowSpan={1} colSpan={1} aria-label="Trạng thái: activate to sort column ascending" style={{ width: 218 }}>Trạng thái</th>
+                                        <th className="sorting_disabled"  rowSpan={1} colSpan={1} aria-label="Tên chuyên mục: activate to sort column ascending" style={{ width: '142.8px' }}>Tên chuyên mục</th>
+                                        <th className="sorting_disabled"  rowSpan={1} colSpan={1} aria-label="Trạng thái: activate to sort column ascending" style={{ width: 218 }}>Trạng thái</th>
                                         <th style={{ textAlign: 'center !important', width: 130 }} className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Hành động">Hành động</th>
                                     </tr>
                                 </thead>

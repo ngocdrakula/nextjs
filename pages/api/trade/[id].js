@@ -1,8 +1,10 @@
 import runMidldleware from '../../../middleware/mongodb';
 import tradeController from '../../../controllers/trade';
+import userController from '../../../controllers/user';
 import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt';
 import { MODE } from '../../../utils/helper';
+import { tradeSuccess } from '../../../middleware/mailer';
 
 const handler = async (req, res) => {
   if (req.method == 'GET') {
@@ -62,36 +64,48 @@ const handler = async (req, res) => {
       const user = jwt.verify(bearerToken);
       if (!user?._id) throw ({ ...user, path: 'token' });
       const { id } = req.query;
-      const { link, deadline, enabled, approved } = req.body;
-      const currentTrade = await tradeController.get(id);
-      if (!currentTrade || (!currentTrade.enabled && user.mode != MODE.admin)) throw ({ path: '_id' });
-      if (user.mode != MODE.admin && user._id != currentTrade.leader && user._id != currentTrade.member) {
+      const { content, deadline, approved, fromEmail, fromName, toEmail, toName } = req.body;
+      const currentTrade =await( await tradeController.get(id))
+        .populate({ path: 'leader.user', select: 'email' })
+        .populate({ path: 'member.user', select: 'email' })
+        .execPopulate();
+      if (!currentTrade) throw ({ path: '_id' });
+      const oldApproved = currentTrade.approved;
+      if (user.mode != MODE.admin && user._id != currentTrade.leader.user._id && user._id != currentTrade.member.user._id) {
         throw ({ ...user, path: 'token' });
       }
-      if (link != undefined) {
-        currentTrade.link = link;
+      if (content != undefined) currentTrade.content = content;
+      if (user.mode == MODE.admin && approved != undefined) {
+        currentTrade.approved = approved;
       }
-      if (enabled != undefined) {
-        currentTrade.enabled = enabled
-      }
-      if (approved != undefined) {
-        currentTrade.approved = approved
-      }
+      if (fromEmail) currentTrade.leader.email = fromEmail;
+      if (fromName) currentTrade.leader.name = fromName;
+      if (toEmail) currentTrade.member.email = toEmail;
+      if (toName) currentTrade.member.name = toName;
       if (deadline) {
         if (!(new Date(deadline)).getTime()) throw ({ path: 'deadline' })
         currentTrade.deadline = deadline;
       }
-      const productUpdated = await (await currentTrade.save())
-        .populate({ path: 'leader', select: 'name email' })
-        .populate({ path: 'member', select: 'name email' })
-        .execPopulate();
+      const tradeUpdated = await (await currentTrade.save()).execPopulate();
+      if (!oldApproved && tradeUpdated.approved) {
+        const member = await userController.get(currentTrade.member.user);
+        await tradeSuccess({
+          email: member.email,
+          fromEmail: tradeUpdated.member.email,
+          fromName: tradeUpdated.member.name,
+          toEmail: tradeUpdated.leader.email,
+          toName: tradeUpdated.leader.name,
+          deadline, content
+        });
+      }
       return res.status(200).send({
         success: true,
-        data: productUpdated,
+        data: tradeUpdated,
         message: 'Cập nhật thành công',
         messages: lang?.message?.success?.updated
       });
     } catch (e) {
+      console.log(e)
       if (e.path == 'token') {
         if (!e.token) {
           return res.status(401).send({
@@ -138,7 +152,7 @@ const handler = async (req, res) => {
       if (!user?._id) throw ({ ...user, path: 'token' });
       const currentTrade = await tradeController.get(req.query.id);
       if (!currentTrade) throw ({ path: '_id' });
-      if (user.mode != MODE.admin && user._id != currentTrade.leader && user._id != currentTrade.member) {
+      if (user.mode != MODE.admin && user._id != currentTrade.leader.user && user._id != currentTrade.member.user) {
         throw ({ ...user, path: 'token' });
       }
       currentTrade.remove();

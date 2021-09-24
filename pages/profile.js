@@ -57,7 +57,7 @@ class Profile extends Component {
                       {user.avatar ?
                         <img className="user-avatar" src={"/api/images/" + user.avatar} />
                         :
-                        <img className="user-no-avatar" src={"/images/no-avatar.png"} />
+                        <img className="user-no-avatar" src="/images/no-avatar.png" />
                       }
                     </div>
                     <div className="profile-name">

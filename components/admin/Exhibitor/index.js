@@ -178,7 +178,7 @@ class Exhibitor extends Component {
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
                                 <thead>
                                     <tr role="row">
-                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} aria-label="Toggle Dropdown Trash Delete permanently" style={{ width: '44.8px' }}>
+                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>
                                             <div className="btn-group ">
                                                 <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
                                                     <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
@@ -199,13 +199,12 @@ class Exhibitor extends Component {
                                                 </ul>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Logo" style={{ width: '54.8px' }}>Logo</th>
-                                        <th className="sorting"  rowSpan={1} colSpan={1} aria-label="Tên: activate to sort column ascending" style={{ width: '142.8px' }}>Tên</th>
-                                        <th className="sorting"  rowSpan={1} colSpan={1} aria-label="Email: activate to sort column ascending" style={{ width: 218 }}>Email</th>
-                                        <th className="sorting"  rowSpan={1} colSpan={1} aria-label="Loại gian hàng: activate to sort column ascending" style={{ width: 134 }}>Loại gian hàng</th>
-                                        <th className="sorting"  rowSpan={1} colSpan={1} aria-label="Tiền tệ: activate to sort column ascending" style={{ width: '71.6px' }}>Tiền tệ</th>
-                                        <th className="sorting"  rowSpan={1} colSpan={1} aria-label="Quốc gia: activate to sort column ascending" style={{ width: 86 }}>Quốc gia</th>
-                                        <th style={{ textAlign: 'center !important', width: 130 }} className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Hành động">Hành động</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Logo</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>Tên</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>Email</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Lĩnh vực</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Trạng thái</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%', textAlign: 'center !important', }}  >Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
@@ -236,27 +235,15 @@ class Exhibitor extends Component {
                                                     </a>
                                                 </td>
                                                 <td>{exhibitor.email}</td>
-                                                <td>Standard Exhibitor</td>
-                                                <td>
-                                                </td>
-                                                <td>
-                                                </td>
+                                                <td>{exhibitor.industry?.map(i => i.name).join(',') || ''}</td>
+                                                <td>{exhibitor.enabled ? "Hoạt động" : "Không hoạt động"}</td>
                                                 <td className="row-options">
-                                                    {/* <a onClick={() => this.setState({ onView: exhibitor })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i title="Detail" className="fa fa-expand" />
-                                                    </a>&nbsp; */}
-                                                    {/* <a href="/admin/vendor/shop/1/staffs">
-                                                        <i title="Staffs" className="fa fa-users" />
-                                                    </a>&nbsp; */}
                                                     <a href="#" onClick={() => this.handleSwitch(exhibitor)}>
                                                         <i title="Đăng nhập bằng tài khoản nhà trưng bày" className="fa fa-user-secret" />
                                                     </a>&nbsp;&nbsp;
                                                     <a onClick={() => this.setState({ onEdit: exhibitor })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
                                                         <i title="Chỉnh sửa" className="fa fa-edit" />
                                                     </a>&nbsp;&nbsp;
-                                                    {/* <a data-link="/address/create/shop/1" className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i title="Add address" className="fa fa-plus-square-o" />
-                                                    </a>&nbsp; */}
                                                     <a onClick={() => this.handleDelete(exhibitor)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
                                                         <i className="fa fa-trash-o" title="Xóa" />
                                                     </a>&nbsp;&nbsp;

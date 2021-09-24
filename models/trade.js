@@ -3,28 +3,44 @@ const Schema = mongoose.Schema;
 
 const trade = new Schema({
     leader: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'user'
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'user'
+        },
+        name: {
+            type: String,
+            required: true,
+        },
+        email: {
+            type: String,
+            required: true,
+        }
     },
     member: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'user'
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'user'
+        },
+        name: {
+            type: String,
+            required: true,
+        },
+        email: {
+            type: String,
+            required: true,
+        }
     },
     deadline: {
         type: Date,
         required: true,
     },
-    enabled: {
-        type: Boolean,
-        default: true
-    },
     approved: {
         type: Boolean,
         default: false
     },
-    link: {
+    content: {
         type: String,
         default: ''
     }

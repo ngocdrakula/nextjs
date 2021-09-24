@@ -8,11 +8,11 @@ export class AdminHead extends Component {
     }
     render() {
         const { setting } = this.props;
-        const favicon = `${setting?.logoUpdated ? "/api" : ""}/images/${setting.logo}`;
+        const favicon = `${setting?.faviconUpdated ? "/api" : ""}/images/${setting?.favicon}`;
         return (
             <NextHead>
                 <title>{setting.title || process.env.TITLE}</title>
-                <link rel="icon" href={favicon} type="image/x-icon" />
+                {setting?.favicon ? <link rel="icon" href={favicon} type="image/x-icon" /> : ""}
                 <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
                 <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
                 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, shrink-to-fit=no" />
