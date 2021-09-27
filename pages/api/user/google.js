@@ -1,7 +1,7 @@
-import https from 'https';
 import runMidldleware from '../../../middleware/mongodb';
 import userController from '../../../controllers/user';
-import lang, { langConcat } from '../../../lang.config';
+import notificationController from '../../../controllers/notification';
+import lang from '../../../lang.config';
 import jwt from '../../../middleware/jwt';
 import bcrypt from '../../../middleware/bcrypt';
 import { downloadImageFromUrl, getDataFromUrl } from '../../../middleware/cloneHelper';
@@ -39,6 +39,7 @@ const handler = async (req, res) => {
             const userCreated = await userController.create({
                 name, email, avatar, password, mode: MODE.visitor
             })
+            await notificationController.create({ title: 'register', message: `${email} vừa đăng ký thành viên` })
             const token = jwt.create({ _id: userCreated._id, email, name, createdAt: userCreated.createdAt, mode: MODE.visitor });
             return res.status(200).send({
                 success: true,

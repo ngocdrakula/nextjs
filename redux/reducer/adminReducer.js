@@ -4,11 +4,14 @@ import { MODE } from '../../utils/helper';
 
 export const initState = {
     product: { data: [], page: 0, total: 0 },
-    visitor: { data: [], page: 0, total: 0 },
-    exhibitor: { data: [], page: 0, total: 0 },
+    visitor: { data: [], page: 0, total: 0, totalNew: 0 },
+    exhibitor: { data: [], page: 0, total: 0, totalNew: 0 },
     contact: { data: [], page: 0, total: 0 },
     trade: { data: [], page: 0, total: 0 },
     livestream: { data: [], page: 0, total: 0 },
+    visit: { data: [], page: 0, total: 0 },
+    noti: { data: [], page: 0, total: 0 },
+    countList: [],
     industries: [],
     categories: [],
     user: null,
@@ -16,6 +19,7 @@ export const initState = {
     conversations: [],
     conversationsAll: [],
     newMessage: 0,
+    newNoti: 0,
     total: 0,
     page: 0,
     setting: {}
@@ -144,7 +148,6 @@ const appReducer = (state = initState, action) => {
         }
 
         case types.ADMIN_GET_USER_SUCCESS: {
-            console.log(action.payload.data)
             if (state.user?.mode === MODE.admin && action.payload.data._id === state.user._id) {
                 return {
                     ...state,
@@ -437,6 +440,28 @@ const appReducer = (state = initState, action) => {
                     ...state.livestream,
                     data
                 }
+            };
+        }
+        case types.ADMIN_GET_VISITS_SUCCESS: {
+            const { countList, ...visit } = action.payload;
+            return {
+                ...state,
+                visit: visit,
+                countList: countList.length ? countList : state.countList
+            };
+        }
+        case types.ADMIN_GET_NOTI_SUCCESS: {
+            const { totalNew, ...noti } = action.payload;
+            return {
+                ...state,
+                noti: noti,
+                newNoti: totalNew
+            };
+        }
+        case types.ADMIN_READ_NOTI_SUCCESS: {
+            return {
+                ...state,
+                newNoti: 0
             };
         }
         default: {

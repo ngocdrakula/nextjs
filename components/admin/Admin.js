@@ -27,7 +27,12 @@ class Admin extends Component {
         const { toggle, active } = this.state;
         return (
             <div className={"wrapper " + (toggle ? "skin-purple sidebar-mini sidebar-collapse" : "skin-purple sidebar-mini")}>
-                <Header handleToggle={this.handleToggle} handleActiveMessage={() => this.handleActive(5)} toggle={toggle} />
+                <Header
+                    handleToggle={this.handleToggle}
+                    handleActiveMessage={() => this.handleActive(5)}
+                    handleActiveVisitor={() => this.handleActive(2)}
+                    handleActiveUser={() => this.handleActive(8)}
+                    toggle={toggle} />
                 <SideBar handleActive={this.handleActive} active={active} />
                 <div className="content-wrapper" >
                     <Overview active={active === 0} />

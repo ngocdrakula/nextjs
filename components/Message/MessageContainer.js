@@ -11,9 +11,10 @@ class MessageContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {}
+    this.mesContainer = React.createRef();
   }
   componentDidMount() {
-    const { dispatch, user } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: types.GET_CONVERSATIONS,
       payload: {
@@ -21,6 +22,11 @@ class MessageContainer extends Component {
         pageSize
       }
     });
+    this.checkHeight();
+    window.addEventListener('resize', this.checkHeight);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.checkHeight);
   }
   handleClose = () => {
     const { dispatch } = this.props;
@@ -30,10 +36,19 @@ class MessageContainer extends Component {
     const { dispatch } = this.props;
     dispatch({ type: types.OPEN_LIST });
   }
+  checkHeight = () => {
+    const mesContainer = this.mesContainer?.current
+    if (mesContainer) {
+      const windowHeight = window.innerHeight;
+      const headerHeight = 80;
+      const headerTopHeight = 30;
+      mesContainer.style.height = `${windowHeight - headerHeight - headerTopHeight - 10}px`;
+    }
+  }
   render() {
     const { openMessage, openList } = this.props;
     return (
-      <div className="mesContainer" style={{ visibility: openMessage ? 'visible' : 'hidden' }}>
+      <div className={"mesContainer" + (openMessage ? " open" : "")} ref={this.mesContainer}>
         <div className="mesContainerHead">
           <div className="mesContainerTitle">Tin nhắn</div>
           <div className="closeButton" onClick={this.handleClose} title="Đóng">-</div>

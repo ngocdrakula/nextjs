@@ -28,12 +28,12 @@ class User extends Component {
     };
   }
   componentDidMount() {
-    const query = getQuery(Router?.router?.asPath);
+    const query = getQuery(decodeURI(Router?.router?.asPath));
     this.gotoPage(query);
   }
   componentDidUpdate() {
     const { currentPage, sortSelected, industrySelected, filter, name } = this.state;
-    const query = getQuery(Router?.router?.asPath);
+    const query = getQuery(decodeURI(Router?.router?.asPath));
     query.page = Number(query.page) - 1;
     if ((query.page >= 0 && currentPage !== query.page) ||
       (query.sort && sortSelected !== query.sort) ||

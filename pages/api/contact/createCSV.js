@@ -35,7 +35,6 @@ const handler = async (req, res) => {
         messages: lang?.message?.error?.unauthorized
       });
     } catch (error) {
-      console.log(error)
       if (error.path == 'token') {
         if (!error.token) {
           return res.status(401).send({

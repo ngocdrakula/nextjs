@@ -1,26 +1,44 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import types from '../../redux/types';
-import { getTime } from '../../utils/helper';
+import { getTime, MODE } from '../../utils/helper';
 
 class Header extends Component {
     constructor(props) {
         super(props);
         this.state = {}
     }
+    componentDidMount() {
+        const { dispatch, user } = this.props;
+        if (user.mode !== MODE.admin) {
+            dispatch({ type: types.GET_VISIT });
+        }
+        document.documentElement.addEventListener('click', this.handleClick, true);
+    }
+    componentWillUnmount() {
+        document.documentElement.removeEventListener('click', this.handleClick, true);
+    }
+    handleClick = (e) => {
+        const { active } = this.state;
+        if ((!document.getElementById('messages-dropdown')?.contains(e.target) && active === 0) ||
+            (!document.getElementById('notifications-dropdown')?.contains(e.target) && active === 1) ||
+            (!document.getElementById('user-dropdown')?.contains(e.target) && active === 2)
+        ) {
+            this.setState({ active: null })
+        }
+    }
     handleLogout = e => {
         e.preventDefault();
         const { dispatch } = this.props;
         dispatch({ type: types.ADMIN_EXHIBITOR_LOGOUT });
     }
-    handleToggleMail = () => this.setState({ toggleMail: !this.state.toggleMail })
-    handleToggleNoti = () => this.setState({ toggleNoti: !this.state.toggleNoti })
-    handleToggleUser = () => this.setState({ toggleUser: !this.state.toggleUser })
+
+    handleToggle = (active) => this.setState({ active: active !== this.state.active ? active : null })
 
 
     render() {
-        const { toggleMail, toggleNoti, toggleUser } = this.state;
-        const { setting, handleToggle, user, newMessage, handleActiveMessage } = this.props;
+        const { active } = this.state;
+        const { setting, handleToggle, user, newMessage, handleActiveMessage, handleActiveUser } = this.props;
         return (
 
             <header className="main-header">
@@ -34,7 +52,11 @@ class Header extends Component {
                     </a>
                     <div className="navbar-custom-menu">
                         <ul className="nav navbar-nav">
-                            <li className={"dropdown messages-menu" + (toggleMail ? " open" : "")} onClick={this.handleToggleMail}>
+                            <li
+                                className={"dropdown messages-menu" + (active === 0 ? " open" : "") + (newMessage ? " new" : "")}
+                                id="messages-dropdown"
+                                onClick={() => this.handleToggle(0)}
+                            >
                                 <a href="#" className="dropdown-toggle" data-toggle="dropdown">
                                     <i className="fa fa-envelope-o" />
                                 </a>
@@ -47,12 +69,16 @@ class Header extends Component {
                                     <li className="footer"><a href="#" onClick={handleActiveMessage}>Xem tất cả tin nhắn</a></li>
                                 </ul>
                             </li>
-                            <li className={"dropdown notifications-menu" + (toggleNoti ? " open" : "")} id="notifications-dropdown" onClick={this.handleToggleNoti}>
+                            <li
+                                className={"dropdown notifications-menu" + (active === 1 ? " open" : "")}
+                                id="notifications-dropdown"
+                                onClick={() => this.handleToggle(1)}
+                            >
                                 <a href="#" className="dropdown-toggle" data-toggle="dropdown">
                                     <i className="fa fa-bell-o" />
                                 </a>
                                 <ul className="dropdown-menu">
-                                    <li className="header">Bạn có 0 thông báo</li>
+                                    <li className="header">Bạn có 0 thông báo mới</li>
                                     <li>
                                         <ul className="menu">
                                         </ul>
@@ -60,7 +86,11 @@ class Header extends Component {
                                     <li className="footer"><a href="#">Xem tất cả thông báo</a></li>
                                 </ul>
                             </li>
-                            <li className={"dropdown user user-menu" + (toggleUser ? " open" : "")} id="notifications-dropdown" onClick={this.handleToggleUser}>
+                            <li
+                                className={"dropdown user user-menu" + (active === 2 ? " open" : "")}
+                                id="user-dropdown"
+                                onClick={() => this.handleToggle(2)}
+                            >
                                 <a href="#" className="dropdown-toggle" data-toggle="dropdown">
                                     {user.avatar ?
                                         <img src={"/api/images/" + user.avatar} className="user-image" alt="Avatar" />
@@ -84,7 +114,7 @@ class Header extends Component {
                                     </li>
                                     <li className="user-footer">
                                         <div className="pull-left">
-                                            <a href="#" className="btn btn-default btn-flat"><i className="fa fa-user" /> Tài khoản</a>
+                                            <a href="#" onClick={handleActiveUser} className="btn btn-default btn-flat"><i className="fa fa-user" /> Tài khoản</a>
                                         </div>
                                         <div className="pull-right" onClick={this.handleLogout}>
                                             <a href="#" className="btn btn-default btn-flat"><i className="fa fa-sign-out" /> Đăng xuất</a>

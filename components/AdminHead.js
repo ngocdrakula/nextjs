@@ -19,6 +19,7 @@ export class AdminHead extends Component {
                 <meta name="author" content="Ngoc Drakula" />
                 <link href="/css/app.css" rel="stylesheet" />
                 <link href="/css/admin.css" rel="stylesheet" />
+                <link href="https://unpkg.com/ionicons@4.4.4/dist/css/ionicons.min.css" rel="stylesheet" />
             </NextHead>
         )
     }
