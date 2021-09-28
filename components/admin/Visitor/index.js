@@ -20,6 +20,15 @@ class Visitor extends Component {
     componentDidMount() {
         this.gotoPage();
     }
+    componentDidUpdate(prevProps) {
+        const { active, newNoti, dispatch } = this.props;
+        if (!prevProps.active && active && newNoti) {
+            dispatch({
+                type: types.ADMIN_READ_NOTI,
+                payload: { title: 'register' }
+            })
+        }
+    }
     gotoPage = (page = 0) => {
         const { dispatch } = this.props;
         const { name } = this.state;
@@ -150,18 +159,6 @@ class Visitor extends Component {
                                         <span>Xóa {selecteds.length} đã chọn</span>
                                     </button>
                                     : ""}
-                                {/* <button className="btn btn-default buttons-copy buttons-html5 btn-sm" >
-                                    <span>Copy</span>
-                                </button>
-                                <button className="btn btn-default buttons-csv buttons-html5 btn-sm" >
-                                    <span>CSV</span>
-                                </button> <button className="btn btn-default buttons-excel buttons-html5 btn-sm" >
-                                    <span>Excel</span>
-                                </button> <button className="btn btn-default buttons-pdf buttons-html5 btn-sm" >
-                                    <span>PDF</span>
-                                </button> <button className="btn btn-default buttons-print btn-sm" >
-                                    <span>Print</span>
-                                </button> */}
                             </div>
                             <div id="DataTables_Table_1_filter" className="dataTables_filter">
                                 <label>
@@ -252,4 +249,4 @@ class Visitor extends Component {
     }
 }
 
-export default connect(({ admin: { visitor: { data: visitors, page, total } } }) => ({ visitors, page, total }))(Visitor)
+export default connect(({ admin: { visitor: { data: visitors, page, total }, newNoti } }) => ({ visitors, page, total, newNoti }))(Visitor)

@@ -92,6 +92,10 @@ const user = new Schema({
         type: Date,
         required: false,
     },
+    verify: {
+        type: Boolean,
+        default: true
+    }
 }, {
     timestamps: { createdAt: 'createdAt' }
 });

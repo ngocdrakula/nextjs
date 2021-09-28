@@ -97,13 +97,19 @@ input[type=submit] {
 	align-items: center;
 	flex-direction: column;
 	z-index: 1;
-	width: 280px;
-	height: 350px;
+	width: 320px;
+	height: 450px;
+	max-height: 450px;
 	border-radius: 10px 10px 0px 0px;
 	overflow: hidden;
 	background-color: #FDFDFD;
 	box-shadow: 0px 0px 10px 0px #333;
 	z-index: 1000;
+	visibility: hidden;
+}
+
+.mesContainer.open {
+	visibility: visible;
 }
 
 .mesContainerHead {
@@ -111,7 +117,7 @@ input[type=submit] {
 	justify-content: center;
 	align-items: center;
 	width: 100%;
-	padding: 7px 10px;
+	padding: 10px 15px;
 	background-color: #212657;
 }
 
@@ -156,7 +162,7 @@ input[type=submit] {
 	justify-content: center;
 	align-items: center;
 	flex: 1;
-	padding: 7px;
+	padding: 10px;
 	cursor: pointer;
 }
 
@@ -168,6 +174,10 @@ input[type=submit] {
 	width: 100%;
 	height: 0px;
 	background-color: #212657;
+	transition: all 0s;
+}
+
+.mesContainer.open .mesTaskItem::after {
 	transition: all 0.2s;
 }
 
@@ -194,13 +204,13 @@ input[type=submit] {
 
 .messageListHead {
 	width: 100%;
-	height: 30px;
+	height: 35px;
 	text-align: center;
 	background-color: #FDFDFD;
 	color: #1d7be7;
 	font-size: 13px;
 	font-weight: 500;
-	line-height: 30px;
+	line-height: 35px;
 	box-shadow: 0px 2px 3px 0px #d8d8d8;
 	z-index: 1000;
 	display: flex;
@@ -315,8 +325,10 @@ input[type=submit] {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background-color: #FDFDFD;
+	background-color: #f8f8f8;
 	border-top: 1px solid #c4c4c4;
+	border-bottom: 1px solid #f8f8f8;
+	margin-bottom: 10px;
 }
 
 .search-con button {
@@ -650,7 +662,7 @@ input[type=submit] {
 
 .mes-login {
 	text-align: center;
-	padding: 20px;
+	padding: 10px;
 }
 
 .mes-log-des {
@@ -668,7 +680,7 @@ input[type=submit] {
 	padding: 7px 15px;
 	border-radius: 7px;
 	cursor: pointer;
-	margin-bottom: 50px;
+	margin: 0px 10px 40px;
 }
 
 .container-DKGiaoThuong {
@@ -1292,4 +1304,52 @@ div.dangerously p {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+.verify-container {
+	padding-top: 50px;
+	padding-bottom: 50px;
+}
+
+.verify-result {
+	text-align: center;
+}
+
+.verify-noti, .verify-loading {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.verify-icon {
+	width: 40px;
+	height: 40px;
+	min-width: 40px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	margin-right: 15px;
+}
+
+.verify-icon.verify {
+	background-image: url(../images/success.jpg);
+}
+
+.verify-icon.failed {
+	background-image: url(../images/failed.png);
+}
+
+.verify-message {
+	font-size: 20px;
+	line-height: 30px;
+}
+
+.verify-back {
+	color: #1d7be7;
+	font-size: 15px;
+}
+
+.loading {
+	background-image: url(../images/gears.gif);
 }

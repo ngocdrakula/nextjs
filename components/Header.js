@@ -27,7 +27,7 @@ class Header extends Component {
         SocketIO.start();
         dispatch({ type: types.USER_LOGIN_LOCAL });
         dispatch({ type: types.GET_ADMIN_INFO });
-        const query = getQuery(Router?.router?.asPath);
+        const query = getQuery(decodeURI(Router?.router?.asPath));
         if (query.name) this.setState({ name: query.name });
     }
     openLoginVisitor = e => {
@@ -72,7 +72,6 @@ class Header extends Component {
         const { user, setting } = this.props;
         const { logo, logoUpdated, title, logoStatus } = setting;
         const image = `${logoUpdated ? "/api" : ""}/images/${logo}`;
-        console.log(image)
         return (
             <>
                 <Head />

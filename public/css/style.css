@@ -217,6 +217,11 @@ ul {
 	display: block;
 	font-weight: 600;
 	text-transform: none;
+	max-width: 200px;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 1;
+	overflow: hidden;
 }
 
 #slider {

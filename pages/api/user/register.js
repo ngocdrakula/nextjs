@@ -1,11 +1,11 @@
 import runMidldleware from '../../../middleware/mongodb';
 import userController from '../../../controllers/user';
-import industryController from '../../../controllers/industry';
-import lang, { langConcat } from '../../../lang.config';
+import notificationController from '../../../controllers/notification';
+import lang from '../../../lang.config';
 import bcrypt from '../../../middleware/bcrypt';
 import jwt from '../../../middleware/jwt';
 import { MODE } from '../../../utils/helper';
-import { registerSuccess } from '../../../middleware/mailer';
+import { registerNotification, registerSuccess } from '../../../middleware/mailer';
 
 const handler = async (req, res) => {
     if (req.method == 'POST') {
@@ -20,13 +20,14 @@ const handler = async (req, res) => {
             const hash = await bcrypt.create(password);
             const userInfo = {
                 password: hash, email, name, phone, mode: MODE.visitor, address,
-                representative, position, mobile, website, product,
+                representative, position, mobile, website, product, verify: false
             };
             const userCreated = await userController.create(userInfo);
-            const registed = await registerSuccess({ email, password });
-            const { success, error } = registed;
-            if (!success) throw ({ path: 'send', error })
             const { createdAt, _id } = userCreated;
+            const tokenVerify = jwt.create({ _id, limit: '1000 years' });
+            await registerSuccess({ email, password, token: tokenVerify });
+            await registerNotification({ email, name });
+            await notificationController.create({ title: 'register', message: `${email} vừa đăng ký thành viên` })
             const token = jwt.create({ email, createdAt, _id, name, mode: MODE.visitor });
             return res.status(201).send({
                 success: true,

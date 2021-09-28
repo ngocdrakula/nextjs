@@ -23,10 +23,15 @@ const handler = async (req, res) => {
             const limit = Number(pageSize) || 0;
             const total = await userController.getlist(query).countDocuments();
             const list = await userController.getlist(query).populate('industry').skip(skip).sort(sortObj).limit(limit);
+            const now = new Date();
+            now.setDate(now.getDate() - 30);
+            const queryNew = { createdAt: { $gte: now } }
+            const totalNew = await userController.getlist(queryNew).countDocuments();
             return res.status(200).send({
                 success: true,
                 data: list,
                 total,
+                totalNew,
                 query,
                 page: Number(page) || 0,
                 pageSize: Number(pageSize) || 0

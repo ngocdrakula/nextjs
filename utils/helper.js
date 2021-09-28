@@ -6,6 +6,7 @@ export const cos = Math.cos;
 export const cosD = (a) => Math.cos(deg(a));
 export const tan = Math.tan;
 export const tanD = (a) => Math.tan(deg(a));
+export const weekday = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
 
 export const createFormData = (data) => {
     const { files = [], imageType, ...body } = data;
@@ -103,22 +104,21 @@ export const FORM = {
     admin: 2
 }
 export const getTime = (timeString) => {
-    var now = new Date();
-    var nY = now.getFullYear();
-    var nM = now.getMonth();
-    var nD = now.getDate();
-    var nH = now.getHours();
-    var nP = now.getMinutes();
-    var time = new Date(timeString);
-    var tY = time.getFullYear();
-    var tM = time.getMonth();
-    var tD = time.getDate();
-    var tDay = time.getDay();
-    var tH = time.getHours();
-    var tP = time.getMinutes();
-    var tS = time.getSeconds();
-    var weekday = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
-    var At = [];
+    const now = new Date();
+    const nY = now.getFullYear();
+    const nM = now.getMonth();
+    const nD = now.getDate();
+    const nH = now.getHours();
+    const nP = now.getMinutes();
+    const time = new Date(timeString);
+    const tY = time.getFullYear();
+    const tM = time.getMonth();
+    const tD = time.getDate();
+    const tDay = time.getDay();
+    const tH = time.getHours();
+    const tP = time.getMinutes();
+    const tS = time.getSeconds();
+    const At = [];
     if (nY > tY) {
         At[0] = `${tD < 10 ? "0" + tD : tD} tháng ${(tM + 1) < 10 ? "0" + (tM + 1) : (tM + 1)} năm ${tY}`;
     }
@@ -155,7 +155,7 @@ export const getTime = (timeString) => {
             }
         }
     }
-    var thickness = (Date.parse(now) - Date.parse(time)) / 1000;
+    let thickness = (Date.parse(now) - Date.parse(time)) / 1000;
     if (thickness < 60) {
         At[1] = 'Vừa xong';
     }
@@ -195,19 +195,22 @@ export const getTime = (timeString) => {
         Day: tD < 10 ? "0" + tD : tD,
         Hour: tH < 10 ? "0" + tH : tH,
         Minute: tP < 10 ? "0" + tP : tP,
-        Secon: tS < 10 ? "0" + tS : tS
+        Second: tS < 10 ? "0" + tS : tS,
+        Week: weekday[tDay]
     }
     return (At);
 }
 export const formatTime = (timeString, format) => {
     if (timeString) {
-        var timeObject = getTime(timeString)[4];
-        var newTimeString = format.replace(/YYYY/g, timeObject.Year);
+        const timeObject = getTime(timeString)[4];
+        let newTimeString = format.replace(/YYYY/g, timeObject.Year);
+        newTimeString = newTimeString.replace(/YY/g, timeObject.Year % 100);
         newTimeString = newTimeString.replace(/MM/g, timeObject.Month);
         newTimeString = newTimeString.replace(/DD/g, timeObject.Day);
         newTimeString = newTimeString.replace(/HH/g, timeObject.Hour);
         newTimeString = newTimeString.replace(/II/g, timeObject.Minute);
-        newTimeString = newTimeString.replace(/SS/g, timeObject.Secon);
+        newTimeString = newTimeString.replace(/SS/g, timeObject.Second);
+        newTimeString = newTimeString.replace(/Week/g, timeObject.Week);
         return (newTimeString)
     }
     else {

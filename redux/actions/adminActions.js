@@ -155,3 +155,15 @@ export const admin_deleteMultiLivestreamRequest = async (params) => {
     const _ids = params && params.join(",");
     return axios.delete('livestream?_ids=' + _ids);
 }
+
+export const admin_getVisitsRequest = async (params) => {
+    return axios.get('visit?' + stringify(params))
+}
+
+export const admin_getNotiRequest = async (params) => {
+    return axios.get('notification?' + stringify(params))
+}
+
+export const admin_readNotiRequest = async (body) => {
+    return axios.put('notification?', body)
+}

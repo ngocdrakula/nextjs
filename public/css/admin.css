@@ -655,6 +655,38 @@ label.image-container.logo-preview {
 .livestream-link {
     line-break: anywhere;
 }
-label.rdw-link-modal-target-option{
+
+label.rdw-link-modal-target-option {
     margin-bottom: 10px
+}
+
+.messages-menu.new, .notifications-menu.new {
+    position: relative;
+}
+
+.messages-menu.new::after, .notifications-menu.new::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 5px;
+    height: 5px;
+    border-radius: 5px;
+    background-color: red;
+}
+
+.sidebar-menu li.new {
+    position: relative;
+}
+
+.sidebar-menu li.new::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    margin-top: -4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 8px;
+    background-color: green;
 }

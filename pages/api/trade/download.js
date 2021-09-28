@@ -23,7 +23,6 @@ const handler = async (req, res) => {
       });
 
     } catch (error) {
-      console.log(error)
       if (error.path == 'token') {
         if (!error.token) {
           return res.status(401).send({

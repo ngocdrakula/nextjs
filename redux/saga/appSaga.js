@@ -63,6 +63,7 @@ function* loginLocal({ callback }) {
                 if (typeof callback === 'function') callback(user);
             } else if (typeof callback === 'function') callback();
         } else if (typeof callback === 'function') callback();
+        yield call(getVisit, {});
     } catch (e) {
         if (typeof callback === 'function') callback();
     }
@@ -422,6 +423,37 @@ function* postResetPassword({ payload, callback }) {
         if (typeof callback === 'function') callback(e.response);
     }
 }
+function* verifyAccount({ payload, callback }) {
+    try {
+        const res = yield call(requests.verifyAccountRequest, payload);
+        if (res?.data?.success) {
+            if (res.data.token) {
+                localStorage.setItem('token', res.data.token);
+                const user = jwt.decode(res.data.token);
+                yield put({ type: types.USER_LOGIN_SUCCESS, payload: user });
+                yield call(getUserById, { payload: user._id });
+            }
+            else {
+                yield put({ type: types.VERIFY_ACCOUNT_FAILED, payload: res.data });
+            }
+            if (typeof callback === 'function') callback(res.data);
+        }
+    } catch (e) {
+        yield put({ type: types.VERIFY_ACCOUNT_FAILED, payload: e.response });
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
+function* getVisit({ callback }) {
+    try {
+        const res = yield call(requests.getVisitRequest);
+        if (res?.data?.success) {
+            localStorage.setItem('last-visit', Date.now());
+        }
+        if (typeof callback === 'function') callback(res.data);
+    } catch (e) {
+        if (typeof callback === 'function') callback(e.response);
+    }
+}
 export default function* appSaga() {
     yield all([
         yield takeEvery(types.GET_INDUSTRIES, getIndustries),
@@ -456,5 +488,7 @@ export default function* appSaga() {
         yield takeEvery(types.GET_LIVESTREAM, getLivestreams),
 
         yield takeEvery(types.RESET_PASSWORD, postResetPassword),
+        yield takeEvery(types.VERIFY_ACCOUNT, verifyAccount),
+        yield takeEvery(types.GET_VISIT, getVisit),
     ])
 }

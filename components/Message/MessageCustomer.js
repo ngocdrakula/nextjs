@@ -8,7 +8,15 @@ class MessageCustomer extends Component {
   state = {}
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {};
+    this.mesContainer = React.createRef();
+  }
+  componentDidMount() {
+    this.checkHeight();
+    window.addEventListener('resize', this.checkHeight);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.checkHeight);
   }
   openLoginVisitor = () => {
     const { dispatch } = this.props;
@@ -18,10 +26,19 @@ class MessageCustomer extends Component {
     const { dispatch } = this.props;
     dispatch({ type: types.OPEN_MESSAGE })
   }
+  checkHeight = () => {
+    const mesContainer = this.mesContainer?.current
+    if (mesContainer) {
+      const windowHeight = window.innerHeight;
+      const headerHeight = 80;
+      const headerTopHeight = 30;
+      mesContainer.style.height = `${windowHeight - headerHeight - headerTopHeight - 10}px`;
+    }
+  }
   render() {
     const { openMessage, admin } = this.props;
     return (
-      <div className="mesContainer" style={{ visibility: openMessage ? 'visible' : 'hidden' }}>
+      <div className="mesContainer" className={"mesContainer" + (openMessage ? " open" : "")} ref={this.mesContainer}>
         <div className="mesContainerHead">
           <div className="mesContainerTitle">Tin nhắn</div>
           <div className="closeButton" onClick={this.handleClose} title="Đóng">-</div>

@@ -75,3 +75,10 @@ export const getLivestreamsRequest = async (params) => {
 export const postResetPasswordRequest = async (request) => {
     return axios.post('user/reset', request)
 }
+
+export const verifyAccountRequest = async (request) => {
+    return axios.post('user/verify', request)
+}
+export const getVisitRequest = async () => {
+    return axios.post('visit', {})
+}
