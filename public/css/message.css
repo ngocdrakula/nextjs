@@ -491,23 +491,28 @@ input[type=submit] {
 
 .mesInput .form-group {
 	display: flex;
-	margin-bottom: 0px;
+	margin: 0px 0px 5px;
 }
 
 .mesBoxTextarea {
 	flex-grow: 1;
 	display: flex;
+	align-items: center;
 }
 
 .mesBoxTextarea textarea {
 	resize: none;
-	padding: 5px;
+	padding: 6px 8px;
 	width: 100%;
 	height: 14px;
 	min-height: 32px;
 	max-height: 60px;
 	border-radius: 3px;
 	outline: none;
+	margin-top: 0px;
+	border: 1px solid #e9e9e9;
+	color: #333333;
+    font-size: 13px;
 }
 
 .mesBoxTextarea textarea:focus {
@@ -526,7 +531,7 @@ input[type=submit] {
 }
 
 .mesBoxSubmit input[type=submit] {
-	padding: 4px 5px;
+	padding: 6px 9px;
 	border-radius: 4px;
 	width: auto;
 	font-size: 14px;

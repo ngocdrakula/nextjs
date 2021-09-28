@@ -75,7 +75,7 @@ class MessageBox extends Component {
     }
     writeMessage = (e) => {
         e.target.style.height = "14px";
-        e.target.style.height = (e.target.scrollHeight - 10) + "px";
+        e.target.style.height = (e.target.scrollHeight - 0) + "px";
         this.setState({
             message: e.target.value
         });
