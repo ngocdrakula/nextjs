@@ -45,7 +45,7 @@ class Overview extends Component {
             const thisDay = formatTime(new Date(year, month, date + index - numDate + 2), "YYYY-MM-DD");
             const lastDay = formatTime(new Date(year, month, date + index - numDate + 1), "YYYY-MM-DD");
             counts.push(`${lastDay}.${thisDay}`);
-            labels.push(formatTime(new Date(year, month, date + index - numDate), "Week"));
+            labels.push(formatTime(new Date(year, month, date + index - numDate + 1), "Week"));
         });
         labels[labels.length - 1] = "Hôm nay";
         this.setState({ counts, labels });
