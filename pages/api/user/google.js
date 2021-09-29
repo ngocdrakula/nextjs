@@ -6,6 +6,7 @@ import jwt from '../../../middleware/jwt';
 import bcrypt from '../../../middleware/bcrypt';
 import { downloadImageFromUrl, getDataFromUrl } from '../../../middleware/cloneHelper';
 import { MODE } from '../../../utils/helper';
+import { registerNotification, registerSocialSuccess, registerSuccess } from '../../../middleware/mailer';
 
 const handler = async (req, res) => {
     if (req.method == 'POST') {
@@ -39,6 +40,8 @@ const handler = async (req, res) => {
             const userCreated = await userController.create({
                 name, email, avatar, password, mode: MODE.visitor
             })
+            await registerSocialSuccess({ email, social: 'Google' });
+            await registerNotification({ email, name, social: 'Google' });
             await notificationController.create({ title: 'register', message: `${email} vừa đăng ký thành viên` })
             const token = jwt.create({ _id: userCreated._id, email, name, createdAt: userCreated.createdAt, mode: MODE.visitor });
             return res.status(200).send({
@@ -49,6 +52,7 @@ const handler = async (req, res) => {
                 messages: lang?.message?.success?.loged
             });
         } catch (e) {
+            console.log(e)
             if (e.path == 'accessToken') {
                 return res.status(400).send({
                     success: false,
