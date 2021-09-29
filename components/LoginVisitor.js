@@ -20,13 +20,15 @@ class LoginVisitor extends Component {
     handleSubmit = e => {
         const { email, password } = this.state;
         const { dispatch } = this.props;
+        this.setState({ loading: true });
         dispatch({
             type: types.USER_LOGIN,
             payload: { email, password, mode: MODE.visitor },
             callback: res => {
                 if (!res?.success) {
                     this.setState({
-                        field: res?.field, message: res?.message || "Đăng nhập không thành công"
+                        field: res?.field, message: res?.message || "Đăng nhập không thành công",
+                        loading: false
                     });
                 }
             }
@@ -43,22 +45,40 @@ class LoginVisitor extends Component {
     }
     handleLoginGoogle = res => {
         if (res?.accessToken) {
+            this.setState({ loading: true });
             const { dispatch } = this.props;
             dispatch({
                 type: types.USER_LOGIN_GOOGLE,
-                payload: { accessToken: res.accessToken }
+                payload: { accessToken: res.accessToken },
+                callback: res => {
+                    if (!res?.success) {
+                        this.setState({
+                            field: res?.field, message: res?.message || "Đăng nhập không thành công",
+                            loading: false
+                        });
+                    }
+                }
             });
         }
     }
 
     handleLoginFacebook = res => {
         if (res?.accessToken) {
+            this.setState({ loading: true })
             const { dispatch } = this.props;
             dispatch({
                 type: types.USER_LOGIN_FACEBOOK,
                 payload: {
                     accessToken: res.accessToken,
                     image: res.picture?.data?.url
+                },
+                callback: res => {
+                    if (!res?.success) {
+                        this.setState({
+                            field: res?.field, message: res?.message || "Đăng nhập không thành công",
+                            loading: false
+                        });
+                    }
                 }
             });
         }
@@ -69,7 +89,7 @@ class LoginVisitor extends Component {
         dispatch({ type: types.OPENFORM, payload: 'reset' });
     }
     render() {
-        const { message } = this.state;
+        const { message, loading } = this.state;
         const { openForm } = this.props;
         return (
             <Modal show={openForm === MODE.visitor} id="guestModal" className="login-modal" centered contentClassName="" onHide={this.handleClose}>
@@ -83,7 +103,7 @@ class LoginVisitor extends Component {
                     <input onChange={this.handleChange} type="password" name="password" placeholder="At least 8 characters" />
                 </label>
                 {message ? <div className="error-form">{message}</div> : ""}
-                <input type="submit" onClick={this.handleSubmit} value="Đăng nhập" />
+                <input type="submit" onClick={this.handleSubmit} value="Đăng nhập" disabled={loading} />
                 <div className="suport-login">
                     <label className="remember-login label-cb">
                         <input type="checkbox" name="remember" />
@@ -104,6 +124,7 @@ class LoginVisitor extends Component {
                     tag="a"
                     cssClass="with-fb"
                     textButton="Đăng nhập bằng Facebook"
+                    isDisabled={loading}
                 />
                 <GoogleLogin
                     clientId={GOOGLE_CLIENT_ID}
@@ -114,6 +135,7 @@ class LoginVisitor extends Component {
                     onSuccess={this.handleLoginGoogle}
                     onFailure={this.handleLoginGoogle}
                     cookiePolicy={'single_host_origin'}
+                    disabled={loading}
                 />
                 <label>
                     Thành viên mới? <a href="#" onClick={this.handleSwitchRegister} className="txt-red">Đăng ký ngay</a>

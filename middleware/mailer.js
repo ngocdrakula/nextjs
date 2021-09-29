@@ -56,7 +56,29 @@ export const registerSuccess = async ({ email, password, token }) => {
         });
     })
 }
-export const registerNotification = async ({ email, name }) => {
+
+export const registerSocialSuccess = async ({ email, social }) => {
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: '[VIMEXPO] Đăng ký tài khoản thành công',
+        html: `<h2 style="with:100%;text-align:center">XIN CHÚC MỪNG</h2>`
+            + `<p>Bạn đã đăng ký tài khoản thành công tại website ${ORIGIN}.</p>`
+            + `<p>Email đăng nhập: <b>${email}</b>.</p>`
+            + `<p>Phương thức đăng nhập: <b>Đăng nhập bằng ${social}</b>.</p>`
+            + `<p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>`
+    };
+    return new Promise(resolve => {
+        mailer.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                resolve({ success: false, error });
+            } else {
+                resolve({ success: true, info });
+            }
+        });
+    })
+}
+export const registerNotification = async ({ email, name, social }) => {
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_USER,
@@ -65,6 +87,7 @@ export const registerNotification = async ({ email, name }) => {
             + `<p>Một tài khoản người mua đã đăng ký thành công.</p>`
             + `<p>Email: <b>${email}</b>.</p>`
             + `<p>Tên: <b>${name}</b>.</p>`
+            + `<p>Phương thức đăng ký: <b>${social ? ("Đăng nhập bằng " + social) : "Đăng ký trực tiếp"}</b>.</p>`
             + `<p>Bạn có thể kiểm tra và chỉnh sửa thông tin người mua tại <a href="${ORIGIN}admin">trang Admin</a>.</p>`
     };
     return new Promise(resolve => {

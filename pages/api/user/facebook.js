@@ -6,6 +6,7 @@ import jwt from '../../../middleware/jwt';
 import bcrypt from '../../../middleware/bcrypt';
 import { downloadImageFromUrl, getDataFromUrl } from '../../../middleware/cloneHelper';
 import { MODE } from '../../../utils/helper';
+import { registerNotification, registerSocialSuccess } from '../../../middleware/mailer';
 
 const handler = async (req, res) => {
     if (req.method == 'POST') {
@@ -41,7 +42,9 @@ const handler = async (req, res) => {
             const avatar = picture && (await downloadImageFromUrl(picture))
             const userCreated = await userController.create({
                 name, email, avatar, password, mode: MODE.visitor, id
-            })
+            });
+            if (email?.includes('@')) await registerSocialSuccess({ email, social: 'Facebook' });
+            await registerNotification({ email, name, social: 'Facebook' });
             await notificationController.create({ title: 'register', message: `${email} vừa đăng ký thành viên` })
             const token = jwt.create({ _id: userCreated._id, email, name, createdAt: userCreated.createdAt, mode: MODE.visitor });
             return res.status(200).send({
