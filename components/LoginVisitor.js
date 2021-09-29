@@ -44,6 +44,7 @@ class LoginVisitor extends Component {
         dispatch({ type: types.OPENFORM, payload: 'reg' });
     }
     handleLoginGoogle = res => {
+        console.log(res)
         if (res?.accessToken) {
             this.setState({ loading: true });
             const { dispatch } = this.props;
@@ -59,6 +60,22 @@ class LoginVisitor extends Component {
                     }
                 }
             });
+        }
+        else if (res?.details === "Cookies are not enabled in current environment.") {
+            this.notAcceptCookie = true;
+        }
+        else if (res?.error === 'popup_closed_by_user') {
+            if (this.notAcceptCookie) {
+                alert("Vui lòng cho phép cookie bên thứ ba và thử lại")
+            }
+            else {
+                this.setState({
+                    message: "Đăng nhập không thành công",
+                });
+            }
+        }
+        else {
+            this.notAcceptCookie = false;
         }
     }
 
@@ -80,6 +97,10 @@ class LoginVisitor extends Component {
                         });
                     }
                 }
+            });
+        } else {
+            this.setState({
+                message: "Đăng nhập không thành công",
             });
         }
     }
