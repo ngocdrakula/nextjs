@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig from '../../../lang.config';
 import types from '../../../redux/types';
 import { createFormData } from '../../../utils/helper';
+import { translate } from '../../../utils/language';
 import Pagination from '../../PaginationAdmin';
 import AddProduct from './AddProduct';
 import UpdateProduct from './UpdateProduct';
@@ -36,11 +38,11 @@ class Product extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận ${product.enabled ? 'tắt' : 'bật'} sản phẩm`,
-                message: `Bạn có chắc chắn ${product.enabled ? 'tắt' : 'bật'} sản phẩm này không?`,
-                confirm: `${product.enabled ? 'Tắt' : 'Bật'} sản phẩm`,
+                title: translate(product.enabled ? langConfig.app.ConfirmDisableProduct : langConfig.app.ConfirmEnableProduct),
+                message: translate(product.enabled ? langConfig.app.AreYouSureDisableProduct : langConfig.app.AreYouSureEnableProduct),
+                confirm: translate(product.enabled ? langConfig.app.DisableProduct : langConfig.app.EnableProduct),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => this.handleConfirm(product),
-                cancel: 'Hủy',
             }
         })
     }
@@ -49,9 +51,10 @@ class Product extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa sản phẩm`,
-                message: `Bạn có chắc chắn muốn xóa sản phẩm này không?`,
-                confirm: `Xóa sản phẩm`,
+                title: translate(langConfig.app.ConfirmDeleteProduct),
+                message: translate(langConfig.app.AreYouSureDeleteProduct),
+                confirm: translate(langConfig.app.DeleteProduct),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => {
                     dispatch({
                         type: types.ADMIN_DELETE_PRODUCT,
@@ -64,7 +67,6 @@ class Product extends Component {
                         }
                     });
                 },
-                cancel: 'Hủy',
             }
         })
     }
@@ -75,9 +77,10 @@ class Product extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa nhiều sản phẩm`,
-                message: `Bạn có chắc chắn muốn xóa ${selecteds.length} sản phẩm không?`,
-                confirm: `Xóa sản phẩm`,
+                title: translate(langConfig.app.ConfirmDeleteMultiProduct),
+                message: `${translate(langConfig.app.AreYouSureDelete)} ${selecteds.length} ${translate(langConfig.app.Product)}?`,
+                confirm: translate(langConfig.app.DeleteProduct),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => {
                     dispatch({
                         type: types.ADMIN_DELETE_MULTI_PRODUCT,
@@ -91,7 +94,6 @@ class Product extends Component {
                         }
                     });
                 },
-                cancel: 'Hủy',
             }
         })
     }
@@ -137,9 +139,11 @@ class Product extends Component {
             <section className="content">
                 <div className="box">
                     <div className="box-header with-border">
-                        <h3 className="box-title">Sản phẩm</h3>
+                        <h3 className="box-title">{translate(langConfig.app.Product)}</h3>
                         <div className="box-tools pull-right">
-                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>Thêm sản phẩm</a>
+                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>
+                                {translate(langConcat(langConfig.app.Add, langConfig.app.Product))}
+                            </a>
                         </div>
                     </div>
                     <div className="box-body">
@@ -147,44 +151,32 @@ class Product extends Component {
                             <div className="dt-buttons btn-group">
                                 {selecteds.length ?
                                     <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={this.handleDeleteAll}>
-                                        <span>Xóa {selecteds.length} đã chọn</span>
+                                        <span>{translate(langConfig.app.Delete)} {selecteds.length} {translate(langConfig.app.selectedItem)}</span>
                                     </button>
                                     : ""}
                             </div>
                             <div id="DataTables_Table_1_filter" className="dataTables_filter">
                                 <label>
-                                    <input type="search" className={"form-control input-sm" + (name ? " active" : "")} value={name} onChange={this.handleChange} placeholder="Tìm kiếm" />
+                                    <input type="search" className={"form-control input-sm" + (name ? " active" : "")} value={name} onChange={this.handleChange} placeholder={translate(langConfig.app.Search)} />
                                 </label>
                             </div>
-                            <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+                            <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1">
                                 <thead>
                                     <tr role="row">
-                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} aria-label="Toggle Dropdown Trash Delete permanently" style={{ width: '44.8px ' }}>
+                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '44.8px ' }}>
                                             <div className="btn-group ">
                                                 <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
                                                     <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
                                                 </button>
-                                                <button type="button" className="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                    <span className="caret" />
-                                                    <span className="sr-only">Toggle Dropdown</span>
-                                                </button>
-                                                <ul className="dropdown-menu" role="menu">
-                                                    <li>
-                                                        <a href="#" data-link="/admin/vendor/shop/massTrash" className="massAction " data-doafter="reload">
-                                                            <i className="fa fa-trash" /> Trash</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#" data-link="/admin/vendor/shop/massDestroy" className="massAction " data-doafter="reload">
-                                                            <i className="fa fa-times" /> Delete permanently</a>
-                                                    </li>
-                                                </ul>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Ảnh sản phẩm" style={{ width: '20%', minWidth: 100 }}>Ảnh sản phẩm</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Tên sản phẩm: activate to sort column ascending" style={{ width: '30%' }}>Tên sản phẩm</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Chuyên mục: activate to sort column ascending" style={{ width: '20%' }}>Chuyên mục</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Trạng thái: activate to sort column ascending" style={{ width: '10%' }}>Trạng thái</th>
-                                        <th style={{ textAlign: 'center !important', }} className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Hành động">Hành động</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%', minWidth: 100 }}>{translate(langConfig.resources.productImage)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '30%' }}>{translate(langConfig.resources.productName)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>{translate(langConfig.resources.category)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Standard)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ textAlign: 'center !important', }}>
+                                            {translate(langConfig.app.Actions)}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
@@ -212,17 +204,17 @@ class Product extends Component {
                                                 <td title={product.name}>
                                                     {product.name?.split(0, 15)}
                                                     <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={e => { e.preventDefault(); this.handleDisable(product) }}>
-                                                        <i className={"fa fa-heart" + (product.enabled ? "-o" : "")} title={product.enabled ? "Tắt" : "Bật"} />
+                                                        <i className={"fa fa-heart" + (product.enabled ? "-o" : "")} title={translate(exhibitor.enabled ? langConfig.app.EnableProduct : langConfig.app.DisableProduct)} />
                                                     </a>
                                                 </td>
                                                 <td>{category.name}</td>
-                                                <td>{product.enabled ? 'Hoạt động' : 'Không hoạt động'}</td>
+                                                <td>{translate(exhibitor.enabled ? langConfig.app.Active : langConfig.app.Inactive)}</td>
                                                 <td className="row-options">
                                                     <a onClick={() => this.setState({ onEdit: product })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i title="Chỉnh sửa" className="fa fa-edit" />
+                                                        <i title={translate(langConfig.app.Edit)} className="fa fa-edit" />
                                                     </a>&nbsp;&nbsp;
                                                     <a onClick={() => this.handleDelete(product)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i className="fa fa-trash-o" title="Xóa" />
+                                                        <i className="fa fa-trash-o" title={translate(langConfig.app.Delete)} />
                                                     </a>&nbsp;&nbsp;
                                                 </td>
                                             </tr>

@@ -1,7 +1,6 @@
 import runMidldleware from '../../../middleware/mongodb';
 import visitController from '../../../controllers/visit';
 import lang, { langConcat } from '../../../lang.config';
-import uploader, { cleanFiles } from '../../../middleware/multer';
 import jwt from '../../../middleware/jwt';
 import { MODE } from '../../../utils/helper';
 
@@ -26,7 +25,7 @@ const handler = async (req, res) => {
       }
       return res.status(500).send({
         success: false,
-        message: e.message,
+        message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
         error: e,
       });
@@ -72,6 +71,7 @@ const handler = async (req, res) => {
           success: false,
           exist: false,
           message: "Khách truy cập không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.visit, lang?.message?.error?.validation?.not_exist),
         });
       }
       if (e.path == 'flag') {
@@ -79,7 +79,8 @@ const handler = async (req, res) => {
           success: false,
           exist: true,
           field: 'flag',
-          message: 'Định dạng flag không chính xác',
+          message: 'Đánh dấu sai định dạng',
+          messages: langConcat(lang?.resources?.flag, lang?.message?.error?.validation?.format),
         });
       }
       return res.status(500).send({

@@ -1,6 +1,6 @@
 import runMidldleware from '../../../middleware/mongodb';
 import conversationController from '../../../controllers/conversation';
-import lang from '../../../lang.config';
+import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt'
 import { MODE } from '../../../utils/helper';
 
@@ -30,13 +30,13 @@ const handler = async (req, res) => {
       if (error.path == 'to')
         return res.status(404).send({
           success: false,
-          message: 'Không tồn tại cuộc hội thoại',
-          messages: lang?.message?.error?.server,
+          message: 'Cuộc hội thoại không tồn tại',
+          messages: langConcat(lang?.resources?.conversation, lang?.message?.error?.validation?.not_exist),
           error: error,
         });
       return res.status(500).send({
         success: false,
-        message: error.message,
+        message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
         error: error,
       });

@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig, { langConcat } from '../../../lang.config';
 import types from '../../../redux/types';
 import { createFormData, MODE } from '../../../utils/helper';
+import { translate } from '../../../utils/language';
 import TextEditor from '../../TextEditor';
 
 
@@ -29,13 +31,13 @@ class AddProduct extends Component {
         const { categories, user, exUser } = this.props;
         const categoryId = selected || categories[0]?._id;
         if (!name) {
-            this.setState({ fieldError: 'name', message: 'Tên không được để trống' })
+            this.setState({ fieldError: 'name', message: translate(langConcat(langConfig.resources.productName, langConfig.message.error.validation.required)) })
         } else if (!categoryId) {
-            this.setState({ fieldError: 'category', message: 'Vui lòng thêm một chuyên mục trước' })
+            this.setState({ fieldError: 'category', message: translate(langConfig.app.PleaseAddCategory) })
         } else if (!description) {
-            this.setState({ fieldError: 'description', message: 'Vui lòng thêm mô tả cho sản phẩm' })
+            this.setState({ fieldError: 'description', message: translate(langConcat(langConfig.resources.description, langConfig.message.error.validation.required)) })
         } else if (!files?.length) {
-            this.setState({ fieldError: 'files', message: 'Vui lòng chọn một hình ảnh' })
+            this.setState({ fieldError: 'files', message: translate(langConcat(langConfig.resources.productImage, langConfig.message.error.validation.required)) })
         } else {
             const { dispatch, onAdded } = this.props;
             const data = { name, enabled, categoryId, files, description };
@@ -50,10 +52,10 @@ class AddProduct extends Component {
                             type: types.SET_TOOLTIP,
                             payload: {
                                 type: 'success',
-                                title: 'Thêm sản phẩm thành công',
-                                message: 'Bạn muốn thêm sản phẩm khác?',
-                                confirm: 'Thêm',
-                                cancel: 'Đóng',
+                                title: translate(langConfig.message.success.created),
+                                message: translate(langConfig.app.AddAnotherProduct),
+                                confirm: translate(langConfig.app.Add),
+                                cancel: translate(langConfig.app.Close),
                                 handleConfirm: () => { this.setState({ ...this.defaultState });; onAdded(); },
                                 handleCancel: () => { onAdded(); this.props.handleClose(); }
                             },
@@ -62,7 +64,7 @@ class AddProduct extends Component {
                     else if (res?.data) {
                         this.setState({
                             fieldError: res.data.field,
-                            message: res.data.message || "Vui lòng điền đầy đủ thông tin"
+                            message: translate(res.data.messages || langConfig.message.error.infomation)
                         })
                     }
                 }
@@ -90,14 +92,14 @@ class AddProduct extends Component {
                         <form method="POST" action="/" id="add-pro-form" onSubmit={this.handleSubmit} >
                             <div className="modal-header">
                                 <button type="button" className="close" onClick={handleClose}>×</button>
-                                Thêm sản phẩm
+                                {translate(langConcat(langConfig.app.Add, langConfig.app.Product))}
                             </div>
                             <div className="modal-body">
                                 <div className="row">
                                     <div className="col-md-8 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'name' ? " has-error" : "")}>
-                                            <label htmlFor="add-pro-name">Tên sản phẩm*</label>
-                                            <input className="form-control" placeholder="Nhập tên sản phẩm" required value={name} id="add-pro-name" name="name" type="text" onChange={this.handleChange} />
+                                            <label htmlFor="add-pro-name">{translate(langConfig.resources.productName)}*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.productName))} required value={name} id="add-pro-name" name="name" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
                                                 {fieldError === 'name' && message ?
                                                     <ul className="list-unstyled">
@@ -109,11 +111,13 @@ class AddProduct extends Component {
                                     </div>
                                     <div className="col-md-4 nopadding-left">
                                         <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
-                                            <label htmlFor="add-pro-active">Trạng thái*</label>
+                                            <label htmlFor="add-pro-active">{translate(langConfig.app.Status)}*</label>
                                             <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
                                                 <span className="selection" onClick={this.handleDropdown}>
                                                     <span className="select2-selection select2-selection--single"  >
-                                                        <span className="select2-selection__rendered" id="add-pro-select2-active-container" title={enabled ? "Hoạt động" : "Không hoạt động"}>{enabled ? "Hoạt động" : "Không hoạt động"}</span>
+                                                        <span className="select2-selection__rendered" id="add-pro-select2-active-container" title={translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}>
+                                                            {translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}
+                                                        </span>
                                                         <span className="select2-selection__arrow" role="presentation">
                                                             <b role="presentation" />
                                                         </span>
@@ -123,11 +127,11 @@ class AddProduct extends Component {
                                                     <div
                                                         className={"select-option-active" + (enabled ? " active" : "")}
                                                         onClick={this.handleSelectEnable}
-                                                    >Hoạt động</div>
+                                                    >{translate(langConfig.app.Active)}</div>
                                                     <div
                                                         className={"select-option-active" + (!enabled ? " active" : "")}
                                                         onClick={this.handleSelectDisable}
-                                                    >Không hoạt động</div>
+                                                    >{translate(langConfig.app.Inactive)}</div>
                                                 </div>
                                             </span>
                                             <div className="help-block with-errors" >
@@ -143,7 +147,7 @@ class AddProduct extends Component {
                                 <div className="row">
                                     <div className="col-md-6 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'category' ? " has-error" : "")}>
-                                            <label htmlFor="add-pro-active">Chuyên mục*</label>
+                                            <label htmlFor="add-pro-active">{translate(langConfig.resources.category)}*</label>
                                             <span className={"select2 select2-container select2-container--default" + (dropCategory ? " select2-container--open" : "")} style={{ width: '100%' }}>
                                                 <span className="selection" onClick={this.handleDropdownCategory}>
                                                     <span className="select2-selection select2-selection--single"  >
@@ -175,10 +179,10 @@ class AddProduct extends Component {
                                     </div>
                                 </div>
                                 <div className={"form-group" + (fieldError === 'description' ? " has-error" : "")}>
-                                    <label htmlFor="add-pro-description">Mô tả</label>
+                                    <label htmlFor="add-pro-description">{translate(langConfig.resources.description)}</label>
                                     <TextEditor
                                         className="form-control summernote"
-                                        placeholder="Mô tả sơ lược về sản phẩm"
+                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.description))}
                                         value={description}
                                         name="description"
                                         id="add-pro-description"
@@ -195,15 +199,15 @@ class AddProduct extends Component {
                                 <div className="row">
                                     <div className="col-md-12">
                                         <div className={"form-group" + (fieldError === 'files' ? " has-error" : "")}>
-                                            <label htmlFor="add-pro-uploadBtn" className="with-help">Ảnh sản phẩm</label>
+                                            <label htmlFor="add-pro-uploadBtn" className="with-help">{translate(langConfig.resources.productImage)}</label>
                                             <div className="row">
                                                 <div className="col-md-9 nopadding-right">
-                                                    <input id="add-pro-uploadFile" placeholder={files?.length ? "Đã chọn 1 ảnh" : "Ảnh sản phẩm"} className="form-control" style={{ height: 28 }} disabled="disabled" />
-                                                    <div className="help-block with-errors">Kích thước nhỏ nhất 300 x 300px</div>
+                                                    <input id="add-pro-uploadFile" placeholder={translate(filesAvatar?.length ? langConfig.app.OneFileSelected : langConfig.resources.productImage)} className="form-control" style={{ height: 28 }} disabled="disabled" />
+                                                    <div className="help-block with-errors">{translate(langConfig.app.MinSize300X300)}</div>
                                                 </div>
                                                 <div className="col-md-3 nopadding-left">
                                                     <div className="fileUpload btn btn-primary btn-block btn-flat">
-                                                        <span>Tải lên</span>
+                                                        <span>{translate(langConfig.app.Upload)}</span>
                                                         <input type="file" name="ex-avatar" id="add-pro-uploadBtn" className="upload" onChange={this.handleChooseFiles} />
                                                     </div>
                                                 </div>
@@ -220,7 +224,7 @@ class AddProduct extends Component {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <input className="btn btn-flat btn-new" type="submit" value="Thêm" />
+                                <input className="btn btn-flat btn-new" type="submit" value={translate(langConfig.app.Add)} />
                             </div>
                         </form>
                     </div>

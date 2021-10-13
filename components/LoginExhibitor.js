@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap';
 import { connect } from 'react-redux'
+import langConfig from '../lang.config';
 import types from '../redux/types';
 import { MODE } from '../utils/helper';
+import { translate } from '../utils/language';
 
 class LoginExhibitor extends Component {
     constructor(props) {
@@ -20,7 +22,7 @@ class LoginExhibitor extends Component {
             callback: res => {
                 if (!res?.success) {
                     this.setState({
-                        field: res?.field, message: res?.message || "Đăng nhập không thành công"
+                        field: res?.field, message: translate(res?.messages || langConfig.app.LoginFailed)
                     });
                 }
             }
@@ -43,12 +45,12 @@ class LoginExhibitor extends Component {
             <Modal show={openForm === MODE.exhibitor} id="exhibitorModal" className="login-modal" centered contentClassName="" onHide={this.handleClose}>
                 <a href="/"><img src="images/logo.png" alt="" /></a>
                 <label className="tk">
-                    <span>Tài khoản</span>
-                    <input onChange={this.handleChange} type="text" name="email" placeholder="Phone Number, Name or Email" />
+                    <span>{translate(langConfig.app.Account)}</span>
+                    <input onChange={this.handleChange} type="text" name="email" placeholder={translate(langConfig.app.EmailAddress)} />
                 </label>
                 <label className="mk">
-                    <span>Mật khẩu</span>
-                    <input onChange={this.handleChange} type="password" name="password" placeholder="At least 8 characters" />
+                    <span>{translate(langConfig.app.Password)}</span>
+                    <input onChange={this.handleChange} type="password" name="password" placeholder={translate(langConfig.app.Password)} />
                 </label>
                 {message ? <div className="error-form">{message}</div> : ""}
                 <input type="submit" onClick={this.handleSubmit} value="Đăng nhập" />
@@ -56,10 +58,10 @@ class LoginExhibitor extends Component {
                     <label className="remember-login label-cb">
                         <input type="checkbox" name="remember" />
                         <span className="checkbox-checkmark" />
-                        Nhớ đăng nhập
+                        {translate(langConfig.app.RememberMe)}
                     </label>
                     <label className="fogot-mk">
-                        Quên mật khẩu? <a href="#" className="txt-red" onClick={this.handleResetPassword}>Nhấn vào đây</a>
+                        Quên mật khẩu? <a href="#" className="txt-red" onClick={this.handleResetPassword}>{translate(langConfig.app.ClickHere)}</a>
                     </label>
                 </div>
             </Modal>

@@ -32,7 +32,7 @@ const handler = async (req, res) => {
         success: true,
         fileName,
         message: 'Tạo file thành công',
-        messages: lang?.message?.error?.unauthorized
+        messages: lang?.message?.success?.created
       });
     } catch (error) {
       if (error.path == 'token') {

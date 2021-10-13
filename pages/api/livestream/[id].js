@@ -19,13 +19,13 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: false,
-          message: "Cuộc hội thoại không tồn tại hoặc đã bị xóa",
+          message: "Video trực tuyến không tồn tại hoặc đã bị xóa",
           messages: langConcat(lang?.resources?.livestream, lang?.message?.error?.validation?.not_exist),
         });
       }
       return res.status(500).send({
         success: false,
-        message: e.message,
+        message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
         error: e,
       });
@@ -74,7 +74,8 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: false,
-          message: "Livestream không tồn tại hoặc đã bị xóa",
+          message: "Video trực tuyến không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.livestream, lang?.message?.error?.validation?.not_exist),
         });
       }
       return res.status(500).send({
@@ -121,7 +122,8 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: false,
-          message: "Livestream không tồn tại hoặc đã bị xóa",
+          message: "Video trực tuyến không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.livestream, lang?.message?.error?.validation?.not_exist),
         });
       }
       return res.status(500).send({

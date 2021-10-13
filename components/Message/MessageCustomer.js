@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import langConfig from '../../lang.config';
 import types from '../../redux/types';
 import { MODE } from '../../utils/helper';
+import { translate } from '../../utils/language';
 
 
 class MessageCustomer extends Component {
@@ -40,8 +42,8 @@ class MessageCustomer extends Component {
     return (
       <div className="mesContainer" className={"mesContainer" + (openMessage ? " open" : "")} ref={this.mesContainer}>
         <div className="mesContainerHead">
-          <div className="mesContainerTitle">Tin nhắn</div>
-          <div className="closeButton" onClick={this.handleClose} title="Đóng">-</div>
+          <div className="mesContainerTitle">{translate(langConfig.app.Messages)}</div>
+          <div className="closeButton" onClick={this.handleClose} title={translate(langConfig.app.Close)}>-</div>
         </div>
         <div className="mes-admin-info">
           <div className="mes-admin-logo">
@@ -56,14 +58,14 @@ class MessageCustomer extends Component {
               {admin?.name}
             </div>
             <div className="mes-admin-onl">
-              (Online)
+              ({translate(langConfig.app.Online)})
             </div>
           </div>
         </div>
         <div className="mes-login-container">
           <div className="mes-login">
-            <div className="mes-log-des">Chúng ta chỉ còn một bước nữa thôi!<br /> Vui lòng đăng nhập để bắt đầu cuộc trò chuyện </div>
-            <div className="mes-log-button" onClick={this.openLoginVisitor}>Đăng nhập</div>
+            <div className="mes-log-des">{translate(langConfig.app.WeAreOnlyOneStep)}!<br /> {translate(langConfig.app.PleaseLoginToStartChat)} </div>
+            <div className="mes-log-button" onClick={this.openLoginVisitor}>{translate(langConfig.app.Login)}</div>
           </div>
         </div>
       </div>

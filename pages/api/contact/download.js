@@ -42,7 +42,8 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           field: 'fileName',
-          message: 'Không thể tìm thấy file',
+          message: 'Không thể tìm thấy tệp',
+          messages: lang?.message?.error?.file_not_exits
         });
       }
       return res.status(500).send({

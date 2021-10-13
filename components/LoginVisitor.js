@@ -5,6 +5,8 @@ import types from '../redux/types';
 import GoogleLogin from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
 import { MODE } from '../utils/helper';
+import { translate } from '../utils/language';
+import langConfig from '../lang.config';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const FACEBOOK_CLIENT_ID = process.env.FACEBOOK_CLIENT_ID;
@@ -27,7 +29,7 @@ class LoginVisitor extends Component {
             callback: res => {
                 if (!res?.success) {
                     this.setState({
-                        field: res?.field, message: res?.message || "Đăng nhập không thành công",
+                        field: res?.field, message: translate(res?.messages || langConfig.app.LoginFailed),
                         loading: false
                     });
                 }
@@ -54,7 +56,7 @@ class LoginVisitor extends Component {
                 callback: res => {
                     if (!res?.success) {
                         this.setState({
-                            field: res?.field, message: res?.message || "Đăng nhập không thành công",
+                            field: res?.field, message: translate(res?.messages || langConfig.app.LoginFailed),
                             loading: false
                         });
                     }
@@ -66,11 +68,11 @@ class LoginVisitor extends Component {
         }
         else if (res?.error === 'popup_closed_by_user') {
             if (this.notAcceptCookie) {
-                alert("Vui lòng cho phép cookie bên thứ ba và thử lại")
+                alert(translate(langConfig.app.PleaseAcceptCookie))
             }
             else {
                 this.setState({
-                    message: "Đăng nhập không thành công",
+                    message: translate(langConfig.app.LoginFailed)
                 });
             }
         }
@@ -92,7 +94,7 @@ class LoginVisitor extends Component {
                 callback: res => {
                     if (!res?.success) {
                         this.setState({
-                            field: res?.field, message: res?.message || "Đăng nhập không thành công",
+                            field: res?.field, message: translate(res?.messages || langConfig.app.LoginFailed),
                             loading: false
                         });
                     }
@@ -100,7 +102,7 @@ class LoginVisitor extends Component {
             });
         } else {
             this.setState({
-                message: "Đăng nhập không thành công",
+                message: translate(langConfig.app.LoginFailed),
             });
         }
     }
@@ -116,26 +118,26 @@ class LoginVisitor extends Component {
             <Modal show={openForm === MODE.visitor} id="guestModal" className="login-modal" centered contentClassName="" onHide={this.handleClose}>
                 <a href="/"><img src="images/logo.png" alt="" /></a>
                 <label className="tk">
-                    <span>Tài khoản</span>
-                    <input onChange={this.handleChange} type="text" name="email" placeholder="Phone Number, Name or Email" />
+                    <span>{translate(langConfig.app.Account)}</span>
+                    <input onChange={this.handleChange} type="text" name="email" placeholder={translate(langConfig.app.Email)} />
                 </label>
                 <label className="mk">
-                    <span>Mật khẩu</span>
-                    <input onChange={this.handleChange} type="password" name="password" placeholder="At least 8 characters" />
+                    <span>{translate(langConfig.app.Password)}</span>
+                    <input onChange={this.handleChange} type="password" name="password" placeholder={translate(langConfig.app.Password)} />
                 </label>
                 {message ? <div className="error-form">{message}</div> : ""}
-                <input type="submit" onClick={this.handleSubmit} value="Đăng nhập" disabled={loading} />
+                <input type="submit" onClick={this.handleSubmit} value={translate(langConfig.app.Login)} disabled={loading} />
                 <div className="suport-login">
                     <label className="remember-login label-cb">
                         <input type="checkbox" name="remember" />
                         <span className="checkbox-checkmark" />
-                        Nhớ đăng nhập
+                        {translate(langConfig.app.RememberMe)}
                     </label>
                     <label className="fogot-mk">
-                        Quên mật khẩu? <a href="#" className="txt-red" onClick={this.handleResetPassword}>Nhấn vào đây</a>
+                        {translate(langConfig.app.ForgetPassword)}? <a href="#" className="txt-red" onClick={this.handleResetPassword}>{translate(langConfig.app.ClickHere)}</a>
                     </label>
                 </div>
-                <p className="other-login">Hoặc</p>
+                <p className="other-login">{translate(langConfig.app.Or)}</p>
                 <FacebookLogin
                     appId={FACEBOOK_CLIENT_ID}
                     autoLoad={false}
@@ -144,22 +146,22 @@ class LoginVisitor extends Component {
                     onFailure={this.handleLoginFacebook}
                     tag="a"
                     cssClass="with-fb"
-                    textButton="Đăng nhập bằng Facebook"
+                    textButton={translate(langConfig.app.LoginWithFacebook)}
                     isDisabled={loading}
                 />
                 <GoogleLogin
                     clientId={GOOGLE_CLIENT_ID}
                     render={({ onClick, disabled }) => (
-                        <a href="#" onClick={onClick} disabled={disabled} className="with-gg">Đăng nhập bằng Google</a>
+                        <a href="#" onClick={onClick} disabled={disabled} className="with-gg">{translate(langConfig.app.LoginWithGoogle)}</a>
                     )}
-                    buttonText="Đăng nhập bằng Google"
+                    buttonText={translate(langConfig.app.LoginWithGoogle)}
                     onSuccess={this.handleLoginGoogle}
                     onFailure={this.handleLoginGoogle}
                     cookiePolicy={'single_host_origin'}
                     disabled={loading}
                 />
                 <label>
-                    Thành viên mới? <a href="#" onClick={this.handleSwitchRegister} className="txt-red">Đăng ký ngay</a>
+                    {translate(langConfig.app.NewMember)}? <a href="#" onClick={this.handleSwitchRegister} className="txt-red">{translate(langConfig.app.RegisterNow)}</a>
                 </label>
             </Modal>
         )

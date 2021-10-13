@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig from '../../lang.config';
 import types from '../../redux/types';
 import { getTime, MODE } from '../../utils/helper';
+import { translate } from '../../utils/language';
 
 class Header extends Component {
     constructor(props) {
@@ -61,12 +63,12 @@ class Header extends Component {
                                     <i className="fa fa-envelope-o" />
                                 </a>
                                 <ul className="dropdown-menu">
-                                    <li className="header">Bạn có {newMessage} tin nhắn mới</li>
+                                    <li className="header">{translate(langConfig.app.YouHave)} {newMessage} {translate(langConfig.app.newMesssage)}</li>
                                     <li>
                                         <ul className="menu">
                                         </ul>
                                     </li>
-                                    <li className="footer"><a href="#" onClick={handleActiveMessage}>Xem tất cả tin nhắn</a></li>
+                                    <li className="footer"><a href="#" onClick={handleActiveMessage}>{translate(langConfig.app.ViewAllMessage)}</a></li>
                                 </ul>
                             </li>
                             <li
@@ -78,12 +80,12 @@ class Header extends Component {
                                     <i className="fa fa-bell-o" />
                                 </a>
                                 <ul className="dropdown-menu">
-                                    <li className="header">Bạn có 0 thông báo mới</li>
+                                    <li className="header">{translate(langConfig.app.YouHave)} 0 {translate(langConfig.app.notification)}</li>
                                     <li>
                                         <ul className="menu">
                                         </ul>
                                     </li>
-                                    <li className="footer"><a href="#">Xem tất cả thông báo</a></li>
+                                    <li className="footer"><a href="#">{translate(langConfig.app.ViewAllNotification)}</a></li>
                                 </ul>
                             </li>
                             <li
@@ -93,31 +95,31 @@ class Header extends Component {
                             >
                                 <a href="#" className="dropdown-toggle" data-toggle="dropdown">
                                     {user.avatar ?
-                                        <img src={"/api/images/" + user.avatar} className="user-image" alt="Avatar" />
+                                        <img src={"/api/images/" + user.avatar} className="user-image" alt={translate(langConfig.app.Avatar)} />
                                         :
-                                        <img src="/images/no-avatar.png" className="user-image" alt="Avatar" />
+                                        <img src="/images/no-avatar.png" className="user-image" alt={translate(langConfig.app.NoAvatar)} />
                                     }
                                     <span className="hidden-xs">{user.name}</span>
                                 </a>
                                 <ul className="dropdown-menu">
                                     <li className="user-header">
                                         {user.avatar ?
-                                            <img src={"/api/images/" + user.avatar} className="user-image" alt="Avatar" />
+                                            <img src={"/api/images/" + user.avatar} className="user-image" alt={translate(langConfig.app.Avatar)} />
                                             :
-                                            <img src="/images/no-avatar.png" className="user-image" alt="Avatar" />
+                                            <img src="/images/no-avatar.png" className="user-image" alt={translate(langConfig.app.NoAvatar)} />
                                         }
                                         <h4>{user.name}</h4>
                                         <p>
                                             {user.name}
-                                            <small>Thành viên từ {getTime(user.createdAt)[1]}</small>
+                                            <small>{translate(langConfig.app.MemberFrom)} {getTime(user.createdAt)[1]}</small>
                                         </p>
                                     </li>
                                     <li className="user-footer">
                                         <div className="pull-left">
-                                            <a href="#" onClick={handleActiveUser} className="btn btn-default btn-flat"><i className="fa fa-user" /> Tài khoản</a>
+                                            <a href="#" onClick={handleActiveUser} className="btn btn-default btn-flat"><i className="fa fa-user" /> {translate(langConfig.app.Account)}</a>
                                         </div>
                                         <div className="pull-right" onClick={this.handleLogout}>
-                                            <a href="#" className="btn btn-default btn-flat"><i className="fa fa-sign-out" /> Đăng xuất</a>
+                                            <a href="#" className="btn btn-default btn-flat"><i className="fa fa-sign-out" /> {translate(langConfig.app.Logout)}</a>
                                         </div>
                                     </li>
                                 </ul>

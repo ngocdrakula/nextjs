@@ -6,6 +6,8 @@ import Router from 'next/router';
 import { wrapper } from '../redux/store';
 import types from '../redux/types'
 import { getQuery, MODE } from '../utils/helper';
+import { translate } from '../utils/language';
+import langConfig from '../lang.config';
 
 
 
@@ -104,7 +106,7 @@ class Visitor extends Component {
           <div id="detail-buyer store-detail">
             <div className="store-name">
               <div className="container">
-                <a href="#" className="connect-buyer"><img src="/images/user2.png" alt="" />Người mua</a>
+                <a href="#" className="connect-buyer"><img src="/images/user2.png" alt="" />{translate(langConfig.app.Buyer)} </a>
                 <h3>
                   {visitor.avatar ?
                     <img src={`/api/images/${visitor.avatar}`} alt="" />
@@ -122,10 +124,10 @@ class Visitor extends Component {
                   <div className="container">
                     <div className={"collapse navbar-collapse" + (toggle ? " show" : "")} id="navbarResponsive">
                       <ul className="navigation">
-                        <li className={active === 0 ? "active" : ""}><a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 0, toggle: !toggle }) }}>Giới thiệu</a></li>
-                        <li className={active === 1 ? "active" : ""}><a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 1, toggle: !toggle }) }}>Liên hệ</a></li>
+                        <li className={active === 0 ? "active" : ""}><a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 0, toggle: !toggle }) }}>{translate(langConfig.app.Introduce)}</a></li>
+                        <li className={active === 1 ? "active" : ""}><a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 1, toggle: !toggle }) }}>{translate(langConfig.app.Contact)}</a></li>
                       </ul>
-                      <a href={"/user?filter=" + MODE.visitor} className="right"><img src="/images/icon-list.png" alt="" />Danh sách</a>
+                      <a href={"/user?filter=" + MODE.visitor} className="right"><img src="/images/icon-list.png" alt="" />{translate(langConfig.app.List)}</a>
                     </div>
                   </div>
                 </div>
@@ -143,27 +145,27 @@ class Visitor extends Component {
                 <div className="row">
                   <div className="col-lg-3">
                     <div className="sidebar sidebar-left">
-                      <h3>Liên hệ</h3>
+                      <h3>{translate(langConfig.app.Contact)}</h3>
                       <p>{visitor.contact || ""}</p>
-                      <h3>Gửi tin nhắn</h3>
+                      <h3>{translate(langConfig.app.SendMessage)}</h3>
                       <form onSubmit={this.handleSubmit}>
                         <div className="form-group">
                           <textarea
                             className="form-control"
                             rows={4}
-                            placeholder="Tối đa 250 từ"
+                            placeholder={translate(langConfig.app.Max250Words)}
                             name="message"
                             value={message}
                             onChange={this.handleChange}
                             onClick={this.openLoginExhibitor}
                           />
                         </div>
-                        <input type="submit" defaultValue="Gửi ngay" />
+                        <input type="submit" value={translate(langConfig.app.SendNow)} />
                       </form>
                       <div className="contact-method">
-                        <a href="#" onClick={e => this.handleChat(e, visitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a>
-                        <a href={!user ? "#" : "mailto:" + visitor.email} onClick={!user ? this.openLoginExhibitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />Email</a>
-                        <a href="#" onClick={e => this.handleConnect(e, visitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a>
+                        <a href="#" onClick={e => this.handleChat(e, visitor)}><img src="/images/chat2.png" alt="" />{translate(langConfig.app.Chat)}</a>
+                        <a href={!user ? "#" : "mailto:" + visitor.email} onClick={!user ? this.openLoginExhibitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />{translate(langConfig.app.Email)}</a>
+                        <a href="#" onClick={e => this.handleConnect(e, visitor)}><img src="/images/connect2.png" alt="" />{translate(langConfig.app.Trade)}</a>
                       </div>
                     </div>
                   </div>
@@ -172,7 +174,7 @@ class Visitor extends Component {
                       <div className="sidebar sidebar-content-top">
                         <div className="row">
                           <div className="col-lg-5">
-                            <h3>Giới thiệu Người mua</h3>
+                            <h3>{translate(langConfig.app.AboutBuyer)}</h3>
                             <p>{visitor.introduce || ""}</p>
                           </div>
                           <div className="col-lg-7">
@@ -187,7 +189,7 @@ class Visitor extends Component {
                         </div>
                       </div>
                       <div className="sidebar sidebar-content-bottom">
-                        <h3>Sản phẩm cần mua</h3>
+                        <h3>{translate(langConfig.app.ProductsBuy)}</h3>
                         <p className="ft-semibold">{visitor.productBold || ""}</p>
                         <p>
                           {visitor.product || ""}
@@ -204,9 +206,9 @@ class Visitor extends Component {
                   <div className="row">
                     <div className="col-lg-7">
                       <div className="contact-exhibitor">
-                        <h3>Liên hệ Người mua</h3>
+                        <h3>{translate(langConfig.app.ContactBuyer)}</h3>
                         <p className="address">
-                          <span>Địa chỉ:</span>
+                          <span>{translate(langConfig.app.Address)}:</span>
                           <span>{visitor.address}</span>
                         </p>
                         <div className="exhibitor-info">
@@ -214,37 +216,37 @@ class Visitor extends Component {
                             <div className="col-md-6">
                               <div className="exhibitor-detail">
                                 <div className="list-info">
-                                  <span>Điện thoại: {user ? visitor.phone : ""}</span>
-                                  <span>Hotline: {user ? visitor.hotline : ""}</span>
-                                  <span>Fax: {user ? visitor.fax : ""}</span>
-                                  <span>Email: {user ? visitor.email : ""}</span>
+                                  <span>{translate(langConfig.app.Phone)}: {user ? visitor.phone : ""}</span>
+                                  <span>{translate(langConfig.app.Hotline)}: {user ? visitor.hotline : ""}</span>
+                                  <span>{translate(langConfig.app.Fax)}: {user ? visitor.fax : ""}</span>
+                                  <span>{translate(langConfig.app.Email)}: {user ? visitor.email : ""}</span>
                                 </div>
                                 {!user ?
-                                  <a href="#" className="login-view" onClick={this.openLoginExhibitor}>Đăng nhập để xem</a>
+                                  <a href="#" className="login-view" onClick={this.openLoginExhibitor}>{translate(langConfig.app.LoginView)}</a>
                                   : ""}
                               </div>
                             </div>
                             <div className="col-md-6">
                               <div className="exhibitor-detail">
                                 <div className="list-info">
-                                  <span>Người đại diện: {user ? visitor.representative : ""}</span>
-                                  <span>Chức vụ: {user ? visitor.position : ""}</span>
-                                  <span>Mobile: {user ? visitor.mobile : ""}</span>
-                                  <span>Email: {user ? visitor.re_email : ""}</span>
+                                  <span>{translate(langConfig.app.Representative)}: {user ? visitor.representative : ""}</span>
+                                  <span>{translate(langConfig.app.Position)}: {user ? visitor.position : ""}</span>
+                                  <span>{translate(langConfig.app.Mobile)}: {user ? visitor.mobile : ""}</span>
+                                  <span>{translate(langConfig.app.Email)}: {user ? visitor.re_email : ""}</span>
                                 </div>
                                 {!user ?
-                                  <a href="#" className="login-view" onClick={this.openLoginExhibitor}>Đăng nhập để xem</a>
+                                  <a href="#" className="login-view" onClick={this.openLoginExhibitor}>{translate(langConfig.app.LoginView)}</a>
                                   : ""}
                               </div>
                             </div>
                           </div>
                         </div>
-                        <p className="web-address"><span>Website:</span><span><a href={visitor.website || "#"}>{visitor.website || ""}</a></span></p>
+                        <p className="web-address"><span>{translate(langConfig.app.Website)}:</span><span><a href={visitor.website || "#"}>{visitor.website || ""}</a></span></p>
                         <div className="contact-method">
                           <ul className="ft-semibold">
-                            <li><a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a></li>
-                            <li><a href={!user ? "#" : "mailto:" + visitor.email} onClick={!user ? this.openLoginExhibitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />Email</a></li>
-                            <li><a href="#" onClick={e => this.handleConnect(e, visitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a></li>
+                            <li><a href="#" onClick={!user ? this.openLoginExhibitor : e => this.handleChat(e, visitor)}><img src="/images/chat2.png" alt="" />{translate(langConfig.app.Chat)}</a></li>
+                            <li><a href={!user ? "#" : "mailto:" + visitor.email} onClick={!user ? this.openLoginExhibitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />{translate(langConfig.app.Email)}</a></li>
+                            <li><a href="#" onClick={e => this.handleConnect(e, visitor)}><img src="/images/connect2.png" alt="" />{translate(langConfig.app.Trade)}</a></li>
                           </ul>
                         </div>
                       </div>
@@ -252,14 +254,14 @@ class Visitor extends Component {
                     <div className="col-lg-4">
                       <div className="contact-form">
                         <div className="form">
-                          <h3>Gửi tin nhắn cho chúng tôi</h3>
+                          <h3>{translate(langConfig.app.SendUs)}</h3>
                           <form onSubmit={this.handleSubmit}>
                             <div className="form-group">
                               <input
                                 type="input"
                                 name="name"
                                 className="form-control"
-                                placeholder="Họ và tên"
+                                placeholder={translate(langConfig.app.FullName)}
                                 onClick={this.openLoginExhibitor}
                               />
                             </div>
@@ -267,14 +269,14 @@ class Visitor extends Component {
                               <textarea
                                 className="form-control"
                                 rows={4}
-                                placeholder="Tối đa 250 từ"
+                                placeholder={translate(langConfig.app.Max250Words)}
                                 name="message"
                                 value={message}
                                 onChange={this.handleChange}
                                 onClick={this.openLoginExhibitor}
                               />
                             </div>
-                            <input type="submit" defaultValue="Gửi ngay" />
+                            <input type="submit" value={translate(langConfig.app.SendNow)} />
                           </form>
                         </div>
                       </div>

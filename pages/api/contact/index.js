@@ -59,7 +59,7 @@ const handler = async (req, res) => {
           success: false,
           exist: true,
           field: 'name',
-          message: "Vui lòng điền đầy đủ thông tin",
+          message: "Tên không được để trống",
           messages: langConcat(lang?.resources?.name, lang?.message?.error?.validation?.exist),
         });
       }
@@ -68,7 +68,7 @@ const handler = async (req, res) => {
           success: false,
           exist: true,
           field: 'email',
-          message: "Vui lòng điền đầy đủ thông tin",
+          message: "Email không được để trống",
           messages: langConcat(lang?.resources?.email, lang?.message?.error?.validation?.exist),
         });
       }
@@ -77,7 +77,7 @@ const handler = async (req, res) => {
           success: false,
           exist: true,
           field: 'title',
-          message: "Vui lòng điền đầy đủ thông tin",
+          message: "Tiêu đề không được để trống",
           messages: langConcat(lang?.resources?.title, lang?.message?.error?.validation?.exist),
         });
       }
@@ -86,7 +86,7 @@ const handler = async (req, res) => {
           success: false,
           exist: true,
           field: 'message',
-          message: "Vui lòng điền đầy đủ thông tin",
+          message: "Tin nhắn không được để trống",
           messages: langConcat(lang?.resources?.message, lang?.message?.error?.validation?.exist),
         });
       }
@@ -136,6 +136,7 @@ const handler = async (req, res) => {
           success: false,
           required: false,
           message: "Danh sách tin nhắn không được để trống",
+          messages: langConcat(lang?.resources?.messageList, lang?.message?.error?.validation?.exist),
         });
       }
       return res.status(500).send({

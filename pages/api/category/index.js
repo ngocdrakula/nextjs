@@ -133,7 +133,8 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           required: false,
-          message: "Danh sách ngành nghề phải là một mảng id",
+          message: "Danh sách chuyên mục không đúng định dạng",
+          messages: langConcat(lang?.resources?.categoryList, lang?.message?.error?.validation?.format),
         });
       }
       return res.status(500).send({

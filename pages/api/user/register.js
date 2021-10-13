@@ -1,7 +1,7 @@
 import runMidldleware from '../../../middleware/mongodb';
 import userController from '../../../controllers/user';
 import notificationController from '../../../controllers/notification';
-import lang from '../../../lang.config';
+import lang, { langConcat } from '../../../lang.config';
 import bcrypt from '../../../middleware/bcrypt';
 import jwt from '../../../middleware/jwt';
 import { MODE } from '../../../utils/helper';
@@ -36,12 +36,31 @@ const handler = async (req, res) => {
                 message: 'Đăng ký thành công',
             });
         } catch (e) {
-            if (['email', 'name', 'password'].includes(e.path)) {
+            if (e.path == 'email') {
                 return res.status(400).send({
                     success: false,
-                    required: false,
-                    field: e.path,
-                    message: 'Thông tin đăng ký không được để trống',
+                    required: true,
+                    field: 'email',
+                    message: "Email không được để trống",
+                    messages: langConcat(lang?.resources?.email, lang?.message?.error?.validation?.required),
+                });
+            }
+            if (e.path == 'name') {
+                return res.status(400).send({
+                    success: false,
+                    required: true,
+                    field: 'name',
+                    message: "Tên không được để trống",
+                    messages: langConcat(lang?.resources?.name, lang?.message?.error?.validation?.required),
+                });
+            }
+            if (e.path == 'password') {
+                return res.status(400).send({
+                    success: false,
+                    required: true,
+                    field: 'password',
+                    message: "Mật khẩu không được để trống",
+                    messages: langConcat(lang?.resources?.password, lang?.message?.error?.validation?.required),
                 });
             }
             if (e.path == 'user') {
@@ -50,6 +69,7 @@ const handler = async (req, res) => {
                     exist: true,
                     field: 'email',
                     message: "Email đã tồn tại",
+                    messages: langConcat(lang?.resources?.email, lang?.message?.error?.validation?.exist),
                 });
             }
             return res.status(500).send({

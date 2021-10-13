@@ -18,14 +18,7 @@ const handler = async (req, res) => {
             const { email, name, picture } = info;
             const user = await userController.find({ email });
             if (user) {
-                if (!user.enabled) {
-                    return res.status(200).send({
-                        success: false,
-                        field: 'enabled',
-                        message: 'Tài khoản của bạn đã bị khóa',
-                        messages: lang?.message?.error?.unauthorized
-                    });
-                }
+                if (!user.enabled) throw ({ path: 'enabled' })
                 const { _id, email, name, createdAt, mode } = user;
                 const token = jwt.create({ _id, email, name, createdAt, mode });
                 return res.status(200).send({
@@ -55,9 +48,18 @@ const handler = async (req, res) => {
             if (e.path == 'accessToken') {
                 return res.status(400).send({
                     success: false,
+                    field: 'enabled',
+                    message: 'Tài khoản của bạn đã bị khóa',
+                    messages: lang?.message?.error?.not_allow
+                });
+            }
+            if (e.path == 'accessToken') {
+                return res.status(400).send({
+                    success: false,
                     validation: false,
                     field: 'accessToken',
                     message: "Token không được để trống",
+                    messages: langConcat(lang?.resources?.accessToken, lang?.message?.error?.validation?.required),
                 });
             }
             return res.status(500).send({

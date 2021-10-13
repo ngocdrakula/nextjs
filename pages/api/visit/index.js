@@ -66,7 +66,7 @@ const handler = async (req, res) => {
       }
       return res.status(500).send({
         success: false,
-        message: e.message,
+        message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
         error: e,
       });
@@ -107,7 +107,7 @@ const handler = async (req, res) => {
     } catch (e) {
       return res.status(500).send({
         success: false,
-        message: e.message,
+        message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
         error: e,
       });
@@ -150,7 +150,8 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           required: false,
-          message: "Danh sách sản phẩm phải là một mảng id",
+          message: "Danh sách khách truy cập không đúng định dạng", 
+          messages: langConcat(lang?.resources?.visitList, lang?.message?.error?.validation?.format),
         });
       }
       return res.status(500).send({

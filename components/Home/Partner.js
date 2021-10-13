@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig from '../../lang.config';
+import { translate } from '../../utils/language';
 
 class Partner extends Component {
     render() {
@@ -10,27 +12,27 @@ class Partner extends Component {
                         <div className="col-md-6">
                             <div className="row" style={{ marginBottom: 10 }}>
                                 <div className="col-sm-4">
-                                    <p>Cơ quan chỉ đạo:</p>
+                                    <p>{translate(langConfig.app.DirectingAgency)}:</p>
                                 </div>
                                 <div className="col-sm-8">
-                                    <p>BỘ CÔNG THƯƠNG</p>
+                                    <p>{translate(langConfig.app.MINISTRYOFINDUSTRYANDTRADE)}</p>
                                 </div>
                             </div>
                             <div className="row" style={{ marginBottom: 10 }}>
                                 <div className="col-sm-4">
-                                    <p>Đơn vị trủ chì:</p>
+                                    <p>{translate(langConfig.app.TheHostInstitution)}:</p>
                                 </div>
                                 <div className="col-sm-8">
-                                    <p>Cục Công nghiệp (Bộ Công Thương)</p>
-                                    <p>Trung tâm Hỗ trợ phát triển công nghiệp (IDC)</p>
+                                    <p>{translate(langConfig.app.DepartmentIndustry)}</p>
+                                    <p>{translate(langConfig.app.IndustrialDevelopment)}</p>
                                 </div>
                             </div>
                             <div className="row" style={{ marginBottom: 10 }}>
                                 <div className="col-sm-4">
-                                    <p>Đơn vị tổ chức:</p>
+                                    <p>{translate(langConfig.app.OrganizationalUnits)}:</p>
                                 </div>
                                 <div className="col-sm-8">
-                                    <p>Công ty QC &amp; HC Triển lãm C.I.S Vietnam</p>
+                                    <p>{translate(langConfig.app.QCHCCompanyCISVietnamExhibition)}</p>
                                 </div>
                             </div>
                         </div>
@@ -43,12 +45,12 @@ class Partner extends Component {
                             </div>
                         </div>
                         <div className="col-md-6 mt-56">
-                            <p>Đơn vị phối hợp:</p>
+                            <p>{translate(langConfig.app.CoordinationUnit)}:</p>
                             <img src="/images/support1.png" alt="" style={{ display: 'block', margin: '0 auto 15px' }} />
                             <img src="/images/support2.png" alt="" />
                         </div>
                         <div className="col-md-6 mt-56">
-                            <p>Bảo trợ thông tin:</p>
+                            <p>{translate(langConfig.app.InformationSupport)}:</p>
                             <img src="/images/support3.png" alt="" />
                         </div>
                     </div>

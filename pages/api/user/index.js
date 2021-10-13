@@ -1,7 +1,7 @@
 import runMidldleware from '../../../middleware/mongodb';
 import userController from '../../../controllers/user';
 import industryController from '../../../controllers/industry';
-import lang from '../../../lang.config';
+import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt';
 import bcrypt from '../../../middleware/bcrypt';
 import { MODE } from '../../../utils/helper';
@@ -39,7 +39,7 @@ const handler = async (req, res) => {
         } catch (error) {
             return res.status(500).send({
                 success: false,
-                message: error.message,
+                message: 'Máy chủ không phản hồi',
                 messages: lang?.message?.error?.server,
                 error: error,
             });
@@ -88,6 +88,7 @@ const handler = async (req, res) => {
                 token,
                 data: { email, _id, name, mode },
                 message: 'Tạo tài khoản thành công',
+                messages: lang?.message?.success?.created
             });
         } catch (e) {
             if (e.path == 'token') {
@@ -106,12 +107,22 @@ const handler = async (req, res) => {
                     messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
                 });
             }
-            if (e.path == 'email' || e.path == 'password') {
+            if (e.path == 'email') {
                 return res.status(400).send({
                     success: false,
                     required: false,
                     field: e.path,
-                    message: 'Thông tin đăng ký không được để trống',
+                    message: 'Email không được để trống',
+                    messages: langConcat(lang?.resources?.email, lang?.message?.error?.validation?.required),
+                });
+            }
+            if (e.path == 'password') {
+                return res.status(400).send({
+                    success: false,
+                    required: false,
+                    field: e.path,
+                    message: 'Mật khẩu không được để trống',
+                    messages: langConcat(lang?.resources?.password, lang?.message?.error?.validation?.required),
                 });
             }
             if (e.path == 'user') {
@@ -120,6 +131,7 @@ const handler = async (req, res) => {
                     success: false,
                     exist: true,
                     message: "Email đã tồn tại",
+                    messages: langConcat(lang?.resources?.email, lang?.message?.error?.validation?.exist),
                 });
             }
             if (e.path == 'industry') {
@@ -128,6 +140,7 @@ const handler = async (req, res) => {
                     require: true,
                     field: e.path,
                     message: "Ngành nghề là bắt buộc",
+                    messages: langConcat(lang?.resources?.industry, lang?.message?.error?.validation?.required),
                 });
             }
             if (e.path == '_id') {
@@ -136,6 +149,7 @@ const handler = async (req, res) => {
                     exist: true,
                     field: e.path,
                     message: "Ngành nghề không tồn tại",
+                    messages: langConcat(lang?.resources?.industry, lang?.message?.error?.validation?.not_exist),
                 });
             }
             if (e.path == 'phone') {
@@ -144,6 +158,7 @@ const handler = async (req, res) => {
                     require: true,
                     field: e.path,
                     message: "Số điện thoại là bắt buộc",
+                    messages: langConcat(lang?.resources?.phone, lang?.message?.error?.validation?.required),
                 });
             }
             if (e.path == 'representative') {
@@ -152,6 +167,7 @@ const handler = async (req, res) => {
                     require: true,
                     field: e.path,
                     message: "Người đại diện là bắt buộc",
+                    messages: langConcat(lang?.resources?.representative, lang?.message?.error?.validation?.required),
                 });
             }
             if (e.path == 'position') {
@@ -160,6 +176,7 @@ const handler = async (req, res) => {
                     require: true,
                     field: e.path,
                     message: "Chức vụ người đại diện là bắt buộc",
+                    messages: langConcat(lang?.resources?.position, lang?.message?.error?.validation?.required),
                 });
             }
             if (e.path == 'mobile') {
@@ -168,6 +185,7 @@ const handler = async (req, res) => {
                     require: true,
                     field: e.path,
                     message: "Số điện thoại người đại diện là bắt buộc",
+                    messages: langConcat(lang?.resources?.mobile, lang?.message?.error?.validation?.required),
                 });
             }
             if (e.path == 're_email') {
@@ -176,6 +194,7 @@ const handler = async (req, res) => {
                     require: true,
                     field: e.path,
                     message: "Email người đại diện là bắt buộc",
+                    messages: langConcat(lang?.resources?.re_email, lang?.message?.error?.validation?.required),
                 });
             }
             return res.status(500).send({
@@ -223,7 +242,8 @@ const handler = async (req, res) => {
                 return res.status(400).send({
                     success: false,
                     required: false,
-                    message: "Danh sách sản phẩm phải là một mảng id",
+                    message: "Danh sách người dùng không đúng định dạng",
+                    messages: langConcat(lang?.resources?.userList, lang?.message?.error?.validation?.format),
                 });
             }
             return res.status(500).send({

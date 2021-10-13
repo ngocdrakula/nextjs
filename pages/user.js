@@ -8,6 +8,8 @@ import { wrapper } from '../redux/store';
 import types from '../redux/types'
 import { getQuery, MODE } from '../utils/helper';
 import Pagination from '../components/Pagination';
+import { translate } from '../utils/language';
+import langConfig from '../lang.config';
 
 const pageSize = 12;
 const sorts = [{ label: 'Nổi bật', value: 'feature' }, { label: 'Tên: A-Z', value: 'name' }, { label: 'Tên: Z-A', value: 'namereverse' }]
@@ -149,11 +151,11 @@ class User extends Component {
         <div id="content" className="site-content">
           <div id="list">
             <div className="main-title hd-bg-orange">
-              <h2 className="heading">Danh sách</h2>
+              <h2 className="heading">{translate(langConfig.app.List)}</h2>
               <ul className="breadcrumb">
-                <li><a href="/">Trang chủ »</a></li>
-                <li><a href="#">Triển lãm trực tuyến »</a></li>
-                <li><a href="#">Danh sách</a></li>
+                <li><a href="/">{translate(langConfig.app.Home)} »</a></li>
+                <li><a href="#">{translate(langConfig.app.OnlineExhibition)} »</a></li>
+                <li><a href="#">{translate(langConfig.app.List)}</a></li>
               </ul>
             </div>
             <div className="list-menu" id="menu-list" name="menu-list">
@@ -190,10 +192,14 @@ class User extends Component {
                   <div className="tab">
                     <ul>
                       <li>
-                        <Link href={`/user?filter=${MODE.exhibitor}&page=1&industry=${industrySelected}#menu-list`}><a className={filter !== MODE.visitor ? "active" : ""}>Nhà trưng bày</a></Link>
+                        <Link href={`/user?filter=${MODE.exhibitor}&page=1&industry=${industrySelected}#menu-list`}><a className={filter !== MODE.visitor ? "active" : ""}>
+                          {translate(langConfig.app.Exhibitor)}
+                        </a></Link>
                       </li>
                       <li>
-                        <Link href={`/user?filter=${MODE.visitor}&page=1&industry=${industrySelected}#menu-list`} ><a className={filter === MODE.visitor ? "active" : ""}>Người mua</a></Link>
+                        <Link href={`/user?filter=${MODE.visitor}&page=1&industry=${industrySelected}#menu-list`} ><a className={filter === MODE.visitor ? "active" : ""}>
+                          {translate(langConfig.app.Buyer)}
+                        </a></Link>
                       </li>
                     </ul>
                   </div>
@@ -201,7 +207,7 @@ class User extends Component {
                 <div className="row tab-content">
                   {loaded && !users[0] ?
                     <div style={{ padding: '10px 50px 20px' }}>
-                      <h5>Danh sách trống</h5>
+                      <h5>{translate(langConfig.app.ListEmpty)}</h5>
                     </div>
                     : ""}
                   {users.map(user => {
@@ -235,8 +241,8 @@ class User extends Component {
                             }
                           </div>
                           <div className="store-bottom">
-                            <a href="#" onClick={e => this.handleChat(e, user)}><img src="/images/talk.png" alt="" />Trò chuyện</a>
-                            <a href="#" onClick={e => this.handleConnect(e, user)}><img src="/images/connect.png" alt="" />Kết nối giao thương</a>
+                            <a href="#" onClick={e => this.handleChat(e, user)}><img src="/images/talk.png" alt="" />{translate(langConfig.app.Chat)} </a>
+                            <a href="#" onClick={e => this.handleConnect(e, user)}><img src="/images/connect.png" alt="" />{translate(langConfig.app.Trade)}</a>
                           </div>
                         </div>
                       </div>

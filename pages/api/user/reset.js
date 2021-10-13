@@ -23,7 +23,8 @@ const handler = async (req, res) => {
                 if (!success) throw ({ path: 'send', error })
                 return res.status(200).send({
                     success: true,
-                    message: 'Vui lòng kiểm tra email để mấy mã bảo mật'
+                    message: 'Vui lòng kiểm tra email để lấy mã bảo mật',
+                    messages: lang?.message?.success?.check_email,
                 });
             } else if (code == user.code && user.expired > Date.now()) {
                 if (!password) throw ({ path: 'password' })
@@ -35,6 +36,7 @@ const handler = async (req, res) => {
                 return res.status(200).send({
                     success: true,
                     message: 'Đặt lại mật khẩu thành công',
+                    messages: lang?.message?.success?.reset_password,
                     token
                 });
             } else throw ({ path: 'code' })
@@ -43,7 +45,8 @@ const handler = async (req, res) => {
                 return res.status(400).send({
                     success: false,
                     field: 'email',
-                    message: "Email đăng nhập không được để trống",
+                    message: "Email không được để trống",
+                    messages: langConcat(lang?.resources?.email, lang?.message?.error?.validation?.required),
                 });
             }
             if (e.path == 'password') {
@@ -51,13 +54,15 @@ const handler = async (req, res) => {
                     success: false,
                     field: 'password',
                     message: "Mật khẩu không được để trống",
+                    messages: langConcat(lang?.resources?.password, lang?.message?.error?.validation?.required),
                 });
             }
             if (e.path == 'user') {
                 return res.status(400).send({
                     success: false,
-                    field: 'password',
-                    message: "Không tìm thấy tài khoản nào",
+                    field: 'user',
+                    message: "Người dùng không tồn tại",
+                    messages: langConcat(lang?.resources?.user, lang?.message?.error?.validation?.not_exist),
                 });
             }
             if (e.path == 'code') {
@@ -65,6 +70,7 @@ const handler = async (req, res) => {
                     success: false,
                     field: 'code',
                     message: "Mã bảo mật không chính xác",
+                    messages: langConcat(lang?.resources?.code, lang?.message?.error?.validation?.incorrect),
                 });
             }
             if (e.path == 'send') {
@@ -72,6 +78,7 @@ const handler = async (req, res) => {
                     success: false,
                     field: 'send',
                     message: "Không thể gửi mã bảo mật tới email này",
+                    messages: lang?.message?.error?.send_email,
                     error: e.error
                 });
             }

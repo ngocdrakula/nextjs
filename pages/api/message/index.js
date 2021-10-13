@@ -38,8 +38,8 @@ const handler = async (req, res) => {
           success: true,
           data: newMessage,
           conversationId: currentConversation._id,
-          message: 'Lưu thành thành công',
-          messages: lang?.message?.success?.created
+          message: 'Cập nhật thành công',
+          messages: lang?.message?.success?.updated
         });
       }
       else {
@@ -88,7 +88,7 @@ const handler = async (req, res) => {
           validation: false,
           field: 'message',
           message: 'Tin nhắn không được để trống',
-          messages: langConcat(lang?.resources?.conversationName, lang?.message?.error?.validation?.required)
+          messages: langConcat(lang?.resources?.message, lang?.message?.error?.validation?.required)
         });
       }
       if (e.path == 'to') {
@@ -96,8 +96,8 @@ const handler = async (req, res) => {
           success: false,
           validation: false,
           field: 'to',
-          message: 'Id người nhận không được để trống',
-          messages: langConcat(lang?.resources?.roomId, lang?.message?.error?.validation?.required)
+          message: 'Người dùng không tồn tại',
+          messages: langConcat(lang?.resources?.user, lang?.message?.error?.validation?.not_exist)
         });
       }
       return res.status(500).send({

@@ -97,7 +97,7 @@ class Livestream extends Component {
                                     </div>
                                 );
                             })}
-                            {!livestreams.length ? <h5>Danh sách livestream trống</h5> : ""}
+                            {!livestreams.length ? <h5>{translate(langConfig.app.LivestreamListEmpty)}</h5> : ""}
                         </div>
                         <Pagination gotoPage={this.gotoPage} {...{ currentPage, pageSize, total }} />
                     </div>

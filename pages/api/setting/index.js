@@ -160,7 +160,8 @@ const handler = async (req, res) => {
                 return res.status(400).send({
                     success: false,
                     field: e.path,
-                    message: "Tính năng phải là một danh sách",
+                    message: "Tính năng không đúng định dạng",
+                    messages: langConcat(lang?.resources?.features, lang?.message?.error?.validation?.format),
                 });
             }
             return res.status(500).send({
@@ -168,54 +169,6 @@ const handler = async (req, res) => {
                 message: 'Máy chủ không phản hồi',
                 messages: lang?.message?.error?.server,
                 error: e.err,
-            });
-        }
-    } else if (req.method == 'DELETE') {
-        try {
-            const bearerToken = req.headers['authorization'];
-            if (!bearerToken) throw ({ path: 'token' })
-            const user = jwt.verify(bearerToken);
-            if (user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
-            const userCurrent = await userController.get(req.query.id);
-            if (!userCurrent) throw ({ path: '_id' });
-            cleanFiles([userCurrent.image, userCurrent.image])
-            userCurrent.remove();
-            return res.status(200).send({
-                success: true,
-                data: null,
-                message: 'Xóa thành công',
-                messages: lang?.message?.success?.deleted
-            });
-        } catch (e) {
-            if (e.path == 'token') {
-                if (!e.token) {
-                    return res.status(401).send({
-                        success: false,
-                        authentication: false,
-                        message: 'Bạn không có quyền truy cập',
-                        messages: lang?.message?.error?.unauthorized
-                    });
-                }
-                return res.status(400).send({
-                    success: false,
-                    name: e.name,
-                    message: e.name == 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
-                    messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
-                });
-            }
-            if (e.path == '_id') {
-                return res.status(400).send({
-                    success: false,
-                    exist: false,
-                    message: "Tài khoản tồn tại hoặc đã bị xóa",
-                    messages: langConcat(lang?.resources?.product, lang?.message?.error?.validation?.not_exist),
-                });
-            }
-            return res.status(500).send({
-                success: false,
-                message: 'Máy chủ không phản hồi',
-                messages: lang?.message?.error?.server,
-                error: e,
             });
         }
     } else {

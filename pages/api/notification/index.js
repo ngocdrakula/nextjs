@@ -1,6 +1,6 @@
 import runMidldleware from '../../../middleware/mongodb';
 import notificationController from '../../../controllers/notification';
-import lang from '../../../lang.config';
+import lang, { langConcat } from '../../../lang.config';
 import jwt from '../../../middleware/jwt';
 import { MODE } from '../../../utils/helper'
 
@@ -46,7 +46,7 @@ const handler = async (req, res) => {
       }
       return res.status(500).send({
         success: false,
-        message: e.message,
+        message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
         error: e,
       });
@@ -81,7 +81,7 @@ const handler = async (req, res) => {
       }
       return res.status(500).send({
         success: false,
-        message: e.message,
+        message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
         error: e,
       });
@@ -124,7 +124,8 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           required: false,
-          message: "Danh sách sản phẩm phải là một mảng id",
+          message: "Danh sách thông báo phải là một mảng id",
+          messages: langConcat(lang?.resources?.notificationList, lang?.message?.error?.validation?.not_exist),
         });
       }
       return res.status(500).send({

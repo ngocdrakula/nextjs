@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import langConfig from '../../lang.config';
 import types from '../../redux/types';
 import { getTime, MODE } from '../../utils/helper';
+import { translate } from '../../utils/language';
 import SocketIO from '../../utils/SocketIO';
 import Time from './Time';
 
@@ -226,7 +228,7 @@ class MessageBox extends Component {
                             })
                             :
                             <div className="mesLoader" id={`loader_inbox_${to._id}`}>
-                                Bạn hãy là người bắt đầu cuộc trò chuyện!
+                                {translate(langConfig.app.YouStartConversation)}!
                             </div>
                     }
                     <div id="bottom-message" />
@@ -240,11 +242,11 @@ class MessageBox extends Component {
                                     onChange={this.writeMessage}
                                     onKeyDown={this.checkKeyDown}
                                     ref={(e) => this.Textarea = e}
-                                    placeholder="Viết tin nhắn"
+                                    placeholder={translate(langConfig.app.WriteMessage)}
                                 />
                             </div>
                             <div className="mesBoxSubmit">
-                                <input type="submit" value="Gửi" onClick={this.readMessage} />
+                                <input type="submit" value={translate(langConfig.app.Send)} onClick={this.readMessage} />
                             </div>
                         </div>
                     </form>

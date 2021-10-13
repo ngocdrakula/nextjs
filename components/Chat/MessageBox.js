@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import langConfig from '../../lang.config';
 import types from '../../redux/types';
+import { translate } from '../../utils/language';
 import SocketIO from '../../utils/SocketIO';
 import Time from './Time';
 
@@ -149,13 +151,13 @@ class MessageBox extends Component {
                 <div id="openChatbox-146" className="row heading">
                     <div className="col-sm-2 col-md-1 col-xs-3 heading-avatar">
                         {toUser?.avatar ?
-                            <img src={"/api/images/" + toUser?.avatar} className="img-circle" alt="Avatar" />
+                            <img src={"/api/images/" + toUser?.avatar} className="img-circle" alt={translate(langConfig.app.Avatar)} />
                             :
-                            <img src="/images/no-avatar.png" className="img-circle" alt="No Avatar" />
+                            <img src="/images/no-avatar.png" className="img-circle" alt={translate(langConfig.app.NoAvatar)} />
                         }
                     </div>
                     <div className="col-sm-8 col-xs-7 heading-name">
-                        <span className="heading-name-meta">{toUser?.name || "Trò chuyện"}</span>
+                        <span className="heading-name-meta">{toUser?.name || translate(langConfig.app.Chat)}</span>
                     </div>
                     <div className="col-sm-1 col-xs-1  heading-dot pull-right">
                     </div>
@@ -175,7 +177,7 @@ class MessageBox extends Component {
                     })}
                     {!conId ?
                         <div className="col-sm-12">
-                            <p className="lead">Chọn cuộc hội thoại bên trái để trò chuyện</p>
+                            <p className="lead">{translate(langConfig.app.SelectConversationLeft)}</p>
                         </div>
                         : ""}
                     <div id="bottom-message" />
@@ -194,7 +196,7 @@ class MessageBox extends Component {
                                     onChange={this.writeMessage}
                                     onKeyDown={this.checkKeyDown}
                                     ref={(e) => this.Textarea = e}
-                                    placeholder="Viết tin nhắn" />
+                                    placeholder={translate(langConfig.app.WriteMessage)} />
                             </div>
                             <div className="col-sm-1 col-xs-1 reply-send nopadding-left">
                                 <i className="fa fa-send fa-2x" id="send-btn" onClick={this.sendMessage} />

@@ -43,13 +43,13 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: false,
-          message: "Tin nhắn không tồn tại hoặc đã bị xóa",
+          message: "Liên hệ không tồn tại hoặc đã bị xóa",
           messages: langConcat(lang?.resources?.contact, lang?.message?.error?.validation?.not_exist),
         });
       }
       return res.status(500).send({
         success: false,
-        message: e.message,
+        message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
         error: e,
       });
@@ -98,7 +98,7 @@ const handler = async (req, res) => {
           success: false,
           exist: false,
           field: 'name',
-          message: "Tin nhắn không tồn tại hoặc đã bị xóa",
+          message: "Liên hệ không tồn tại hoặc đã bị xóa",
           messages: langConcat(lang?.resources?.contact, lang?.message?.error?.validation?.not_exist),
         });
       return res.status(500).send({
@@ -144,7 +144,7 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: false,
-          message: "Tin nhắn không tồn tại hoặc đã bị xóa",
+          message: "Liên hệ không tồn tại hoặc đã bị xóa",
           messages: langConcat(lang?.resources?.contact, lang?.message?.error?.validation?.not_exist),
         });
       }

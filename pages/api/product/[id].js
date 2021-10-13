@@ -27,7 +27,7 @@ const handler = async (req, res) => {
       }
       return res.status(500).send({
         success: false,
-        message: e.message,
+        message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
         error: e,
       });
@@ -130,6 +130,14 @@ const handler = async (req, res) => {
           messages: lang?.message?.error?.upload_failed,
         });
       }
+      if (e.path == '_id') {
+        return res.status(400).send({
+          success: false,
+          exist: false,
+          message: "Sản phẩm không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.product, lang?.message?.error?.validation?.not_exist),
+        });
+      }
       if (e.path == 'category') {
         return res.status(400).send({
           success: false,
@@ -146,14 +154,6 @@ const handler = async (req, res) => {
           field: 'industry',
           message: "Ngành nghề không tồn tại hoặc đã bị xóa",
           messages: langConcat(lang?.resources?.industry, lang?.message?.error?.validation?.not_exist),
-        });
-      }
-      if (e.path == 'product') {
-        return res.status(400).send({
-          success: false,
-          exist: false,
-          message: "Sản phẩm không tồn tại hoặc đã bị xóa",
-          messages: langConcat(lang?.resources?.product, lang?.message?.error?.validation?.not_exist),
         });
       }
       if (e.path == 'name') {

@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig, { langConcat } from '../../lang.config';
 import types from '../../redux/types';
 import { formatTime, MODE } from '../../utils/helper';
+import { translate } from '../../utils/language';
 
 
 class UpdateTrade extends Component {
@@ -42,7 +44,7 @@ class UpdateTrade extends Component {
         const dataRequied = { deadline, fromName, fromEmail, toName, toEmail }
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
         if (fieldError) {
-            this.setState({ fieldError, message: 'Vui lòng điền đầy đủ thông tin' })
+            this.setState({ fieldError, message: translate(langConfig.message.error.infomation) })
         }
         else {
             const { dispatch, handleClose, onEdit, user } = this.props;
@@ -63,10 +65,10 @@ class UpdateTrade extends Component {
                             type: types.SET_TOOLTIP,
                             payload: {
                                 type: 'success',
-                                title: 'Sửa lịch giao thương thành công',
-                                message: 'Sửa lịch giao thương thành công',
-                                confirm: 'Chấp nhận',
-                                cancel: 'Đóng',
+                                title: translate(langConfig.message.success.updated),
+                                message: translate(langConfig.app.Updated),
+                                confirm: translate(langConfig.app.Accept),
+                                cancel: translate(langConfig.app.Close),
                                 handleConfirm: handleClose,
                                 handleCancel: handleClose
                             },
@@ -75,7 +77,7 @@ class UpdateTrade extends Component {
                     else if (res?.data) {
                         this.setState({
                             fieldError: res.data.field,
-                            message: res.data.message || "Vui lòng điền đầy đủ thông tin"
+                            message: translate(res.data.messages || langConfig.message.error.infomation)
                         })
                     }
                 }
@@ -97,14 +99,14 @@ class UpdateTrade extends Component {
                         <form method="POST" action="/" id="trade-edit-form" onSubmit={this.handleSubmit}>
                             <div className="modal-header">
                                 <button type="button" className="close" onClick={handleClose}>×</button>
-                                Sửa lịch giao thương
+                                {translate(langConcat(langConfig.app.Edit, langConfig.app.TradeCalendar))}
                             </div>
                             <div className="modal-body">
                                 <div className="row">
                                     <div className="col-md-6 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'fromName' ? " has-error" : "")}>
-                                            <label htmlFor="trade-edit-fromName">Tên của bạn*</label>
-                                            <input className="form-control" placeholder="Nhập tên của bạn" value={fromName} id="trade-edit-fromName" name="fromName" type="text" onChange={this.handleChange} />
+                                            <label htmlFor="trade-edit-fromName">{translate(langConfig.app.YourName)}*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.YourName))} value={fromName} id="trade-edit-fromName" name="fromName" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
                                                 {fieldError === 'fromName' && message ?
                                                     <ul className="list-unstyled">
@@ -116,8 +118,8 @@ class UpdateTrade extends Component {
                                     </div>
                                     <div className="col-md-6 nopadding-left">
                                         <div className={"form-group" + (fieldError === 'fromEmail' ? " has-error" : "")}>
-                                            <label htmlFor="trade-edit-fromEmail">Email của bạn*</label>
-                                            <input className="form-control" placeholder="Nhập email của bạn" value={fromEmail} id="trade-edit-fromEmail" name="fromEmail" type="text" onChange={this.handleChange} />
+                                            <label htmlFor="trade-edit-fromEmail">{translate(langConfig.app.YourEmail)}*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.YourEmail))} value={fromEmail} id="trade-edit-fromEmail" name="fromEmail" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
                                                 {fieldError === 'fromEmail' && message ?
                                                     <ul className="list-unstyled">
@@ -131,8 +133,8 @@ class UpdateTrade extends Component {
                                 <div className="row">
                                     <div className="col-md-6 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'toName' ? " has-error" : "")}>
-                                            <label htmlFor="trade-edit-toName">Tên đối tác*</label>
-                                            <input className="form-control" placeholder="Nhập tên đối tác" value={toName} id="trade-edit-toName" name="toName" type="text" onChange={this.handleChange} />
+                                            <label htmlFor="trade-edit-toName">{translate(langConfig.app.PartnerName)}*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.PartnerName))} value={toName} id="trade-edit-toName" name="toName" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
                                                 {fieldError === 'toName' && message ?
                                                     <ul className="list-unstyled">
@@ -144,8 +146,8 @@ class UpdateTrade extends Component {
                                     </div>
                                     <div className="col-md-6 nopadding-left">
                                         <div className={"form-group" + (fieldError === 'toEmail' ? " has-error" : "")}>
-                                            <label htmlFor="trade-edit-toEmail">Email đối tác*</label>
-                                            <input className="form-control" placeholder="Nhập email đối tác" value={toEmail} id="trade-edit-toEmail" name="toEmail" type="text" onChange={this.handleChange} />
+                                            <label htmlFor="trade-edit-toEmail">{translate(langConfig.app.PartnerEmail)}*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.PartnerEmail))} value={toEmail} id="trade-edit-toEmail" name="toEmail" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
                                                 {fieldError === 'toEmail' && message ?
                                                     <ul className="list-unstyled">
@@ -159,8 +161,8 @@ class UpdateTrade extends Component {
                                 <div className="row">
                                     <div className="col-md-12">
                                         <div className={"form-group" + (fieldError === 'deadline' ? " has-error" : "")}>
-                                            <label htmlFor="trade-edit-deadline">Thời gian giao thương*</label>
-                                            <input className="form-control" placeholder="Nhập thời gian giao thương" required value={deadline} id="trade-edit-deadline" name="deadline" type="datetime-local" onChange={this.handleChange} />
+                                            <label htmlFor="trade-edit-deadline">{translate(langConfig.app.TradeTime)}*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.TradeTime))} required value={deadline} id="trade-edit-deadline" name="deadline" type="datetime-local" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
                                                 {fieldError === 'deadline' && message ?
                                                     <ul className="list-unstyled">
@@ -174,8 +176,8 @@ class UpdateTrade extends Component {
                                 <div className="row">
                                     <div className="col-md-12">
                                         <div className={"form-group" + (fieldError === 'content' ? " has-error" : "")}>
-                                            <label htmlFor="trade-edit-content">Nội dung*</label>
-                                            <textarea rows={3} className="form-control" placeholder="Nhập nội dung giao thương" value={content} id="trade-edit-content" name="content" type="text" onChange={this.handleChange} />
+                                            <label htmlFor="trade-edit-content">{translate(langConfig.app.Content)}*</label>
+                                            <textarea rows={3} className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Content))} value={content} id="trade-edit-content" name="content" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
                                                 {fieldError === 'content' && message ?
                                                     <ul className="list-unstyled">
@@ -190,11 +192,13 @@ class UpdateTrade extends Component {
                                     <div className="row">
                                         <div className="col-md-12">
                                             <div className={"form-group" + (fieldError === 'approved' ? " has-error" : "")}>
-                                                <label htmlFor="add-vis-active">Trạng thái</label>
+                                                <label htmlFor="add-vis-active">{translate(langConfig.app.Status)}</label>
                                                 <span className={"select2 select2-container select2-container--default" + (dropApproved ? " select2-container--open" : "")} style={{ width: '100%' }}>
                                                     <span className="selection" onClick={this.handleDropdownApproved}>
                                                         <span className="select2-selection select2-selection--single"  >
-                                                            <span className="select2-selection__rendered" id="add-vis-select2-active-container" title={approved ? "Đã duyệt" : "Chưa duyệt"}>{approved ? "Đã duyệt" : "Chưa duyệt"}</span>
+                                                            <span className="select2-selection__rendered" id="add-vis-select2-active-container" title={translate(approved ? langConfig.app.Approved : langConfig.app.NotApproved)}>
+                                                                {translate(approved ? langConfig.app.Approved : langConfig.app.NotApproved)}
+                                                            </span>
                                                             <span className="select2-selection__arrow" role="presentation">
                                                                 <b role="presentation" />
                                                             </span>
@@ -204,11 +208,11 @@ class UpdateTrade extends Component {
                                                         <div
                                                             className={"select-option-active" + (approved ? " active" : "")}
                                                             onClick={this.handleSelectApproved}
-                                                        >Đã duyệt</div>
+                                                        >{translate(langConfig.app.Approved)}</div>
                                                         <div
                                                             className={"select-option-active" + (!approved ? " active" : "")}
                                                             onClick={this.handleSelectNotApproved}
-                                                        >Chưa duyệt</div>
+                                                        >{translate(langConfig.app.NotApproved)}</div>
                                                     </div>
                                                 </span>
                                                 <div className="help-block with-errors" >
@@ -224,7 +228,7 @@ class UpdateTrade extends Component {
                                     ""}
                             </div>
                             <div className="modal-footer">
-                                <input className="btn btn-flat btn-new" type="submit" value="Lưu" />
+                                <input className="btn btn-flat btn-new" type="submit" value={translate(langConfig.app.Save)} />
                             </div>
                         </form>
                     </div>

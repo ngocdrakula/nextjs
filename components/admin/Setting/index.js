@@ -34,10 +34,6 @@ class Overview extends Component {
             onEdit: false
         }
     }
-    componentDidMount() {
-        const { dispatch } = this.props;
-        dispatch({ type: types.ADMIN_GET_SETTING });
-    }
 
     componentDidUpdate(prevProps) {
         if (prevProps.setting.timestamp !== this.props.setting.timestamp) {
@@ -112,14 +108,14 @@ class Overview extends Component {
                         payload: {
                             type: 'error',
                             title: 'Cập nhật thất bại',
-                            message: res.data.message || "Vui lòng điền đầy đủ thông tin",
+                            message: translate(res.data.messages || langConfig.message.error.infomation),
                             confirm: 'Chấp nhận',
                             cancel: 'Đóng'
                         },
                     });
                     this.setState({
                         fieldError: res.data.field,
-                        message: res.data.message || "Vui lòng điền đầy đủ thông tin",
+                        message: translate(res.data.messages || langConfig.message.error.infomation),
                         loading: false
                     })
                 }
