@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import types from '../../redux/types';
 import { formatTime, MODE } from '../../utils/helper';
-import PaginationAdmin from '../PaginationAdmin';
+import PaginationAdmin from '../pagination/PaginationAdmin';
 import AddTrade from './AddTrade';
 import UpdateTrade from './UpdateTrade';
 

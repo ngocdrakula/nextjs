@@ -34,22 +34,22 @@ html {
 */
 
 @font-face {
-	font-family: 'Myriad Pro';
-	src: url('../fonts/MYRIADPRO-REGULAR.OTF');
+	font-family: "Myriad Pro";
+	src: url(../fonts/MYRIADPRO-REGULAR.OTF);
 	font-style: normal;
 	font-weight: normal;
 }
 
 @font-face {
-	font-family: 'Myriad Pro';
-	src: url('../fonts/MYRIADPRO-BOLD.OTF');
+	font-family: "Myriad Pro";
+	src: url(../fonts/MYRIADPRO-BOLD.OTF);
 	font-style: normal;
 	font-weight: 600;
 }
 
 @font-face {
-	font-family: 'Myriad Pro Semibold Italic';
-	src: url('../fonts/MYRIADPRO-SEMIBOLDIT.OTF');
+	font-family: "Myriad Pro Semibold Italic";
+	src: url(../fonts/MYRIADPRO-SEMIBOLDIT.OTF);
 	font-style: normal;
 	font-weight: normal;
 }

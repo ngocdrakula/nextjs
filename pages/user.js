@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import dynamic from 'next/dynamic';
 import { connect } from 'react-redux'
 import { END } from 'redux-saga';
 import Router from 'next/router';
@@ -7,13 +6,11 @@ import Link from 'next/link';
 import { wrapper } from '../redux/store';
 import types from '../redux/types'
 import { getQuery, MODE } from '../utils/helper';
-import Pagination from '../components/Pagination';
+import Pagination from '../components/pagination/Pagination';
 
 const pageSize = 12;
 const sorts = [{ label: 'Nổi bật', value: 'feature' }, { label: 'Tên: A-Z', value: 'name' }, { label: 'Tên: Z-A', value: 'namereverse' }]
 
-const Header = dynamic(() => import('../components/Header'));
-const Footer = dynamic(() => import('../components/Footer'));
 
 class User extends Component {
   constructor(props) {
@@ -144,118 +141,114 @@ class User extends Component {
     const currentSort = sorts.find(s => s.value === sortSelected);
     const currentIndustry = industries.find(i => i._id === industrySelected);
     return (
-      <div id="app" className="user-page">
-        <Header />
-        <div id="content" className="site-content">
-          <div id="list">
-            <div className="main-title hd-bg-orange">
-              <h2 className="heading">Danh sách</h2>
-              <ul className="breadcrumb">
-                <li><Link href="/"><a>Trang chủ</a></Link><a> »</a></li>
-                <li><a href="#">Triển lãm trực tuyến</a><a> »</a></li>
-                <li><a href="#">Danh sách</a></li>
-              </ul>
-            </div>
-            <div className="list-menu" id="menu-list" name="menu-list">
-              <ul className="menu">
-                {industries.map((industry, index) => {
-                  const active = ((!industrySelected && !index) || (industry._id === industrySelected)) ? " active" : "";
-                  return (
-                    <li key={industry._id} className={"menu-item" + active}>
-                      <a href="#" onClick={e => this.handleSelect(e, industry._id)}>{industry.name}</a>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-            <div className="lists-list stores-list">
-              <div className="container">
-                <h3>{currentIndustry?.name || industries[0]?.name}</h3>
-                <div className="right">
-                  <div className="sort">
-                    <p>Thứ tự {currentSort?.label} <img src="/images/icon-down2.png" alt="" style={{ marginLeft: 10 }} /></p>
-                    <p>
-                      {sorts.map(sort => {
-                        return (
-                          <span
-                            key={sort.value || 0}
-                            onClick={e => this.handleSort(e, sort.value)}
-                            style={currentSort?.value === sort.value ? { color: '#F48120' } : {}}
-                          >
-                            {sort.label}
-                          </span>
-                        );
-                      })}
-                    </p>
-                  </div>
-                  <div className="tab">
-                    <ul>
-                      <li>
-                        <Link href={`/user?filter=${MODE.exhibitor}&page=1&industry=${industrySelected}#menu-list`}><a className={filter !== MODE.visitor ? "active" : ""}>Nhà trưng bày</a></Link>
-                      </li>
-                      <li>
-                        <Link href={`/user?filter=${MODE.visitor}&page=1&industry=${industrySelected}#menu-list`} ><a className={filter === MODE.visitor ? "active" : ""}>Người mua</a></Link>
-                      </li>
-                    </ul>
-                  </div>
+      <div id="content" className="site-content">
+        <div id="list">
+          <div className="main-title hd-bg-orange">
+            <h2 className="heading">Danh sách</h2>
+            <ul className="breadcrumb">
+              <li><Link href="/"><a>Trang chủ</a></Link><a> »</a></li>
+              <li><a href="#">Triển lãm trực tuyến</a><a> »</a></li>
+              <li><a href="#">Danh sách</a></li>
+            </ul>
+          </div>
+          <div className="list-menu" id="menu-list" name="menu-list">
+            <ul className="menu">
+              {industries.map((industry, index) => {
+                const active = ((!industrySelected && !index) || (industry._id === industrySelected)) ? " active" : "";
+                return (
+                  <li key={industry._id} className={"menu-item" + active}>
+                    <a href="#" onClick={e => this.handleSelect(e, industry._id)}>{industry.name}</a>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+          <div className="lists-list stores-list">
+            <div className="container">
+              <h3>{currentIndustry?.name || industries[0]?.name}</h3>
+              <div className="right">
+                <div className="sort">
+                  <p>Thứ tự {currentSort?.label} <img src="/images/icon-down2.png" alt="" style={{ marginLeft: 10 }} /></p>
+                  <p>
+                    {sorts.map(sort => {
+                      return (
+                        <span
+                          key={sort.value || 0}
+                          onClick={e => this.handleSort(e, sort.value)}
+                          style={currentSort?.value === sort.value ? { color: '#F48120' } : {}}
+                        >
+                          {sort.label}
+                        </span>
+                      );
+                    })}
+                  </p>
                 </div>
-                <div className="row tab-content">
-                  {loaded && !users[0] ?
-                    <div style={{ padding: '10px 50px 20px' }}>
-                      <h5>Danh sách trống</h5>
-                    </div>
-                    : ""}
-                  {users.map(user => {
-                    return (
-                      <div key={user._id} className="col-sm-6">
-                        <div className="customer-item store-item">
-                          <div className="store-top">
-                            <div className="row">
-                              <div className="col-lg-4">
-                                <Link href={`/${filter === MODE.exhibitor ? "exhibitor" : "visitor"}?id=${user._id}`}>
-                                  <a>
-                                    {user.avatar ?
-                                      <img src={"/api/images/" + user.avatar} alt="" />
-                                      :
-                                      <img src="/images/no-logo.png" alt="" />
-                                    }
-                                  </a>
-                                </Link>
-                              </div>
-                              <div className="col-lg-8">
-                                <div className="entry-title">
-                                  <h3>
-                                    <Link href={`/${filter === MODE.exhibitor ? "exhibitor" : "visitor"}?id=${user._id}`}>
-                                      <a>{user.name}</a>
-                                    </Link>
-                                  </h3>
-                                  <p>{user.introduce}</p>
-                                </div>
+                <div className="tab">
+                  <ul>
+                    <li>
+                      <Link href={`/user?filter=${MODE.exhibitor}&page=1&industry=${industrySelected}#menu-list`}><a className={filter !== MODE.visitor ? "active" : ""}>Nhà trưng bày</a></Link>
+                    </li>
+                    <li>
+                      <Link href={`/user?filter=${MODE.visitor}&page=1&industry=${industrySelected}#menu-list`} ><a className={filter === MODE.visitor ? "active" : ""}>Người mua</a></Link>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="row tab-content">
+                {loaded && !users[0] ?
+                  <div style={{ padding: '10px 50px 20px' }}>
+                    <h5>Danh sách trống</h5>
+                  </div>
+                  : ""}
+                {users.map(user => {
+                  return (
+                    <div key={user._id} className="col-sm-6">
+                      <div className="customer-item store-item">
+                        <div className="store-top">
+                          <div className="row">
+                            <div className="col-lg-4">
+                              <Link href={`/${filter === MODE.exhibitor ? "exhibitor" : "visitor"}?id=${user._id}`}>
+                                <a>
+                                  {user.avatar ?
+                                    <img src={"/api/images/" + user.avatar} alt="" />
+                                    :
+                                    <img src="/images/no-logo.png" alt="" />
+                                  }
+                                </a>
+                              </Link>
+                            </div>
+                            <div className="col-lg-8">
+                              <div className="entry-title">
+                                <h3>
+                                  <Link href={`/${filter === MODE.exhibitor ? "exhibitor" : "visitor"}?id=${user._id}`}>
+                                    <a>{user.name}</a>
+                                  </Link>
+                                </h3>
+                                <p>{user.introduce}</p>
                               </div>
                             </div>
                           </div>
-                          <div className="store-body">
-                            {user.image ?
-                              <img src={"/api/images/" + user.image} alt="" />
-                              :
-                              <img src={`/images/no-${filter === MODE.exhibitor ? "banner" : "image"}.png`} alt="" />
-                            }
-                          </div>
-                          <div className="store-bottom">
-                            <a href="#" onClick={e => this.handleChat(e, user)}><img src="/images/talk.png" alt="" />Trò chuyện</a>
-                            <a href="#" onClick={e => this.handleConnect(e, user)}><img src="/images/connect.png" alt="" />Kết nối giao thương</a>
-                          </div>
+                        </div>
+                        <div className="store-body">
+                          {user.image ?
+                            <img src={"/api/images/" + user.image} alt="" />
+                            :
+                            <img src={`/images/no-${filter === MODE.exhibitor ? "banner" : "image"}.png`} alt="" />
+                          }
+                        </div>
+                        <div className="store-bottom">
+                          <a href="#" onClick={e => this.handleChat(e, user)}><img src="/images/talk.png" alt="" />Trò chuyện</a>
+                          <a href="#" onClick={e => this.handleConnect(e, user)}><img src="/images/connect.png" alt="" />Kết nối giao thương</a>
                         </div>
                       </div>
-                    )
-                  })}
-                </div>
-                <Pagination gotoPage={this.changeURL} {...{ currentPage, pageSize, total }} />
+                    </div>
+                  )
+                })}
               </div>
+              <Pagination gotoPage={this.changeURL} {...{ currentPage, pageSize, total }} />
             </div>
-          </div >
+          </div>
         </div >
-        <Footer />
       </div >
     )
   }

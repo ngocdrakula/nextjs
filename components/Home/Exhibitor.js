@@ -117,7 +117,7 @@ class Exhibitor extends Component {
                                                 {exhibitor.image ?
                                                     <img src={`/api/images/${exhibitor.image}`} alt="" />
                                                     :
-                                                    <img src="/images/no-banner.png" alt="" />
+                                                    <img src="/images/no-banner-thumb.png" alt="" />
                                                 }
 
                                             </div>

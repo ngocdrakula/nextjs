@@ -1,5 +1,10 @@
+html {
+    scroll-behavior: smooth;
+}
+
 html body {
     top: 0px!important;
+    margin: 0px;
 }
 
 .skiptranslate.goog-te-gadget {
