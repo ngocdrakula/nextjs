@@ -140,7 +140,7 @@ class Visitor extends Component {
                   {visitor.image ?
                     <img src={`/api/images/${visitor.image}`} alt="" />
                     :
-                    <img src="/images/banner.png" alt="" />
+                    <img src="/images/no-image.png" alt="" />
                   }
                 </div>
                 <div className="row">

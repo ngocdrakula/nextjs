@@ -1338,11 +1338,11 @@ div.dangerously p {
 }
 
 .verify-icon.verify {
-	background-image: url(../images/success.jpg);
+	background-image: url(images/success.jpg);
 }
 
 .verify-icon.failed {
-	background-image: url(../images/failed.png);
+	background-image: url(images/failed.png);
 }
 
 .verify-message {
@@ -1356,7 +1356,7 @@ div.dangerously p {
 }
 
 .loading {
-	background-image: url(../images/gears.gif);
+	background-image: url(images/gears.gif);
 }
 
 .lang {

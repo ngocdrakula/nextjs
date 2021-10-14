@@ -238,7 +238,7 @@ class User extends Component {
                             {user.image ?
                               <img src={"/api/images/" + user.image} alt="" />
                               :
-                              <img src="/images/showroom1.png" alt="" />
+                              <img src={`/images/no-${filter === MODE.exhibitor ? "banner" : "image"}.png`} alt="" />
                             }
                           </div>
                           <div className="store-bottom">
