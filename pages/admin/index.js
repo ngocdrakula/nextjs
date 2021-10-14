@@ -27,7 +27,7 @@ class Dashboard extends Component {
     render() {
         const { user, exUser } = this.props;
         return (
-            <>
+            <div className="admin-page">
                 <AdminHead />
                 {exUser?._id || user?.mode === MODE.exhibitor ?
                     <Exhibitor />
@@ -36,7 +36,7 @@ class Dashboard extends Component {
                         : <Login />
                 }
                 <Tooltip />
-            </>
+            </div>
         )
     }
 }

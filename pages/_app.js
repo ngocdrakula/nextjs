@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { wrapper } from '../redux/store';
 import '../styles/globals.css';
+// import '../styles/abc.scss';
 import { setLocale } from '../utils/language';
 
 

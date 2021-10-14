@@ -1,7 +1,9 @@
+const path = require('path');
+
 module.exports = {
     env: {
-        // HOST_NAME: 'localhost',
-        HOST_NAME: 'production',
+        HOST_NAME: 'localhost',
+        // HOST_NAME: 'production',
 
         MONGODB_URL_LOCAL: 'mongodb://localhost:27017/vimexpo',
         MONGODB_URL: 'mongodb://localhost:27017/vimexpo',
@@ -23,5 +25,8 @@ module.exports = {
         EMAIL_SERVICE: 'gmail',
         EMAIL_USER: 'online.vimexpo@gmail.com',
         EMAIL_PASS: 'vim@12345678'
-    }
+    },
+    sassOptions: {
+        includePaths: [path.join(__dirname, 'styles')]
+    },
 };
