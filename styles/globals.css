@@ -1,0 +1,11 @@
+html body {
+    top: 0px!important;
+}
+
+.skiptranslate.goog-te-gadget {
+    display: none!important;
+}
+
+.skiptranslate {
+    display: none!important;
+}

@@ -164,20 +164,6 @@ class Product extends Component {
                                                 <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
                                                     <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
                                                 </button>
-                                                <button type="button" className="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                    <span className="caret" />
-                                                    <span className="sr-only">Toggle Dropdown</span>
-                                                </button>
-                                                <ul className="dropdown-menu" role="menu">
-                                                    <li>
-                                                        <a href="#" data-link="/admin/vendor/shop/massTrash" className="massAction " data-doafter="reload">
-                                                            <i className="fa fa-trash" /> Trash</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#" data-link="/admin/vendor/shop/massDestroy" className="massAction " data-doafter="reload">
-                                                            <i className="fa fa-times" /> Delete permanently</a>
-                                                    </li>
-                                                </ul>
                                             </div>
                                         </th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Ảnh sản phẩm" style={{ width: '20%', minWidth: 100 }}>Ảnh sản phẩm</th>

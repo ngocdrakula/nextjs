@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap';
 import { connect } from 'react-redux'
+import Link from 'next/link';
 import types from '../redux/types';
 import { MODE } from '../utils/helper';
 
@@ -38,7 +39,7 @@ class RegisterVisitor extends Component {
                 callback: res => {
                     if (!res?.success) {
                         this.setState({
-                            field: res?.field, message: res?.message||"Đăng ky không thành công"
+                            field: res?.field, message: res?.message || "Đăng ky không thành công"
                         });
                     }
                 }
@@ -60,7 +61,9 @@ class RegisterVisitor extends Component {
         const { openForm } = this.props;
         return (
             <Modal show={openForm === 'reg'} id="guestModal" className="login-modal register-vis" centered contentClassName="" onHide={this.handleClose}>
-                <a href="/"><img src="images/logo.png" alt="" /></a>
+                <Link href="/">
+                    <a><img src="images/logo.png" alt="" /></a>
+                </Link>
                 <label className="tk">
                     <span>Họ và Tên</span>
                     <input onChange={this.handleChange} type="text" required name="representative" placeholder="Nhập tên bạn" />
@@ -106,7 +109,7 @@ class RegisterVisitor extends Component {
                     <input onChange={this.handleChange} type="password" required name="repassword" placeholder="Nhập lại mật khẩu" />
                 </label>
                 <div className="error-form">{message}</div>
-                <input type="submit" onClick={this.handleSubmit} value="Đăng ký" />
+                <button type="submit" className="log-submit" onClick={this.handleSubmit}>Đăng ký</button>
                 <label>
                     Bạn đã có tài khoản? <a href="#" onClick={this.handleSwitchLogin} className="txt-red"> Đăng nhập ngay</a>
                 </label>

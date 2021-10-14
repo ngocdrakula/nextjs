@@ -64,6 +64,17 @@ class Footer extends Component {
                         <img src="images/icon-top.png" alt="" />
                     </div>
                 </div>
+
+                <script type="text/javascript" dangerouslySetInnerHTML={{
+                    __html: `
+                    function googleTranslateElementInit() {
+                        new google.translate.TranslateElement({
+                            pageLanguage: 'vi',
+                        }, '__next');
+                    }
+                    `}}
+                />
+                <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" />
             </>
         )
     }

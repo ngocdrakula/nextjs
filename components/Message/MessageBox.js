@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Link from 'next/link';
 import types from '../../redux/types';
 import { getTime, MODE } from '../../utils/helper';
 import SocketIO from '../../utils/SocketIO';
@@ -142,9 +143,11 @@ class MessageBox extends Component {
         return (
             <>
                 <div className={"mesTitle" + (openList ? " hidden" : "")}>
-                    <a href={`/${to.mode === MODE.visitor ? "visitor" : "exhibitor"}?id=${to._id}`} className="textover" title={to.name}>
-                        {to.name}
-                    </a>
+                    <Link href={`/${to.mode === MODE.visitor ? "visitor" : "exhibitor"}?id=${to._id}`}>
+                        <a className="textover" title={to.name}>
+                            {to.name}
+                        </a>
+                    </Link>
                 </div>
                 <div className={"mesBox" + (openList ? " hidden" : "")} onClick={this.focusToWritting} onScroll={this.handleScroll}>
                     {
@@ -159,13 +162,15 @@ class MessageBox extends Component {
                                             onClick={() => this.handleShowTime(mes._id)}
                                         >
                                             <div className="mesAvatar">
-                                                <a href={`/${to.mode === MODE.visitor ? "visitor" : "exhibitor"}?id=${to._id}`}>
-                                                    {to.avatar ?
-                                                        <img src={"/api/images/" + to.avatar} />
-                                                        :
-                                                        <img src="/images/logo-showroom.png" />
-                                                    }
-                                                </a>
+                                                <Link href={`/${to.mode === MODE.visitor ? "visitor" : "exhibitor"}?id=${to._id}`}>
+                                                    <a>
+                                                        {to.avatar ?
+                                                            <img src={"/api/images/" + to.avatar} />
+                                                            :
+                                                            <img src="/images/logo-showroom.png" />
+                                                        }
+                                                    </a>
+                                                </Link>
                                             </div>
                                             <div className="mesOther">
                                                 <div className="mesContentContainer">

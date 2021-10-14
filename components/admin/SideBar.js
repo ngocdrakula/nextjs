@@ -43,7 +43,7 @@ class SideBar extends Component {
                                 <i className="fa fa-meetup" /> <span>Liên hệ</span>
                             </a>
                         </li>
-                        <li className={(active === 5 ? "active" : "") + (newNoti ? " new" : "")}>
+                        <li className={(active === 5 ? "active" : "") + (newMessage ? " new" : "")}>
                             <a href="#" onClick={() => handleActive(5)}>
                                 <i className="fa fa-wechat" /> <span>Chat{newMessage ? ` (${newMessage})` : ""}</span>
                             </a>

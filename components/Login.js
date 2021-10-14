@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import Link from 'next/link';
 import types from '../redux/types';
 
 class Login extends Component {
@@ -29,7 +30,9 @@ class Login extends Component {
             <div className="login-page">
                 <div className="login-box">
                     <div className="login-logo">
-                        <a href="/">CisVietnam</a>
+                        <Link href="/">
+                            <a>CisVietnam</a>
+                        </Link>
                     </div>
                     <div className="box login-box-body">
                         <div className="box-header with-border">
@@ -78,8 +81,12 @@ class Login extends Component {
                                 </div>
                             </form>
                         </div>
-                        <a className="btn btn-link" href={"/"}>Quên mật khẩu?</a>
-                        <a className="btn btn-link" href={"/"}>Đăng ký</a>
+                        <Link href="/">
+                            <a className="btn btn-link">Quên mật khẩu?</a>
+                        </Link>
+                        <Link href="/">
+                            <a className="btn btn-link">Đăng ký</a>
+                        </Link>
                     </div>
                 </div>
             </div>

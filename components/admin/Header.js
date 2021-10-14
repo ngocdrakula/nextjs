@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import Link from 'next/link';
 import types from '../../redux/types';
 import { getTime } from '../../utils/helper';
 
@@ -43,10 +44,12 @@ class Header extends Component {
         return (
 
             <header className="main-header">
-                <a href="/" className="logo">
-                    <span className="logo-mini">{setting?.title || process.env.TITLE}</span>
-                    <span className="logo-lg" style={{ fontSize: 14 }}>{setting?.title || process.env.TITLE}</span>
-                </a>
+                <Link href="/">
+                    <a className="logo">
+                        <span className="logo-mini">{setting?.title || process.env.TITLE}</span>
+                        <span className="logo-lg" style={{ fontSize: 14 }}>{setting?.title || process.env.TITLE}</span>
+                    </a>
+                </Link>
                 <nav className="navbar navbar-static-top" role="navigation">
                     <a href="#" className="sidebar-toggle" onClick={handleToggle}>
                         <span className="sr-only">Toggle navigation</span>

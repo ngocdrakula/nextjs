@@ -21,7 +21,7 @@ class Dashboard extends Component {
         const { dispatch } = this.props;
         dispatch({ type: types.ADMIN_LOGIN_LOCAL });
         dispatch({ type: types.ADMIN_GET_INDUSTRIES });
-        
+
         SocketIO.start();
     }
     render() {

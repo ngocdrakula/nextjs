@@ -22,12 +22,17 @@ export const initState = {
     newNoti: 0,
     total: 0,
     page: 0,
-    setting: {}
+    setting: {},
 }
 const appReducer = (state = initState, action) => {
     switch (action.type) {
         case HYDRATE: {
-            return { ...initState, ...state, ...action.payload.admin };
+            return {
+                ...initState,
+                ...state,
+                ...action.payload.admin,
+                user: state.user || action.payload.admin.user,
+            };
         }
         case types.ADMIN_LOGIN_SUCCESS: {
             return {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap';
 import { connect } from 'react-redux'
+import Link from 'next/link';
 import types from '../redux/types';
 import GoogleLogin from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
@@ -114,7 +115,9 @@ class LoginVisitor extends Component {
         const { openForm } = this.props;
         return (
             <Modal show={openForm === MODE.visitor} id="guestModal" className="login-modal" centered contentClassName="" onHide={this.handleClose}>
-                <a href="/"><img src="images/logo.png" alt="" /></a>
+                <Link href="/">
+                    <a><img src="images/logo.png" alt="" /></a>
+                </Link>
                 <label className="tk">
                     <span>Tài khoản</span>
                     <input onChange={this.handleChange} type="text" name="email" placeholder="Phone Number, Name or Email" />
@@ -124,7 +127,7 @@ class LoginVisitor extends Component {
                     <input onChange={this.handleChange} type="password" name="password" placeholder="At least 8 characters" />
                 </label>
                 {message ? <div className="error-form">{message}</div> : ""}
-                <input type="submit" onClick={this.handleSubmit} value="Đăng nhập" disabled={loading} />
+                <button type="submit" className="log-submit" disabled={loading} onClick={this.handleSubmit}>Đăng nhập</button>
                 <div className="suport-login">
                     <label className="remember-login label-cb">
                         <input type="checkbox" name="remember" />

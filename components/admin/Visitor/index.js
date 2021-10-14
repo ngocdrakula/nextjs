@@ -168,27 +168,6 @@ class Visitor extends Component {
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
                                 <thead>
                                     <tr role="row">
-                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>
-                                            <div className="btn-group ">
-                                                <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
-                                                    <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
-                                                </button>
-                                                <button type="button" className="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                    <span className="caret" />
-                                                    <span className="sr-only">Toggle Dropdown</span>
-                                                </button>
-                                                <ul className="dropdown-menu" role="menu">
-                                                    <li>
-                                                        <a href="#" data-link="/admin/vendor/shop/massTrash" className="massAction " data-doafter="reload">
-                                                            <i className="fa fa-trash" /> Trash</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#" data-link="/admin/vendor/shop/massDestroy" className="massAction " data-doafter="reload">
-                                                            <i className="fa fa-times" /> Delete permanently</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: "15%" }}>Ảnh đại diện</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>Tên khách hàng</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>Email</th>

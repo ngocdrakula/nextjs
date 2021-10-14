@@ -47,18 +47,18 @@ class User extends Component {
   componentWillUnmount() {
     clearTimeout(this.timeout);
   }
-  handleSort = (e) => {
+  handleSort = (e, id) => {
     e.preventDefault();
     const { filter, industrySelected, name } = this.state;
     let url = "/user?filter=" + filter + "&page=1&industry=" + industrySelected;
-    if (e.target.id) url += "&sort=" + e.target.id
+    if (id) url += "&sort=" + id
     if (name) url += "&name=" + name
     Router.push(url, undefined, { scroll: false })
   }
-  handleSelect = e => {
+  handleSelect = (e, id) => {
     e.preventDefault();
     const { filter, sortSelected, name } = this.state;
-    let url = "/user?filter=" + filter + "&page=1&industry=" + e.target.id;
+    let url = "/user?filter=" + filter + "&page=1&industry=" + id;
     if (sortSelected) url += "&sort=" + sortSelected;
     if (name) url += "&name=" + name
     Router.push(url, undefined, { scroll: false })
@@ -151,8 +151,8 @@ class User extends Component {
             <div className="main-title hd-bg-orange">
               <h2 className="heading">Danh sách</h2>
               <ul className="breadcrumb">
-                <li><a href="/">Trang chủ »</a></li>
-                <li><a href="#">Triển lãm trực tuyến »</a></li>
+                <li><Link href="/"><a>Trang chủ</a></Link><a> »</a></li>
+                <li><a href="#">Triển lãm trực tuyến</a><a> »</a></li>
                 <li><a href="#">Danh sách</a></li>
               </ul>
             </div>
@@ -161,7 +161,9 @@ class User extends Component {
                 {industries.map((industry, index) => {
                   const active = ((!industrySelected && !index) || (industry._id === industrySelected)) ? " active" : "";
                   return (
-                    <li key={industry._id} className={"menu-item" + active}><a href="#" id={industry._id} onClick={this.handleSelect}>{industry.name}</a></li>
+                    <li key={industry._id} className={"menu-item" + active}>
+                      <a href="#" onClick={e => this.handleSelect(e, industry._id)}>{industry.name}</a>
+                    </li>
                   )
                 })}
               </ul>
@@ -177,8 +179,7 @@ class User extends Component {
                         return (
                           <span
                             key={sort.value || 0}
-                            id={sort.value}
-                            onClick={this.handleSort}
+                            onClick={e => this.handleSort(e, sort.value)}
                             style={currentSort?.value === sort.value ? { color: '#F48120' } : {}}
                           >
                             {sort.label}
@@ -211,17 +212,23 @@ class User extends Component {
                           <div className="store-top">
                             <div className="row">
                               <div className="col-lg-4">
-                                <a href={`/${filter === MODE.exhibitor ? "exhibitor" : "visitor"}?id=${user._id}`}>
-                                  {user.avatar ?
-                                    <img src={"/api/images/" + user.avatar} alt="" />
-                                    :
-                                    <img src="/images/logo-showroom.png" alt="" />
-                                  }
-                                </a>
+                                <Link href={`/${filter === MODE.exhibitor ? "exhibitor" : "visitor"}?id=${user._id}`}>
+                                  <a>
+                                    {user.avatar ?
+                                      <img src={"/api/images/" + user.avatar} alt="" />
+                                      :
+                                      <img src="/images/logo-showroom.png" alt="" />
+                                    }
+                                  </a>
+                                </Link>
                               </div>
                               <div className="col-lg-8">
                                 <div className="entry-title">
-                                  <h3><a href={`/${filter === MODE.exhibitor ? "exhibitor" : "visitor"}?id=${user._id}`}>{user.name}</a></h3>
+                                  <h3>
+                                    <Link href={`/${filter === MODE.exhibitor ? "exhibitor" : "visitor"}?id=${user._id}`}>
+                                      <a>{user.name}</a>
+                                    </Link>
+                                  </h3>
                                   <p>{user.introduce}</p>
                                 </div>
                               </div>

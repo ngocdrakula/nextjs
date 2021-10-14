@@ -27,58 +27,6 @@ export const getThumbnail = (product, maxSize = 100) => {
         + "&height=" + (rate > 1 ? Math.floor(maxSize / rate) : maxSize);
 }
 
-export const convertLayout = (surfaces) => {
-    const newRoom = {};
-    newRoom.cameraFov = Number(surfaces[0]?.cameraFov) || 0;
-    newRoom.vertical = Number(surfaces[0]?.viewVerticalOffset) || 0;
-    newRoom.horizontal = Number(surfaces[0]?.viewHorizontalOffset) || 0;
-    newRoom.areas = surfaces.map(face => {
-        return ({
-            x: Number(face[1]) || 0,
-            y: Number(face[2]) || 0,
-            z: Number(face[3]) || 0,
-            _x: Number(face[4]) || 0,
-            _y: Number(face[5]) || 0,
-            _z: Number(face[6]) || 0,
-            width: Number(face[7]) || 0,
-            height: Number(face[8]) || 0,
-            scaleX: Number(face[9]) || 0,
-            scaleY: Number(face[10]) || 0,
-            hoverArea: face[11].map(m => {
-                return { x: Number(m[0]) || 0, y: Number(m[1]) || 0 }
-            }),
-            type: face[176]
-        })
-    })
-    return (newRoom);
-}
-
-export const convertLayoutClient = (surfaces) => {
-    const newRoom = {};
-    newRoom.cameraFov = Number(surfaces[0]?.cameraFov) || 0;
-    newRoom.vertical = Number(surfaces[0]?.viewVerticalOffset) || 0;
-    newRoom.horizontal = Number(surfaces[0]?.viewHorizontalOffset) || 0;
-    const areas = surfaces.map(face => {
-        return ({
-            x: Number(face[1]) || 0,
-            y: Number(face[2]) || 0,
-            z: Number(face[3]) || 0,
-            _x: Number(face[4]) || 0,
-            _y: Number(face[5]) || 0,
-            _z: Number(face[6]) || 0,
-            width: Number(face[7]) || 0,
-            height: Number(face[8]) || 0,
-            scaleX: Number(face[9]) || 0,
-            scaleY: Number(face[10]) || 0,
-            hoverArea: face[11].map(m => {
-                return { x: Number(m[0]) || 0, y: Number(m[1]) || 0 }
-            }),
-            type: face[176]
-        })
-    });
-    newRoom.areas = JSON.stringify(areas)
-    return (newRoom);
-}
 export const getQuery = (url) => {
     if (typeof url !== "string") return ({})
     const queryStringAll = url?.split('#');
@@ -216,4 +164,26 @@ export const formatTime = (timeString, format) => {
     else {
         return ("");
     }
+}
+export const setCookie = (name, value, days) => {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+export const getCookie = (name) => {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+export const deleteCookie = (name) => {
+    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }

@@ -109,27 +109,27 @@ ul {
 	background: #373737;
 }
 
-.header-top p {
+.header-top {
 	line-height: 0;
 	text-align: right;
 	padding: 7px 0 8px 0;
 	margin-bottom: 0;
 }
 
-.header-top p a {
+.header-top a {
 	color: #fff;
 }
 
-.header-top p .online-exhibition {
+.header-top .online-exhibition {
 	margin-right: 76.3px;
 }
 
-.header-top p .online-exhibition img {
+.header-top .online-exhibition img {
 	margin-right: 11.6px;
 	margin-top: -2px;
 }
 
-.header-top p .lang img:first-child {
+.header-top .lang img:first-child {
 	margin-right: 7.4px;
 }
 
@@ -742,6 +742,7 @@ footer input[type="submit"] {
 
 #list .breadcrumb li {
 	display: inline-block;
+	margin-left: 5px;
 }
 
 #list .breadcrumb li a {
@@ -2038,7 +2039,7 @@ label input[type='checkbox']:checked~.checkbox-checkmark {
 }
 
 @media only screen and (max-width: 320px) {
-	.header-top p .online-exhibition {
+	.header-top .online-exhibition {
 		margin-right: 25px;
 	}
 	.navigation li a, #navigation .container>div>a {
