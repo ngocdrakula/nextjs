@@ -23,24 +23,6 @@ class Slider extends Component {
                 </div>
             </div >
         );
-        return (
-            <div id="slider" style={bannerBackground ? { backgroundColor: bannerBackground } : {}}>
-                <div className="container">
-                    <div className="slide-thumb">
-                        <img src={image} alt={bannerTitle} />
-                    </div>
-                    <div className="slide-text">
-                        <h1>{bannerSubTitle}<span>{bannerTitle}</span></h1>
-                        <div className="time-location">
-                            <p className="time">{bannerStartTime} - {bannerEndTime}</p>
-                            <p className="location">{bannerLocation?.split('\n').map((d, i) => <React.Fragment key={i}>{i ? <br /> : ""}{d}</React.Fragment>)}</p>
-                        </div>
-                        <p className="txt-white">{bannerSlogan}</p>
-                        <p className="txt-last">{bannerDescription?.split('\n').map((d, i) => <React.Fragment key={i}>{i ? <br /> : ""}{d}</React.Fragment>)}</p>
-                    </div>
-                </div>
-            </div>
-        )
     }
 }
 

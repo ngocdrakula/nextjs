@@ -11944,7 +11944,7 @@ select.bs-select-hidden, select.selectpicker {
 
 @media only screen and (-webkit-min-device-pixel-ratio:1.5), only screen and (-moz-min-device-pixel-ratio:1.5), only screen and (-o-min-device-pixel-ratio:3/2), only screen and (min-device-pixel-ratio:1.5) {
     .icheckbox_flat-blue, .iradio_flat-blue {
-        background-image: url(blue@2x.png);
+        background-image: url(/images/blue@2x.png);
         -webkit-background-size: 176px 22px;
         background-size: 176px 22px
     }
@@ -11957,7 +11957,7 @@ select.bs-select-hidden, select.selectpicker {
     padding: 0;
     width: 20px;
     height: 20px;
-    background: url(pink.png) no-repeat;
+    background: url(/images/pink.png) no-repeat;
     border: none;
     cursor: pointer
 }
@@ -11998,7 +11998,7 @@ select.bs-select-hidden, select.selectpicker {
 
 @media only screen and (-webkit-min-device-pixel-ratio:1.5), only screen and (-moz-min-device-pixel-ratio:1.5), only screen and (-o-min-device-pixel-ratio:3/2), only screen and (min-device-pixel-ratio:1.5) {
     .icheckbox_flat-pink, .iradio_flat-pink {
-        background-image: url(pink@2x.png);
+        background-image: url(/images/pink@2x.png);
         -webkit-background-size: 176px 22px;
         background-size: 176px 22px
     }
@@ -12029,7 +12029,7 @@ select.bs-select-hidden, select.selectpicker {
     margin: -5px 0 0 0;
     padding: 0;
     overflow: hidden;
-    background: url(line.png) no-repeat;
+    background: url(/images/line.png) no-repeat;
     border: none
 }
 

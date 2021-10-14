@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap';
 import { connect } from 'react-redux'
+import Link from 'next/link';
 import types from '../redux/types';
 import { MODE } from '../utils/helper';
 
@@ -70,7 +71,9 @@ class LoginVisitor extends Component {
         const { openForm } = this.props;
         return (
             <Modal show={openForm === 'reset'} id="exhibitorModal" className="login-modal register-vis" centered contentClassName="" onHide={this.handleClose}>
-                <a href="/"><img src="images/logo.png" alt="" /></a>
+                <Link href="/">
+                    <a><img src="images/logo.png" alt="" /></a>
+                </Link>
                 <label className="tk">
                     <span>Email</span>
                     <input value={email || ''} onChange={this.handleChange} type="text" name="email" placeholder="Nhập email của bạn" readOnly={sendcode} />
@@ -93,7 +96,9 @@ class LoginVisitor extends Component {
                     : ""}
                 {sendcode && successMessage ? <div className="success-form">{successMessage}</div> : ""}
                 {message ? <div className="error-form">{message}</div> : ""}
-                <input type="submit" onClick={sendcode ? this.handleSubmit : this.handleSendCode} value={sendcode ? "Đổi mật khẩu" : "Lấy mã bảo mật"} />
+                <button type="submit" className="log-submit" onClick={sendcode ? this.handleSubmit : this.handleSendCode}>
+                    {sendcode ? "Đổi mật khẩu" : "Lấy mã bảo mật"}
+                </button>
                 <div className="suport-login">
                     <label className="fogot-mk">
                         <a href="#" className="txt-red" onClick={this.handleSendCode}>Gửi lại mã bảo mật</a>

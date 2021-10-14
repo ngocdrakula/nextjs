@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import Link from 'next/link';
 import types from '../redux/types';
-import { getQuery, MODE } from '../utils/helper';
+import { getQuery, MODE, setCookie } from '../utils/helper';
 import Head from './Head';
 import LoginVisitor from '../components/LoginVisitor';
 import LoginExhibitor from '../components/LoginExhibitor';
@@ -14,12 +15,14 @@ import { stringify } from 'qs';
 import MessageCustomer from './Message/MessageCustomer';
 import TradeForm from './TradeForm';
 import ResetPassword from './ResetPassword';
+import { getLocale } from '../utils/language';
 
 class Header extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: ''
+            name: '',
+            selected: getLocale()
         }
     }
     componentDidMount() {
@@ -67,8 +70,23 @@ class Header extends Component {
             this.handleSubmit(e)
         }
     }
+    handleChooseLang = (lang) => {
+        if (lang != getLocale()) {
+            setCookie('NEXT_LOCALE', lang);
+            setCookie('googtrans', `/vi/${lang}`);
+            this.setState({ selected: lang, visibleLang: false })
+            location.reload();
+        }
+        else {
+            this.setState({ visibleLang: false })
+        }
+    }
+    handleToggleLang = () => {
+        const { visibleLang } = this.state;
+        this.setState({ visibleLang: !visibleLang });
+    }
     render() {
-        const { name } = this.state;
+        const { name, selected, visibleLang } = this.state;
         const { user, setting } = this.props;
         const { logo, logoUpdated, title, logoStatus } = setting;
         const image = `${logoUpdated ? "/api" : ""}/images/${logo}`;
@@ -78,10 +96,19 @@ class Header extends Component {
                 <header id="header" className="site-header">
                     <div className="header-top">
                         <div className="container">
-                            <p>
-                                <a href="http://www.vimexpo.com.vn" className="online-exhibition"><img src="/images/online.png" alt="" />vimexpo.com.vn</a>
-                                {/* <a href="#" className="lang"><img src="/images/lang-vn.png" alt="" /><img src="/images/icon-down.png" alt="" /></a> */}
-                            </p>
+                            <a href="http://www.vimexpo.com.vn" className="online-exhibition"><img src="/images/online.png" alt="" />vimexpo.com.vn</a>
+                            <div href="#" className="lang" onClick={this.handleToggleLang} title="Thay đổi ngôn ngữ">
+                                <img src={`/images/lang-${selected}.png`} alt="" />
+                                <img src="/images/icon-down.png" alt="" />
+                                <ul className={"lang-select" + (visibleLang ? " active" : "")}>
+                                    <li className={selected === "vn" ? "active" : ""} onClick={() => this.handleChooseLang('vn')} title="Tiếng Việt">
+                                        <img src={`/images/lang-vn.png`} alt="" />
+                                    </li>
+                                    <li className={selected === "en" ? "active" : ""} onClick={() => this.handleChooseLang('en')} title="English">
+                                        <img src={`/images/lang-en.png`} alt="" />
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                     <div className="header-main header-border">
@@ -90,11 +117,13 @@ class Header extends Component {
                                 <div className="row">
                                     <div className="col-5 col-md-3">
                                         <div className="logo">
-                                            <a href="/">
-                                                {logoStatus ?
-                                                    <img src={image} alt={title} />
-                                                    : ""}
-                                            </a>
+                                            <Link href="/">
+                                                <a>
+                                                    {logoStatus ?
+                                                        <img src={image} alt={title} />
+                                                        : ""}
+                                                </a>
+                                            </Link>
                                         </div>
                                     </div>
                                     <div className="col-7 col-md-9 choose-login">
@@ -104,18 +133,20 @@ class Header extends Component {
                                             </div>
                                             :
                                             <div className="login-guest">
-                                                <a href="#" onClick={this.openLoginVisitor}>Đăng nhập <span>Khách tham quan</span></a>
+                                                <a href="#" onClick={this.openLoginVisitor}><span style={{ fontWeight: "normal" }}>Đăng nhập</span> <span>Khách tham quan</span></a>
                                             </div>
                                         }
                                         {user?._id ?
                                             <div className="login-guest">
-                                                <a href={`/${user.mode === MODE.visitor ? 'profile' : 'admin'}`}>
-                                                    <span style={{ textTransform: 'uppercase' }}>{user.name || user.email?.split('@')[0]?.slice(0, 10)}</span>
-                                                </a>
+                                                <Link href={`/${user.mode === MODE.visitor ? 'profile' : 'admin'}`}>
+                                                    <a>
+                                                        <span style={{ textTransform: 'uppercase' }}>{user.name || user.email?.split('@')[0]?.slice(0, 10)}</span>
+                                                    </a>
+                                                </Link>
                                             </div>
                                             :
                                             <div className="login-exhibitor">
-                                                <a href="#" onClick={this.openLoginExhibitor}>Đăng nhập <span>Nhà trưng bày</span></a>
+                                                <a href="#" onClick={this.openLoginExhibitor}><span style={{ fontWeight: "normal" }}>Đăng nhập</span> <span>Nhà trưng bày</span></a>
                                             </div>
                                         }
                                     </div>

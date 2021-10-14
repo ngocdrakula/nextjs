@@ -6,7 +6,7 @@ import jwt from '../../../middleware/jwt';
 import bcrypt from '../../../middleware/bcrypt';
 import { downloadImageFromUrl, getDataFromUrl } from '../../../middleware/cloneHelper';
 import { MODE } from '../../../utils/helper';
-import { registerNotification, registerSocialSuccess, registerSuccess } from '../../../middleware/mailer';
+import { registerNotification, registerSocialSuccess  } from '../../../middleware/mailer';
 
 const handler = async (req, res) => {
     if (req.method == 'POST') {
@@ -52,7 +52,6 @@ const handler = async (req, res) => {
                 messages: lang?.message?.success?.loged
             });
         } catch (e) {
-            console.log(e)
             if (e.path == 'accessToken') {
                 return res.status(400).send({
                     success: false,

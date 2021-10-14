@@ -33,11 +33,11 @@ const appReducer = (state = initState, action) => {
                 user: state.user || action.payload.app.user,
                 total: state.total || action.payload.app.total,
                 page: state.page || action.payload.app.page,
-                openMessage: state.openMessage || action.payload.app.openMessage,
-                openList: state.user ? state.openList : action.payload.app.openList,
-                newMessage: state.user ? state.newMessage : action.payload.app.newMessage,
-                trade: state.user ? state.trade : action.payload.app.trade,
-                livestream: state.user ? state.livestream : action.payload.app.livestream,
+                openMessage: state.hydrate ? state.openMessage : action.payload.app.openMessage,
+                openList: state.hydrate ? state.openList : action.payload.app.openList,
+                newMessage: state.hydrate ? state.newMessage : action.payload.app.newMessage,
+                trade: state.hydrate ? state.trade : action.payload.app.trade,
+                livestream: state.hydrate ? state.livestream : action.payload.app.livestream,
             };
         }
         case types.GET_INDUSTRIES_SUCCESS: {

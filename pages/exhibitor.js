@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import { connect } from 'react-redux'
 import { END } from 'redux-saga';
 import Router from 'next/router';
+import Link from 'next/link';
 import { wrapper } from '../redux/store';
 import types from '../redux/types'
 import { getQuery, MODE } from '../utils/helper';
@@ -178,7 +179,9 @@ class Exhibitor extends Component {
                           <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 3, toggle: !toggle }) }}>Liên hệ</a>
                         </li>
                       </ul>
-                      <a href={"/user?filter=" + MODE.exhibitor} className="right"><img src="/images/icon-list.png" alt="" />Danh sách</a>
+                      <Link href={"/user?filter=" + MODE.exhibitor}>
+                        <a className="right"><img src="/images/icon-list.png" alt="" />Danh sách</a>
+                      </Link>
                     </div>
                   </div>
                 </div>

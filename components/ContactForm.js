@@ -47,7 +47,7 @@ class ContactForm extends Component {
                 {success ?
                     <p>Gửi tin nhắn thành công!</p>
                     : ""}
-                <input className={email && name && title && message ? "" : "disabled-btn"} type="submit" value="Gửi" onClick={this.handleSubmit} />
+                <button type="submit" className={"contact-submit" + (email && name && title && message ? "" : " disabled-btn")} onClick={this.handleSubmit}>Gửi</button>
             </div>
         )
     }

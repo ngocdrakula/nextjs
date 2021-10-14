@@ -21,13 +21,13 @@ class Dashboard extends Component {
         const { dispatch } = this.props;
         dispatch({ type: types.ADMIN_LOGIN_LOCAL });
         dispatch({ type: types.ADMIN_GET_INDUSTRIES });
-        
+
         SocketIO.start();
     }
     render() {
         const { user, exUser } = this.props;
         return (
-            <>
+            <div className="admin-page">
                 <AdminHead />
                 {exUser?._id || user?.mode === MODE.exhibitor ?
                     <Exhibitor />
@@ -36,7 +36,7 @@ class Dashboard extends Component {
                         : <Login />
                 }
                 <Tooltip />
-            </>
+            </div>
         )
     }
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import Link from 'next/link';
 import types from '../../redux/types';
 import { MODE } from '../../utils/helper';
 
@@ -11,16 +12,16 @@ class Buyer extends Component {
         this.state = {
         }
     }
-    handleSelect = e => {
+    handleSelect = (e, id) => {
         e.preventDefault();
         const { dispatch } = this.props;
-        this.setState({ selected: e.target.id });
+        this.setState({ selected: id });
         dispatch({
             type: types.GET_VISITORS,
             payload: {
                 page: 0,
                 pageSize,
-                industry: e.target.id
+                industry: id
             }
         })
     }
@@ -71,7 +72,9 @@ class Buyer extends Component {
                         {industries.map((industry, index) => {
                             const active = ((!selected && !index) || (industry._id === selected)) ? " active" : "";
                             return (
-                                <li key={industry._id} className={"menu-item" + active}><a href="#" id={industry._id} onClick={this.handleSelect}>{industry.name}</a></li>
+                                <li key={industry._id} className={"menu-item" + active}>
+                                    <a href="#" onClick={e => this.handleSelect(e, industry._id)}>{industry.name}</a>
+                                </li>
                             )
                         })}
                     </ul>
@@ -85,17 +88,23 @@ class Buyer extends Component {
                                         <div className="store-top">
                                             <div className="row">
                                                 <div className="col-lg-4">
-                                                    <a href={"/visitor?id=" + visitor._id}>
-                                                        {visitor.avatar ?
-                                                            <img src={`/api/images/${visitor.avatar}`} alt="" />
-                                                            :
-                                                            <img src="/images/logo-showroom.png" alt="" />
-                                                        }
-                                                    </a>
+                                                    <Link href={"/visitor?id=" + visitor._id}>
+                                                        <a>
+                                                            {visitor.avatar ?
+                                                                <img src={`/api/images/${visitor.avatar}`} alt="" />
+                                                                :
+                                                                <img src="/images/logo-showroom.png" alt="" />
+                                                            }
+                                                        </a>
+                                                    </Link>
                                                 </div>
                                                 <div className="col-lg-8">
                                                     <div className="entry-title">
-                                                        <h3><a href={"/visitor?id=" + visitor._id}>{visitor.name}</a></h3>
+                                                        <h3>
+                                                            <Link href={"/visitor?id=" + visitor._id}>
+                                                                <a>{visitor.name}</a>
+                                                            </Link>
+                                                        </h3>
                                                         <p>{visitor.introduce}</p>
                                                     </div>
                                                 </div>
@@ -119,7 +128,9 @@ class Buyer extends Component {
                         </div>
                     </div>
                     <div className="load-more">
-                        <a href={"/user?filter=" + MODE.visitor}>Xem thêm</a>
+                        <Link href={"/user?filter=" + MODE.visitor}>
+                            <a>Xem thêm</a>
+                        </Link>
                     </div>
                 </div>
             </div>
