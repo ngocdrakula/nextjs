@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
 import { wrapper } from '../redux/store';
+// import '../styles/bootstrap.scss';
+import '../styles/app.scss';
+import '../styles/admin.scss';
 import '../styles/globals.css';
-// import '../styles/abc.scss';
 import { setLocale } from '../utils/language';
+import dynamic from 'next/dynamic';
+
+const Header = dynamic(() => import('../components/Layout/App/Header'));
+const Footer = dynamic(() => import('../components/Layout/App/Footer'));
+
+import AdminHead from '../components/Layout/Admin/AdminHead';
+import Tooltip from '../components/Layout/Admin/Tooltip';
 
 
 class App extends Component {
@@ -12,10 +21,26 @@ class App extends Component {
     if (props.lang) setLocale(props.lang)
   }
   render() {
-    const { Component: Page, pageProps, lang } = this.props
+    const { Component: Page, pageProps, router, lang } = this.props;
+    if (router.route === "/admin" || router.route === "/dashboard") {
+      return (
+        <div className="admin-page">
+          <AdminHead />
+          <Page {...pageProps} lang={lang} />
+          <Tooltip />
+        </div>
+      )
+    }
+    return (
+      <div id="app" className="user-page">
+        <Header />
+        <Page {...pageProps} lang={lang} />
+        <Footer />
+      </div >
+    )
     return (
       <Page {...pageProps} lang={lang} />
-    )
+    );
   }
 }
 

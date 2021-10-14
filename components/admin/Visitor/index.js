@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import types from '../../../redux/types';
 import { createFormData } from '../../../utils/helper';
-import Pagination from '../../PaginationAdmin';
+import Pagination from '../../pagination/PaginationAdmin';
 import AddVisitor from './AddVisitor';
 import UpdateVisitor from './UpdateVisitor';
 

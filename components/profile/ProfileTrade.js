@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import types from '../../redux/types'
 import { formatTime } from '../../utils/helper';
-import Pagination from '../Pagination';
+import Pagination from '../pagination/Pagination';
 
 
 const pageSize = 10;

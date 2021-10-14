@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import types from '../../../redux/types';
-import Pagination from '../../PaginationAdmin';
+import Pagination from '../../pagination/PaginationAdmin';
 import AddIndustry from './AddIndustry';
 import UpdateIndustry from './UpdateIndustry';
 

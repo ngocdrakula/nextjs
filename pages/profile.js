@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import dynamic from 'next/dynamic';
 import { connect } from 'react-redux'
 import { END } from 'redux-saga';
 import ErrorPage from 'next/error'
@@ -8,9 +7,6 @@ import types from '../redux/types'
 import { MODE } from '../utils/helper';
 import ProfileInfo from '../components/profile/ProfileInfo';
 import ProfileTrade from '../components/profile/ProfileTrade';
-
-const Header = dynamic(() => import('../components/Header'));
-const Footer = dynamic(() => import('../components/Footer'));
 
 class Profile extends Component {
   constructor(props) {
@@ -43,46 +39,42 @@ class Profile extends Component {
     }
     const { active } = this.state;
     return (
-      <div id="app" className="user-page">
-        <Header />
-        <div className="profile-page" style={{ backgroundColor: '#ededed' }}>
-          <div className="container">
-            {!user ?
-              "Vui lòng đăng nhập để tiếp tục"
-              :
-              <div className="row">
-                <div className="col-sm-3">
-                  <div className="profile-info-container">
-                    <div className="profile-avatar">
-                      {user.avatar ?
-                        <img className="user-avatar" src={"/api/images/" + user.avatar} />
-                        :
-                        <img className="user-no-avatar" src="/images/no-avatar.png" />
-                      }
-                    </div>
-                    <div className="profile-name">
-                      {user.name}
-                    </div>
+      <div className="profile-page" style={{ backgroundColor: '#ededed' }}>
+        <div className="container">
+          {!user ?
+            "Vui lòng đăng nhập để tiếp tục"
+            :
+            <div className="row">
+              <div className="col-sm-3">
+                <div className="profile-info-container">
+                  <div className="profile-avatar">
+                    {user.avatar ?
+                      <img className="user-avatar" src={"/api/images/" + user.avatar} />
+                      :
+                      <img className="user-no-avatar" src="/images/no-avatar.png" />
+                    }
                   </div>
-                  <div className="profile-list-select">
-                    <div className={"profile-select-item" + (active === 0 ? " active" : "")} onClick={e => this.setState({ active: 0 })}>
-                      <span>Thông tin tài khoản</span>
-                    </div>
-                    <div className={"profile-select-item" + (active === 1 ? " active" : "")} onClick={e => this.setState({ active: 1 })}>
-                      <span>Lịch giao thương</span>
-                    </div>
+                  <div className="profile-name">
+                    {user.name}
                   </div>
                 </div>
-                <div className="col-sm-9">
-                  <ProfileInfo active={active === 0} />
-                  <ProfileTrade active={active === 1} />
+                <div className="profile-list-select">
+                  <div className={"profile-select-item" + (active === 0 ? " active" : "")} onClick={e => this.setState({ active: 0 })}>
+                    <span>Thông tin tài khoản</span>
+                  </div>
+                  <div className={"profile-select-item" + (active === 1 ? " active" : "")} onClick={e => this.setState({ active: 1 })}>
+                    <span>Lịch giao thương</span>
+                  </div>
                 </div>
               </div>
-            }
-          </div>
+              <div className="col-sm-9">
+                <ProfileInfo active={active === 0} />
+                <ProfileTrade active={active === 1} />
+              </div>
+            </div>
+          }
         </div>
-        <Footer />
-      </div >
+      </div>
     )
   }
 }
