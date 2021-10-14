@@ -167,7 +167,7 @@ class MessageBox extends Component {
                                                         {to.avatar ?
                                                             <img src={"/api/images/" + to.avatar} />
                                                             :
-                                                            <img src="/images/logo-showroom.png" />
+                                                            <img src="/images/no-logo.png" />
                                                         }
                                                     </a>
                                                 </Link>

@@ -133,7 +133,7 @@ class ProfileInfo extends Component {
         const { local, localImage, fieldError, message, loading } = this.state;
         const industrySelected = industries.find(i => i._id === selected) || industries[0] || {};
         const preview = local || (user?.avatar ? "/api/images/" + user.avatar : "/images/no-avatar.png");
-        const previewImage = localImage || (user?.image ? "/api/images/" + user.image : "/images/banner.png");
+        const previewImage = localImage || (user?.image ? "/api/images/" + user.image : "/images/no-image.png");
         return (
             <div className="profile-content" style={{ display: active ? 'block' : 'none' }}>
                 <form className="profile-update form-horizontal" onSubmit={this.handleSubmit}>

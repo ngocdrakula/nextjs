@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Link from 'next/link';
 import types from '../redux/types';
 import { MODE } from '../utils/helper';
+import Logo from './Logo';
 
 class LoginExhibitor extends Component {
     constructor(props) {
@@ -43,7 +44,7 @@ class LoginExhibitor extends Component {
         return (
             <Modal show={openForm === MODE.exhibitor} id="exhibitorModal" className="login-modal" centered contentClassName="" onHide={this.handleClose}>
                 <Link href="/">
-                    <a><img src="images/logo.png" alt="" /></a>
+                    <a><Logo /></a>
                 </Link>
                 <label className="tk">
                     <span>Tài khoản</span>

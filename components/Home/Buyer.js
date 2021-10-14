@@ -114,7 +114,7 @@ class Buyer extends Component {
                                             {visitor.image ?
                                                 <img src={`/api/images/${visitor.image}`} alt="" />
                                                 :
-                                                <img src="/images/showroom1.png" alt="" />
+                                                <img src="/images/no-image.png" alt="" />
                                             }
                                         </div>
                                         <div className="store-bottom">

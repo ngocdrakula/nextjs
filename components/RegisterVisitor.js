@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Link from 'next/link';
 import types from '../redux/types';
 import { MODE } from '../utils/helper';
+import Logo from './Logo';
 
 class RegisterVisitor extends Component {
     constructor(props) {
@@ -62,7 +63,7 @@ class RegisterVisitor extends Component {
         return (
             <Modal show={openForm === 'reg'} id="guestModal" className="login-modal register-vis" centered contentClassName="" onHide={this.handleClose}>
                 <Link href="/">
-                    <a><img src="images/logo.png" alt="" /></a>
+                    <a><Logo /></a>
                 </Link>
                 <label className="tk">
                     <span>Họ và Tên</span>

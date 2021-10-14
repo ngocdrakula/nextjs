@@ -193,7 +193,7 @@ class Exhibitor extends Component {
                   {exhibitor.image ?
                     <img src={`/api/images/${exhibitor.image}`} alt="" />
                     :
-                    <img src="/images/banner.png" alt="" />}
+                    <img src="/images/no-banner.png" alt="" />}
                 </div>
                 <div className="row">
                   <div className="col-lg-3">
@@ -297,7 +297,7 @@ class Exhibitor extends Component {
             <div className="store-detail-content bg-body" style={{ display: active === 1 ? 'block' : 'none' }}>
               <div className="container">
                 <div className="banner">
-                  <img src="/images/banner.png" alt="" />
+                  <img src="/images/no-banner.png" alt="" />
                 </div>
                 <div className="row">
                   <div className="col-lg-3">

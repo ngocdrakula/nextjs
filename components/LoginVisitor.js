@@ -6,6 +6,7 @@ import types from '../redux/types';
 import GoogleLogin from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
 import { MODE } from '../utils/helper';
+import Logo from './Logo';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const FACEBOOK_CLIENT_ID = process.env.FACEBOOK_CLIENT_ID;
@@ -116,7 +117,7 @@ class LoginVisitor extends Component {
         return (
             <Modal show={openForm === MODE.visitor} id="guestModal" className="login-modal" centered contentClassName="" onHide={this.handleClose}>
                 <Link href="/">
-                    <a><img src="images/logo.png" alt="" /></a>
+                    <a><Logo /></a>
                 </Link>
                 <label className="tk">
                     <span>Tài khoản</span>
