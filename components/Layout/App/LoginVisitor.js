@@ -46,7 +46,6 @@ class LoginVisitor extends Component {
         dispatch({ type: types.OPENFORM, payload: 'reg' });
     }
     handleLoginGoogle = res => {
-        console.log(res)
         if (res?.accessToken) {
             this.setState({ loading: true });
             const { dispatch } = this.props;

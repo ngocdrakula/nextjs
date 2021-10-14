@@ -14,3 +14,7 @@ html body {
 .skiptranslate {
     display: none!important;
 }
+
+#__next-build-watcher {
+    display: none;
+}

@@ -773,15 +773,15 @@ class Overview extends Component {
                                     </div>
                                     : ""}
                                 {onEdit ?
-                                    <div style={{ display: 'flex' }}>
-                                        <div className="form-group" id="btnSubmitData">
-                                            <div className="offset-sm-3 col-sm-9">
-                                                <button type="submit" className="btn btn-primary" disabled={loading}>Lưu</button>
-                                            </div>
-                                        </div>
-                                        <div className="form-group" id="btnCancel" style={{ marginLeft: 10 }}>
-                                            <div className="offset-sm-3 col-sm-10">
-                                                <button type="button" className="btn btn-danger" onClick={this.handleRefresh}>Hủy</button>
+                                    <div className="row">
+                                        <div className="offset-sm-3 col-sm-9" >
+                                            <div className="col d-flex">
+                                                <div className="form-group" id="btnSubmitData" style={{ marginRight: 10 }}>
+                                                    <button type="submit" className="btn btn-primary" disabled={loading}>Lưu</button>
+                                                </div>
+                                                <div className="form-group" id="btnCancel" style={{ marginLeft: 10 }}>
+                                                    <button type="button" className="btn btn-danger" onClick={this.handleRefresh}>Hủy</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

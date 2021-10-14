@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { wrapper } from '../redux/store';
-// import '../styles/bootstrap.scss';
+import '../styles/bootstrap.scss';
 import '../styles/app.scss';
 import '../styles/admin.scss';
 import '../styles/globals.css';
@@ -26,7 +26,7 @@ class App extends Component {
       return (
         <div className="admin-page">
           <AdminHead />
-          <Page {...pageProps} lang={lang} />
+          <Page {...pageProps} lang={lang} path={router.route} />
           <Tooltip />
         </div>
       )
@@ -34,13 +34,10 @@ class App extends Component {
     return (
       <div id="app" className="user-page">
         <Header />
-        <Page {...pageProps} lang={lang} />
+        <Page {...pageProps} lang={lang} path={router.route} />
         <Footer />
       </div >
     )
-    return (
-      <Page {...pageProps} lang={lang} />
-    );
   }
 }
 

@@ -386,7 +386,7 @@ class Overview extends Component {
                                             </div>
                                             <div className="form-group row" style={{ display: 'flex' }}>
                                                 <label htmlFor="inputName" className="col-sm-3 col-form-label">Logo</label>
-                                                <div className="col-sm-9" style={{ marginLeft: 8, maxWidth: '81%' }}>
+                                                <div className="col-sm-9">
                                                     {avatar ?
                                                         <img src={"/api/images/" + avatar} style={{ width: 'auto', height: 'auto', maxWidth: 100, maxHeight: 100 }} />
                                                         : <p>Chưa có Logo</p>
@@ -395,15 +395,19 @@ class Overview extends Component {
                                             </div>
                                             <div className="form-group row" id="editLogo" style={{ display: onEdit ? 'flex' : 'none' }}>
                                                 <label htmlFor="inputName" className="col-sm-3 col-form-label">Tải logo lên</label>
-                                                <div className="col-sm-9" style={{ marginLeft: 8, maxWidth: '81%' }}>
-                                                    <input type="file" className="custom-file-input" id="avatar" name="avatar" onChange={this.handleChooseFilesAvatar} />
-                                                    <label className="custom-file-label" htmlFor="avatar">{filesAvatar?.length ? "Đã chọn 1 tệp" : "Chọn Logo"}</label>
+                                                <div className="col-sm-9">
+                                                    <div className="position-relative">
+                                                        <input type="file" className="custom-file-input" id="avatar" name="avatar" onChange={this.handleChooseFilesAvatar} />
+                                                        <label className="custom-file-label" htmlFor="avatar">{filesAvatar?.length ? "Đã chọn 1 tệp" : "Chọn Logo"}</label>
+                                                    </div>
                                                 </div>
-                                                <span style={{ fontSize: 10, color: 'blue' }}>Loại: .jpg, .png<br />Size: 2MB</span>
+                                                <div className="offset-sm-3 col-sm-9">
+                                                    <span style={{ fontSize: 10, color: 'blue' }}>Loại: .jpg, .png</span><span style={{ fontSize: 10, color: 'blue', marginLeft: 20 }}>Size: 2MB</span>
+                                                </div>
                                             </div>
                                             <div className="form-group row" style={{ display: 'flex' }}>
                                                 <label htmlFor="inputName" className="col-sm-3 col-form-label">Banner</label>
-                                                <div className="col-sm-9" style={{ marginLeft: 8, maxWidth: '81%' }}>
+                                                <div className="col-sm-9">
                                                     {image ?
                                                         <img src={"/api/images/" + image} style={{ width: 'auto', height: 'auto', maxWidth: 400, maxHeight: 100 }} />
                                                         : <p>Chưa có Banner</p>
@@ -412,23 +416,27 @@ class Overview extends Component {
                                             </div>
                                             <div className="form-group row" id="editLogo" style={{ display: onEdit ? 'flex' : 'none' }}>
                                                 <label htmlFor="inputName" className="col-sm-3 col-form-label">Tải logo lên</label>
-                                                <div className="col-sm-9" style={{ marginLeft: 8, maxWidth: '81%' }}>
-                                                    <input type="file" className="custom-file-input" id="image" name="image" onChange={this.handleChooseFiles} />
-                                                    <label className="custom-file-label" htmlFor="image">{files?.length ? "Đã chọn 1 tệp" : "Chọn Banner"}</label>
+                                                <div className="col-sm-9">
+                                                    <div className="position-relative">
+                                                        <input type="file" className="custom-file-input" id="image" name="image" onChange={this.handleChooseFiles} />
+                                                        <label className="custom-file-label" htmlFor="image">{files?.length ? "Đã chọn 1 tệp" : "Chọn Banner"}</label>
+                                                    </div>
                                                 </div>
-                                                <span style={{ fontSize: 10, color: 'blue' }}>Loại: .jpg, .png<br />Size: 2MB</span>
+                                                <div className="offset-sm-3 col-sm-9">
+                                                    <span style={{ fontSize: 10, color: 'blue' }}>Loại: .jpg, .png</span><span style={{ fontSize: 10, color: 'blue', marginLeft: 20 }}>Size: 2MB</span>
+                                                </div>
                                             </div>
                                             {fieldError ? <div style={{ color: 'red', padding: '10px 0px' }}>{message}</div> : ""}
                                             {onEdit ?
-                                                <div style={{ display: 'flex' }}>
-                                                    <div className="form-group" id="btnSubmitData">
-                                                        <div className="offset-sm-3 col-sm-9">
-                                                            <button type="submit" className="btn btn-primary">Lưu</button>
-                                                        </div>
-                                                    </div>
-                                                    <div className="form-group" id="btnCancel" style={{ marginLeft: 10 }}>
-                                                        <div className="offset-sm-3 col-sm-10">
-                                                            <button type="button" className="btn btn-danger" onClick={this.handleCancel}>Hủy</button>
+                                                <div className="row">
+                                                    <div className="offset-sm-3 col-sm-9" style={{ display: 'flex' }}>
+                                                        <div className="col d-flex">
+                                                            <div className="form-group" id="btnSubmitData" style={{ marginRight: 10 }}>
+                                                                <button type="submit" className="btn btn-primary">Lưu</button>
+                                                            </div>
+                                                            <div className="form-group" id="btnCancel" style={{ marginLeft: 10 }}>
+                                                                <button type="button" className="btn btn-danger" onClick={this.handleCancel}>Hủy</button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
