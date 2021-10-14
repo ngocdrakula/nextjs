@@ -217,7 +217,7 @@ class User extends Component {
                                     {user.avatar ?
                                       <img src={"/api/images/" + user.avatar} alt="" />
                                       :
-                                      <img src="/images/logo-showroom.png" alt="" />
+                                      <img src="/images/no-logo.png" alt="" />
                                     }
                                   </a>
                                 </Link>

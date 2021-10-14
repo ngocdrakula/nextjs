@@ -2,6 +2,7 @@ html {
 	scroll-behavior: smooth;
 }
 
+/* 
 @font-face {
 	font-family: 'Montserrat';
 	src: url('../fonts/Montserrat-Regular.ttf');
@@ -24,11 +25,13 @@ html {
 }
 
 @font-face {
-	font-family: 'Montserrat SemiBold';
+	font-family: 'Montserrat SemiBold';  
 	src: url('../fonts/Montserrat-SemiBold.ttf');
 	font-weight: 500;
 	font-style: normal;
 }
+
+*/
 
 @font-face {
 	font-family: 'Myriad Pro';
@@ -278,7 +281,7 @@ ul {
 	line-height: 54px;
 	text-transform: uppercase;
 	color: #FFF;
-	background-image: url('images/bg-text.png');
+	background-image: url(images/bg-text.png);
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 	margin-bottom: 20px;
@@ -458,7 +461,9 @@ ul {
 }
 
 .menu li.active a {
-	font-family: 'Montserrat SemiBold';
+	font-family: 'Montserrat';
+	/* font-family: 'Montserrat SemiBold'; */
+	font-weight: 600;
 	color: #F48120;
 }
 
@@ -518,7 +523,9 @@ ul {
 }
 
 .store-bottom a {
-	font-family: 'Montserrat SemiBold';
+	font-family: 'Montserrat';
+	/* font-family: 'Montserrat SemiBold'; */
+	font-weight: 600;
 	font-size: 12px;
 	color: #FFCD37;
 	margin-right: 49.5px;
@@ -594,7 +601,7 @@ ul {
 
 #partner {
 	padding: 72px 0 62px;
-	background-image: url('images/partner-bg.png');
+	background-image: url(images/partner-background.png);
 	background-repeat: no-repeat;
 	background-size: cover;
 }
@@ -773,7 +780,9 @@ footer input[type="submit"] {
 
 #list .sort {
 	position: relative;
-	font-family: 'Montserrat SemiBold';
+	font-family: 'Montserrat';
+	/* font-family: 'Montserrat SemiBold'; */
+	font-weight: 600;
 	text-transform: uppercase;
 	cursor: pointer;
 }
@@ -821,7 +830,9 @@ footer input[type="submit"] {
 }
 
 #list .tab ul li a.active {
-	font-family: 'Montserrat SemiBold';
+	font-family: 'Montserrat';
+	/* font-family: 'Montserrat SemiBold'; */
+	font-weight: 600;
 	color: #F48120;
 }
 
@@ -972,8 +983,9 @@ footer input[type="submit"] {
 	justify-content: center;
 	align-items: center;
 }
+
 .banner img {
-	width:100%
+	width: 100%
 }
 
 .store-detail-content .container>.row {
@@ -1027,7 +1039,9 @@ footer input[type="submit"] {
 }
 
 .sidebar-left .contact-method a {
-	font-family: 'Montserrat SemiBold';
+	font-family: 'Montserrat';
+	/* font-family: 'Montserrat SemiBold'; */
+	font-weight: 600;
 	display: block;
 	color: #212657;
 	margin-bottom: 27px;
@@ -1046,7 +1060,9 @@ footer input[type="submit"] {
 }
 
 .ft-semibold {
-	font-family: 'Montserrat SemiBold';
+	font-family: 'Montserrat';
+	/* font-family: 'Montserrat SemiBold'; */
+	font-weight: 600
 }
 
 .sidebar-content-bottom p:last-child span {
@@ -1684,7 +1700,7 @@ label input[type='checkbox']:checked~.checkbox-checkmark {
 		top: 0;
 	}
 	.navbar-toggler-icon {
-		background-image: url('images/toggler-icon.png');
+		background-image: url(images/toggler-icon.png);
 	}
 	#navigation {
 		position: absolute;

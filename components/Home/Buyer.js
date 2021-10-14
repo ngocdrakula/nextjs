@@ -93,7 +93,7 @@ class Buyer extends Component {
                                                             {visitor.avatar ?
                                                                 <img src={`/api/images/${visitor.avatar}`} alt="" />
                                                                 :
-                                                                <img src="/images/logo-showroom.png" alt="" />
+                                                                <img src="/images/no-logo.png" alt="" />
                                                             }
                                                         </a>
                                                     </Link>
