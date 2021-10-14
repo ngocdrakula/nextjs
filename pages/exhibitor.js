@@ -152,7 +152,7 @@ class Exhibitor extends Component {
                     {exhibitor.avatar ?
                       <img src={`/api/images/${exhibitor.avatar}`} alt="" />
                       :
-                      <img src="/images/logo-showroom.png" alt="" />
+                      <img src="/images/no-logo.png" alt="" />
                     }
                   </div>
                   <span>{exhibitor.name || ""}</span>
