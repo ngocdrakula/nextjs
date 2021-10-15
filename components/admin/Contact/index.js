@@ -202,20 +202,19 @@ class Contact extends Component {
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
                                 <thead>
                                     <tr role="row">
-                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '7%' }}>
+                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>
                                             <div className="btn-group ">
                                                 <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
                                                     <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
                                                 </button>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '8%' }}>STT</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Tên</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Email</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Chủ đề</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>Nội dung</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>Nội dung</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Trạng thái</th>
-                                        <th style={{ textAlign: 'center !important', width: '10%' }} className="sorting_disabled" rowSpan={1} colSpan={1}>Hành động</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ textAlign: 'center !important', width: '10%' }} >Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
@@ -233,7 +232,6 @@ class Contact extends Component {
                                                         />
                                                     </div>
                                                 </td>
-                                                <td>{index + 1}</td>
                                                 <td title={contact.name}>
                                                     {contact.name?.slice(0, 15)}{contact.name.length > 15 ? "..." : ""}{'  '}
                                                     <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={e => { e.preventDefault(); this.handleDisable(contact) }}>

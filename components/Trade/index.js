@@ -173,7 +173,7 @@ class Trade extends Component {
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
                                 <thead>
                                     <tr role="row">
-                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 44.8, minWidth: 44.8 }}>
+                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>
                                             <div className="btn-group ">
                                                 <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
                                                     <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
@@ -182,20 +182,20 @@ class Trade extends Component {
                                         </th>
                                         {user.mode === MODE.admin && !exUser ?
                                             <>
-                                                <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '142.8px' }}>Thành viên 1</th>
-                                                <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '142.8px' }}>Thành viên 2</th>
+                                                <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Thành viên 1</th>
+                                                <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Thành viên 2</th>
                                             </>
-                                            : <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '142.8px' }}>Thông tin khách hàng</th>
+                                            : <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>Thông tin khách hàng</th>
                                         }
-                                        <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 218 }}>Thời gian</th>
-                                        <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 218 }}>Nội dung giao thương</th>
+                                        <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Thời gian</th>
+                                        <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>Nội dung giao thương</th>
                                         {user?.mode !== MODE.admin || exUser ?
-                                            <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 218 }}>Thời gian đăng ký</th>
+                                            <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Thời gian đăng ký</th>
                                             : null}
                                         {user.mode === MODE.admin && !exUser ?
-                                            <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: 218 }}>Trạng thái</th>
+                                            <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Trạng thái</th>
                                             : null}
-                                        <th style={{ textAlign: 'center !important', width: 130 }} className="sorting_disabled" rowSpan={1} colSpan={1} >Hành động</th>
+                                        <th style={{ textAlign: 'center !important', width: '10%' }} className="sorting_disabled" rowSpan={1} colSpan={1} >Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
