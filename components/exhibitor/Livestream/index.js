@@ -157,7 +157,7 @@ class Livestream extends Component {
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
                                 <thead>
                                     <tr role="row">
-                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} aria-label="Toggle Dropdown Trash Delete permanently" style={{ width: '44.8px ' }}>
+                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>
                                             <div className="btn-group ">
                                                 <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
                                                     <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
@@ -168,7 +168,7 @@ class Livestream extends Component {
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '30%' }}>Mô tả</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>Link</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Trạng thái</th>
-                                        <th style={{ textAlign: 'center !important', }} rowSpan={1} colSpan={1} >Hành động</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }} >Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">

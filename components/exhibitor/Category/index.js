@@ -161,17 +161,17 @@ class Category extends Component {
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
                                 <thead>
                                     <tr role="row">
-                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} aria-label="Toggle Dropdown Trash Delete permanently" style={{ width: '44.8px' }}>
+                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>
                                             <div className="btn-group ">
                                                 <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
                                                     <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
                                                 </button>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '54.8px' }}>STT</th>
-                                        <th className="sorting_disabled"  rowSpan={1} colSpan={1} aria-label="Tên chuyên mục: activate to sort column ascending" style={{ width: '142.8px' }}>Tên chuyên mục</th>
-                                        <th className="sorting_disabled"  rowSpan={1} colSpan={1} aria-label="Trạng thái: activate to sort column ascending" style={{ width: 218 }}>Trạng thái</th>
-                                        <th style={{ textAlign: 'center !important', width: 130 }} className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Hành động">Hành động</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>STT</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '55%' }}>Tên chuyên mục</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Trạng thái</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">

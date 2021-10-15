@@ -168,11 +168,19 @@ class Visitor extends Component {
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
                                 <thead>
                                     <tr role="row">
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: "15%" }}>Ảnh đại diện</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>Tên khách hàng</th>
+                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>
+                                            <div className="btn-group ">
+                                                <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
+                                                    <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
+                                                </button>
+                                            </div>
+                                        </th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: "10%" }}>Ảnh đại diện</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>Tên khách hàng</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>Email</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Trạng thái</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%', textAlign: 'center !important' }} >Hành động</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Lĩnh vực</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Trạng thái</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%', textAlign: 'center!important' }} >Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
@@ -203,6 +211,7 @@ class Visitor extends Component {
                                                     </a>
                                                 </td>
                                                 <td>{visitor.email}</td>
+                                                <td>{visitor.industry?.map(i => i.name).join(',') || 'Chưa cập nhật'}</td>
                                                 <td>{visitor.enabled ? "Hoạt động" : "Không hoạt động"}</td>
                                                 <td className="row-options">
                                                     <a onClick={() => this.setState({ onEdit: visitor })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>

@@ -159,18 +159,18 @@ class Product extends Component {
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
                                 <thead>
                                     <tr role="row">
-                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} aria-label="Toggle Dropdown Trash Delete permanently" style={{ width: '44.8px ' }}>
+                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>
                                             <div className="btn-group ">
                                                 <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
                                                     <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
                                                 </button>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Ảnh sản phẩm" style={{ width: '20%', minWidth: 100 }}>Ảnh sản phẩm</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Tên sản phẩm: activate to sort column ascending" style={{ width: '30%' }}>Tên sản phẩm</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Chuyên mục: activate to sort column ascending" style={{ width: '20%' }}>Chuyên mục</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Trạng thái: activate to sort column ascending" style={{ width: '10%' }}>Trạng thái</th>
-                                        <th style={{ textAlign: 'center !important', }} className="sorting_disabled" rowSpan={1} colSpan={1} aria-label="Hành động">Hành động</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%', minWidth: 100 }}>Ảnh sản phẩm</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '30%' }}>Tên sản phẩm</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>Chuyên mục</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Trạng thái</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
