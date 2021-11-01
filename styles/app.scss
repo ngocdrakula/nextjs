@@ -1733,9 +1733,9 @@
 
   .header-content .search {
     position: absolute;
-    width: 42.3%;
+    width: 30%;
     top: 30%;
-    left: 345px;
+    left: 25%;
   }
 
   .header-content .search input {
@@ -1801,13 +1801,19 @@
     display: block;
     font-weight: 600;
     text-transform: none;
-    max-width: 200px;
+    max-width: 350px;
+    min-width: 80px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
+    -webkit-line-clamp: 3;
     overflow: hidden;
   }
-
+  @media screen and (min-width: 993px) {
+    .header-content .login-exhibitor a span,
+    .header-content .login-guest a span {
+      -webkit-line-clamp: 1;
+    }
+  }
   #slider {
     background: #ffcd37;
   }
@@ -3060,7 +3066,7 @@
       display: none;
     }
     .header-content .search {
-      left: 230px;
+      left: 25%;
     }
     .menu .menu-item {
       width: calc(100% / 4 + 65px);

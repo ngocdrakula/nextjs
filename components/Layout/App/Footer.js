@@ -7,7 +7,10 @@ class Footer extends Component {
         document.documentElement.scrollTop = 0;
     }
     render() {
-        const { setting: { facebook, zalo, spyke, youtube, } } = this.props;
+        const { setting: { facebook, zalo, spyke, youtube, footer } } = this.props;
+        let footerHTML = null;
+        try { footerHTML = <div dangerouslySetInnerHTML={{ __html: footer }} /> }
+        catch (e) { };
         return (
             <>
                 <footer id="footer" className="site-footer">
@@ -75,6 +78,7 @@ class Footer extends Component {
                     `}}
                 />
                 <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" />
+                {footerHTML}
             </>
         )
     }

@@ -31,6 +31,7 @@ class Overview extends Component {
             youtube: '',
             fieldError: null,
             message: '',
+            footer: '',
             onEdit: false
         }
     }
@@ -56,6 +57,7 @@ class Overview extends Component {
             countDown,
             exhibitorTitle, exhibitorDescription, visitorTitle, visitorDescription,
             facebook, zalo, spyke, youtube,
+            footer
         } = this.state;
         const data = {
             title, logoStatus,
@@ -65,6 +67,7 @@ class Overview extends Component {
             countDown,
             exhibitorTitle, exhibitorDescription, visitorTitle, visitorDescription,
             facebook, zalo, spyke, youtube,
+            footer
         }
         if (!(new Date(countDown)).getTime()) {
             this.setState({
@@ -204,6 +207,7 @@ class Overview extends Component {
             onEdit, fieldError, message, loading,
             dropLogo, dropBanner, dropFeature,
             facebook, zalo, spyke, youtube,
+            footer
         } = this.state;
         if (!active || !setting) return null;
         const logo = logoLocal || `${setting.logoUpdated ? "/api" : ""}/images/${setting.logo}`;
@@ -762,6 +766,23 @@ class Overview extends Component {
                                                 />
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                                <div className="form-group row devider">
+                                    <label className="col-md-3 col-form-label" htmlFor="setting-footer">Mã nhúng:</label>
+                                    <div className="col-md-9">
+                                        <textarea
+                                            type="text"
+                                            id="setting-footer"
+                                            className="form-control summernote"
+                                            rows={3}
+                                            cols={50}
+                                            placeholder="Thêm mã nhúng cho trang web"
+                                            value={footer}
+                                            name="footer"
+                                            onChange={this.handleChange}
+                                            readOnly={!onEdit}
+                                        />
                                     </div>
                                 </div>
 

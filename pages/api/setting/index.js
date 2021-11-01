@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import runMidldleware from '../../../middleware/mongodb';
-import lang, { langConcat } from '../../../lang.config';
+import lang from '../../../lang.config';
 import uploader, { cleanFiles } from '../../../middleware/multer';
 import jwt from '../../../middleware/jwt';
 import { MODE } from '../../../utils/helper';
@@ -42,6 +42,7 @@ const handler = async (req, res) => {
                     featureStatus, featuresTitle, features,
                     exhibitorTitle, exhibitorDescription, visitorTitle, visitorDescription,
                     facebook, zalo, spyke, youtube,
+                    footer
                 },
                 files, err } = await uploader(req);
             if (err) throw ({ path: 'files' });
@@ -109,6 +110,7 @@ const handler = async (req, res) => {
             if (zalo !== undefined) data.zalo = zalo;
             if (spyke !== undefined) data.spyke = spyke;
             if (youtube !== undefined) data.youtube = youtube;
+            if (footer !== undefined) data.footer = footer;
             data.timestamp = Date.now();
             fs.writeFileSync(settingName, JSON.stringify(data));
 
@@ -168,54 +170,6 @@ const handler = async (req, res) => {
                 message: 'Máy chủ không phản hồi',
                 messages: lang?.message?.error?.server,
                 error: e.err,
-            });
-        }
-    } else if (req.method == 'DELETE') {
-        try {
-            const bearerToken = req.headers['authorization'];
-            if (!bearerToken) throw ({ path: 'token' })
-            const user = jwt.verify(bearerToken);
-            if (user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
-            const userCurrent = await userController.get(req.query.id);
-            if (!userCurrent) throw ({ path: '_id' });
-            cleanFiles([userCurrent.image, userCurrent.image])
-            userCurrent.remove();
-            return res.status(200).send({
-                success: true,
-                data: null,
-                message: 'Xóa thành công',
-                messages: lang?.message?.success?.deleted
-            });
-        } catch (e) {
-            if (e.path == 'token') {
-                if (!e.token) {
-                    return res.status(401).send({
-                        success: false,
-                        authentication: false,
-                        message: 'Bạn không có quyền truy cập',
-                        messages: lang?.message?.error?.unauthorized
-                    });
-                }
-                return res.status(400).send({
-                    success: false,
-                    name: e.name,
-                    message: e.name == 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
-                    messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
-                });
-            }
-            if (e.path == '_id') {
-                return res.status(400).send({
-                    success: false,
-                    exist: false,
-                    message: "Tài khoản tồn tại hoặc đã bị xóa",
-                    messages: langConcat(lang?.resources?.product, lang?.message?.error?.validation?.not_exist),
-                });
-            }
-            return res.status(500).send({
-                success: false,
-                message: 'Máy chủ không phản hồi',
-                messages: lang?.message?.error?.server,
-                error: e,
             });
         }
     } else {
