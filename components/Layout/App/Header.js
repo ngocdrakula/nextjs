@@ -33,6 +33,15 @@ class Header extends Component {
         const query = getQuery(decodeURI(Router?.router?.asPath));
         if (query.name) this.setState({ name: query.name });
     }
+    componentDidUpdate(prevProps) {
+        const { dispatch, user } = this.props;
+        if (user?._id && prevProps.user?._id !== user._id) {
+            dispatch({
+                type: types.GET_USER,
+                payload: user._id
+            });
+        }
+    }
     openLoginVisitor = e => {
         e.preventDefault();
         const { dispatch } = this.props;

@@ -22,6 +22,15 @@ class Header extends Component {
     componentWillUnmount() {
         document.documentElement.removeEventListener('click', this.handleClick, true);
     }
+    componentDidUpdate(prevProps) {
+        const { dispatch, user } = this.props;
+        if (user?._id && prevProps.user?._id !== user._id) {
+            dispatch({
+                type: types.GET_USER,
+                payload: user._id
+            });
+        }
+    }
     handleClick = (e) => {
         const { active } = this.state;
         if ((!document.getElementById('messages-dropdown')?.contains(e.target) && active === 0) ||

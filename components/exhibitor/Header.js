@@ -19,6 +19,15 @@ class Header extends Component {
     componentWillUnmount() {
         document.documentElement.removeEventListener('click', this.handleClick, true);
     }
+    componentDidUpdate(prevProps) {
+        const { dispatch, user } = this.props;
+        if (user?._id && prevProps.user?._id !== user._id) {
+            dispatch({
+                type: types.GET_USER,
+                payload: user._id
+            });
+        }
+    }
     handleClick = (e) => {
         const { active } = this.state;
         if ((!document.getElementById('messages-dropdown')?.contains(e.target) && active === 0) ||
@@ -30,8 +39,8 @@ class Header extends Component {
     }
     handleLogout = e => {
         e.preventDefault();
-        const { dispatch } = this.props;
-        dispatch({ type: types.ADMIN_EXHIBITOR_LOGOUT });
+        const { dispatch, mode } = this.props;
+        dispatch({ type: mode === MODE.admin ? types.ADMIN_EXHIBITOR_LOGOUT : types.ADMIN_LOGOUT });
     }
 
     handleToggle = (active) => this.setState({ active: active !== this.state.active ? active : null })
@@ -135,4 +144,4 @@ class Header extends Component {
     }
 }
 
-export default connect(({ admin: { setting, exUser, user, newMessage } }) => ({ setting, user: exUser || user, newMessage }))(Header)
+export default connect(({ admin: { setting, exUser, user, newMessage } }) => ({ setting, user: exUser || user, mode: user?.mode, newMessage }))(Header)

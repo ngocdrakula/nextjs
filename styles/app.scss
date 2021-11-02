@@ -1667,6 +1667,9 @@
     outline: none;
     border: none;
   }
+  input.form-control {
+    border: 1px solid #ced4da;
+  }
 
   .form-control:focus {
     border-color: #ced4da;

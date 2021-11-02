@@ -105,9 +105,15 @@ const handler = async (req, res) => {
           catch (e) { throw ({ path: 'industry' }); };
         }
         const userUpdated = await (await currentUser.save()).populate('industry').execPopulate();
+        let token = null;
+        if (user._id = id && (email || name)) {
+          const { _id, email, name, createdAt, mode } = userUpdated;
+          token = jwt.create({ _id, email, name, createdAt, mode }); 
+        }
         return res.status(200).send({
           success: true,
           data: userUpdated,
+          token,
           message: 'Cập nhật thành công',
           messages: lang?.message?.success?.updated
         });
