@@ -110,7 +110,7 @@ class ConversationList extends Component {
             <img src="/images/user2.png" />
           </div>
           {user?.mode !== MODE.admin ?
-            <span>Nhắn tin với Admin</span>
+            <span>Nhắn tin với {admin?.name || "Admin"}</span>
             :
             <span>Cuộc hội thoại</span>
           }
