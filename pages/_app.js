@@ -10,7 +10,7 @@ import dynamic from 'next/dynamic';
 const Header = dynamic(() => import('../components/Layout/App/Header'));
 const Footer = dynamic(() => import('../components/Layout/App/Footer'));
 
-import AdminHead from '../components/Layout/Admin/AdminHead';
+const AdminHead = dynamic(() => import('../components/Layout/Admin/AdminHead'));
 import Tooltip from '../components/Layout/Admin/Tooltip';
 
 

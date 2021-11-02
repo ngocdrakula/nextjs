@@ -8,11 +8,15 @@ export class AdminHead extends Component {
     }
     render() {
         const { setting } = this.props;
-        const favicon = `${setting?.faviconUpdated ? "/api" : ""}/images/${setting?.favicon}`;
+        const { faviconUpdated, favicon, title } = setting;
+        const icon = `${faviconUpdated ? "/api" : ""}/images/${favicon}`;
+        console.log(icon)
         return (
             <NextHead>
-                <title>{setting.title || process.env.TITLE}</title>
-                {setting?.favicon ? <link rel="icon" href={favicon} type="image/x-icon" /> : ""}
+                <title>{title || process.env.TITLE}</title>
+                <meta name="description" content={title || process.env.TITLE} />
+                <meta name="robots" content="noodp,index,follow" />
+                <link href={icon} rel="shortcut icon" type="image/x-icon" />
                 <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
                 <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
                 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, shrink-to-fit=no" />
@@ -29,4 +33,4 @@ export class AdminHead extends Component {
 
 
 
-export default connect(({ admin: { setting } }) => ({ setting }))(AdminHead)
+export default connect(({ app: { setting } }) => ({ setting }))(AdminHead)

@@ -18,6 +18,7 @@ class Profile extends Component {
   componentDidUpdate(prevProps) {
     const { dispatch, user } = this.props;
     if (user?._id && prevProps.user?._id !== user._id) {
+      console.log(user?.mode)
       if (user?.mode === MODE.visitor) {
         dispatch({
           type: types.GET_USER,

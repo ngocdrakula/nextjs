@@ -101,6 +101,7 @@ function* admin_updateUser({ payload, callback }) {
         const res = yield call(requests.admin_updateUserRequest, payload);
         if (res?.data?.success) {
             yield put({ type: types.ADMIN_UPDATE_USER_SUCCESS, payload: res.data });
+            if (res.data.token) localStorage.setItem('token', res.data.token);
             if (typeof callback === 'function') callback(res.data);
         }
     } catch (e) {

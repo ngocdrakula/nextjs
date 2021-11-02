@@ -71,7 +71,8 @@ const appReducer = (state = initState, action) => {
             return {
                 ...state,
                 user: action.payload,
-                openForm: null
+                openForm: null,
+                logErr: false
             };
         }
         case types.USER_LOGIN_FAILED: {
