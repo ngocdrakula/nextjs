@@ -26,15 +26,16 @@ class AddLivestream extends Component {
         if (e.target.name === 'embed') {
             const embed = e.target.value;
             const array = embed.split('"');
-            const index = array.findIndex(i => i.includes('src')); 
-            const link = array[index + 1] || ''; 
+            const index = array.findIndex(i => i.includes('src'));
+            const link = array[index + 1] || '';
             this.setState({ [e.target.name]: e.target.value, link, fieldError: false })
         } else this.setState({ [e.target.name]: e.target.value, fieldError: false })
     }
     handleSubmit = e => {
+        const { dispatch, onAdded, exUser } = this.props;
         e.preventDefault();
         const { title, description, link, embed, enabled } = this.state;
-        const data = { title, description, link, embed, enabled }
+        const data = { title, description, link, embed, enabled, author: exUser?._id }
         const dataRequied = { title, description, link, embed }
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
@@ -42,7 +43,6 @@ class AddLivestream extends Component {
             this.setState({ fieldError, message: 'Vui lòng điền đầy đủ thông tin' })
         }
         else {
-            const { dispatch, onAdded } = this.props;
             dispatch({
                 type: types.ADMIN_ADD_LIVESTREAM,
                 payload: data,
@@ -185,4 +185,4 @@ class AddLivestream extends Component {
     }
 }
 
-export default connect(({ }) => ({}))(AddLivestream)
+export default connect(({ admin: { exUser } }) => ({ exUser }))(AddLivestream)

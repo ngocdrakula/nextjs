@@ -21,9 +21,10 @@ class Category extends Component {
     }
     handleChange = e => this.setState({ [e.target.name]: e.target.value, fieldError: false })
     handleSubmit = e => {
+        const { dispatch, onAdded, exUser } = this.props;
         e.preventDefault();
         const { name, enabled } = this.state;
-        const data = { name, enabled }
+        const data = { name, enabled, exhibitor: exUser?._id }
         const dataRequied = { name }
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
@@ -31,7 +32,6 @@ class Category extends Component {
             this.setState({ fieldError, message: 'Vui lòng điền đầy đủ thông tin' })
         }
         else {
-            const { dispatch, onAdded } = this.props;
             dispatch({
                 type: types.ADMIN_ADD_CATEGORY,
                 payload: data,
@@ -136,4 +136,4 @@ class Category extends Component {
     }
 }
 
-export default connect(({ admin: { industries } }) => ({ industries }))(Category)
+export default connect(({ admin: { industries, exUser } }) => ({ industries, exUser }))(Category)

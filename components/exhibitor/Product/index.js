@@ -21,11 +21,11 @@ class Product extends Component {
         this.gotoPage();
     }
     gotoPage = (page = 0) => {
-        const { dispatch } = this.props;
+        const { dispatch, exUser } = this.props;
         const { name } = this.state;
         dispatch({
             type: types.ADMIN_GET_PRODUCTS,
-            payload: { page, pageSize, name },
+            payload: { page, pageSize, name, exhibitorId: exUser?._id },
             callback: res => {
                 this.setState({ selecteds: [] })
             }
@@ -227,4 +227,4 @@ class Product extends Component {
     }
 }
 
-export default connect(({ admin: { product: { data: products, page, total }, categories } }) => ({ products, page, total, categories }))(Product)
+export default connect(({ admin: { product: { data: products, page, total }, categories, exUser } }) => ({ products, page, total, categories, exUser }))(Product)
