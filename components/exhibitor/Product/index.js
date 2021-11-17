@@ -20,6 +20,11 @@ class Product extends Component {
     componentDidMount() {
         this.gotoPage();
     }
+    componentDidUpdate(prevProps) {
+        if (!prevProps.exUser && this.props.exUser?._id) {
+            this.gotoPage();
+        }
+    }
     gotoPage = (page = 0) => {
         const { dispatch, exUser } = this.props;
         const { name } = this.state;
@@ -227,4 +232,4 @@ class Product extends Component {
     }
 }
 
-export default connect(({ admin: { product: { data: products, page, total }, categories, exUser } }) => ({ products, page, total, categories, exUser }))(Product)
+export default connect(({ admin: { product: { data: products, page, total }, categories, user, exUser } }) => ({ products, page, total, categories, user, exUser }))(Product)

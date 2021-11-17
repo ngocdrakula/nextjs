@@ -19,6 +19,11 @@ class Livestream extends Component {
     componentDidMount() {
         this.gotoPage();
     }
+    componentDidUpdate(prevProps) {
+        if (!prevProps.exUser && this.props.exUser?._id) {
+            this.gotoPage();
+        }
+    }
     gotoPage = (page = 0) => {
         const { dispatch, exUser } = this.props;
         const { title } = this.state;
