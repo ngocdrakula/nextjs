@@ -13,6 +13,7 @@ class AddProduct extends Component {
             enabled: true,
             fieldError: null,
             message: '',
+            description: '',
             files: null
         }
         this.state = { ...this.defaultState };

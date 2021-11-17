@@ -37,7 +37,7 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
       if (user?.mode != MODE.exhibitor && user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
-      const { name, exhibitor } = req.body;
+      const { name, enabled, exhibitor } = req.body;
       if (!name) throw ({ path: 'name' })
       try {
         const matchFront = await categoryController.find({ name, exhibitor: exhibitor || user._id });
@@ -45,7 +45,7 @@ const handler = async (req, res) => {
       } catch (error) {
         throw error
       }
-      const categoryCreated = await categoryController.create({ name, exhibitor: exhibitor || user._id });
+      const categoryCreated = await categoryController.create({ name, enabled, exhibitor: exhibitor || user._id });
       return res.status(201).send({
         success: true,
         data: categoryCreated,

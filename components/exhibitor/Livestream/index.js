@@ -20,11 +20,11 @@ class Livestream extends Component {
         this.gotoPage();
     }
     gotoPage = (page = 0) => {
-        const { dispatch } = this.props;
+        const { dispatch, exUser } = this.props;
         const { title } = this.state;
         dispatch({
             type: types.ADMIN_GET_LIVESTREAMS,
-            payload: { page, pageSize, title },
+            payload: { page, pageSize, title, author: exUser?._id },
             callback: res => {
                 this.setState({ selecteds: [] })
             }
