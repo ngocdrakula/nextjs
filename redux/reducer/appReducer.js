@@ -106,7 +106,7 @@ const appReducer = (state = initState, action) => {
         case types.GET_USER_SUCCESS: {
             return {
                 ...state,
-                user: action.payload.data?._id === state.user._id ? action.payload.data : state.user,
+                user: action.payload?._id === state.user?._id ? action.payload : state.user,
             };
         }
         case types.UPDATE_USER_SUCCESS: {

@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { END } from 'redux-saga';
 import Router from 'next/router';
 import Link from 'next/link';
+import ErrorPage from 'next/error'
 import { wrapper } from '../redux/store';
 import types from '../redux/types'
 import { getQuery, MODE } from '../utils/helper';
@@ -16,7 +17,8 @@ class Visitor extends Component {
     this.state = {
       visitor: {},
       active: 0,
-      message: ''
+      message: '',
+      loading: true
     };
   }
   componentDidMount() {
@@ -27,7 +29,7 @@ class Visitor extends Component {
         type: types.GET_USER,
         payload: query.id,
         callback: res => {
-          if (res?.success) this.setState({ visitor: res.data })
+          if (res?.success) this.setState({ visitor: res.data, loading: false })
         }
       });
     }
@@ -93,8 +95,9 @@ class Visitor extends Component {
     this.setState({ toggle: !this.state.toggle })
   }
   render() {
-    const { visitor, active, message, toggle } = this.state;
+    const { visitor, active, message, toggle, loading } = this.state;
     const { user } = this.props;
+    if (!loading && !visitor._id) return <ErrorPage statusCode={404} />
     return (
       <div id="content" className="site-content">
         <div id="detail-buyer store-detail">
