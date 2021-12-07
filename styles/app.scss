@@ -1366,7 +1366,7 @@
     }
   }
 
-  @media (min-width: 500px) and (max-width: 735px) {
+  @media (max-width: 735px) {
     .banner-container {
       background-size: 40% auto;
       padding-top: 30px;
@@ -3105,7 +3105,7 @@
       line-height: 17px;
     }
     .slide-text .txt-white {
-      font-size: 45px;
+      font-size: 42px;
       line-height: 45px;
       margin-bottom: 15px;
     }
@@ -3490,6 +3490,38 @@
     /* End Liên hệ */
   }
 
+  @media (max-width: 735px) {
+    #slider .slide-text {
+      top: 35px;
+      right: 10px;
+    }
+    #slider .slide-text h1,
+    .slide-text .time-location .time {
+      font-size: 16px;
+    }
+    #slider .slide-text h1 span {
+      font-size: 32px;
+    }
+    .slide-text .time-location .time img {
+      width: 5px;
+    }
+    .slide-text .time-location .location {
+      font-size: 6px;
+      line-height: 8px;
+    }
+    .slide-text .txt-white {
+      font-size: 15px;
+      line-height: 20px;
+      margin-bottom: 5px;
+    }
+    .slide-text .txt-last {
+      font-size: 10px;
+      line-height: 12px;
+    }
+    .store-top {
+      height: auto;
+    }
+  }
   @media screen and (min-width: 415px) and (max-width: 768px) {
     .counter-time .counter-time-item {
       margin: 0 10px;
@@ -3530,38 +3562,12 @@
       margin-left: 0;
       border-bottom: 15px;
     }
-  }
-
-  @media (min-width: 500px) and (max-width: 735px) {
-    #slider .slide-text {
-      top: 35px;
-      right: 10px;
+    #slider .slide-text h1 span {
+      font-size: 32px;
     }
     #slider .slide-text h1,
     .slide-text .time-location .time {
-      font-size: 16px;
-    }
-    #slider .slide-text h1 span {
-      font-size: 40px;
-    }
-    .slide-text .time-location .time img {
-      width: 5px;
-    }
-    .slide-text .time-location .location {
-      font-size: 6px;
-      line-height: 8px;
-    }
-    .slide-text .txt-white {
-      font-size: 15px;
-      line-height: 20px;
-      margin-bottom: 5px;
-    }
-    .slide-text .txt-last {
-      font-size: 10px;
-      line-height: 12px;
-    }
-    .store-top {
-      height: auto;
+      font-size: 11px;
     }
   }
 
@@ -3600,13 +3606,17 @@
       line-height: 38px;
       font-size: 12px;
     }
+    #slider .banner-container .slide-text {
+      width: 70%;
+      margin-left: 30%;
+    }
     #slider .slide-text {
       top: 20px;
       right: 10px;
     }
     #slider .slide-text h1,
     .slide-text .time-location .time {
-      font-size: 12px;
+      font-size: 7px;
     }
     #slider .slide-text h1 span {
       font-size: 24px;
@@ -3739,6 +3749,14 @@
     .menu .menu-item {
       width: calc(100% / 3 + 60px);
     }
+    #slider .slide-text h1,
+    .slide-text .time-location .time {
+      font-size: 5px;
+    }
+    .banner-container .slide-text .txt-white {
+      font-size: 13px;
+      line-height: 16px;
+    }
   }
 
   @media only screen and (max-width: 320px) {
@@ -3763,8 +3781,8 @@
     }
     #slider .slide-text h1,
     .slide-text .time-location .time {
-      font-size: 10px;
-      line-height: 10px;
+      font-size: 4px;
+      line-height: 6px;
       margin-bottom: 0;
     }
     #slider .slide-text h1 span {
@@ -3774,12 +3792,12 @@
       font-size: 5px;
       line-height: 6px;
     }
-    .slide-text .txt-white {
-      font-size: 13px;
-      line-height: 16px;
+    .banner-container .slide-text .txt-white {
+      font-size: 10px;
+      margin-left: 0px;
     }
     .slide-text .txt-last {
-      font-size: 8px;
+      font-size: 6px;
       line-height: 9px;
     }
     .menu .menu-item {
@@ -3831,4 +3849,8 @@
       margin-bottom: 13px;
     }
   }
+}
+.customer-item.store-item .store-top a img {
+  object-fit: cover;
+  height: 100%;
 }

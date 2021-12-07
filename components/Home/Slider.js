@@ -9,7 +9,7 @@ class Slider extends Component {
         if (!bannerStatus) return null;
         const image = `${bannerUpdated ? "/api" : ""}/images/${bannerLogoThumb}`;
         return (
-            < div id="slider" style={bannerBackground ? { backgroundColor: bannerBackground } : {}}>
+            <div id="slider" style={bannerBackground ? { backgroundColor: bannerBackground } : {}}>
                 <div className="container banner-container" style={{ backgroundImage: `url(${image})` }}>
                     <div className="slide-text">
                         <h1>{bannerSubTitle}<span>{bannerTitle}</span></h1>

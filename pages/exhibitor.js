@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { END } from 'redux-saga';
 import Router from 'next/router';
 import Link from 'next/link';
+import ErrorPage from 'next/error'
 import { wrapper } from '../redux/store';
 import types from '../redux/types'
 import { getQuery, MODE } from '../utils/helper';
@@ -22,6 +23,7 @@ class Exhibitor extends Component {
       currentPage: -1,
       products: [],
       total: 0,
+      loading: true
     };
   }
   componentDidMount() {
@@ -31,18 +33,23 @@ class Exhibitor extends Component {
       dispatch({
         type: types.GET_USER,
         payload: query.id,
-        callback: res => {
-          if (res?.success) this.setState({ exhibitor: res.data });
-        }
-      });
-      dispatch({
-        type: types.GET_CATEGORIES,
-        payload: { exhibitor: query.id },
-        callback: res => {
-          if (res?.success) this.gotoPage();
+        callback: res => { 
+          if (res?.success) {
+            this.setState({ exhibitor: res.data, loading: false }, () => {
+              dispatch({
+                type: types.GET_CATEGORIES,
+                payload: { exhibitor: query.id },
+                callback: res => {
+                  if (res?.success) this.gotoPage();
+                }
+              });
+            });
+          }
+          else { this.setState({ loading: false }) }
         }
       });
     }
+    else { this.setState({ loading: false }) }
   }
   handleChange = e => this.setState({ message: e.target.value })
   handleSubmit = e => {
@@ -131,9 +138,10 @@ class Exhibitor extends Component {
     this.setState({ toggle: !this.state.toggle })
   }
   render() {
-    const { exhibitor, active, message, categorySelected, products, currentPage, total, toggle } = this.state;
+    const { exhibitor, active, message, categorySelected, products, currentPage, total, toggle, loading } = this.state;
     const { categories, user, livestream } = this.props;
     const currentCategory = categories.find(i => i._id === categorySelected);
+    if (!loading && !exhibitor._id) return <ErrorPage statusCode={404} />
     return (
       <div id="content" className="site-content">
         <div id="detail-exhibitor store-detail">
