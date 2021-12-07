@@ -3853,4 +3853,13 @@
     object-fit: cover;
     height: 100%;
   }
+  .store-name .container .exhibiton-avatar {
+    margin-right: 30px;
+    width: 166px;
+  }
+  .store-name .container > h3 img {
+    margin-right: 0;
+    max-width: 100%;
+    max-height: 100%;
+  }
 }
