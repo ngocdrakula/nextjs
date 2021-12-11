@@ -4,7 +4,7 @@ import Link from 'next/link';
 import langConfig from '../../lang.config';
 import types from '../../redux/types';
 import { MODE } from '../../utils/helper';
-import { translate } from '../../utils/language';
+import { getLocale, translate } from '../../utils/language';
 
 const pageSize = 6;
 
@@ -60,7 +60,8 @@ class Buyer extends Component {
         }
     }
     render() {
-        const { setting, industries, visitors } = this.props
+        const setting = this.props.setting[getLocale()] || {};
+        const { industries, visitors } = this.props
         const { selected } = this.state;
         return (
             <div id="buyers">

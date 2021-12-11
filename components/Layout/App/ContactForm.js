@@ -58,4 +58,4 @@ class ContactForm extends Component {
 
 
 
-export default connect(({ admin: { setting } }) => ({ setting }))(ContactForm)
+export default connect(({ }) => ({}))(ContactForm)

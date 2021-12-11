@@ -4,7 +4,7 @@ import Link from 'next/link';
 import langConfig from '../../lang.config';
 import types from '../../redux/types';
 import { getTime, MODE } from '../../utils/helper';
-import { translate } from '../../utils/language';
+import { getLocale, translate } from '../../utils/language';
 
 class Header extends Component {
     constructor(props) {
@@ -50,7 +50,8 @@ class Header extends Component {
 
     render() {
         const { active } = this.state;
-        const { setting, handleToggle, user, newMessage, handleActiveMessage, handleActiveUser } = this.props;
+        const { handleToggle, user, newMessage, handleActiveMessage, handleActiveUser } = this.props;
+        const setting = this.props.setting[getLocale()] || {};
         return (
 
             <header className="main-header">

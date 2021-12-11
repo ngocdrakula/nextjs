@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import langConfig from '../../lang.config';
-import { translate } from '../../utils/language';
+import { getLocale, translate } from '../../utils/language';
 
 class Countdown extends Component {
     constructor(props) {
@@ -14,7 +14,7 @@ class Countdown extends Component {
         }
     }
     componentDidMount() {
-        const { setting } = this.props;
+        const setting = this.props.setting[getLocale()] || {};
         const deadline = (new Date(setting.countDown)).getTime();
         if (deadline > Date.now()) {
             this.interval = setInterval(() => {
@@ -57,7 +57,7 @@ class Countdown extends Component {
                     <div className="register-guest">
                         <a href="https://vimexpo.com.vn/khach-tham-quan/dang-ky-tham-quan/" target="_blank">
                             <img src="/images/icon-register-guest.png" alt="" />{translate(langConfig.app.Register)} <span>{translate(langConfig.app.Visitor)}</span>
-                            </a>
+                        </a>
                     </div>
                 </div>
             </div>

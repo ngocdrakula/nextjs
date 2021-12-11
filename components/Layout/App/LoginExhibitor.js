@@ -57,7 +57,7 @@ class LoginExhibitor extends Component {
                     <input onChange={this.handleChange} type="password" name="password" placeholder={translate(langConfig.app.Password)} />
                 </label>
                 {message ? <div className="error-form">{message}</div> : ""}
-                <button type="submit" className="log-submit" onClick={this.handleSubmit}>Đăng nhập</button>
+                <button type="submit" className="log-submit" onClick={this.handleSubmit}>{translate(langConfig.app.Login)}</button>
                 <div className="suport-login">
                     <label className="remember-login label-cb">
                         <input type="checkbox" name="remember" />

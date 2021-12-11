@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import types from '../../../redux/types';
 import { createFormData } from '../../../utils/helper';
 
-const status = [{ value: true, label: 'Hoạt động' }, { value: false, label: 'Không hoạt động' }]
-
 class Setting extends Component {
     constructor(props) {
         super(props);
@@ -32,17 +30,16 @@ class Setting extends Component {
             fieldError: null,
             message: '',
             footer: '',
-            onEdit: false
+            onEdit: false,
+            lang: 'vn'
         }
     }
     componentDidMount() {
-        if (!this.props.setting.timestamp) {
-            this.handleRefresh();
-        }
+        this.handleRefresh();
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.setting.timestamp !== this.props.setting.timestamp) {
+        if (prevProps.setting !== this.props.setting) {
             this.handleRefresh();
         }
     }
@@ -58,7 +55,7 @@ class Setting extends Component {
             countDown,
             exhibitorTitle, exhibitorDescription, visitorTitle, visitorDescription,
             facebook, zalo, spyke, youtube,
-            footer
+            footer, lang
         } = this.state;
         const data = {
             title, logoStatus,
@@ -68,7 +65,7 @@ class Setting extends Component {
             countDown,
             exhibitorTitle, exhibitorDescription, visitorTitle, visitorDescription,
             facebook, zalo, spyke, youtube,
-            footer
+            footer, lang
         }
         if (!(new Date(countDown)).getTime()) {
             this.setState({
@@ -136,7 +133,7 @@ class Setting extends Component {
     handleDropdownFeature = () => this.setState({ dropFeature: !this.state.dropFeature })
 
     handleRefresh = () => this.setState({
-        ...this.props.setting,
+        ...this.props.setting[this.state.lang],
         filesLogo: null,
         filesFavicon: null,
         filesBanner: null,
@@ -197,8 +194,22 @@ class Setting extends Component {
     handleChangeTime = e => {
         this.setState({ [e.target.name]: e.target.value, fieldError: null })
     }
+
+    handleSelectLang = (lang) => {
+        if (lang !== this.state.lang) {
+            this.setState({ lang }, () => {
+                const { dispatch } = this.props;
+                dispatch({
+                    type: types.ADMIN_GET_SETTING,
+                    payload: { lang },
+                })
+            })
+        }
+    }
+
     render() {
-        const { setting, active } = this.props;
+        const { active } = this.props;
+        const setting = this.props.setting[this.state.lang];
         const {
             title, logoStatus, logoLocal, faviconLocal, bannerLocal, countDown,
             bannerStatus, bannerSubTitle, bannerTitle, bannerStartTime, bannerEndTime,
@@ -208,7 +219,7 @@ class Setting extends Component {
             onEdit, fieldError, message, loading,
             dropLogo, dropBanner, dropFeature,
             facebook, zalo, spyke, youtube,
-            footer
+            footer, lang
         } = this.state;
         if (!active || !setting) return null;
         const logo = logoLocal || `${setting.logoUpdated ? "/api" : ""}/images/${setting.logo}`;
@@ -220,6 +231,24 @@ class Setting extends Component {
                     <div className="row" style={{ padding: '0 20px 20px 20px' }}>
                         <div className="col">
                             <div className="card">
+                                <div className="form-group row">
+                                    <label htmlFor="setting-lang" className="col-sm-3 col-form-label">Ngôn ngữ hiển thị: </label>
+                                    <div className="col-sm-9">
+                                        <button
+                                            type="button"
+                                            disabled={lang === "vn"}
+                                            className={"btn" + (lang !== "vn" ? "  btn-primary" : "")}
+                                            onClick={() => this.handleSelectLang('vn')}
+                                        >{lang === "vn" ? "Tiếng Việt (Đang chọn)" : "Đổi sang Tiếng Việt"}</button>
+                                        <button
+                                            type="button"
+                                            disabled={lang === "en"}
+                                            style={{ marginLeft: 10 }}
+                                            className={"btn" + (lang !== "en" ? "  btn-primary" : "")}
+                                            onClick={() => this.handleSelectLang('en')}
+                                        >{lang === "en" ? "Tiếng Anh (Đang chọn)" : "Đổi sang Tiếng Anh"}</button>
+                                    </div>
+                                </div>
                                 <div className="form-group row">
                                     <label htmlFor="setting-title" className="col-sm-3 col-form-label">Tiêu đề trang web: </label>
                                     <div className="col-sm-9">

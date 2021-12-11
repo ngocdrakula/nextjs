@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import langConfig from '../../../lang.config';
-import { translate } from '../../../utils/language';
+import { getLocale, translate } from '../../../utils/language';
 import ContactForm from './ContactForm';
 
 class Footer extends Component {
@@ -9,7 +9,8 @@ class Footer extends Component {
         document.documentElement.scrollTop = 0;
     }
     render() {
-        const { setting: { facebook, zalo, spyke, youtube, footer } } = this.props;
+        const setting = this.props.setting[getLocale()] || {};
+        const { facebook, zalo, spyke, youtube, footer } = setting;
         let footerHTML = null;
         try { footerHTML = <div dangerouslySetInnerHTML={{ __html: footer }} /> }
         catch (e) { };

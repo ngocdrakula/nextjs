@@ -493,7 +493,7 @@ const langConfig = {
         PasswordMustBeOnMoreThan8Character: { vn: 'Mật khẩu phải trên 8 kí tự', en: 'Password must be more than 8 characters' },
         WrongConfirmationPassword: { vn: 'Mật khẩu xác nhận sai', en: 'Wrong confirmation password' },
         TheEmailAddressHasBeenUsed: { vn: 'Địa chỉ email đã được sử dụng', en: 'The email address has been used' },
-        ConfirmPassword: { vn: 'Nhập lại mật khẩu', en: 'Confirm Password' },
+        ConfirmPassword: { vn: 'Nhập lại', en: 'Re-enter' },
         Name: { vn: 'Tên', en: 'Name' },
         ToggleNavigation: { vn: 'Toggle Navigation', en: 'Toggle Navigation' },
         Logout: { vn: 'Đăng xuất', en: 'Logout' },
@@ -561,9 +561,32 @@ const langConfig = {
         SelectTradeTime: { vn: 'Chọn thời gian giao thương', en: 'Select a trade time' },
         EnterTradeContent: { vn: 'Nhập nội dung giao thương', en: 'Enter trade content' },
         CreateTradeSuccess: { vn: 'Tạo lịch giao thương thành công', en: 'Create trade success' },
+        SecurityCode: { vn: 'Mã bảo mật', en: 'Security code' },
+        EnterSecurityCode: { vn: 'Nhập mã bảo mật', en: 'Enter Security code' },
+        EnterYourEmail: { vn: 'Nhập email của bạn', en: 'Enter your email' },
+        EnterYourName: { vn: 'Nhập tên của bạn', en: 'Enter your name' },
+        AtLeast8Characters: { vn: 'Mật khẩu tối thiểu 8 kí tự', en: 'At least 8 characters' },
+        ResendSecurityCode: { vn: 'Gửi lại mã bảo mật', en: 'Resend security code' },
+        ChangePassword: { vn: 'Đổi mật khẩu', en: 'Change password' },
+        GetSecurityCode: { vn: 'Lấy mã bảo mật', en: 'Get security code' },
+        BackToLoginPage: { vn: 'Quay lại trang đăng nhập', en: 'Back to login page' },
+        RegisterFailed: { vn: 'Đăng ký thất bại', en: 'Register failed' },
+        EnterCompanyName: { vn: 'Nhập tên công ty', en: 'Enter company name' },
+        EnterCompanyAddress: { vn: 'Nhập địa chỉ công ty', en: 'Enter company address' },
+        EnterCompanyHotline: { vn: 'Nhập số điện thoại công ty', en: 'Enter company hotline' },
+        EnterYourMobile: { vn: 'Nhập số điện thoại cá nhân', en: 'Enter your mobile' },
+        EnterCompanyWebsite: { vn: 'Nhập website công ty', en: 'Enter company website' },
+        EnterYourPosition: { vn: 'Nhập chức vụ của bạn trong công ty', en: 'Enter your position' },
+        EnterProductBuy: { vn: 'Nhập sản phẩm mà bạn muốn mua (nếu có)', en: 'Enter your Enter the product you want to buy (if any)' },
+        EnterCompanyEmail: { vn: 'Nhập email công ty', en: 'Enter company email' },
+        EnterPassword: { vn: 'Nhập mật khẩu', en: 'Enter password' },
+        ReEnterPassword: { vn: 'Nhập lại mật khẩu', en: 'Re-enter password' },
+        LoginNow: { vn: 'Đăng nhập ngay', en: 'Login now' },
+        HaveAccount: { vn: 'Bạn đã có tài khoản', en: 'Have a account' },
+        AccountNotExistOrLocked: { vn: 'Tài khoản không tồn tại hoặc đã bị khóa', en: 'Account does not exist or has been locked' },
     }
 }
-export const langConcat = (...langs) => { 
+export const langConcat = (...langs) => {
     const lang = {};
     langs.map(l => Object.keys(l).map(k => lang[k] ? lang[k] += " " + l[k]?.toLowerCase() : lang[k] = l[k]));
     return lang;

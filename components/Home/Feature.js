@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import { getLocale } from '../../utils/language';
 
 
 const icons = [
@@ -13,7 +14,7 @@ const icons = [
 
 class Feature extends Component {
     render() {
-        const { setting } = this.props;
+        const setting = this.props.setting[getLocale()] || {};
         const { featureStatus, featuresTitle, features } = setting;
         if (!featureStatus) return null;
         return (

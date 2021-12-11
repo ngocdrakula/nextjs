@@ -48,8 +48,8 @@ export const getCategoriesRequest = async (params) => {
 export const postContactRequest = async (request) => {
     return axios.post('contact?', request)
 }
-export const getSettingRequest = async () => {
-    return axios.get('setting');
+export const getSettingRequest = async (params) => {
+    return axios.get('setting?' + stringify(params));
 }
 export const getTradesRequest = async (params) => {
     return axios.get('trade?' + stringify(params))
