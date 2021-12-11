@@ -344,33 +344,33 @@ class Exhibitor extends Component {
                     <a href="#" onClick={e => this.handleConnect(e, exhibitor)}><img src="/images/connect2.png" alt="" />{translate(langConfig.app.Trade)}</a>
                   </div>
                 </div>
-                <div className="col-lg-9" id="product-list">
-                  <div className="sidebar-content">
-                    <div className="sidebar sidebar-content-bottom sidebar-items">
-                      <h3>{currentCategory?.name || translate(langConfig.app.Product)}</h3>
-                      <div className="items-list">
-                        <div className="row">
-                          {products.map(product => {
-                            return (
-                              <div key={product._id} className="col-sm-6 col-lg-4">
-                                <div className="item-detail">
-                                  <div className="item-thumb" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', maxHeight: 270 }}>
-                                    <img src={"/api/images/" + product.image} alt="" style={{ width: 'auto', height: 'auto', }} />
-                                  </div>
-                                  <div className="item-description">
-                                    <p><strong>{product.name}</strong></p>
-                                    <div className="dangerously" dangerouslySetInnerHTML={{ __html: product.description }} />
-                                  </div>
+              </div>
+              <div className="col-lg-9" id="product-list">
+                <div className="sidebar-content">
+                  <div className="sidebar sidebar-content-bottom sidebar-items">
+                    <h3>{currentCategory?.name || translate(langConfig.app.Product)}</h3>
+                    <div className="items-list">
+                      <div className="row">
+                        {products.map(product => {
+                          return (
+                            <div key={product._id} className="col-sm-6 col-lg-4">
+                              <div className="item-detail">
+                                <div className="item-thumb" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', maxHeight: 270 }}>
+                                  <img src={"/api/images/" + product.image} alt="" style={{ width: 'auto', height: 'auto', }} />
+                                </div>
+                                <div className="item-description">
+                                  <p><strong>{product.name}</strong></p>
+                                  <div className="dangerously" dangerouslySetInnerHTML={{ __html: product.description }} />
                                 </div>
                               </div>
-                            );
-                          })}
-                          {!products.length ? <div className="col-sm-12"><h5>{translate(langConfig.app.NoCategoryProducts)}</h5></div> : ""}
-                        </div>
+                            </div>
+                          );
+                        })}
+                        {!products.length ? <div className="col-sm-12"><h5>{translate(langConfig.app.NoCategoryProducts)}</h5></div> : ""}
                       </div>
                     </div>
-                    <Pagination gotoPage={this.gotoPage} {...{ currentPage, pageSize, total }} />
                   </div>
+                  <Pagination gotoPage={this.gotoPage} {...{ currentPage, pageSize, total }} />
                 </div>
               </div>
             </div>
