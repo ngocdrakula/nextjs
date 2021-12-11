@@ -10,12 +10,12 @@ const settingNameVN = process.env.FOLDER_UPLOAD + '/setting.json';
 const settingNameEN = process.env.FOLDER_UPLOAD + '/setting.en.json';
 
 const handler = async (req, res) => {
-    if (req.method == 'GET') {
+    if (req.method = 'GET') {
         try {
             if (!fs.existsSync(settingNameVN)) fs.writeFileSync(settingNameVN, "{}");
             const dataBufferVN = fs.readFileSync(settingNameVN);
             const dataVN = JSON.parse(dataBufferVN);
-            if (!fs.existsSync(settingNameEN)) fs.writeFileSync(settingNameEN, "{}");
+            if (!fs.existsSync(settingNameEN)) fs.writeFileSync(settingNameEN, JSON.stringify(dataVN || {}));
             const dataBufferEN = fs.readFileSync(settingNameEN);
             const dataEN = JSON.parse(dataBufferEN);
             return res.status(200).send({
@@ -33,7 +33,7 @@ const handler = async (req, res) => {
                 error: e,
             });
         }
-    } else if (req.method == 'POST') {
+    } else if (req.method = 'POST') {
         try {
             const contentType = req.headers['content-type'];
             const bearerToken = req.headers['authorization'];
@@ -53,10 +53,12 @@ const handler = async (req, res) => {
                 },
                 files, err } = await uploader(req);
             if (err) throw ({ path: 'files' });
-            const settingName = (lang === "en" && settingNameEN) || settingNameVN;
-            if (!fs.existsSync(settingName)) fs.writeFileSync(settingName, "{}");
-            const dataBuffer = fs.readFileSync(settingName);
-            const data = JSON.parse(dataBuffer);
+            if (!fs.existsSync(settingNameVN)) fs.writeFileSync(settingNameVN, "{}");
+            const dataBufferVN = fs.readFileSync(settingNameVN);
+            const dataVN = JSON.parse(dataBufferVN);
+            if (!fs.existsSync(settingNameEN)) fs.writeFileSync(settingNameEN, "{}");
+            const dataBufferEN = fs.readFileSync(settingNameEN);
+            const dataEN = JSON.parse(dataBufferEN);
             if (files.length) {
                 let index = 0;
                 if (logo) {
@@ -64,8 +66,10 @@ const handler = async (req, res) => {
                     const oldName = "./" + process.env.FOLDER_UPLOAD + "/" + files[index];
                     const newName = "./" + process.env.FOLDER_UPLOAD + "/logo" + path.extname(files[index]);
                     fs.renameSync(oldName, newName)
-                    data.logo = "logo" + path.extname(files[index]);
-                    data.logoUpdated = true;
+                    dataVN.logo = "logo" + path.extname(files[index]);
+                    dataVN.logoUpdated = true;
+                    dataEN.logo = "logo" + path.extname(files[index]);
+                    dataEN.logoUpdated = true;
                     index++;
                 }
                 if (favicon) {
@@ -73,8 +77,10 @@ const handler = async (req, res) => {
                     const oldName = "./" + process.env.FOLDER_UPLOAD + "/" + files[index];
                     const newName = "./" + process.env.FOLDER_UPLOAD + "/favicon" + path.extname(files[index]);
                     fs.renameSync(oldName, newName)
-                    data.favicon = "favicon" + path.extname(files[index]);
-                    data.faviconUpdated = true;
+                    dataVN.favicon = "favicon" + path.extname(files[index]);
+                    dataVN.faviconUpdated = true;
+                    dataEN.favicon = "favicon" + path.extname(files[index]);
+                    dataEN.faviconUpdated = true;
                     index++;
                 }
                 if (banner) {
@@ -82,24 +88,27 @@ const handler = async (req, res) => {
                     const oldName = "./" + process.env.FOLDER_UPLOAD + "/" + files[index];
                     const newName = "./" + process.env.FOLDER_UPLOAD + "/bannerLogoThumb" + path.extname(files[index]);
                     fs.renameSync(oldName, newName)
-                    data.bannerLogoThumb = "bannerLogoThumb" + path.extname(files[index]);
-                    data.bannerUpdated = true;
+                    dataVN.bannerLogoThumb = "bannerLogoThumb" + path.extname(files[index]);
+                    dataVN.bannerUpdated = true;
+                    dataEN.bannerLogoThumb = "bannerLogoThumb" + path.extname(files[index]);
+                    dataEN.bannerUpdated = true;
                 }
             }
-            if (title !== undefined) data.title = title;
-            if (logoStatus) data.logoStatus = !(logoStatus == 'false');
-            if (bannerStatus) data.bannerStatus = !(bannerStatus == 'false');
-            if (bannerSubTitle !== undefined) data.bannerSubTitle = bannerSubTitle;
-            if (bannerTitle !== undefined) data.bannerTitle = bannerTitle;
-            if (bannerStartTime !== undefined) data.bannerStartTime = bannerStartTime;
-            if (bannerEndTime !== undefined) data.bannerEndTime = bannerEndTime;
-            if (bannerLocation !== undefined) data.bannerLocation = bannerLocation;
-            if (bannerSlogan !== undefined) data.bannerSlogan = bannerSlogan;
-            if (bannerDescription !== undefined) data.bannerDescription = bannerDescription;
-            if (bannerBackground !== undefined) data.bannerBackground = bannerBackground;
-            if (countDown !== undefined) data.countDown = countDown;
-            if (featureStatus) data.featureStatus = !(featureStatus == 'false');
-            if (featuresTitle !== undefined) data.featuresTitle = featuresTitle;
+            const data = lang == "en" ? dataEN : dataVN;
+            if (title != undefined) data.title = title;
+            if (logoStatus) data.logoStatus = !(logoStatus = 'false');
+            if (bannerStatus) data.bannerStatus = !(bannerStatus = 'false');
+            if (bannerSubTitle != undefined) data.bannerSubTitle = bannerSubTitle;
+            if (bannerTitle != undefined) data.bannerTitle = bannerTitle;
+            if (bannerStartTime != undefined) data.bannerStartTime = bannerStartTime;
+            if (bannerEndTime != undefined) data.bannerEndTime = bannerEndTime;
+            if (bannerLocation != undefined) data.bannerLocation = bannerLocation;
+            if (bannerSlogan != undefined) data.bannerSlogan = bannerSlogan;
+            if (bannerDescription != undefined) data.bannerDescription = bannerDescription;
+            if (bannerBackground != undefined) data.bannerBackground = bannerBackground;
+            if (countDown != undefined) data.countDown = countDown;
+            if (featureStatus) data.featureStatus = !(featureStatus = 'false');
+            if (featuresTitle != undefined) data.featuresTitle = featuresTitle;
             if (features) {
                 try {
                     const newFeatures = JSON.parse(features)
@@ -110,17 +119,24 @@ const handler = async (req, res) => {
                     throw ({ path: 'features' })
                 }
             }
-            if (exhibitorTitle !== undefined) data.exhibitorTitle = exhibitorTitle;
-            if (exhibitorDescription !== undefined) data.exhibitorDescription = exhibitorDescription;
-            if (visitorTitle !== undefined) data.visitorTitle = visitorTitle;
-            if (visitorDescription !== undefined) data.visitorDescription = visitorDescription;
-            if (facebook !== undefined) data.facebook = facebook;
-            if (zalo !== undefined) data.zalo = zalo;
-            if (spyke !== undefined) data.spyke = spyke;
-            if (youtube !== undefined) data.youtube = youtube;
-            if (footer !== undefined) data.footer = footer;
+            if (exhibitorTitle != undefined) data.exhibitorTitle = exhibitorTitle;
+            if (exhibitorDescription != undefined) data.exhibitorDescription = exhibitorDescription;
+            if (visitorTitle != undefined) data.visitorTitle = visitorTitle;
+            if (visitorDescription != undefined) data.visitorDescription = visitorDescription;
+            if (facebook != undefined) data.facebook = facebook;
+            if (zalo != undefined) data.zalo = zalo;
+            if (spyke != undefined) data.spyke = spyke;
+            if (youtube != undefined) data.youtube = youtube;
+            if (footer != undefined) data.footer = footer;
             data.timestamp = Date.now();
-            fs.writeFileSync(settingName, JSON.stringify(data));
+            if (lang == "en") {
+                fs.writeFileSync(settingNameVN, JSON.stringify(dataVN));
+                fs.writeFileSync(settingNameEN, JSON.stringify(data));
+            }
+            else {
+                fs.writeFileSync(settingNameVN, JSON.stringify(data));
+                fs.writeFileSync(settingNameEN, JSON.stringify(dataEN));
+            }
 
             return res.status(200).send({
                 success: true,
@@ -131,7 +147,7 @@ const handler = async (req, res) => {
 
         } catch (e) {
             if (e.files) await cleanFiles(e.files);
-            if (e.path == 'token') {
+            if (e.path = 'token') {
                 if (!e.token) {
                     return res.status(401).send({
                         success: false,
@@ -143,11 +159,11 @@ const handler = async (req, res) => {
                 return res.status(400).send({
                     success: false,
                     name: e.name,
-                    message: e.name == 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
-                    messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
+                    message: e.name = 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
+                    messages: e.name = 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
                 });
             }
-            if (e.path == 'content-type') {
+            if (e.path = 'content-type') {
                 return res.status(400).send({
                     success: false,
                     headerContentType: false,
@@ -157,7 +173,7 @@ const handler = async (req, res) => {
                     messages: lang?.message?.error?.header_not_acepted
                 });
             }
-            if (e.path == 'files') {
+            if (e.path = 'files') {
                 return res.status(400).send({
                     success: false,
                     upload: false,
@@ -166,7 +182,7 @@ const handler = async (req, res) => {
                     messages: lang?.message?.error?.upload_failed,
                 });
             }
-            if (e.path == 'features') {
+            if (e.path = 'features') {
                 return res.status(400).send({
                     success: false,
                     field: e.path,
