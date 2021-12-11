@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig from '../../lang.config';
+import { translate } from '../../utils/language';
 
 class Countdown extends Component {
     constructor(props) {
@@ -37,23 +39,25 @@ class Countdown extends Component {
                     <div className="counter-time">
                         <div className="counter-time-item">
                             <span className="days" id="days">{d < 10 ? "0" + d : d}</span>
-                            <span className="couter-txt">Ngày</span>
+                            <span className="couter-txt">{translate(langConfig.app.Days)}</span>
                         </div>
                         <div className="counter-time-item">
                             <span className="hours" id="hours">{h < 10 ? "0" + h : h}</span>
-                            <span className="couter-txt">Giờ</span>
+                            <span className="couter-txt">{translate(langConfig.app.Hours)}</span>
                         </div>
                         <div className="counter-time-item">
                             <span className="minutes" id="minutes">{m < 10 ? "0" + m : m}</span>
-                            <span className="couter-txt">Phút</span>
+                            <span className="couter-txt">{translate(langConfig.app.Minutes)}</span>
                         </div>
                         <div className="counter-time-item">
                             <span className="seconds" id="seconds">{s < 10 ? "0" + s : s}</span>
-                            <span className="couter-txt">Giây</span>
+                            <span className="couter-txt">{translate(langConfig.app.Seconds)}</span>
                         </div>
                     </div>
                     <div className="register-guest">
-                        <a href="https://vimexpo.com.vn/khach-tham-quan/dang-ky-tham-quan/" target="_blank"><img src="/images/icon-register-guest.png" alt="" />Đăng ký <span>Khách tham quan</span></a>
+                        <a href="https://vimexpo.com.vn/khach-tham-quan/dang-ky-tham-quan/" target="_blank">
+                            <img src="/images/icon-register-guest.png" alt="" />{translate(langConfig.app.Register)} <span>{translate(langConfig.app.Visitor)}</span>
+                            </a>
                     </div>
                 </div>
             </div>

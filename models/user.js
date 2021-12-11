@@ -15,6 +15,10 @@ const user = new Schema({
         type: String,
         required: true
     },
+    search: {
+        type: String,
+        required: true
+    },
     avatar: {
         type: String,
         required: false

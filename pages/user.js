@@ -7,9 +7,15 @@ import { wrapper } from '../redux/store';
 import types from '../redux/types'
 import { getQuery, MODE } from '../utils/helper';
 import Pagination from '../components/pagination/Pagination';
+import { translate } from '../utils/language';
+import langConfig from '../lang.config';
 
 const pageSize = 12;
-const sorts = [{ label: 'Nổi bật', value: 'feature' }, { label: 'Tên: A-Z', value: 'name' }, { label: 'Tên: Z-A', value: 'namereverse' }]
+const sorts = [
+  { label: langConfig.app.Highlights, value: 'feature' },
+  { label: langConfig.app.NameAZ, value: 'name' },
+  { label: langConfig.app.NameZA, value: 'namereverse' }
+]
 
 
 class User extends Component {
@@ -44,18 +50,22 @@ class User extends Component {
   componentWillUnmount() {
     clearTimeout(this.timeout);
   }
-  handleSort = (e, id) => {
+  handleSort = (e) => {
+    const id = e.target.id
     e.preventDefault();
     const { filter, industrySelected, name } = this.state;
-    let url = "/user?filter=" + filter + "&page=1&industry=" + industrySelected;
+    let url = "/user?filter=" + filter;
+    if (industrySelected) url += "&page=1&industry=" + industrySelected;
     if (id) url += "&sort=" + id
     if (name) url += "&name=" + name
     Router.push(url, undefined, { scroll: false })
   }
-  handleSelect = (e, id) => {
+  handleSelect = (e) => {
     e.preventDefault();
+    const id = e.target.id;
     const { filter, sortSelected, name } = this.state;
-    let url = "/user?filter=" + filter + "&page=1&industry=" + id;
+    let url = "/user?filter=" + filter + "&page=1"
+    if (id) url += "&industry=" + id;
     if (sortSelected) url += "&sort=" + sortSelected;
     if (name) url += "&name=" + name
     Router.push(url, undefined, { scroll: false })
@@ -73,9 +83,9 @@ class User extends Component {
     const query = {
       page: params.page || 0,
       pageSize,
-      industry: params.industry || industries[0]?._id,
     }
     if (params.name) query.name = params.name;
+    if (params.industry) query.industry = params.industry;
     const currentSort = sorts.find(s => s.value === params.sort);
     query.sort = currentSort?.value || sorts[0].value;
     dispatch({
@@ -87,7 +97,7 @@ class User extends Component {
           this.setState({
             users: data,
             currentPage: page,
-            industrySelected: query.industry,
+            industrySelected: query.industry || this.state.industrySelected,
             total,
             filter: Number(params.filter) === MODE.visitor ? MODE.visitor : MODE.exhibitor,
             sortSelected: query.sort,
@@ -135,6 +145,15 @@ class User extends Component {
       });
     }
   }
+  handleFilterUser = (e, filter) => {
+    e.preventDefault();
+    const { sortSelected, name, industrySelected } = this.state;
+    let url = "/user?filter=" + filter + "&page=1'"
+    if (industrySelected) url += "&industry=" + industrySelected;
+    if (sortSelected) url += "&sort=" + sortSelected;
+    if (name) url += "&name=" + name
+    Router.push(url, undefined, { scroll: false })
+  }
   render() {
     const { industries } = this.props
     const { industrySelected, sortSelected, users, filter, total, currentPage, loaded } = this.state;
@@ -144,40 +163,39 @@ class User extends Component {
       <div id="content" className="site-content">
         <div id="list">
           <div className="main-title hd-bg-orange">
-            <h2 className="heading">Danh sách</h2>
+            <h2 className="heading">{translate(langConfig.app.List)}</h2>
             <ul className="breadcrumb">
-              <li><Link href="/"><a>Trang chủ</a></Link><a> »</a></li>
-              <li><a href="#">Triển lãm trực tuyến</a><a> »</a></li>
-              <li><a href="#">Danh sách</a></li>
+              <li><a href="/">{translate(langConfig.app.Home)} »</a></li>
+              <li><a href="#">{translate(langConfig.app.OnlineExhibition)} »</a></li>
+              <li><a href="#">{translate(langConfig.app.List)}</a></li>
             </ul>
           </div>
           <div className="list-menu" id="menu-list" name="menu-list">
             <ul className="menu">
               {industries.map((industry, index) => {
-                const active = ((!industrySelected && !index) || (industry._id === industrySelected)) ? " active" : "";
+                const active = ((industry._id === industrySelected)) ? " active" : "";
                 return (
-                  <li key={industry._id} className={"menu-item" + active}>
-                    <a href="#" onClick={e => this.handleSelect(e, industry._id)}>{industry.name}</a>
-                  </li>
+                  <li key={industry._id} className={"menu-item" + active}><a href="#" id={industry._id} onClick={this.handleSelect}>{industry.name}</a></li>
                 )
               })}
             </ul>
           </div>
           <div className="lists-list stores-list">
             <div className="container">
-              <h3>{currentIndustry?.name || industries[0]?.name}</h3>
+              <h3>{currentIndustry?.name || translate(langConfig.app.Exhibitor)}</h3>
               <div className="right">
                 <div className="sort">
-                  <p>Thứ tự {currentSort?.label} <img src="/images/icon-down2.png" alt="" style={{ marginLeft: 10 }} /></p>
+                  <p>{translate(langConfig.app.Sort)} {translate(currentSort?.label)} <img src="/images/icon-down2.png" alt="" style={{ marginLeft: 10 }} /></p>
                   <p>
                     {sorts.map(sort => {
                       return (
                         <span
                           key={sort.value || 0}
-                          onClick={e => this.handleSort(e, sort.value)}
+                          id={sort.value}
+                          onClick={this.handleSort}
                           style={currentSort?.value === sort.value ? { color: '#F48120' } : {}}
                         >
-                          {sort.label}
+                          {translate(sort.label)}
                         </span>
                       );
                     })}
@@ -186,10 +204,14 @@ class User extends Component {
                 <div className="tab">
                   <ul>
                     <li>
-                      <Link href={`/user?filter=${MODE.exhibitor}&page=1&industry=${industrySelected}#menu-list`}><a className={filter !== MODE.visitor ? "active" : ""}>Nhà trưng bày</a></Link>
+                      <a href="#menu-list" className={filter !== MODE.visitor ? "active" : ""} onClick={e => this.handleFilterUser(e, MODE.exhibitor)}>
+                        {translate(langConfig.app.Exhibitor)}
+                      </a>
                     </li>
                     <li>
-                      <Link href={`/user?filter=${MODE.visitor}&page=1&industry=${industrySelected}#menu-list`} ><a className={filter === MODE.visitor ? "active" : ""}>Người mua</a></Link>
+                      <a href="#menu-list" className={filter === MODE.visitor ? "active" : ""} onClick={e => this.handleFilterUser(e, MODE.visitor)}>
+                        {translate(langConfig.app.Buyer)}
+                      </a>
                     </li>
                   </ul>
                 </div>
@@ -197,7 +219,7 @@ class User extends Component {
               <div className="row tab-content">
                 {loaded && !users[0] ?
                   <div style={{ padding: '10px 50px 20px' }}>
-                    <h5>Danh sách trống</h5>
+                    <h5>{translate(langConfig.app.ListEmpty)}</h5>
                   </div>
                   : ""}
                 {users.map(user => {
@@ -233,12 +255,12 @@ class User extends Component {
                           {user.image ?
                             <img src={"/api/images/" + user.image} alt="" />
                             :
-                            <img src={`/images/no-${filter === MODE.exhibitor ? "banner" : "image"}.png`} alt="" />
+                            <img src="/images/no-banner-thumb.png" alt="" />
                           }
                         </div>
                         <div className="store-bottom">
-                          <a href="#" onClick={e => this.handleChat(e, user)}><img src="/images/talk.png" alt="" />Trò chuyện</a>
-                          <a href="#" onClick={e => this.handleConnect(e, user)}><img src="/images/connect.png" alt="" />Kết nối giao thương</a>
+                          <a href="#" onClick={e => this.handleChat(e, user)}><img src="/images/talk.png" alt="" />{translate(langConfig.app.Chat)} </a>
+                          <a href="#" onClick={e => this.handleConnect(e, user)}><img src="/images/connect.png" alt="" />{translate(langConfig.app.Trade)}</a>
                         </div>
                       </div>
                     </div>

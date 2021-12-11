@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import Link from 'next/link';
+import langConfig from '../../lang.config';
 import types from '../../redux/types';
 import { MODE } from '../../utils/helper';
+import { translate } from '../../utils/language';
 
 const pageSize = 6;
 
@@ -118,8 +120,8 @@ class Buyer extends Component {
                                             }
                                         </div>
                                         <div className="store-bottom">
-                                            <a href="#" onClick={e => this.handleChat(e, visitor)}><img src="/images/talk.png" alt="" />Trò chuyện</a>
-                                            <a href="#" onClick={e => this.handleConnect(e, visitor)}><img src="/images/connect.png" alt="" />Kết nối giao thương</a>
+                                            <a href="#" onClick={e => this.handleChat(e, visitor)}><img src="/images/talk.png" alt="" />{translate(langConfig.app.Chat)}</a>
+                                            <a href="#" onClick={e => this.handleConnect(e, visitor)}><img src="/images/connect.png" alt="" />{translate(langConfig.app.TradeConnection)}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -128,9 +130,7 @@ class Buyer extends Component {
                         </div>
                     </div>
                     <div className="load-more">
-                        <Link href={"/user?filter=" + MODE.visitor}>
-                            <a>Xem thêm</a>
-                        </Link>
+                        <a href={"/user?filter=" + MODE.visitor}>{translate(langConfig.app.SeeMore)}</a>
                     </div>
                 </div>
             </div>

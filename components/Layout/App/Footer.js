@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import langConfig from '../../../lang.config';
+import { translate } from '../../../utils/language';
 import ContactForm from './ContactForm';
 
 class Footer extends Component {
@@ -18,7 +20,7 @@ class Footer extends Component {
                         <div className="row">
                             <div className="col-md-6">
                                 <div className="contact">
-                                    <h3>Liên hệ</h3>
+                                    <h3>{translate(langConfig.app.Contact)}</h3>
                                     <p><strong>TRUNG TÂM HỖ TRỢ PHÁT TRIỂN CÔNG NGHIỆP - CỤC CÔNG NGHIỆP</strong></p>
                                     <p><img src="images/address.png" alt="" />655 Phạm Văn Đồng, P. Cổ Nhuế 1, Q. Bắc Từ Liêm, Hà Nội</p>
                                     <p>

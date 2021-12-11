@@ -65,7 +65,7 @@ const handler = async (req, res) => {
       if (!user?._id) throw ({ ...user, path: 'token' });
       const { id } = req.query;
       const { content, deadline, approved, fromEmail, fromName, toEmail, toName } = req.body;
-      const currentTrade =await( await tradeController.get(id))
+      const currentTrade = await (await tradeController.get(id))
         .populate({ path: 'leader.user', select: 'email' })
         .populate({ path: 'member.user', select: 'email' })
         .execPopulate();
@@ -126,7 +126,8 @@ const handler = async (req, res) => {
           success: false,
           exist: false,
           field: 'deadline',
-          message: "Thời gian giao thương không đúng định dạng ngày",
+          message: "Thời gian giao thương không đúng định dạng",
+          messages: langConcat(lang?.resources?.deadline, lang?.message?.error?.validation?.format),
         });
       }
       if (e.path == '_id') {
@@ -134,6 +135,7 @@ const handler = async (req, res) => {
           success: false,
           exist: false,
           message: "Lịch giao thương không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.trade, lang?.message?.error?.validation?.not_exist),
         });
       }
       return res.status(500).send({
@@ -183,6 +185,7 @@ const handler = async (req, res) => {
           success: false,
           exist: false,
           message: "Lịch giao thương không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.trade, lang?.message?.error?.validation?.not_exist),
         });
       }
       return res.status(500).send({

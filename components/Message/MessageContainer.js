@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import langConfig from '../../lang.config';
 import types from '../../redux/types';
+import { translate } from '../../utils/language';
 import ConversationList from './ConversationList';
 import MessageBox from './MessageBox';
 
@@ -50,14 +52,14 @@ class MessageContainer extends Component {
     return (
       <div className={"mesContainer" + (openMessage ? " open" : "")} ref={this.mesContainer}>
         <div className="mesContainerHead">
-          <div className="mesContainerTitle">Tin nhắn</div>
+          <div className="mesContainerTitle">{translate(langConfig.app.Messages)}</div>
           <div className="closeButton" onClick={this.handleClose} title="Đóng">-</div>
         </div>
         <div className="mesTask">
-          <div className={"mesTaskItem" + (openList ? " active" : "")} onClick={() => !openList && this.handleOpenList()}>
+          <div className={"mesTaskItem" + (openList ? " active" : "")} onClick={!openList ? this.handleOpenList : undefined}>
             <img src="/images/chat2.png" />
           </div>
-          <div className={"mesTaskItem filter-blue" + (!openList ? " active" : "")} onClick={() => openList && this.handleOpenList()}>
+          <div className={"mesTaskItem filter-blue" + (!openList ? " active" : "")} onClick={openList ? this.handleOpenList : undefined}>
             <img src="/images/user.png" />
           </div>
         </div>

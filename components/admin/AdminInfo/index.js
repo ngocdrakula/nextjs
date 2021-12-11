@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig, { langConcat } from '../../../lang.config';
+import { translate } from '../../../utils/language';
 import types from '../../../redux/types';
 import { createFormData } from '../../../utils/helper';
-import TextEditor from '../../TextEditor';
 
 class AdminInfo extends Component {
     constructor(props) {
@@ -37,7 +38,7 @@ class AdminInfo extends Component {
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
         if (fieldError) {
-            this.setState({ fieldError, message: 'Vui lòng điền đầy đủ thông tin' })
+            this.setState({ fieldError, message: translate(langConfig.message.error.infomation) })
         }
         else {
             const data = { email, name }
@@ -58,10 +59,10 @@ class AdminInfo extends Component {
                             type: types.SET_TOOLTIP,
                             payload: {
                                 type: 'success',
-                                title: 'Cập nhật thành công',
-                                message: 'Cập nhật thông tin thành công?',
-                                confirm: 'Chấp nhận',
-                                cancel: 'Đóng',
+                                title: translate(langConfig.message.success.updated),
+                                message: translate(langConfig.app.Updated),
+                                confirm: translate(langConfig.app.Accept),
+                                cancel: translate(langConfig.app.Close),
                                 handleConfirm: this.handleCancel,
                                 handleCancel: this.handleCancel
                             },
@@ -70,7 +71,7 @@ class AdminInfo extends Component {
                     else if (res?.data) {
                         this.setState({
                             fieldError: res.data.field,
-                            message: res.data.message || "Vui lòng điền đầy đủ thông tin"
+                            message: translate(res.data.messages || langConfig.message.error.infomation)
                         })
                     }
                 }
@@ -126,13 +127,13 @@ class AdminInfo extends Component {
                                     <div className="active tab-pane" id="InfoCompany">
                                         <form className="form-horizontal" method="post" action="/" onSubmit={this.handleSubmit}>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-name" className="col-sm-3 col-form-label">Tên hiển thị:</label>
+                                                <label htmlFor="ex-up-name" className="col-sm-3 col-form-label">{translate(langConfig.app.Name)}:</label>
                                                 <div className="col-sm-9">
                                                     <input
                                                         type="text"
                                                         className="form-control"
                                                         id="ex-up-name"
-                                                        placeholder="Nhập tên hiển thị"
+                                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Name))}
                                                         value={name}
                                                         onChange={this.handleChange}
                                                         name="name"
@@ -141,13 +142,13 @@ class AdminInfo extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-email" className="col-sm-3 col-form-label">Email quản trị viên:</label>
+                                                <label htmlFor="ex-up-email" className="col-sm-3 col-form-label">{translate(langConfig.app.Email)}:</label>
                                                 <div className="col-sm-9">
                                                     <input
                                                         type="text"
                                                         className="form-control"
                                                         id="ex-up-email"
-                                                        placeholder="Nhập email quản trị viên"
+                                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Email))}
                                                         value={email}
                                                         onChange={this.handleChange}
                                                         name="email"
@@ -156,44 +157,45 @@ class AdminInfo extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group row" style={{ display: 'flex' }}>
-                                                <label htmlFor="inputName" className="col-sm-3 col-form-label">Ảnh đại diện</label>
-                                                <div className="col-sm-9">
+                                                <label htmlFor="inputName" className="col-sm-3 col-form-label">{translate(langConfig.app.Avatar)}</label>
+                                                <div className="col-sm-9" style={{ marginLeft: 8, maxWidth: '81%' }}>
                                                     {user.avatar ?
                                                         <img src={"/api/images/" + user.avatar} style={{ width: 'auto', height: 'auto', maxWidth: 100, maxHeight: 100 }} />
-                                                        : <p>Chưa có ảnh đại diện</p>
+                                                        : <p>{translate(langConfig.app.NoAvatar)}</p>
                                                     }
                                                 </div>
                                             </div>
                                             <div className="form-group row" id="editLogo" style={{ display: onEdit ? 'flex' : 'none' }}>
-                                                <label htmlFor="inputName" className="col-sm-3 col-form-label">Tải logo lên</label>
-                                                <div className="col-sm-9">
-                                                    <div className="position-relative">
-                                                        <input type="file" className="custom-file-input" id="avatar" name="avatar" onChange={this.handleChooseFilesAvatar} />
-                                                        <label className="custom-file-label" htmlFor="avatar">{filesAvatar?.length ? "Đã chọn 1 tệp" : "Chọn Logo"}</label>
-                                                    </div>
+                                                <label htmlFor="inputName" className="col-sm-3 col-form-label">{translate(langConfig.app.UploadAvatar)}</label>
+                                                <div className="col-sm-9" style={{ marginLeft: 8, maxWidth: '81%' }}>
+                                                    <input type="file" className="custom-file-input" id="avatar" name="avatar" onChange={this.handleChooseFilesAvatar} />
+                                                    <label className="custom-file-label" htmlFor="avatar">
+                                                        {filesAvatar?.length ?
+                                                            translate(langConfig.app.OneFileSelected)
+                                                            :
+                                                            translate(langConfig.app.ChooseAvatar)}
+                                                    </label>
                                                 </div>
-                                                <div className="offset-sm-3 col-sm-9">
-                                                    <span style={{ fontSize: 10, color: 'blue' }}>Loại: .jpg, .png</span><span style={{ fontSize: 10, color: 'blue', marginLeft: 20 }}>Size: 2MB</span>
-                                                </div>
+                                                <span style={{ fontSize: 10, color: 'blue' }}>{translate(langConfig.app.Type)}: .jpg, .png<br />Size: 2MB</span>
                                             </div>
                                             {fieldError ? <div style={{ color: 'red', padding: '10px 0px' }}>{message}</div> : ""}
                                             {onEdit ?
-                                                <div className="row">
-                                                    <div className="offset-sm-3 col-sm-9">
-                                                        <div className="col d-flex">
-                                                            <div className="form-group" id="btnSubmitData" style={{ marginRight: 10 }}>
-                                                                <button type="submit" className="btn btn-primary">Lưu</button>
-                                                            </div>
-                                                            <div className="form-group" id="btnCancel" style={{ marginLeft: 10 }}>
-                                                                <button type="button" className="btn btn-danger" onClick={this.handleCancel}>Hủy</button>
-                                                            </div>
+                                                <div style={{ display: 'flex' }}>
+                                                    <div className="form-group" id="btnSubmitData">
+                                                        <div className="offset-sm-3 col-sm-9">
+                                                            <button type="submit" className="btn btn-primary">{translate(langConfig.app.Save)}</button>
+                                                        </div>
+                                                    </div>
+                                                    <div className="form-group" id="btnCancel" style={{ marginLeft: 10 }}>
+                                                        <div className="offset-sm-3 col-sm-10">
+                                                            <button type="button" className="btn btn-danger" onClick={this.handleCancel}>{translate(langConfig.app.Cancel)}</button>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 :
                                                 <div className="form-group row" id="btnEditData">
                                                     <div className="offset-sm-3 col-sm-9">
-                                                        <button type="button" className="btn btn-primary" onClick={() => this.setState({ onEdit: true })}>Chỉnh sửa</button>
+                                                        <button type="button" className="btn btn-primary" onClick={() => this.setState({ onEdit: true })}>{translate(langConfig.app.Edit)}</button>
                                                     </div>
                                                 </div>
                                             }

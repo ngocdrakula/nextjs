@@ -10,7 +10,6 @@ export class AdminHead extends Component {
         const { setting } = this.props;
         const { faviconUpdated, favicon, title } = setting;
         const icon = `${faviconUpdated ? "/api" : ""}/images/${favicon}`;
-        console.log(icon)
         return (
             <NextHead>
                 <title>{title || process.env.TITLE}</title>

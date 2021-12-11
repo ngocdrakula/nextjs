@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig, { langConcat } from '../../../lang.config';
 import types from '../../../redux/types';
 import { createFormData } from '../../../utils/helper';
+import { translate } from '../../../utils/language';
 import TextEditor from '../../TextEditor';
 
 class Overview extends Component {
@@ -46,7 +48,7 @@ class Overview extends Component {
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
         if (fieldError) {
-            this.setState({ fieldError, message: 'Vui lòng điền đầy đủ thông tin' })
+            this.setState({ fieldError, message: translate(langConfig.message.error.infomation) })
         }
         else {
             const data = {
@@ -74,10 +76,10 @@ class Overview extends Component {
                             type: types.SET_TOOLTIP,
                             payload: {
                                 type: 'success',
-                                title: 'Cập nhật thành công',
-                                message: 'Cập nhật thông tin thành công?',
-                                confirm: 'Chấp nhận',
-                                cancel: 'Đóng',
+                                title: translate(langConfig.message.success.updated),
+                                message: translate(langConfig.app.Updated),
+                                confirm: translate(langConfig.app.Accept),
+                                cancel: translate(langConfig.app.Close),
                                 handleConfirm: this.handleCancel,
                                 handleCancel: this.handleCancel
                             },
@@ -86,7 +88,7 @@ class Overview extends Component {
                     else if (res?.data) {
                         this.setState({
                             fieldError: res.data.field,
-                            message: res.data.message || "Vui lòng điền đầy đủ thông tin"
+                            message: translate(res.data.messages || langConfig.message.error.infomation)
                         })
                     }
                 }
@@ -129,9 +131,9 @@ class Overview extends Component {
                                     <div className="pic">
                                         <div className="afta-logo-user">
                                             {exUser?.avatar ?
-                                                <img className="profile-user-img img-fluid img-circle" src={"/api/images/" + exUser.avatar} alt="Store Logo" />
+                                                <img className="profile-user-img img-fluid img-circle" src={"/api/images/" + exUser.avatar} alt={translate(langConfig.app.Logo)} />
                                                 :
-                                                <img className="profile-user-img img-fluid img-circle" src="/images/no-avatar.png" alt="Store Logo" />
+                                                <img className="profile-user-img img-fluid img-circle" src="/images/no-avatar.png" alt={translate(langConfig.app.NoLogo)} />
                                             }
                                         </div>
                                     </div>
@@ -151,13 +153,13 @@ class Overview extends Component {
                                     <div className="active tab-pane" id="InfoCompany">
                                         <form className="form-horizontal" method="post" action="/" onSubmit={this.handleSubmit}>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-name" className="col-sm-3 col-form-label">Tên nhà trưng bày:</label>
+                                                <label htmlFor="ex-up-name" className="col-sm-3 col-form-label">{translate(langConfig.app.ExhibitorName)}:</label>
                                                 <div className="col-sm-9">
                                                     <input
                                                         type="text"
                                                         className="form-control"
                                                         id="ex-up-name"
-                                                        placeholder="Nhập tên nhà trưng bày"
+                                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.ExhibitorName))}
                                                         value={name}
                                                         onChange={this.handleChange}
                                                         name="name"
@@ -166,13 +168,13 @@ class Overview extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-email" className="col-sm-3 col-form-label">Email nhà trưng bày:</label>
+                                                <label htmlFor="ex-up-email" className="col-sm-3 col-form-label">{translate(langConfig.app.Email)}:</label>
                                                 <div className="col-sm-9">
                                                     <input
                                                         type="text"
                                                         className="form-control"
                                                         id="ex-up-email"
-                                                        placeholder="Nhập email nhà trưng bày"
+                                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Email))}
                                                         value={email}
                                                         onChange={this.handleChange}
                                                         name="email"
@@ -181,7 +183,7 @@ class Overview extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-industry" className="col-sm-3 col-form-label">Ngành công nghiệp:</label>
+                                                <label htmlFor="ex-up-industry" className="col-sm-3 col-form-label">{translate(langConfig.resources.industry)}:</label>
                                                 <div className="col-sm-9">
                                                     <span className={"select2 select2-container select2-container--default" + (dropIndustry ? " select2-container--open" : "")} style={{ width: '100%' }}>
                                                         <span className="selection" onClick={onEdit ? this.handleDropdownIndustry : undefined}>
@@ -215,14 +217,14 @@ class Overview extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-address" className="col-sm-3 col-form-label">Địa chỉ nhà trưng bày:</label>
+                                                <label htmlFor="ex-up-address" className="col-sm-3 col-form-label">{translate(langConfig.app.Address)}:</label>
                                                 <div className="col-sm-9">
                                                     <TextEditor
                                                         key={onEdit}
                                                         type="text"
                                                         className="form-control"
                                                         id="ex-up-address"
-                                                        placeholder="Nhập địa chỉ nhà trưng bày"
+                                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Address))}
                                                         value={address}
                                                         onChange={this.handleChange}
                                                         name="address"
@@ -231,13 +233,13 @@ class Overview extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-website" className="col-sm-3 col-form-label">Website nhà trưng bày:</label>
+                                                <label htmlFor="ex-up-website" className="col-sm-3 col-form-label">{translate(langConfig.app.Website)}:</label>
                                                 <div className="col-sm-9">
                                                     <input
                                                         type="text"
                                                         className="form-control"
                                                         id="ex-up-website"
-                                                        placeholder="Nhập website nhà trưng bày (phân cách bằng dấu phẩy ',')"
+                                                        placeholder={translate(langConfig.app.EnterWebsite)}
                                                         value={website}
                                                         onChange={this.handleChange}
                                                         name="website"
@@ -246,13 +248,13 @@ class Overview extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-phone" className="col-sm-3 col-form-label">Số điện thoại nhà trưng bày:</label>
+                                                <label htmlFor="ex-up-phone" className="col-sm-3 col-form-label">{translate(langConfig.app.Phone)}:</label>
                                                 <div className="col-sm-9">
                                                     <input
                                                         type="text"
                                                         className="form-control"
                                                         id="ex-up-phone"
-                                                        placeholder="Nhập số điện thoại nhà trưng bày"
+                                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Phone))}
                                                         value={phone}
                                                         onChange={this.handleChange}
                                                         name="phone"
@@ -261,13 +263,13 @@ class Overview extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-hotline" className="col-sm-3 col-form-label">Hotline nhà trưng bày:</label>
+                                                <label htmlFor="ex-up-hotline" className="col-sm-3 col-form-label">{translate(langConfig.app.Hotline)}:</label>
                                                 <div className="col-sm-9">
                                                     <input
                                                         type="text"
                                                         className="form-control"
                                                         id="ex-up-hotline"
-                                                        placeholder="Nhập số điện thoại đường dây nóng nhà trưng bày"
+                                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Hotline))}
                                                         value={hotline}
                                                         onChange={this.handleChange}
                                                         name="hotline"
@@ -276,13 +278,13 @@ class Overview extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-fax" className="col-sm-3 col-form-label">Số fax nhà trưng bày:</label>
+                                                <label htmlFor="ex-up-fax" className="col-sm-3 col-form-label">{translate(langConfig.app.Fax)}:</label>
                                                 <div className="col-sm-9">
                                                     <input
                                                         type="text"
                                                         className="form-control"
                                                         id="ex-up-fax"
-                                                        placeholder="Nhập số fax nhà trưng bày"
+                                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Fax))}
                                                         value={fax}
                                                         onChange={this.handleChange}
                                                         name="fax"
@@ -291,13 +293,13 @@ class Overview extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-representative" className="col-sm-3 col-form-label">Người đại diện:</label>
+                                                <label htmlFor="ex-up-representative" className="col-sm-3 col-form-label">{translate(langConfig.app.Representative)}:</label>
                                                 <div className="col-sm-9">
                                                     <input
                                                         type="text"
                                                         className="form-control"
                                                         id="ex-up-representative"
-                                                        placeholder="Nhập tên người đại diện"
+                                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.RepresentativeName))}
                                                         value={representative}
                                                         onChange={this.handleChange}
                                                         name="representative"
@@ -306,13 +308,13 @@ class Overview extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-position" className="col-sm-3 col-form-label">Chức vụ người đại diện:</label>
+                                                <label htmlFor="ex-up-position" className="col-sm-3 col-form-label">{translate(langConfig.resources.position)}:</label>
                                                 <div className="col-sm-9">
                                                     <input
                                                         type="text"
                                                         className="form-control"
                                                         id="ex-up-position"
-                                                        placeholder="Nhập chức vụ người đại diện"
+                                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.position))}
                                                         value={position}
                                                         onChange={this.handleChange}
                                                         name="position"
@@ -321,13 +323,13 @@ class Overview extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-mobile" className="col-sm-3 col-form-label">Số điện thoại người đại diện:</label>
+                                                <label htmlFor="ex-up-mobile" className="col-sm-3 col-form-label">{translate(langConfig.resources.mobile)}:</label>
                                                 <div className="col-sm-9">
                                                     <input
                                                         type="text"
                                                         className="form-control"
                                                         id="ex-up-mobile"
-                                                        placeholder="Nhập số điện thoại người đại diện"
+                                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.mobile))}
                                                         value={mobile}
                                                         onChange={this.handleChange}
                                                         name="mobile"
@@ -336,13 +338,13 @@ class Overview extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-re_email" className="col-sm-3 col-form-label">Email người đại diện:</label>
+                                                <label htmlFor="ex-up-re_email" className="col-sm-3 col-form-label">{translate(langConfig.resources.re_email)}:</label>
                                                 <div className="col-sm-9">
                                                     <input
                                                         type="text"
                                                         className="form-control"
                                                         id="ex-up-re_email"
-                                                        placeholder="Nhập email người đại diện"
+                                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.re_email))}
                                                         value={re_email}
                                                         onChange={this.handleChange}
                                                         name="re_email"
@@ -351,12 +353,12 @@ class Overview extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-introduce" className="col-sm-3 col-form-label">Giới thiệu chung:</label>
+                                                <label htmlFor="ex-up-introduce" className="col-sm-3 col-form-label">{translate(langConfig.app.Introduce)}:</label>
                                                 <div className="col-sm-9">
                                                     <textarea
                                                         className="form-control summernote"
                                                         rows={2}
-                                                        placeholder="Giới thiệu sơ lược về nhà trưng bày  (tối đa 800 kí tự)"
+                                                        placeholder={translate(langConfig.app.EnterExhibitoIntroduce)}
                                                         value={introduce}
                                                         name="introduce"
                                                         cols={50}
@@ -372,7 +374,7 @@ class Overview extends Component {
                                                 <div className="col-sm-9">
                                                     <textarea
                                                         className="form-control summernote"
-                                                        placeholder="Nhập thông tin liên hệ khác (tối đa 160 kí tự)"
+                                                        placeholder={translate(langConfig.app.EnterOtherContact)}
                                                         value={contact}
                                                         name="contact"
                                                         id="ex-up-contact"
@@ -385,46 +387,38 @@ class Overview extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group row" style={{ display: 'flex' }}>
-                                                <label htmlFor="inputName" className="col-sm-3 col-form-label">Logo</label>
+                                                <label htmlFor="inputName" className="col-sm-3 col-form-label">{translate(langConfig.app.Logo)}</label>
                                                 <div className="col-sm-9">
                                                     {avatar ?
                                                         <img src={"/api/images/" + avatar} style={{ width: 'auto', height: 'auto', maxWidth: 100, maxHeight: 100 }} />
-                                                        : <p>Chưa có Logo</p>
+                                                        : <p>{translate(langConfig.app.NoLogo)}</p>
                                                     }
                                                 </div>
                                             </div>
                                             <div className="form-group row" id="editLogo" style={{ display: onEdit ? 'flex' : 'none' }}>
-                                                <label htmlFor="inputName" className="col-sm-3 col-form-label">Tải logo lên</label>
+                                                <label htmlFor="inputName" className="col-sm-3 col-form-label">{translate(langConfig.app.UploadLogo)}</label>
                                                 <div className="col-sm-9">
-                                                    <div className="position-relative">
-                                                        <input type="file" className="custom-file-input" id="avatar" name="avatar" onChange={this.handleChooseFilesAvatar} />
-                                                        <label className="custom-file-label" htmlFor="avatar">{filesAvatar?.length ? "Đã chọn 1 tệp" : "Chọn Logo"}</label>
-                                                    </div>
+                                                    <input type="file" className="custom-file-input" id="avatar" name="avatar" onChange={this.handleChooseFilesAvatar} />
+                                                    <label className="custom-file-label" htmlFor="avatar">{translate(filesAvatar?.length ? langConfig.app.OneFileSelected : langConfig.app.UploadLogo)}</label>
                                                 </div>
-                                                <div className="offset-sm-3 col-sm-9">
-                                                    <span style={{ fontSize: 10, color: 'blue' }}>Loại: .jpg, .png</span><span style={{ fontSize: 10, color: 'blue', marginLeft: 20 }}>Size: 2MB</span>
-                                                </div>
+                                                <span style={{ fontSize: 10, color: 'blue' }}>{translate(langConfig.app.Type)}: .jpg, .png</span><span style={{ fontSize: 10, color: 'blue', marginLeft: 20 }}>{translate(langConfig.app.Size)}: 2MB</span>
                                             </div>
                                             <div className="form-group row" style={{ display: 'flex' }}>
-                                                <label htmlFor="inputName" className="col-sm-3 col-form-label">Banner</label>
+                                                <label htmlFor="inputName" className="col-sm-3 col-form-label">{translate(langConfig.app.Banner)}</label>
                                                 <div className="col-sm-9">
                                                     {image ?
                                                         <img src={"/api/images/" + image} style={{ width: 'auto', height: 'auto', maxWidth: 400, maxHeight: 100 }} />
-                                                        : <p>Chưa có Banner</p>
+                                                        : <p>{translate(langConfig.app.NoBanner)}</p>
                                                     }
                                                 </div>
                                             </div>
                                             <div className="form-group row" id="editLogo" style={{ display: onEdit ? 'flex' : 'none' }}>
-                                                <label htmlFor="inputName" className="col-sm-3 col-form-label">Tải logo lên</label>
+                                                <label htmlFor="inputName" className="col-sm-3 col-form-label">{translate(langConfig.app.UploadBanner)}</label>
                                                 <div className="col-sm-9">
-                                                    <div className="position-relative">
-                                                        <input type="file" className="custom-file-input" id="image" name="image" onChange={this.handleChooseFiles} />
-                                                        <label className="custom-file-label" htmlFor="image">{files?.length ? "Đã chọn 1 tệp" : "Chọn Banner"}</label>
-                                                    </div>
+                                                    <input type="file" className="custom-file-input" id="image" name="image" onChange={this.handleChooseFiles} />
+                                                    <label className="custom-file-label" htmlFor="image">{translate(files?.length ? langConfig.app.OneFileSelected : langConfig.app.UploadBanner)}</label>
                                                 </div>
-                                                <div className="offset-sm-3 col-sm-9">
-                                                    <span style={{ fontSize: 10, color: 'blue' }}>Loại: .jpg, .png</span><span style={{ fontSize: 10, color: 'blue', marginLeft: 20 }}>Size: 2MB</span>
-                                                </div>
+                                                <span style={{ fontSize: 10, color: 'blue' }}>{translate(langConfig.app.Type)}: .jpg, .png</span><span style={{ fontSize: 10, color: 'blue', marginLeft: 20 }}>{translate(langConfig.app.Size)}: 2MB</span>
                                             </div>
                                             {fieldError ? <div style={{ color: 'red', padding: '10px 0px' }}>{message}</div> : ""}
                                             {onEdit ?
@@ -432,10 +426,10 @@ class Overview extends Component {
                                                     <div className="offset-sm-3 col-sm-9" style={{ display: 'flex' }}>
                                                         <div className="col d-flex">
                                                             <div className="form-group" id="btnSubmitData" style={{ marginRight: 10 }}>
-                                                                <button type="submit" className="btn btn-primary">Lưu</button>
+                                                                <button type="submit" className="btn btn-primary">{translate(langConfig.app.Save)}</button>
                                                             </div>
                                                             <div className="form-group" id="btnCancel" style={{ marginLeft: 10 }}>
-                                                                <button type="button" className="btn btn-danger" onClick={this.handleCancel}>Hủy</button>
+                                                                <button type="button" className="btn btn-danger" onClick={this.handleCancel}>{translate(langConfig.app.Cancel)}</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -443,7 +437,7 @@ class Overview extends Component {
                                                 :
                                                 <div className="form-group row" id="btnEditData">
                                                     <div className="offset-sm-3 col-sm-9">
-                                                        <button type="button" className="btn btn-primary" onClick={() => this.setState({ onEdit: true })}>Chỉnh sửa</button>
+                                                        <button type="button" className="btn btn-primary" onClick={() => this.setState({ onEdit: true })}>{translate(langConfig.app.Edit)}</button>
                                                     </div>
                                                 </div>
                                             }

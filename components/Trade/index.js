@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig, { langConcat } from '../../lang.config';
 import types from '../../redux/types';
 import { formatTime, MODE } from '../../utils/helper';
 import PaginationAdmin from '../pagination/PaginationAdmin';
+import { translate } from '../../utils/language';
 import AddTrade from './AddTrade';
 import UpdateTrade from './UpdateTrade';
 
@@ -140,9 +142,9 @@ class Trade extends Component {
             <section className="content">
                 <div className="box">
                     <div className="box-header with-border">
-                        <h3 className="box-title">Danh sách lịch giao thương</h3>
+                        <h3 className="box-title">{translate(langConfig.app.TradeList)}</h3>
                         <div className="box-tools pull-right">
-                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>Thêm lịch giao thương</a>
+                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>{translate(langConcat(langConfig.app.Add, langConfig.app.TradeCalendar))}</a>
                         </div>
                     </div>
                     <div className="box-body">
@@ -151,7 +153,7 @@ class Trade extends Component {
                                 {selecteds.length ?
                                     <>
                                         <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={this.handleDeleteAll}>
-                                            <span>Xóa {selecteds.length} mục đã chọn</span>
+                                            <span>{translate(langConfig.app.Delete)} {selecteds.length} {translate(langConfig.app.selectedItem)}</span>
                                         </button>
                                         <button className="btn btn-default buttons-copy buttons-html5 btn-sm" disabled>
                                             <span>{'I'}</span>
@@ -159,18 +161,18 @@ class Trade extends Component {
                                     </>
                                     : ""}
                                 <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={() => this.handleDownload("csv")}>
-                                    <span>CSV</span>
+                                    <span>{translate(langConfig.app.CSV)}</span>
                                 </button>
                                 <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={() => this.handleDownload("xls")}>
-                                    <span>EXCEL</span>
+                                    <span>{translate(langConfig.app.EXCEL)}</span>
                                 </button>
                             </div>
                             <div id="DataTables_Table_1_filter" className="dataTables_filter">
                                 <label>
-                                    <input type="search" className={"form-control input-sm" + (name ? " active" : "")} value={name} onChange={this.handleChange} placeholder="Tìm kiếm" />
+                                    <input type="search" className={"form-control input-sm" + (name ? " active" : "")} value={name} onChange={this.handleChange} placeholder={translate(langConfig.app.Search)} />
                                 </label>
                             </div>
-                            <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+                            <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" >
                                 <thead>
                                     <tr role="row">
                                         <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>
@@ -182,22 +184,22 @@ class Trade extends Component {
                                         </th>
                                         {user.mode === MODE.admin && !exUser ?
                                             <>
-                                                <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Thành viên 1</th>
-                                                <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Thành viên 2</th>
+                                                <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.app.Member)} 1</th>
+                                                <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.app.Member)} 2</th>
                                             </>
-                                            : <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>Thông tin khách hàng</th>
+                                            : <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>{translate(langConfig.app.CustomerInfo)}</th>
                                         }
-                                        <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Thời gian</th>
-                                        <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>Nội dung giao thương</th>
+                                        <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.app.Time)}</th>
+                                        <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>{translate(langConfig.app.Content)}</th>
                                         {user?.mode !== MODE.admin || exUser ?
-                                            <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Thời gian đăng ký</th>
+                                            <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.app.RegisterDate)}</th>
                                             : null}
                                         {user.mode === MODE.admin && !exUser ?
-                                            <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Trạng thái</th>
+                                            <th className=" sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Status)}</th>
                                             : null}
-                                        <th style={{ textAlign: 'center !important', width: '10%' }} className="sorting_disabled" rowSpan={1} colSpan={1} >Hành động</th>
-                                    </tr>
-                                </thead>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Actions)}</th>
+                                    </tr >
+                                </thead >
                                 <tbody id="massSelectArea">
                                     {trades.map((trade, index) => {
                                         const checked = (selecteds.indexOf(trade._id) + 1) ? "checked" : "";
@@ -205,7 +207,6 @@ class Trade extends Component {
                                         const to = trade.leader.user === fromUser._id ? trade.member : trade.leader;
                                         const tradeTime = formatTime(trade.deadline, "YYYY-MM-DD HH:II:SS");
                                         const createTime = formatTime(trade.createdAt, "YYYY-MM-DD HH:II:SS");
-                                        const approved = trade.approved ? "Đã duyệt" : "Chưa duyệt"
                                         return (
                                             <tr key={trade._id} className={index % 2 ? "odd" : "even"} role="row">
                                                 <td>
@@ -221,28 +222,31 @@ class Trade extends Component {
                                                 <td title={to.name}>{to.name} - {to.email}</td>
                                                 <td title={tradeTime}>{tradeTime}</td>
                                                 <td>{trade.content}</td>
-                                                {user.mode === MODE.admin && !exUser ? <td title={approved}>{approved}</td> : null}
+                                                {user.mode === MODE.admin && !exUser ? <td title={translate(trade.approved ? langConfig.app.Approved : langConfig.app.NotApproved)}>
+                                                    {translate(trade.approved ? langConfig.app.Approved : langConfig.app.NotApproved)}
+                                                </td> : null}
                                                 {user.mode !== MODE.admin || exUser ? <td title={createTime}>{createTime}</td> : null}
                                                 <td className="row-options">
                                                     <a onClick={() => this.setState({ onEdit: trade })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i title="Chỉnh sửa" className="fa fa-edit" />
+                                                        <i title={translate(langConfig.app.Edit)} className="fa fa-edit" />
                                                     </a>&nbsp;&nbsp;
                                                     <a onClick={() => this.handleDelete(trade)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i className="fa fa-trash-o" title="Xóa" />
+                                                        <i className="fa fa-trash-o" title={translate(langConfig.app.Delete)} />
                                                     </a>&nbsp;&nbsp;
                                                 </td>
                                             </tr>
                                         )
                                     })}
                                 </tbody>
-                            </table>
+                            </table >
                             <PaginationAdmin currentPage={page} total={total} pageSize={pageSize} gotoPage={this.gotoPage} />
-                        </div>
-                    </div>
-                </div>
+                        </div >
+                    </div >
+                </div >
                 {/* <AddTrade onAdd={null} handleClose={this.handleOpenForm} onAdded={this.gotoPage} /> */}
-                <UpdateTrade onEdit={onEdit} handleClose={() => this.setState({ onEdit: null })} />
-            </section>
+                < UpdateTrade onEdit={onEdit} handleClose={() => this.setState({ onEdit: null })
+                } />
+            </section >
         )
     }
 }

@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import types from '../../../redux/types';
+import { translate } from '../../../utils/language';
+import langConfig from '../../../lang.config';
+
 
 class TradeForm extends Component {
     constructor(props) {
@@ -72,47 +75,47 @@ class TradeForm extends Component {
                 <div className="overlay" />
                 <div className="card" style={{ overflow: 'auto' }}>
                     <div className="form__name" style={{ marginBottom: 10 }}>
-                        Tạo lịch giao thương
+                        {translate(langConfig.app.CreateTrade)}
                         <div onClick={this.handleClose} style={{ float: 'right', cursor: 'pointer' }} className="btn-close-gt">X</div>
                     </div>
                     <div className="contact__container">
                         <div className="section">
                             <div className="box">1</div>
-                            <span>Thông tin của bạn</span>
+                            <span> {translate(langConfig.app.YourInfo)}</span>
                         </div>
                         <form className="form__contact">
                             <div className="cname">
-                                <label>Name</label> <input className="inputGT" name="nameCompany" type="text" name="fromName" value={fromName} onChange={this.handleChange} required disabled={success} />
+                                <label>{translate(langConfig.app.Name)}</label> <input className="inputGT" name="nameCompany" type="text" name="fromName" value={fromName} onChange={this.handleChange} required disabled={success} />
                             </div>
                             <div className="cnum">
-                                <label>Email</label> <input className="inputGT" name="emailCompany" type="email" name="fromEmail" value={fromEmail} onChange={this.handleChange} required disabled={success} />
+                                <label>{translate(langConfig.app.Email)}</label> <input className="inputGT" name="emailCompany" type="email" name="fromEmail" value={fromEmail} onChange={this.handleChange} required disabled={success} />
                             </div>
                         </form>
                     </div>
                     <div className="contact__container">
                         <div className="section">
                             <div className="box">2</div>
-                            <span>Thông tin đối tác</span>
+                            <span>{translate(langConfig.app.PartnerInfo)}</span>
                         </div>
                         <form className="form__contact">
                             <div className="cname">
-                                <label>Name</label> <input className="inputGT" name="nameCompany" type="text" name="toName" value={toName} onChange={this.handleChange} required disabled={success} />
+                                <label>{translate(langConfig.app.Name)}</label> <input className="inputGT" name="nameCompany" type="text" name="toName" value={toName} onChange={this.handleChange} required disabled={success} />
                             </div>
                             <div className="cnum">
-                                <label>Email</label> <input className="inputGT" name="emailCompany" type="email" name="toEmail" value={toEmail} onChange={this.handleChange} required disabled={success} />
+                                <label>{translate(langConfig.app.Email)}</label> <input className="inputGT" name="emailCompany" type="email" name="toEmail" value={toEmail} onChange={this.handleChange} required disabled={success} />
                             </div>
                         </form>
                     </div>
                     <div className="contact__container">
                         <div className="section">
-                            <div className="box">3</div><span>Thời gian và nội dung</span>
+                            <div className="box">3</div><span>{translate(langConfig.app.TimeAndContent)}</span>
                         </div>
                         <form className="form__contact" style={{ flexWrap: 'wrap' }} onSubmit={this.handleSubmit}>
                             <div className="email">
-                                <label>Thời gian</label> <input className="inputGT" placeholder="Chọn thời gian giao thương" name="deadline" type="datetime-local" value={deadline} required onChange={this.handleChange} disabled={success} />
+                                <label>{translate(langConfig.app.Time)}</label> <input className="inputGT" placeholder={translate(langConfig.app.SelectTradeTime)} name="deadline" type="datetime-local" value={deadline} required onChange={this.handleChange} disabled={success} />
                             </div>
                             <div className="email">
-                                <label>Nội dung</label> <textarea rows={3} className="inputGT" placeholder="Nhập nội dung giao thương" name="content" type="text" value={content} onChange={this.handleChange} disabled={success} />
+                                <label>{translate(langConfig.app.Content)}</label> <textarea rows={3} className="inputGT" placeholder={translate(langConfig.app.EnterTradeContent)} name="content" type="text" value={content} onChange={this.handleChange} disabled={success} />
                             </div>
                         </form>
                     </div>
@@ -123,14 +126,16 @@ class TradeForm extends Component {
                         : ''}
                     {success ?
                         <div className="contact__container">
-                            <div style={{ color: 'green' }}>Tạo lịch giao thương thành công</div>
+                            <div style={{ color: 'green' }}>{translate(langConfig.app.CreateTradeSuccess)}</div>
                         </div>
                         : ""}
                     <div className="form__confirmation">
                         {success ?
-                            <button onClick={this.handleClose} className="btnSubmit-dkgt">Đóng</button>
+                            <button onClick={this.handleClose} className="btnSubmit-dkgt">{translate(langConfig.app.Close)}</button>
                             :
-                            <button onClick={this.handleSubmit} disabled={loading} className="btnSubmit-dkgt">{loading ? "Đang tạo..." : "Tạo lịch"}</button>
+                            <button onClick={this.handleSubmit} disabled={loading} className="btnSubmit-dkgt">
+                                {translate(loading ?  langConfig.app.Creating: langConfig.app.CreateSubmit) }
+                            </button>
                         }
                     </div>
                 </div>

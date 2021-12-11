@@ -5,6 +5,8 @@ import Link from 'next/link';
 import types from '../../../redux/types';
 import { MODE } from '../../../utils/helper';
 import Logo from '../Logo';
+import langConfig from '../../../lang.config';
+import { translate } from '../../../utils/language';
 
 class LoginExhibitor extends Component {
     constructor(props) {
@@ -22,7 +24,7 @@ class LoginExhibitor extends Component {
             callback: res => {
                 if (!res?.success) {
                     this.setState({
-                        field: res?.field, message: res?.message || "Đăng nhập không thành công"
+                        field: res?.field, message: translate(res?.messages || langConfig.app.LoginFailed)
                     });
                 }
             }
@@ -47,12 +49,12 @@ class LoginExhibitor extends Component {
                     <a><Logo /></a>
                 </Link>
                 <label className="tk">
-                    <span>Tài khoản</span>
-                    <input onChange={this.handleChange} type="text" name="email" placeholder="Phone Number, Name or Email" />
+                    <span>{translate(langConfig.app.Account)}</span>
+                    <input onChange={this.handleChange} type="text" name="email" placeholder={translate(langConfig.app.EmailAddress)} />
                 </label>
                 <label className="mk">
-                    <span>Mật khẩu</span>
-                    <input onChange={this.handleChange} type="password" name="password" placeholder="At least 8 characters" />
+                    <span>{translate(langConfig.app.Password)}</span>
+                    <input onChange={this.handleChange} type="password" name="password" placeholder={translate(langConfig.app.Password)} />
                 </label>
                 {message ? <div className="error-form">{message}</div> : ""}
                 <button type="submit" className="log-submit" onClick={this.handleSubmit}>Đăng nhập</button>
@@ -60,10 +62,10 @@ class LoginExhibitor extends Component {
                     <label className="remember-login label-cb">
                         <input type="checkbox" name="remember" />
                         <span className="checkbox-checkmark" />
-                        Nhớ đăng nhập
+                        {translate(langConfig.app.RememberMe)}
                     </label>
                     <label className="fogot-mk">
-                        Quên mật khẩu?<a href="#" className="txt-red" onClick={this.handleResetPassword}>Nhấn vào đây</a>
+                        {translate(langConfig.app.ForgetPassword)}? <a href="#" className="txt-red" onClick={this.handleResetPassword}>{translate(langConfig.app.ClickHere)}</a>
                     </label>
                 </div>
             </Modal>

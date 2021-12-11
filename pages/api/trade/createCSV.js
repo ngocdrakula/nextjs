@@ -69,7 +69,7 @@ const handler = async (req, res) => {
         success: true,
         fileName,
         message: 'Tạo file thành công',
-        messages: lang?.message?.error?.unauthorized
+        messages: lang?.message?.success?.created
       });
     } catch (error) {
       if (error.path == 'token') {
@@ -90,7 +90,7 @@ const handler = async (req, res) => {
       }
       return res.status(500).send({
         success: false,
-        message: error.message,
+        message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
         error: error,
       });

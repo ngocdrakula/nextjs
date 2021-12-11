@@ -25,7 +25,7 @@ const handler = async (req, res) => {
     } catch (error) {
       return res.status(500).send({
         success: false,
-        message: error.message,
+        message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
         error: error,
       });
@@ -43,7 +43,7 @@ const handler = async (req, res) => {
         if (matchIndustry) throw ({ path: 'industry', matchIndustry });
       }
       catch (e) {
-        if (e.path == 'industry') throw e
+        if (e.path == 'industry') throw ({})
       }
       const industryCreated = await industryController.create({ name });
       return res.status(201).send({
@@ -69,14 +69,14 @@ const handler = async (req, res) => {
           messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path == '_id') {
+      if (e.path == 'name') {
         return res.status(400).send({
           success: false,
           exist: true,
           current: e.matchIndustry,
           field: 'name',
-          message: "Ngành nghề đã tồn tại",
-          messages: langConcat(lang?.resources?.industry, lang?.message?.error?.validation?.exist),
+          message: "Tên ngành nghề không được để trống",
+          messages: langConcat(lang?.resources?.industryName, lang?.message?.error?.validation?.required),
         });
       }
       if (e.path == 'industry') {
@@ -134,7 +134,8 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           required: false,
-          message: "Danh sách ngành nghề phải là một mảng id",
+          message: "Danh sách ngành nghề không đúng định dạng",
+          messages: langConcat(lang?.resources?.industryList, lang?.message?.error?.validation?.format),
         });
       }
       return res.status(500).send({

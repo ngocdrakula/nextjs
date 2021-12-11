@@ -9,7 +9,7 @@ import MessageBox from './MessageBox';
 
 const pageSize = 10;
 
-class Overview extends Component {
+class Chat extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -80,4 +80,4 @@ class Overview extends Component {
     }
 }
 
-export default connect(({ admin: { currentUser, user, exUser } }) => ({ currentUser, user, exUser }))(Overview)
+export default connect(({ admin: { currentUser, user, exUser } }) => ({ currentUser, user, exUser }))(Chat)

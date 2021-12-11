@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig from '../../lang.config';
 import types from '../../redux/types';
 import { MODE } from '../../utils/helper';
+import { translate } from '../../utils/language';
 
 
 class AddTrade extends Component {
@@ -30,7 +32,7 @@ class AddTrade extends Component {
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
         if (fieldError) {
-            this.setState({ fieldError, message: 'Vui lòng điền đầy đủ thông tin' })
+            this.setState({ fieldError, message: translate(langConfig.message.error.infomation) })
         }
         else {
             const { dispatch, onAdded } = this.props;
@@ -43,10 +45,10 @@ class AddTrade extends Component {
                             type: types.SET_TOOLTIP,
                             payload: {
                                 type: 'success',
-                                title: 'Thêm lịch giao thương thành công',
-                                message: 'Bạn muốn thêm lịch giao thương khác?',
-                                confirm: 'Thêm',
-                                cancel: 'Đóng',
+                                title: translate(langConfig.message.success.created),
+                                message: translate(langConfig.app.AddAnotherTrade),
+                                confirm: translate(langConfig.app.Add),
+                                cancel: translate(langConfig.app.Close),
                                 handleConfirm: () => { this.setState({ ...this.defaultState });; onAdded(); },
                                 handleCancel: () => { onAdded(); this.props.handleClose(); }
                             },
@@ -55,7 +57,7 @@ class AddTrade extends Component {
                     else if (res?.data) {
                         this.setState({
                             fieldError: res.data.field,
-                            message: res.data.message || "Vui lòng điền đầy đủ thông tin"
+                            message: translate(res.data.messages || langConfig.message.error.infomation)
                         })
                     }
                 }

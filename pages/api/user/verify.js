@@ -9,12 +9,12 @@ const handler = async (req, res) => {
         try {
             const { token } = req.body;
             if (!token) throw ({ path: 'token' });
-            const user = token && jwt.verify('Token: ' + token); 
+            const user = token && jwt.verify('Token: ' + token);
             if (!user?._id) throw ({ path: 'token' });
             const currentUser = await userController.get(user._id);
             if (!currentUser || !currentUser.enabled) throw ({ path: 'user' });
             const { verify, email, name, mode, _id, createdAt } = currentUser;
-            if (verify) throw ({ path: 'token' }); 
+            if (verify) throw ({ path: 'token' });
             currentUser.verify = true;
             await currentUser.save();
             await verifySuccess({ email });
@@ -24,6 +24,7 @@ const handler = async (req, res) => {
                 token: tokenLogin,
                 data: { email, createdAt, _id, name, mode },
                 message: 'Xác thực tài khoản thành công',
+                messages: lang?.message?.success?.verify,
             });
         } catch (e) {
             if (e.path == 'token') {
@@ -31,7 +32,8 @@ const handler = async (req, res) => {
                     success: false,
                     exist: true,
                     field: 'token',
-                    message: "Mã xác thực tài khoản không chính xác hoặc đã hết hạn",
+                    message: "Mã xác thực không chính xác hoặc đã hết hạn",
+                    messages: lang?.message?.error?.code,
                 });
             }
             if (e.path == 'user') {
@@ -39,7 +41,8 @@ const handler = async (req, res) => {
                     success: false,
                     exist: true,
                     field: 'user',
-                    message: "Tài khoản không tồn tại hoặc đã bị khóa",
+                    message: "Người dùng không tồn tại hoặc đã bị khóa",
+                    messages: langConcat(lang?.resources?.user, lang?.message?.error?.validation?.not_exist),
                 });
             }
             return res.status(500).send({

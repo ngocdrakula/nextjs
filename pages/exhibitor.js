@@ -9,6 +9,8 @@ import types from '../redux/types'
 import { getQuery, MODE } from '../utils/helper';
 import Pagination from '../components/pagination/Pagination';
 import Livestream from '../components/exhibitorPage/Livestream';
+import langConfig from '../lang.config';
+import { translate } from '../utils/language';
 
 const pageSize = 9;
 
@@ -33,7 +35,7 @@ class Exhibitor extends Component {
       dispatch({
         type: types.GET_USER,
         payload: query.id,
-        callback: res => { 
+        callback: res => {
           if (res?.success) {
             this.setState({ exhibitor: res.data, loading: false }, () => {
               dispatch({
@@ -147,7 +149,9 @@ class Exhibitor extends Component {
         <div id="detail-exhibitor store-detail">
           <div className="store-name">
             <div className="container">
-              <a href="#" className="connect-exhibitor"><img src="/images/user2.png" alt="" />Nhà trưng bày</a>
+              <Link href={"/user?filter=" + (MODE.exhibitor)}>
+                <a className="connect-exhibitor"><img src="/images/user2.png" alt="" />{translate(langConfig.app.Exhibitor)}</a>
+              </Link>
               <h3>
                 <div className="exhibiton-avatar">
                   {exhibitor.avatar ?
@@ -168,20 +172,20 @@ class Exhibitor extends Component {
                   <div className={"collapse navbar-collapse" + (toggle ? " show" : "")} id="navbarResponsive">
                     <ul className="navigation">
                       <li className={active === 0 ? "active" : ""}>
-                        <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 0, toggle: !toggle }) }}>Giới thiệu</a>
+                        <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 0, toggle: !toggle }) }}>{translate(langConfig.app.Introduce)}</a>
                       </li>
                       <li className={active === 1 ? "active" : ""}>
-                        <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 1, toggle: !toggle }) }}>Sản phẩm</a>
+                        <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 1, toggle: !toggle }) }}>{translate(langConfig.app.Product)}</a>
                       </li>
                       <li className={active === 2 ? "active" : ""}>
-                        <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 2, toggle: !toggle }) }}>Live stream</a>
+                        <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 2, toggle: !toggle }) }}>{translate(langConfig.app.Livestream)}</a>
                       </li>
                       <li className={active === 3 ? "active" : ""}>
-                        <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 3, toggle: !toggle }) }}>Liên hệ</a>
+                        <a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 3, toggle: !toggle }) }}>{translate(langConfig.app.Contact)}</a>
                       </li>
                     </ul>
                     <Link href={"/user?filter=" + MODE.exhibitor}>
-                      <a className="right"><img src="/images/icon-list.png" alt="" />Danh sách</a>
+                      <a className="right"><img src="/images/icon-list.png" alt="" />{translate(langConfig.app.List)}</a>
                     </Link>
                   </div>
                 </div>
@@ -199,7 +203,7 @@ class Exhibitor extends Component {
               <div className="row">
                 <div className="col-lg-3">
                   <div className="sidebar sidebar-left sidebar-menu">
-                    <h3>Lĩnh vực trưng bày</h3>
+                    <h3>{translate(langConfig.app.ExhibitionField)}</h3>
                     <ul>
                       {categories.map((cate, index) => {
                         const active = ((!index && !categorySelected) || categorySelected === cate._id)
@@ -212,27 +216,27 @@ class Exhibitor extends Component {
                     </ul>
                   </div>
                   <div className="sidebar sidebar-left">
-                    <h3>Liên hệ</h3>
+                    <h3>{translate(langConfig.app.Contact)}</h3>
                     <p>{(exhibitor.contact || "")?.split('\n').map((d, i) => <React.Fragment key={i}>{i ? <br /> : ""}{d}</React.Fragment>)}</p>
-                    <h3>Gửi tin nhắn</h3>
+                    <h3>{translate(langConfig.app.SendMessage)}</h3>
                     <form onSubmit={this.handleSubmit}>
                       <div className="form-group">
                         <textarea
                           className="form-control"
                           rows={4}
-                          placeholder="Tối đa 250 từ"
+                          placeholder={translate(langConfig.app.Max250Words)}
                           name="message"
                           value={message}
                           onChange={this.handleChange}
                           onClick={this.openLoginVisitor}
                         />
                       </div>
-                      <input type="submit" defaultValue="Gửi ngay" />
+                      <input type="submit" value={translate(langConfig.app.Send)} />
                     </form>
                     <div className="contact-method">
-                      <a href="#" onClick={e => this.handleChat(e, exhibitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a>
-                      <a href={!user ? "#" : "mailto:" + exhibitor.email} onClick={!user ? this.openLoginVisitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />Email</a>
-                      <a href="#" onClick={e => this.handleConnect(e, exhibitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a>
+                      <a href="#" onClick={e => this.handleChat(e, exhibitor)}><img src="/images/chat2.png" alt="" />{translate(langConfig.app.Chat)}</a>
+                      <a href={!user ? "#" : "mailto:" + exhibitor.email} onClick={!user ? this.openLoginVisitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />{translate(langConfig.app.Email)}</a>
+                      <a href="#" onClick={e => this.handleConnect(e, exhibitor)}><img src="/images/connect2.png" alt="" />{translate(langConfig.app.Trade)}</a>
                     </div>
                   </div>
                 </div>
@@ -241,7 +245,7 @@ class Exhibitor extends Component {
                     <div className="sidebar sidebar-content-top">
                       <div className="row">
                         <div className="col-lg-5">
-                          <h3>Giới thiệu Nhà trưng bày</h3>
+                          <h3>{translate(langConfig.app.AboutExhibitor)}</h3>
                           <p>{exhibitor.introduce || ""}</p>
                         </div>
                         <div className="col-lg-7">
@@ -266,27 +270,27 @@ class Exhibitor extends Component {
                           }
                         </div>
                       </div>
-                    </div>
-                    <div className="sidebar sidebar-content-bottom">
-                      <h3>Sản phẩm tiêu biểu</h3>
-                      <div className="items-list">
-                        <div className="row">
-                          {products.slice(0, 6).map(product => {
-                            return (
-                              <div key={product._id} className="col-sm-6 col-lg-4">
-                                <div className="item-detail">
-                                  <div className="item-thumb" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', maxHeight: 270 }}>
-                                    <img src={"/api/images/" + product.image} alt="" style={{ width: 'auto', height: 'auto' }} />
-                                  </div>
-                                  <div className="item-description">
-                                    <p><strong>{product.name}</strong></p>
-                                    <div className="dangerously" dangerouslySetInnerHTML={{ __html: product.description }} />
+                      <div className="sidebar sidebar-content-bottom">
+                        <h3>{translate(langConfig.app.FeaturedProducts)}</h3>
+                        <div className="items-list">
+                          <div className="row">
+                            {products.slice(0, 6).map(product => {
+                              return (
+                                <div key={product._id} className="col-sm-6 col-lg-4">
+                                  <div className="item-detail">
+                                    <div className="item-thumb" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', maxHeight: 270 }}>
+                                      <img src={"/api/images/" + product.image} alt="" style={{ width: 'auto', height: 'auto' }} />
+                                    </div>
+                                    <div className="item-description">
+                                      <p><strong>{product.name}</strong></p>
+                                      <div className="dangerously" dangerouslySetInnerHTML={{ __html: product.description }} />
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            );
-                          })}
-                          {!products.length ? <div className="col-sm-12"><h5>Chưa có sản phẩm tiêu biểu nào</h5></div> : ""}
+                              );
+                            })}
+                            {!products.length ? <div className="col-sm-12"><h5>{translate(langConfig.app.NoFeaturedProducts)}</h5></div> : ""}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -295,55 +299,55 @@ class Exhibitor extends Component {
               </div>
             </div>
           </div>
-          <div className="store-detail-content bg-body" style={{ display: active === 1 ? 'block' : 'none' }}>
-            <div className="container">
-              <div className="banner">
-                <img src="/images/no-banner.png" alt="" />
-              </div>
-              <div className="row">
-                <div className="col-lg-3">
-                  <div className="sidebar sidebar-left sidebar-menu">
-                    <h3>Lĩnh vực trưng bày</h3>
-                    <ul>
-                      {categories.map((cate, index) => {
-                        const active = ((!index && !categorySelected) || categorySelected === cate._id)
-                        return (
-                          <li key={cate._id} className={active ? "active" : ""}>
-                            <a href="#" onClick={e => this.handleSelect(e, cate._id)} style={active ? { fontWeight: '500' } : {}}>{cate.name}</a>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                  <div className="sidebar sidebar-left">
-                    <h3>Liên hệ</h3>
-                    <p>{(exhibitor.contact || "")?.split('\n').map((d, i) => <React.Fragment key={i}>{i ? <br /> : ""}{d}</React.Fragment>)}</p>
-                    <h3>Gửi tin nhắn</h3>
-                    <form onSubmit={this.handleSubmit}>
-                      <div className="form-group">
-                        <textarea
-                          className="form-control"
-                          rows={4}
-                          placeholder="Tối đa 250 từ"
-                          name="message"
-                          value={message}
-                          onChange={this.handleChange}
-                          onClick={this.openLoginVisitor}
-                        />
-                      </div>
-                      <input type="submit" defaultValue="Gửi ngay" />
-                    </form>
-                    <div className="contact-method">
-                      <a href="#" onClick={e => this.handleChat(e, exhibitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a>
-                      <a href={!user ? "#" : "mailto:" + exhibitor.email} onClick={!user ? this.openLoginVisitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />Email</a>
-                      <a href="#" onClick={e => this.handleConnect(e, exhibitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a>
+        </div>
+        <div className="store-detail-content bg-body" style={{ display: active === 1 ? 'block' : 'none' }}>
+          <div className="container">
+            <div className="banner">
+              <img src="/images/banner.png" alt="" />
+            </div>
+            <div className="row">
+              <div className="col-lg-3">
+                <div className="sidebar sidebar-left sidebar-menu">
+                  <h3>{translate(langConfig.app.ExhibitionField)}</h3>
+                  <ul>
+                    {categories.map((cate, index) => {
+                      const active = ((!index && !categorySelected) || categorySelected === cate._id)
+                      return (
+                        <li key={cate._id} className={active ? "active" : ""}>
+                          <a href="#" onClick={e => this.handleSelect(e, cate._id)} style={active ? { fontWeight: '500' } : {}}>{cate.name}</a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+                <div className="sidebar sidebar-left">
+                  <h3>{translate(langConfig.app.Contact)}</h3>
+                  <p>{(exhibitor.contact || "")?.split('\n').map((d, i) => <React.Fragment key={i}>{i ? <br /> : ""}{d}</React.Fragment>)}</p>
+                  <h3>{translate(langConfig.app.SendMessage)}</h3>
+                  <form onSubmit={this.handleSubmit}>
+                    <div className="form-group">
+                      <textarea
+                        className="form-control"
+                        rows={4}
+                        placeholder={translate(langConfig.app.Max250Words)}
+                        name="message"
+                        value={message}
+                        onChange={this.handleChange}
+                        onClick={this.openLoginVisitor}
+                      />
                     </div>
+                    <input type="submit" value={translate(langConfig.app.SendNow)} />
+                  </form>
+                  <div className="contact-method">
+                    <a href="#" onClick={e => this.handleChat(e, exhibitor)}><img src="/images/chat2.png" alt="" />{translate(langConfig.app.Chat)}</a>
+                    <a href={!user ? "#" : "mailto:" + exhibitor.email} onClick={!user ? this.openLoginVisitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />{translate(langConfig.app.Email)}</a>
+                    <a href="#" onClick={e => this.handleConnect(e, exhibitor)}><img src="/images/connect2.png" alt="" />{translate(langConfig.app.Trade)}</a>
                   </div>
                 </div>
                 <div className="col-lg-9" id="product-list">
                   <div className="sidebar-content">
                     <div className="sidebar sidebar-content-bottom sidebar-items">
-                      <h3>{currentCategory?.name || "Sản phẩm"}</h3>
+                      <h3>{currentCategory?.name || translate(langConfig.app.Product)}</h3>
                       <div className="items-list">
                         <div className="row">
                           {products.map(product => {
@@ -361,114 +365,110 @@ class Exhibitor extends Component {
                               </div>
                             );
                           })}
-                          {!products.length ? <div className="col-sm-12"><h5>Danh mục chưa có sản phẩm nào</h5></div> : ""}
+                          {!products.length ? <div className="col-sm-12"><h5>{translate(langConfig.app.NoCategoryProducts)}</h5></div> : ""}
                         </div>
                       </div>
-                      <Pagination gotoPage={this.gotoPage} {...{ currentPage, pageSize, total }} />
                     </div>
+                    <Pagination gotoPage={this.gotoPage} {...{ currentPage, pageSize, total }} />
                   </div>
                 </div>
-
               </div>
             </div>
           </div>
-          {exhibitor?._id ? <Livestream active={active === 2} exhibitor={exhibitor} /> : ""}
-          <div className="contact-content bg-body" style={{ display: active === 3 ? 'block' : 'none' }}>
-            <div className="container">
-              <div className="contact-info">
-                <div className="row">
-                  <div className="col-lg-7">
-                    <div className="contact-exhibitor">
-                      <h3>Liên hệ Nhà trưng bày</h3>
-                      <div className="row address">
-                        <div className="col-md-2 col-sm-4">
-                          <span>Địa chỉ:</span>
-                        </div>
-                        <div className="col-md-10 col-sm-8">
-                          <div className="dangerously" dangerouslySetInnerHTML={{ __html: exhibitor.address || '' }} />
-                        </div>
+        </div>
+        {exhibitor?._id ? <Livestream active={active === 2} exhibitor={exhibitor} /> : ""}
+        <div className="contact-content bg-body" style={{ display: active === 3 ? 'block' : 'none' }}>
+          <div className="container">
+            <div className="contact-info">
+              <div className="row">
+                <div className="col-lg-7">
+                  <div className="contact-exhibitor">
+                    <h3>{translate(langConfig.app.ContactExhibitor)}</h3>
+                    <div className="row address">
+                      <div className="col-md-2 col-sm-4">
+                        <span>{translate(langConfig.app.Address)}:</span>
                       </div>
-                      <div className="exhibitor-info">
-                        <div className="row">
-                          <div className="col-md-6">
-                            <div className="exhibitor-detail">
-                              <div className="list-info">
-                                <span>Điện thoại: {user ? exhibitor.phone : ""}</span>
-                                <span>Hotline: {user ? exhibitor.hotline : ""}</span>
-                                <span>Fax: {user ? exhibitor.fax : ""}</span>
-                                <span>Email: {user ? exhibitor.email : ""}</span>
-                              </div>
-                              {!user ?
-                                <a href="#" className="login-view" onClick={this.openLoginVisitor}>Đăng nhập để xem</a>
-                                : ""}
+                    </div>
+                    <div className="exhibitor-info">
+                      <div className="row">
+                        <div className="col-md-6">
+                          <div className="exhibitor-detail">
+                            <div className="list-info">
+                              <span>{translate(langConfig.app.Phone)} : {user ? exhibitor.phone : ""}</span>
+                              <span>{translate(langConfig.app.Hotline)}: {user ? exhibitor.hotline : ""}</span>
+                              <span>{translate(langConfig.app.Fax)}: {user ? exhibitor.fax : ""}</span>
+                              <span>{translate(langConfig.app.Email)}: {user ? exhibitor.email : ""}</span>
                             </div>
+                            {!user ?
+                              <a href="#" className="login-view" onClick={this.openLoginVisitor}>{translate(langConfig.app.LoginView)}</a>
+                              : ""}
                           </div>
-                          <div className="col-md-6">
-                            <div className="exhibitor-detail">
-                              <div className="list-info">
-                                <span>Người đại diện: {user ? exhibitor.representative : ""}</span>
-                                <span>Chức vụ: {user ? exhibitor.position : ""}</span>
-                                <span>Mobile: {user ? exhibitor.mobile : ""}</span>
-                                <span>Email: {user ? exhibitor.re_email : ""}</span>
-                              </div>
-                              {!user ?
-                                <a href="#" className="login-view" onClick={this.openLoginVisitor}>Đăng nhập để xem</a>
-                                : ""}
+                        </div>
+                        <div className="col-md-6">
+                          <div className="exhibitor-detail">
+                            <div className="list-info">
+                              <span>{translate(langConfig.app.Representative)}: {user ? exhibitor.representative : ""}</span>
+                              <span>{translate(langConfig.app.Position)}: {user ? exhibitor.position : ""}</span>
+                              <span>{translate(langConfig.app.Mobile)}: {user ? exhibitor.mobile : ""}</span>
+                              <span>{translate(langConfig.app.Email)}: {user ? exhibitor.re_email : ""}</span>
                             </div>
+                            {!user ?
+                              <a href="#" className="login-view" onClick={this.openLoginVisitor}>{translate(langConfig.app.LoginView)}</a>
+                              : ""}
                           </div>
                         </div>
                       </div>
-                      <div className="row web-address">
-                        <div className="col-md-2 col-sm-4">Website:</div>
-                        <div className="col-md-10 col-sm-8">
-                          <ul>
-                            {exhibitor.website?.split(",").map((web, index) => {
-                              return (
-                                <li key={index}>
-                                  <a href={web || "#"} target="_blank">{web || ""}</a>
-                                </li>)
-                            })}
-                          </ul>
-                        </div>
-                      </div>
-                      <div className="contact-method">
-                        <ul className="ft-semibold">
-                          <li><a href="#" onClick={e => this.handleChat(e, exhibitor)}><img src="/images/chat2.png" alt="" />Trò chuyện</a></li>
-                          <li><a href={!user ? "#" : "mailto:" + exhibitor.email} onClick={!user ? this.openLoginVisitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />Email</a>
-                          </li>
-                          <li><a href="#" onClick={e => this.handleConnect(e, exhibitor)}><img src="/images/connect2.png" alt="" />Kết nối giao thương</a></li>
+                    </div>
+                    <div className="row web-address">
+                      <div className="col-md-2 col-sm-4">{translate(langConfig.app.Website)}:</div>
+                      <div className="col-md-10 col-sm-8">
+                        <ul>
+                          {exhibitor.website?.split(",").map((web, index) => {
+                            return (
+                              <li key={index}>
+                                <a href={web || "#"} target="_blank">{web || ""}</a>
+                              </li>)
+                          })}
                         </ul>
                       </div>
                     </div>
+                    <div className="contact-method">
+                      <ul className="ft-semibold">
+                        <li><a href="#" onClick={e => this.handleChat(e, exhibitor)}><img src="/images/chat2.png" alt="" />{translate(langConfig.app.Chat)}</a></li>
+                        <li><a href={!user ? "#" : "mailto:" + exhibitor.email} onClick={!user ? this.openLoginVisitor : undefined} target="_blank"><img src="/images/mail.png" alt="" />{translate(langConfig.app.Email)}</a>
+                        </li>
+                        <li><a href="#" onClick={e => this.handleConnect(e, exhibitor)}><img src="/images/connect2.png" alt="" />{translate(langConfig.app.Trade)}</a></li>
+                      </ul>
+                    </div>
                   </div>
-                  <div className="col-lg-4">
-                    <div className="contact-form">
-                      <div className="form">
-                        <h3>Gửi tin nhắn cho chúng tôi</h3>
-                        <form onSubmit={this.handleSubmit}>
-                          <div className="form-group">
-                            <input
-                              type="input"
-                              name="name"
-                              className="form-control"
-                              placeholder="Họ và tên"
-                              onClick={this.openLoginVisitor}
-                            />
-                          </div>
-                          <div className="form-group">
-                            <textarea
-                              className="form-control"
-                              rows={4}
-                              placeholder="Tối đa 250 từ"
-                              name="message"
-                              value={message}
-                              onChange={this.handleChange}
-                              onClick={this.openLoginVisitor}
-                            />
-                          </div>
-                          <input type="submit" defaultValue="Gửi ngay" />
-                        </form>
-                      </div>
+                </div>
+                <div className="col-lg-4">
+                  <div className="contact-form">
+                    <div className="form">
+                      <h3>{translate(langConfig.app.SendUs)}</h3>
+                      <form onSubmit={this.handleSubmit}>
+                        <div className="form-group">
+                          <input
+                            type="input"
+                            name="name"
+                            className="form-control"
+                            placeholder={translate(langConfig.app.FullName)}
+                            onClick={this.openLoginVisitor}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <textarea
+                            className="form-control"
+                            rows={4}
+                            placeholder={translate(langConfig.app.Max250Words)}
+                            name="message"
+                            value={message}
+                            onChange={this.handleChange}
+                            onClick={this.openLoginVisitor}
+                          />
+                        </div>
+                        <input type="submit" value={translate(langConfig.app.SendNow)} />
+                      </form>
                     </div>
                   </div>
                 </div>
@@ -476,6 +476,7 @@ class Exhibitor extends Component {
             </div>
           </div>
         </div>
+
       </div>
     )
   }

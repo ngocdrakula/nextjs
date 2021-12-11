@@ -5,8 +5,8 @@ import lang from '../../../lang.config';
 import jwt from '../../../middleware/jwt';
 import bcrypt from '../../../middleware/bcrypt';
 import { downloadImageFromUrl, getDataFromUrl } from '../../../middleware/cloneHelper';
-import { MODE } from '../../../utils/helper';
-import { registerNotification, registerSocialSuccess  } from '../../../middleware/mailer';
+import { MODE, nonAccentVietnamese } from '../../../utils/helper';
+import { registerNotification, registerSocialSuccess } from '../../../middleware/mailer';
 
 const handler = async (req, res) => {
     if (req.method == 'POST') {
@@ -18,14 +18,7 @@ const handler = async (req, res) => {
             const { email, name, picture } = info;
             const user = await userController.find({ email });
             if (user) {
-                if (!user.enabled) {
-                    return res.status(200).send({
-                        success: false,
-                        field: 'enabled',
-                        message: 'Tài khoản của bạn đã bị khóa',
-                        messages: lang?.message?.error?.unauthorized
-                    });
-                }
+                if (!user.enabled) throw ({ path: 'enabled' })
                 const { _id, email, name, createdAt, mode } = user;
                 const token = jwt.create({ _id, email, name, createdAt, mode });
                 return res.status(200).send({
@@ -38,7 +31,7 @@ const handler = async (req, res) => {
             const password = await bcrypt.create(`${Math.random() * 1000000}`);
             const avatar = picture && (await downloadImageFromUrl(picture))
             const userCreated = await userController.create({
-                name, email, avatar, password, mode: MODE.visitor
+                name, email, avatar, password, mode: MODE.visitor, search: nonAccentVietnamese(name)
             })
             await registerSocialSuccess({ email, social: 'Google' });
             await registerNotification({ email, name, social: 'Google' });
@@ -55,9 +48,18 @@ const handler = async (req, res) => {
             if (e.path == 'accessToken') {
                 return res.status(400).send({
                     success: false,
+                    field: 'enabled',
+                    message: 'Tài khoản của bạn đã bị khóa',
+                    messages: lang?.message?.error?.not_allow
+                });
+            }
+            if (e.path == 'accessToken') {
+                return res.status(400).send({
+                    success: false,
                     validation: false,
                     field: 'accessToken',
                     message: "Token không được để trống",
+                    messages: langConcat(lang?.resources?.accessToken, lang?.message?.error?.validation?.required),
                 });
             }
             return res.status(500).send({

@@ -5,7 +5,7 @@ import { createFormData } from '../../../utils/helper';
 
 const status = [{ value: true, label: 'Hoạt động' }, { value: false, label: 'Không hoạt động' }]
 
-class Overview extends Component {
+class Setting extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,8 +36,9 @@ class Overview extends Component {
         }
     }
     componentDidMount() {
-        const { dispatch } = this.props;
-        dispatch({ type: types.ADMIN_GET_SETTING });
+        if (!this.props.setting.timestamp) {
+            this.handleRefresh();
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -115,14 +116,14 @@ class Overview extends Component {
                         payload: {
                             type: 'error',
                             title: 'Cập nhật thất bại',
-                            message: res.data.message || "Vui lòng điền đầy đủ thông tin",
+                            message: translate(res.data.messages || langConfig.message.error.infomation),
                             confirm: 'Chấp nhận',
                             cancel: 'Đóng'
                         },
                     });
                     this.setState({
                         fieldError: res.data.field,
-                        message: res.data.message || "Vui lòng điền đầy đủ thông tin",
+                        message: translate(res.data.messages || langConfig.message.error.infomation),
                         loading: false
                     })
                 }
@@ -822,4 +823,4 @@ class Overview extends Component {
     }
 }
 
-export default connect(({ admin: { setting } }) => ({ setting }))(Overview)
+export default connect(({ admin: { setting } }) => ({ setting }))(Setting)

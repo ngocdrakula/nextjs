@@ -79,7 +79,6 @@ class Overview extends Component {
         const yesterdayView = views[views.length - 2];
         const rate = (todayView - yesterdayView) / (yesterdayView || 1) || 0;
         const percent = Math.abs(Math.floor(rate * 100));
-        console.log(rate)
 
         const options = {
             chart: { type: 'areaspline' },

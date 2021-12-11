@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig, { langConcat } from '../../../lang.config';
 import types from '../../../redux/types';
 import { createFormData } from '../../../utils/helper';
 import Pagination from '../../pagination/PaginationAdmin';
+import { translate } from '../../../utils/language';
 import AddExhibitor from './AddExhibitor';
 import UpdateExhibitor from './UpdateExhibitor';
 
@@ -36,11 +38,11 @@ class Exhibitor extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận ${exhibitor.enabled ? 'khóa' : 'hủy khóa'} tài khoản`,
-                message: `Bạn có chắc chắn ${exhibitor.enabled ? 'khóa' : 'hủy khóa'} tài khoản của ${exhibitor.name} không?`,
-                confirm: `${exhibitor.enabled ? 'Khóa' : 'Hủy khóa'} tài khoản`,
+                title: translate(exhibitor.enabled ? langConfig.app.ConfirmDisableUser : langConfig.app.ConfirmEnableUser),
+                message: translate(exhibitor.enabled ? langConfig.app.AreYouSureDisableUser : langConfig.app.AreYouSureEnableUser),
+                confirm: translate(exhibitor.enabled ? langConfig.app.DisableUser : langConfig.app.EnableUser),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => this.handleConfirm(exhibitor),
-                cancel: 'Hủy',
             }
         })
     }
@@ -49,9 +51,10 @@ class Exhibitor extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa tài khoản`,
-                message: `Bạn có chắc chắn muốn xóa tài khoản của ${exhibitor.name} không?`,
-                confirm: `Xóa tài khoản`,
+                title: translate(langConfig.app.ConfirmDeleteUser),
+                message: translate(langConfig.app.AreYouSureDeleteUser),
+                confirm: translate(langConfig.app.DeleteUser),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => {
                     dispatch({
                         type: types.ADMIN_DELETE_USER,
@@ -64,7 +67,6 @@ class Exhibitor extends Component {
                         }
                     });
                 },
-                cancel: 'Hủy',
             }
         })
     }
@@ -75,9 +77,10 @@ class Exhibitor extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa nhiều tài khoản`,
-                message: `Bạn có chắc chắn muốn xóa ${selecteds.length} tài khoản không?`,
-                confirm: `Xóa tài khoản`,
+                title: translate(langConfig.app.ConfirmDeleteMultiUser),
+                message: `${translate(langConfig.app.AreYouSureDelete)} ${selecteds.length} ${translate(langConfig.resources.user)}?`,
+                confirm: translate(langConfig.app.DeleteUser),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => {
                     dispatch({
                         type: types.ADMIN_DELETE_MULTI_USER,
@@ -91,7 +94,6 @@ class Exhibitor extends Component {
                         }
                     });
                 },
-                cancel: 'Hủy',
             }
         })
     }
@@ -144,9 +146,11 @@ class Exhibitor extends Component {
             <section className="content">
                 <div className="box">
                     <div className="box-header with-border">
-                        <h3 className="box-title">Nhà trưng bày</h3>
+                        <h3 className="box-title">{translate(langConfig.app.Exhibitor)}</h3>
                         <div className="box-tools pull-right">
-                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>Thêm nhà trưng bày</a>
+                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>
+                                {translate(langConcat(langConfig.app.Add, langConfig.app.Exhibitor))}
+                            </a>
                         </div>
                     </div>
                     <div className="box-body">
@@ -154,43 +158,33 @@ class Exhibitor extends Component {
                             <div className="dt-buttons btn-group">
                                 {selecteds.length ?
                                     <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={this.handleDeleteAll}>
-                                        <span>Xóa {selecteds.length} đã chọn</span>
+                                        <span>{translate(langConfig.app.Delete)} {selecteds.length} {translate(langConfig.app.selectedItem)}</span>
                                     </button>
                                     : ""}
-                                {/* <button className="btn btn-default buttons-copy buttons-html5 btn-sm" >
-                                    <span>Copy</span>
-                                </button>
-                                <button className="btn btn-default buttons-csv buttons-html5 btn-sm" >
-                                    <span>CSV</span>
-                                </button> <button className="btn btn-default buttons-excel buttons-html5 btn-sm" >
-                                    <span>Excel</span>
-                                </button> <button className="btn btn-default buttons-pdf buttons-html5 btn-sm" >
-                                    <span>PDF</span>
-                                </button> <button className="btn btn-default buttons-print btn-sm" >
-                                    <span>Print</span>
-                                </button> */}
                             </div>
                             <div id="DataTables_Table_1_filter" className="dataTables_filter">
                                 <label>
-                                    <input type="search" className={"form-control input-sm" + (name ? " active" : "")} value={name} onChange={this.handleChange} placeholder="Tìm kiếm" />
+                                    <input type="search" className={"form-control input-sm" + (name ? " active" : "")} value={name} onChange={this.handleChange} placeholder={translate(langConfig.app.Search)} />
                                 </label>
                             </div>
-                            <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+                            <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1">
                                 <thead>
                                     <tr role="row">
                                         <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>
                                             <div className="btn-group ">
                                                 <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
-                                                    <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
+                                                    <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title={translate(langConfig.app.SelectAll)} />
                                                 </button>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Logo</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>Tên</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>Email</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Lĩnh vực</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Trạng thái</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%', textAlign: 'center !important', }}  >Hành động</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Logo)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>{translate(langConfig.app.Name)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>{translate(langConfig.app.Email)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.resources.industry)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Status)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%', textAlign: 'center !important', }}>
+                                            {translate(langConfig.app.Actions)}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
@@ -209,29 +203,29 @@ class Exhibitor extends Component {
                                                 </td>
                                                 <td>
                                                     {exhibitor.avatar ?
-                                                        <img src={"/api/images/" + exhibitor.avatar} className="img-circle img-sm" alt="Logo" />
+                                                        <img src={"/api/images/" + exhibitor.avatar} className="img-circle img-sm" alt={translate(langConfig.app.Logo)} />
                                                         :
-                                                        <img src="/images/no-avatar.png" className="img-circle img-sm" alt="Logo" />
+                                                        <img src="/images/no-avatar.png" className="img-circle img-sm" alt={translate(langConfig.app.Logo)} />
                                                     }
                                                 </td>
                                                 <td title={exhibitor.name}>
                                                     {exhibitor.name?.split(0, 15)}
                                                     <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={e => { e.preventDefault(); this.handleDisable(exhibitor) }}>
-                                                        <i className={"fa fa-heart" + (exhibitor.enabled ? "-o" : "")} title={exhibitor.enabled ? "Khóa" : "Hủy khóa"} />
+                                                        <i className={"fa fa-heart" + (exhibitor.enabled ? "-o" : "")} title={translate(exhibitor.enabled ? langConfig.app.EnableUser : langConfig.app.DisableUser)} />
                                                     </a>
                                                 </td>
                                                 <td>{exhibitor.email}</td>
                                                 <td>{exhibitor.industry?.map(i => i.name).join(',') || ''}</td>
-                                                <td>{exhibitor.enabled ? "Hoạt động" : "Không hoạt động"}</td>
+                                                <td>{translate(exhibitor.enabled ? langConfig.app.Active : langConfig.app.Inactive)}</td>
                                                 <td className="row-options">
                                                     <a href="#" onClick={() => this.handleSwitch(exhibitor)}>
-                                                        <i title="Đăng nhập bằng tài khoản nhà trưng bày" className="fa fa-user-secret" />
+                                                        <i title={translate(langConfig.app.LoginWithExhibitor)} className="fa fa-user-secret" />
                                                     </a>&nbsp;&nbsp;
                                                     <a onClick={() => this.setState({ onEdit: exhibitor })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i title="Chỉnh sửa" className="fa fa-edit" />
+                                                        <i title={translate(langConfig.app.Edit)} className="fa fa-edit" />
                                                     </a>&nbsp;&nbsp;
                                                     <a onClick={() => this.handleDelete(exhibitor)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i className="fa fa-trash-o" title="Xóa" />
+                                                        <i className="fa fa-trash-o" title={translate(langConfig.app.Delete)} />
                                                     </a>&nbsp;&nbsp;
                                                 </td>
                                             </tr>

@@ -28,7 +28,7 @@ const handler = async (req, res) => {
     } catch (error) {
       return res.status(500).send({
         success: false,
-        message: error.message,
+        message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
         error: error,
       });
@@ -84,7 +84,8 @@ const handler = async (req, res) => {
           success: false,
           validation: false,
           field: 'link',
-          message: 'Link livestream không được để trống',
+          message: 'Liên kết không được để trống',
+          messages: langConcat(lang?.resources?.link, lang?.message?.error?.validation?.required),
         });
       }
       if (e.path == 'author') {
@@ -93,6 +94,7 @@ const handler = async (req, res) => {
           validation: false,
           field: 'author',
           message: 'Người dùng không tồn tại',
+          messages: langConcat(lang?.resources?.user, lang?.message?.error?.validation?.not_exist),
         });
       }
       if (e.path == 'description') {
@@ -101,6 +103,7 @@ const handler = async (req, res) => {
           validation: false,
           field: 'description',
           message: 'Mô tả không được để trống',
+          messages: langConcat(lang?.resources?.description, lang?.message?.error?.validation?.not_exist),
         });
       }
       return res.status(500).send({
@@ -148,8 +151,9 @@ const handler = async (req, res) => {
       if (e.path == '_ids') {
         return res.status(400).send({
           success: false,
-          required: false,
-          message: "Danh sách sản phẩm phải là một mảng id",
+          format: false,
+          message: "Danh sách video trực tuyến không đúng định dạng",
+          messages: langConcat(lang?.resources?.livestreamList, lang?.message?.error?.validation?.format),
         });
       }
       return res.status(500).send({

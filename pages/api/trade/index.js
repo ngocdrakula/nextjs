@@ -61,7 +61,7 @@ const handler = async (req, res) => {
       }
       return res.status(500).send({
         success: false,
-        message: error.message,
+        message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
         error: error,
       });
@@ -137,7 +137,8 @@ const handler = async (req, res) => {
           success: false,
           validation: false,
           field: 'from',
-          message: 'Bạn không thể kết nối tới chính mình',
+          message: 'Hành động không được cho phép',
+          messages: lang?.message?.error?.not_allow
         });
       }
       if (e.path == 'from') {
@@ -146,6 +147,7 @@ const handler = async (req, res) => {
           validation: false,
           field: 'from',
           message: 'Người dùng không tồn tại',
+          messages: langConcat(lang?.resources?.user, lang?.message?.error?.validation?.not_exist),
         });
       }
       if (e.path == 'to') {
@@ -153,15 +155,16 @@ const handler = async (req, res) => {
           success: false,
           validation: false,
           field: 'to',
-          message: 'Đối tác không tồn tại',
+          message: 'Người dùng không tồn tại',
+          messages: langConcat(lang?.resources?.user, lang?.message?.error?.validation?.not_exist),
         });
       }
       if (e.path == 'deadline') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'deadline',
-          message: 'Lịch hẹn là bắt buộc',
+          message: "Thời gian giao thương là bắt buộc",
+          messages: langConcat(lang?.resources?.deadline, lang?.message?.error?.validation?.required),
         });
       }
       if (e.path == 'fromName') {
@@ -169,7 +172,8 @@ const handler = async (req, res) => {
           success: false,
           validation: false,
           field: 'fromName',
-          message: 'Tên của bạn là bắt buộc',
+          message: "Tên của bạn là bắt buộc",
+          messages: langConcat(lang?.resources?.name, lang?.message?.error?.validation?.required),
         });
       }
       if (e.path == 'fromEmail') {
@@ -178,6 +182,7 @@ const handler = async (req, res) => {
           validation: false,
           field: 'fromEmail',
           message: 'Email của bạn là bắt buộc',
+          messages: langConcat(lang?.resources?.email, lang?.message?.error?.validation?.required),
         });
       }
       if (e.path == 'toName') {
@@ -186,6 +191,7 @@ const handler = async (req, res) => {
           validation: false,
           field: 'toName',
           message: 'Tên đối tác là bắt buộc',
+          messages: langConcat(lang?.resources?.name, lang?.message?.error?.validation?.required),
         });
       }
       if (e.path == 'toEmail') {
@@ -194,6 +200,7 @@ const handler = async (req, res) => {
           validation: false,
           field: 'toEmail',
           message: 'Email đối tác là bắt buộc',
+          messages: langConcat(lang?.resources?.email, lang?.message?.error?.validation?.required),
         });
       }
       return res.status(500).send({
@@ -247,7 +254,8 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           required: false,
-          message: "Danh sách sản phẩm phải là một mảng id",
+          message: "Danh sách lịch giao thương không đúng định dạng",
+          messages: langConcat(lang?.resources?.trade, lang?.message?.error?.validation?.format),
         });
       }
       return res.status(500).send({

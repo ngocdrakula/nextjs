@@ -1,7 +1,6 @@
 import runMidldleware from '../../../middleware/mongodb';
-import visitController from '../../../controllers/visit';
+import notificationController from '../../../controllers/notification';
 import lang, { langConcat } from '../../../lang.config';
-import uploader, { cleanFiles } from '../../../middleware/multer';
 import jwt from '../../../middleware/jwt';
 import { MODE } from '../../../utils/helper';
 
@@ -9,19 +8,19 @@ const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
       const { id } = req.query;
-      const currentVisit = await visitController.get(id);
-      if (!currentVisit) throw ({ path: '_id' })
+      const currentNoti = await notificationController.get(id);
+      if (!currentNoti) throw ({ path: '_id' })
       return res.status(201).send({
         success: true,
-        data: currentVisit,
+        data: currentNoti,
       });
     } catch (e) {
       if (e.path == "_id") {
         return res.status(400).send({
           success: false,
           exist: false,
-          message: "Khách truy cập không tồn tại hoặc đã bị xóa",
-          messages: langConcat(lang?.resources?.visit, lang?.message?.error?.validation?.not_exist),
+          message: "Thông báo không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.notification, lang?.message?.error?.validation?.not_exist),
         });
       }
       return res.status(500).send({
@@ -40,13 +39,13 @@ const handler = async (req, res) => {
       if (user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
       const { flag } = req.body;
       if (!(flag >= 0)) throw ({ path: 'flag' });
-      const currentVisit = await visitController.get(id);
-      if (!currentVisit) throw ({ path: '_id' });
-      currentVisit.flag = flag;
-      const visitUpdated = await currentVisit.save();
+      const currentNoti = await notificationController.get(id);
+      if (!currentNoti) throw ({ path: '_id' });
+      currentNoti.flag = flag;
+      const notificationUpdated = await currentNoti.save();
       return res.status(200).send({
         success: true,
-        data: visitUpdated,
+        data: notificationUpdated,
         message: 'Cập nhật thành công',
         messages: lang?.message?.success?.updated
       });
@@ -71,7 +70,8 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: false,
-          message: "Khách truy cập không tồn tại hoặc đã bị xóa",
+          message: "Thông báo không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.notification, lang?.message?.error?.validation?.not_exist),
         });
       }
       if (e.path == 'flag') {
@@ -79,7 +79,8 @@ const handler = async (req, res) => {
           success: false,
           exist: true,
           field: 'flag',
-          message: 'Định dạng flag không chính xác',
+          message: 'Đánh dấu sai định dạng',
+          messages: langConcat(lang?.resources?.flag, lang?.message?.error?.validation?.format),
         });
       }
       return res.status(500).send({
@@ -95,9 +96,9 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
       if (user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
-      const currentVisit = await visitController.get(req.query.id);
-      if (!currentVisit) throw ({ path: '_id' });
-      currentVisit.remove();
+      const currentNoti = await notificationController.get(req.query.id);
+      if (!currentNoti) throw ({ path: '_id' });
+      currentNoti.remove();
       return res.status(200).send({
         success: true,
         data: null,
@@ -125,8 +126,8 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: false,
-          message: "Khách truy cập không tồn tại hoặc đã bị xóa",
-          messages: langConcat(lang?.resources?.visit, lang?.message?.error?.validation?.not_exist),
+          message: "Thông báo không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.notification, lang?.message?.error?.validation?.not_exist),
         });
       }
       return res.status(500).send({

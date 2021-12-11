@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig, { langConcat } from '../../../lang.config';
 import types from '../../../redux/types';
 import Pagination from '../../pagination/PaginationAdmin';
+import { translate } from '../../../utils/language';
 import AddLivestream from './AddLivestream';
 import UpdateLivestream from './UpdateLivestream';
 
@@ -40,11 +42,11 @@ class Livestream extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận ${livestream.enabled ? 'ẩn' : 'hiện'} livestream`,
-                message: `Bạn có chắc chắn ${livestream.enabled ? 'ẩn' : 'hiện'} livestream này không?`,
-                confirm: `${livestream.enabled ? 'Ẩn' : 'Hiện'} livestream`,
+                title: translate(livestream.enabled ? langConfig.app.ConfirmDisableLivestream : langConfig.app.ConfirmEnableLivestream),
+                message: translate(livestream.enabled ? langConfig.app.AreYouSureDisableLivestream : langConfig.app.AreYouSureEnableLivestream),
+                confirm: translate(livestream.enabled ? langConfig.app.DisableLivestream : langConfig.app.EnableLivestream),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => this.handleConfirm(livestream),
-                cancel: 'Hủy',
             }
         })
     }
@@ -53,9 +55,10 @@ class Livestream extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa livestream`,
-                message: `Bạn có chắc chắn muốn xóa livestream này không?`,
-                confirm: `Xóa livestream`,
+                title: translate(langConfig.app.ConfirmDeleteLivestream),
+                message: translate(langConfig.app.AreYouSureDeleteLivestream),
+                confirm: translate(langConfig.app.DeleteLivestream),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => {
                     dispatch({
                         type: types.ADMIN_DELETE_LIVESTREAM,
@@ -68,7 +71,6 @@ class Livestream extends Component {
                         }
                     });
                 },
-                cancel: 'Hủy',
             }
         })
     }
@@ -79,9 +81,10 @@ class Livestream extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa nhiều livestream`,
-                message: `Bạn có chắc chắn muốn xóa ${selecteds.length} livestream không?`,
-                confirm: `Xóa livestream`,
+                title: translate(langConfig.app.ConfirmDeleteMultiLivestream),
+                message: `${translate(langConfig.app.AreYouSureDelete)} ${selecteds.length} ${translate(langConfig.app.Livestream)}?`,
+                confirm: translate(langConfig.app.DeleteLivestream),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => {
                     dispatch({
                         type: types.ADMIN_DELETE_MULTI_LIVESTREAM,
@@ -95,7 +98,6 @@ class Livestream extends Component {
                         }
                     });
                 },
-                cancel: 'Hủy',
             }
         })
     }
@@ -140,9 +142,11 @@ class Livestream extends Component {
             <section className="content">
                 <div className="box">
                     <div className="box-header with-border">
-                        <h3 className="box-title">Livestream</h3>
+                        <h3 className="box-title">{translate(langConfig.app.Livestream)}</h3>
                         <div className="box-tools pull-right">
-                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>Thêm livestream</a>
+                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>
+                                {translate(langConcat(langConfig.app.Add, langConfig.app.Livestream))}
+                            </a>
                         </div>
                     </div>
                     <div className="box-body">
@@ -150,16 +154,16 @@ class Livestream extends Component {
                             <div className="dt-buttons btn-group">
                                 {selecteds.length ?
                                     <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={this.handleDeleteAll}>
-                                        <span>Xóa {selecteds.length} đã chọn</span>
+                                        <span>{translate(langConfig.app.Delete)} {selecteds.length} {translate(langConfig.app.selectedItem)}</span>
                                     </button>
                                     : ""}
                             </div>
                             <div id="DataTables_Table_1_filter" className="dataTables_filter">
                                 <label>
-                                    <input type="search" className={"form-control input-sm" + (title ? " active" : "")} value={title} onChange={this.handleChange} placeholder="Tìm kiếm theo tiêu đề" />
+                                    <input type="search" className={"form-control input-sm" + (title ? " active" : "")} value={title} onChange={this.handleChange} placeholder={translate(langConfig.app.Search)} />
                                 </label>
                             </div>
-                            <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+                            <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1">
                                 <thead>
                                     <tr role="row">
                                         <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>
@@ -169,11 +173,13 @@ class Livestream extends Component {
                                                 </button>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%', minWidth: 150 }}>Tiêu đề</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '30%' }}>Mô tả</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>Link</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Trạng thái</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }} >Hành động</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%', minWidth: 150 }}>{translate(langConfig.app.Title)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '30%' }}>{translate(langConfig.resources.description)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>{translate(langConfig.resources.link)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Status)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ textAlign: 'center !important', width: '10%' }} >
+                                            {translate(langConfig.app.Actions)}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
@@ -197,13 +203,13 @@ class Livestream extends Component {
                                                     {livestream.description}
                                                 </td>
                                                 <td className="livestream-link">{livestream.link}</td>
-                                                <td>{livestream.enabled ? 'Hoạt động' : 'Không hoạt động'}</td>
+                                                <td>{translate(livestream.enabled ? langConfig.app.Active : langConfig.app.Inactive)}</td>
                                                 <td className="row-options">
                                                     <a onClick={() => this.setState({ onEdit: livestream })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i title="Chỉnh sửa" className="fa fa-edit" />
+                                                        <i title={translate(langConfig.app.Edit)} className="fa fa-edit" />
                                                     </a>&nbsp;&nbsp;
                                                     <a onClick={() => this.handleDelete(livestream)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i className="fa fa-trash-o" title="Xóa" />
+                                                        <i className="fa fa-trash-o" title={translate(langConfig.app.Delete)} />
                                                     </a>&nbsp;&nbsp;
                                                 </td>
                                             </tr>

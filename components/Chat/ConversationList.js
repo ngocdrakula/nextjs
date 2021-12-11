@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import langConfig from '../../lang.config';
 import types from '../../redux/types';
 import { MODE } from '../../utils/helper';
+import { translate } from '../../utils/language';
 import Time from './Time';
 
 const pageSize = 10;
@@ -99,7 +101,7 @@ class ConversationList extends Component {
       <div id="leftsidebar">
         <div className="row heading">
           <div className="heading-title">
-            <i className="fa fa-comments fa-2x" />  Cuộc hội thoại
+            <i className="fa fa-comments fa-2x" />  {translate(langConfig.app.Conversation)}
           </div>
         </div>
         <div className="row sidebarContent" onScroll={this.handleScroll}>
@@ -108,7 +110,7 @@ class ConversationList extends Component {
             const toUser = conversation.leader.user._id === fromId ? conversation.member.user : conversation.leader.user;
             const from = conversation.leader.user._id === fromId ? conversation.leader : conversation.member;
             const lastMessage = conversation.messages?.[0];
-            const author = lastMessage?.author === toUser._id ? toUser.name : "Bạn";
+            const author = lastMessage?.author === toUser._id ? toUser.name : translate(langConfig.app.You);
 
             return (
               <div
@@ -119,9 +121,9 @@ class ConversationList extends Component {
                 <a href="#" className="get-content" style={{ display: 'flex', alignItems: 'center' }}>
                   <div className="chat-avatar" style={{ paddingRight: 10, minWidth: 60 }}>
                     {toUser.avatar ?
-                      <img src={"/api/images/" + toUser.avatar} className="img-circle" alt="Avatar" />
+                      <img src={"/api/images/" + toUser.avatar} className="img-circle" alt={translate(langConfig.app.Avatar)} />
                       :
-                      <img src="/images/no-avatar.png" className="img-circle" alt="No Avatar" />
+                      <img src="/images/no-avatar.png" className="img-circle" alt={translate(langConfig.app.NoAvatar)} />
                     }
                   </div>
                   <div className="sideBar-main nopadding" style={{ width: "100%", overflow: "hidden" }}>

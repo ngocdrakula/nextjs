@@ -162,7 +162,8 @@ const handler = async (req, res) => {
                 return res.status(400).send({
                     success: false,
                     field: e.path,
-                    message: "Tính năng phải là một danh sách",
+                    message: "Tính năng không đúng định dạng",
+                    messages: langConcat(lang?.resources?.features, lang?.message?.error?.validation?.format),
                 });
             }
             return res.status(500).send({

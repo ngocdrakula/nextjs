@@ -150,7 +150,8 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           required: false,
-          message: "Danh sách sản phẩm phải là một mảng id",
+          message: "Danh sách khách truy cập không đúng định dạng", 
+          messages: langConcat(lang?.resources?.visitList, lang?.message?.error?.validation?.format),
         });
       }
       return res.status(500).send({

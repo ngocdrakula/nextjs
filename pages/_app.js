@@ -46,5 +46,4 @@ App.getInitialProps = async (props) => {
   return ({ lang: props?.ctx?.req?.cookies?.['NEXT_LOCALE'] || 'vn' })
 };
 
-
 export default wrapper.withRedux(App)

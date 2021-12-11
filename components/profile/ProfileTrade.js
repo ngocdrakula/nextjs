@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import types from '../../redux/types'
 import { formatTime } from '../../utils/helper';
-import Pagination from '../pagination/Pagination';
+import Pagination from '../pagination/Pagination'; 
+import { translate } from '../../utils/language';
+import langConfig, { langConcat } from '../../lang.config';
 
 
 const pageSize = 10;
@@ -63,11 +65,11 @@ class ProfileTrade extends Component {
                     <table id="example2" className="table table-bordered table-hover dataTable no-footer">
                         <thead>
                             <tr>
-                                <th className="text-center" style={{ width: '25%' }}>Tên đối tác</th>
-                                <th className="text-center" style={{ width: '20%' }}>Thời gian</th>
-                                <th className="text-center" style={{ width: '20%' }}>Nội dung</th>
-                                <th className="text-center" style={{ width: '20%' }}>Ngày đăng ký</th>
-                                <th className="text-center" style={{ width: '15%' }}>Tùy chọn</th>
+                                <th className="text-center" style={{ width: '25%' }}>{translate(langConfig.app.PartnerName)}</th>
+                                <th className="text-center" style={{ width: '20%' }}>{translate(langConfig.app.Time)}</th>
+                                <th className="text-center" style={{ width: '20%' }}>{translate(langConfig.app.Content)}</th>
+                                <th className="text-center" style={{ width: '20%' }}>{translate(langConfig.app.RegisterDate)}</th>
+                                <th className="text-center" style={{ width: '15%' }}>{translate(langConfig.app.Action)}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -83,7 +85,9 @@ class ProfileTrade extends Component {
                                         <td>{createTime}</td>
                                         <td>
                                             <div className="trade-action">
-                                                <span className="btnActionEdit" title="Xóa lịch giao thương" onClick={() => this.handleDelete(trade._id)}>Xóa</span>
+                                                <span className="btnActionEdit" title={translate(langConfig.app.Delete)} onClick={() => this.handleDelete(trade._id)}>
+                                                    {translate(langConfig.app.Delete)}
+                                                </span>
                                             </div>
                                         </td>
                                     </tr>
@@ -91,7 +95,7 @@ class ProfileTrade extends Component {
                             })}
                         </tbody>
                     </table>
-                    {!trades.length && loaded ? <h4>Không có dữ liệu</h4> : ""}
+                    {!trades.length && loaded ? <h4>{translate(langConfig.app.ListEmpty)}</h4> : ""}
                     <Pagination gotoPage={this.gotoPage} {...{ currentPage, pageSize, total }} />
                 </div>
             </div>

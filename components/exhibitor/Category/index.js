@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig, { langConcat } from '../../../lang.config';
 import types from '../../../redux/types';
 import PaginationAdmin from '../../pagination/PaginationAdmin';
+import { translate } from '../../../utils/language';
 import AddCategory from './AddCategory';
 import UpdateCategory from './UpdateCategory';
 
@@ -40,11 +42,11 @@ class Category extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận ${category.enabled ? 'tắt' : 'bật'} chuyên mục này`,
-                message: `Bạn có chắc chắn ${category.enabled ? 'tắt' : 'bật'} chuyên mục này không?`,
-                confirm: `${category.enabled ? 'Tắt' : 'Bật'} chuyên mục này`,
+                title: translate(category.enabled ? langConfig.app.ConfirmDisableCategory : langConfig.app.ConfirmEnableCategory),
+                message: translate(category.enabled ? langConfig.app.AreYouSureDisableCategory : langConfig.app.AreYouSureEnableCategory),
+                confirm: translate(category.enabled ? langConfig.app.DisableCategory : langConfig.app.EnableCategory),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => this.handleConfirm(category),
-                cancel: 'Hủy',
             }
         })
     }
@@ -53,9 +55,10 @@ class Category extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa chuyên mục`,
-                message: `Bạn có chắc chắn muốn xóa chuyên mục này không?`,
-                confirm: `Xóa`,
+                title: translate(langConfig.app.ConfirmDeleteCategory),
+                message: translate(langConfig.app.AreYouSureDeleteCategory),
+                confirm: translate(langConfig.app.DeleteCategory),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => {
                     dispatch({
                         type: types.ADMIN_DELETE_CATEGORY,
@@ -68,7 +71,6 @@ class Category extends Component {
                         }
                     });
                 },
-                cancel: 'Hủy',
             }
         })
     }
@@ -79,9 +81,10 @@ class Category extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa nhiều chuyên mục`,
-                message: `Bạn có chắc chắn muốn xóa ${selecteds.length} chuyên mục không?`,
-                confirm: `Xóa chuyên mục này`,
+                title: translate(langConfig.app.ConfirmDeleteMultiCategory),
+                message: `${translate(langConfig.app.AreYouSureDelete)} ${selecteds.length} ${translate(langConfig.resources.category)}?`,
+                confirm: translate(langConfig.app.DeleteCategory),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => {
                     dispatch({
                         type: types.ADMIN_DELETE_MULTI_CATEGORY,
@@ -94,7 +97,6 @@ class Category extends Component {
                         }
                     });
                 },
-                cancel: 'Hủy',
             }
         })
     }
@@ -139,9 +141,11 @@ class Category extends Component {
             <section className="content">
                 <div className="box">
                     <div className="box-header with-border">
-                        <h3 className="box-title">Danh sách chuyên mục</h3>
+                        <h3 className="box-title">{translate(langConfig.resources.categoryList)}</h3>
                         <div className="box-tools pull-right">
-                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>Thêm chuyên mục</a>
+                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>
+                                {translate(langConcat(langConfig.app.Add, langConfig.resources.category))}
+                            </a>
                         </div>
                     </div>
                     <div className="box-body">
@@ -149,29 +153,31 @@ class Category extends Component {
                             <div className="dt-buttons btn-group">
                                 {selecteds.length ?
                                     <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={this.handleDeleteAll}>
-                                        <span>Xóa {selecteds.length} mục đã chọn</span>
+                                        <span>{translate(langConfig.app.Delete)} {selecteds.length} {translate(langConfig.app.selectedItem)}</span>
                                     </button>
                                     : ""}
                             </div>
                             <div id="DataTables_Table_1_filter" className="dataTables_filter">
                                 <label>
-                                    <input type="search" className={"form-control input-sm" + (name ? " active" : "")} value={name} onChange={this.handleChange} placeholder="Tìm kiếm" />
+                                    <input type="search" className={"form-control input-sm" + (name ? " active" : "")} value={name} onChange={this.handleChange} placeholder={translate(langConfig.app.Search)} />
                                 </label>
                             </div>
-                            <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+                            <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1">
                                 <thead>
                                     <tr role="row">
                                         <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>
                                             <div className="btn-group ">
                                                 <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
-                                                    <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
+                                                    <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title={translate(langConfig.app.SelectAll)} />
                                                 </button>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>STT</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '55%' }}>Tên chuyên mục</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Trạng thái</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Hành động</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Index)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '55%' }}>{translate(langConfig.resources.categoryName)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.app.Status)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }} >
+                                            {translate(langConfig.app.Actions)}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
@@ -192,16 +198,16 @@ class Category extends Component {
                                                 <td title={category.name}>
                                                     {category.name}
                                                     <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={e => { e.preventDefault(); this.handleDisable(category) }}>
-                                                        <i className={"fa fa-heart" + (category.enabled ? "-o" : "")} title={category.enabled ? "Bật" : "Tắt"} />
+                                                        <i className={"fa fa-heart" + (category.enabled ? "-o" : "")} title={translate(category.enabled ? langConfig.app.EnableCategory : langConfig.app.DisableCategory)} />
                                                     </a>
                                                 </td>
-                                                <td>{category.enabled ? "Hoạt động" : "Không hoạt động"}</td>
+                                                <td>{translate(category.enabled ? langConfig.app.Active : langConfig.app.Inactive)}</td>
                                                 <td className="row-options">
                                                     <a onClick={() => this.setState({ onEdit: category })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i title="Chỉnh sửa" className="fa fa-edit" />
+                                                        <i title={translate(langConfig.app.Edit)} className="fa fa-edit" />
                                                     </a>&nbsp;&nbsp;
                                                     <a onClick={() => this.handleDelete(category)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i className="fa fa-trash-o" title="Xóa" />
+                                                        <i className="fa fa-trash-o" title={translate(langConfig.app.Delete)} />
                                                     </a>&nbsp;&nbsp;
                                                 </td>
                                             </tr>
