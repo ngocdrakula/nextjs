@@ -34,7 +34,7 @@ const handler = async (req, res) => {
     } catch (error) {
       return res.status(500).send({
         success: false,
-        message: error.message,
+        message: 'Máy chủ không phản hồi',
         messages: lang?.message?.error?.server,
         error: error,
       });
@@ -73,7 +73,7 @@ const handler = async (req, res) => {
         if (err.path == '_id') throw ({ path: 'category', files });
         throw ({ err, files })
       }
-      const matchProduct = await productController.find({ name, category: categoryId });
+      const matchProduct = await productController.find({ name, exhibitor: exhibitorId, category: categoryId });
       if (matchProduct) throw ({ path: 'product', files, matchProduct });
       const productCreated = await (await productController.create({
         name,
@@ -140,8 +140,8 @@ const handler = async (req, res) => {
           success: false,
           validation: false,
           field: 'categoryId',
-          message: 'Id chuyên mục không được để trống',
-          messages: langConcat(lang?.resources?.categoryId, lang?.message?.error?.validation?.required)
+          message: 'Chuyên mục không được để trống',
+          messages: langConcat(lang?.resources?.category, lang?.message?.error?.validation?.required)
         });
       }
       if (e.path == 'exhibitorId') {
@@ -149,8 +149,8 @@ const handler = async (req, res) => {
           success: false,
           validation: false,
           field: 'exhibitor',
-          message: 'Id tài khoản không được để trống',
-          messages: langConcat(lang?.resources?.exhibitorId, lang?.message?.error?.validation?.required)
+          message: 'Người dùng không tồn tại',
+          messages: langConcat(lang?.resources?.user, lang?.message?.error?.validation?.not_exist)
         });
       }
       if (e.path == 'category') {
@@ -168,7 +168,7 @@ const handler = async (req, res) => {
           exist: true,
           current: e.matchProduct,
           field: 'name',
-          message: "Tên sản phẩm đã tồn tại trong chuyên mục này",
+          message: "Tên sản phẩm đã tồn tại",
           messages: langConcat(lang?.resources?.productName, lang?.message?.error?.validation?.exist),
         });
       }
@@ -217,7 +217,8 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           required: false,
-          message: "Danh sách sản phẩm phải là một mảng id",
+          message: "Danh sách sản phẩm không đúng định dạng",
+          messages: langConcat(lang?.resources?.productList, lang?.message?.error?.validation?.format),
         });
       }
       return res.status(500).send({

@@ -6,17 +6,24 @@ import uploader, { cleanFiles } from '../../../middleware/multer';
 import jwt from '../../../middleware/jwt';
 import { MODE } from '../../../utils/helper';
 
-const settingName = process.env.FOLDER_UPLOAD + '/setting.json'
+const settingNameVN = process.env.FOLDER_UPLOAD + '/setting.json';
+const settingNameEN = process.env.FOLDER_UPLOAD + '/setting.en.json';
 
 const handler = async (req, res) => {
     if (req.method == 'GET') {
         try {
-            if (!fs.existsSync(settingName)) fs.writeFileSync(settingName, "{}");
-            const dataBuffer = fs.readFileSync(settingName);
-            const data = JSON.parse(dataBuffer);
+            if (!fs.existsSync(settingNameVN)) fs.writeFileSync(settingNameVN, "{}");
+            const dataBufferVN = fs.readFileSync(settingNameVN);
+            const dataVN = JSON.parse(dataBufferVN);
+            if (!fs.existsSync(settingNameEN)) fs.writeFileSync(settingNameEN, "{}");
+            const dataBufferEN = fs.readFileSync(settingNameEN);
+            const dataEN = JSON.parse(dataBufferEN);
             return res.status(200).send({
                 success: true,
-                data,
+                data: {
+                    vn: dataVN,
+                    en: dataEN
+                }
             });
         } catch (e) {
             return res.status(500).send({
@@ -42,10 +49,11 @@ const handler = async (req, res) => {
                     featureStatus, featuresTitle, features,
                     exhibitorTitle, exhibitorDescription, visitorTitle, visitorDescription,
                     facebook, zalo, spyke, youtube,
-                    footer
+                    footer, lang
                 },
                 files, err } = await uploader(req);
             if (err) throw ({ path: 'files' });
+            const settingName = (lang === "en" && settingNameEN) || settingNameVN;
             if (!fs.existsSync(settingName)) fs.writeFileSync(settingName, "{}");
             const dataBuffer = fs.readFileSync(settingName);
             const data = JSON.parse(dataBuffer);
@@ -162,7 +170,8 @@ const handler = async (req, res) => {
                 return res.status(400).send({
                     success: false,
                     field: e.path,
-                    message: "Tính năng phải là một danh sách",
+                    message: "Tính năng không đúng định dạng",
+                    messages: langConcat(lang?.resources?.features, lang?.message?.error?.validation?.format),
                 });
             }
             return res.status(500).send({

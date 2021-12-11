@@ -86,6 +86,7 @@ const appReducer = (state = initState, action) => {
             }
             else if (state.user?._id === user._id) {
                 state.user = user;
+                if (action.payload.token) localStorage.setItem('token', action.payload.token);
             }
             if (user.mode === MODE.exhibitor) {
                 const data = state.exhibitor.data.map(e => {

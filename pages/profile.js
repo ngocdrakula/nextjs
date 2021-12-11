@@ -7,6 +7,8 @@ import types from '../redux/types'
 import { MODE } from '../utils/helper';
 import ProfileInfo from '../components/profile/ProfileInfo';
 import ProfileTrade from '../components/profile/ProfileTrade';
+import { translate } from '../utils/language';
+import langConfig from '../lang.config';
 
 class Profile extends Component {
   constructor(props) {
@@ -18,7 +20,6 @@ class Profile extends Component {
   componentDidUpdate(prevProps) {
     const { dispatch, user } = this.props;
     if (user?._id && prevProps.user?._id !== user._id) {
-      console.log(user?.mode)
       if (user?.mode === MODE.visitor) {
         dispatch({
           type: types.GET_USER,
@@ -43,7 +44,7 @@ class Profile extends Component {
       <div className="profile-page" style={{ backgroundColor: '#ededed' }}>
         <div className="container">
           {!user ?
-            "Vui lòng đăng nhập để tiếp tục"
+            translate(langConfig.app.LoginContinue)
             :
             <div className="row">
               <div className="col-sm-3">
@@ -61,10 +62,10 @@ class Profile extends Component {
                 </div>
                 <div className="profile-list-select">
                   <div className={"profile-select-item" + (active === 0 ? " active" : "")} onClick={e => this.setState({ active: 0 })}>
-                    <span>Thông tin tài khoản</span>
+                    <span>{translate(langConfig.app.AccountInformation)}</span>
                   </div>
                   <div className={"profile-select-item" + (active === 1 ? " active" : "")} onClick={e => this.setState({ active: 1 })}>
-                    <span>Lịch giao thương</span>
+                    <span>{translate(langConfig.app.TradeCalendar)}</span>
                   </div>
                 </div>
               </div>

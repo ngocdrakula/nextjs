@@ -47,7 +47,7 @@ const handler = async (req, res) => {
       try {
         const currentProduct = await productController.get(id);
         if (!currentProduct) throw ({ path: '_id', files });
-        if (user._id != currentProduct.exhibitor) throw ({ ...user, path: 'token' });
+        if (user.mode != MODE.admin && user._id != currentProduct.exhibitor) throw ({ ...user, path: 'token' });
         if (categoryId) {
           try {
             const category = await categoryController.get(categoryId);
@@ -68,8 +68,8 @@ const handler = async (req, res) => {
           }
         }
         if (name) {
-          const matchProduct = await productController.find({ name });
-          if (matchProduct && matchProduct._id != id) throw ({ path: 'name', files });
+          const matchProduct = await productController.find({ name, exhibitor: currentProduct.exhibitor, category: currentProduct.category });
+          if (matchProduct && matchProduct._id.toString() != id) throw ({ path: 'name', files });
           else currentProduct.name = name;
         }
         if (description) {
@@ -94,6 +94,7 @@ const handler = async (req, res) => {
         throw error
       }
     } catch (e) {
+      console.log(e)
       if (e.files) await cleanFiles(e.files);
       if (e.path == 'token') {
         if (!e.token) {
@@ -130,6 +131,14 @@ const handler = async (req, res) => {
           messages: lang?.message?.error?.upload_failed,
         });
       }
+      if (e.path == '_id') {
+        return res.status(400).send({
+          success: false,
+          exist: false,
+          message: "Sản phẩm không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.product, lang?.message?.error?.validation?.not_exist),
+        });
+      }
       if (e.path == 'category') {
         return res.status(400).send({
           success: false,
@@ -146,14 +155,6 @@ const handler = async (req, res) => {
           field: 'industry',
           message: "Ngành nghề không tồn tại hoặc đã bị xóa",
           messages: langConcat(lang?.resources?.industry, lang?.message?.error?.validation?.not_exist),
-        });
-      }
-      if (e.path == 'product') {
-        return res.status(400).send({
-          success: false,
-          exist: false,
-          message: "Sản phẩm không tồn tại hoặc đã bị xóa",
-          messages: langConcat(lang?.resources?.product, lang?.message?.error?.validation?.not_exist),
         });
       }
       if (e.path == 'name') {

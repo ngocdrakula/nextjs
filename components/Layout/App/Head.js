@@ -2,13 +2,14 @@
 import React, { Component } from 'react';
 import NextHead from 'next/head'
 import { connect } from 'react-redux';
+import { getLocale } from '../../../utils/language';
 
 export class Head extends Component {
     constructor(props) {
         super(props);
     }
     render() {
-        const { setting } = this.props;
+        const setting = this.props.setting[getLocale()] || {};
         const { faviconUpdated, favicon, title } = setting;
         const icon = `${faviconUpdated ? "/api" : ""}/images/${favicon}`;
         return (

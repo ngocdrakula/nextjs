@@ -164,22 +164,7 @@ const handler = async (req, res) => {
           field: e.path,
           exist: true,
           message: "Email đã tồn tại",
-        });
-      }
-      if (e.path == 'industry') {
-        return res.status(400).send({
-          success: false,
-          require: true,
-          field: e.path,
-          message: "Ngành nghề là bắt buộc",
-        });
-      }
-      if (e.path == '_id') {
-        return res.status(400).send({
-          success: false,
-          exist: true,
-          field: e.path,
-          message: "Tài khoản không tồn tại",
+          messages: langConcat(lang?.resources?.email, lang?.message?.error?.validation?.exist),
         });
       }
       if (e.path == 'industry') {
@@ -188,6 +173,16 @@ const handler = async (req, res) => {
           exist: true,
           field: e.path,
           message: "Ngành nghề không tồn tại",
+          messages: langConcat(lang?.resources?.industry, lang?.message?.error?.validation?.exist),
+        });
+      }
+      if (e.path == '_id') {
+        return res.status(400).send({
+          success: false,
+          exist: true,
+          field: e.path,
+          message: "Tài khoản không tồn tại",
+          messages: langConcat(lang?.resources?.user, lang?.message?.error?.validation?.exist),
         });
       }
       if (e.path == 'phone') {
@@ -196,6 +191,7 @@ const handler = async (req, res) => {
           require: true,
           field: e.path,
           message: "Số điện thoại là bắt buộc",
+          messages: langConcat(lang?.resources?.phone, lang?.message?.error?.validation?.required),
         });
       }
       if (e.path == 'representative') {
@@ -204,6 +200,7 @@ const handler = async (req, res) => {
           require: true,
           field: e.path,
           message: "Người đại diện là bắt buộc",
+          messages: langConcat(lang?.resources?.representative, lang?.message?.error?.validation?.required),
         });
       }
       if (e.path == 'position') {
@@ -211,7 +208,8 @@ const handler = async (req, res) => {
           success: false,
           require: true,
           field: e.path,
-          message: "Chức vụ người đại diện là bắt buộc",
+          message: "Chức vụ là bắt buộc",
+          messages: langConcat(lang?.resources?.position, lang?.message?.error?.validation?.required),
         });
       }
       if (e.path == 'mobile') {
@@ -220,6 +218,7 @@ const handler = async (req, res) => {
           require: true,
           field: e.path,
           message: "Số điện thoại người đại diện là bắt buộc",
+          messages: langConcat(lang?.resources?.mobile, lang?.message?.error?.validation?.required),
         });
       }
       if (e.path == 're_email') {
@@ -228,6 +227,7 @@ const handler = async (req, res) => {
           require: true,
           field: e.path,
           message: "Email người đại diện là bắt buộc",
+          messages: langConcat(lang?.resources?.re_email, lang?.message?.error?.validation?.required),
         });
       }
       return res.status(500).send({
@@ -274,8 +274,8 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: false,
-          message: "Tài khoản tồn tại hoặc đã bị xóa",
-          messages: langConcat(lang?.resources?.product, lang?.message?.error?.validation?.not_exist),
+          message: "Người dùng không tồn tại hoặc đã bị xóa",
+          messages: langConcat(lang?.resources?.user, lang?.message?.error?.validation?.not_exist),
         });
       }
       return res.status(500).send({

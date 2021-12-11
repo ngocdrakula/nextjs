@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Link from 'next/link';
+import langConfig from '../../../lang.config';
 import types from '../../../redux/types';
+import { translate } from '../../../utils/language';
 
 class Login extends Component {
     constructor(props) {
@@ -17,7 +19,7 @@ class Login extends Component {
             payload: { email, password },
             callback: data => {
                 if (!data?.success) {
-                    this.setState({ message: data?.message || 'Vui lòng kiểm tra kết nối internet' })
+                    this.setState({ message: translate(data?.messages || langConfig.app.LoginFailed) })
                 }
             }
         })
@@ -36,24 +38,24 @@ class Login extends Component {
                     </div>
                     <div className="box login-box-body">
                         <div className="box-header with-border">
-                            <h3 className="box-title">Login</h3>
+                            <h3 className="box-title">{translate(langConfig.app.Login)}</h3>
                         </div>
                         <div className="box-body">
                             <form method="POST" action="/login" onSubmit={this.handleSubmit}>
                                 <div className={"form-group has-feedback" + (message ? " has-error" : "")}>
-                                    <input className="form-control input-lg" placeholder="Email address" required name="email" type="email" onChange={this.handleChange} />
+                                    <input className="form-control input-lg" placeholder={translate(langConfig.app.EmailAddress)} required name="email" type="email" onChange={this.handleChange} />
                                     <span className="glyphicon glyphicon-envelope form-control-feedback glyphicon-ok" />
-                                    <div className="help-block with-errors">
+                                    {/* <div className="help-block with-errors">
                                         {message ?
                                             <ul className="list-unstyled">
                                                 <li>{message}</li>
                                             </ul>
                                             : ""
                                         }
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className={"form-group has-feedback" + (message ? " has-error" : "")}>
-                                    <input className="form-control input-lg" placeholder="Password" onChange={this.handleChange} required name="password" type="password" defaultValue />
+                                    <input className="form-control input-lg" placeholder={translate(langConfig.app.Password)} onChange={this.handleChange} required name="password" type="password" />
                                     <span className="glyphicon glyphicon-lock form-control-feedback glyphicon-ok" />
                                     <div className="help-block with-errors">
                                         {message ?
@@ -71,21 +73,21 @@ class Login extends Component {
                                                 <div className="icheckbox_minimal-blue" aria-checked="false" aria-disabled="false" style={{ position: 'relative' }}>
                                                     <input className="icheck" name="remember" type="checkbox" style={{ position: 'absolute', opacity: 0 }} />
                                                     <ins className="iCheck-helper" style={{ position: 'absolute', top: '0%', left: '0%', display: 'block', width: '100%', height: '100%', margin: 0, padding: 0, background: 'rgb(255, 255, 255)', border: 0, opacity: 0 }} />
-                                                </div> Remember Me
+                                                </div> {translate(langConfig.app.RememberMe)}
                                             </label>
                                         </div>
                                     </div>
                                     <div className="col-xs-5">
-                                        <input className="btn btn-block btn-lg btn-flat btn-primary" type="submit" value="Đăng nhập" />
+                                        <input className="btn btn-block btn-lg btn-flat btn-primary" type="submit" value={translate(langConfig.app.Login)} />
                                     </div>
                                 </div>
                             </form>
                         </div>
                         <Link href="/">
-                            <a className="btn btn-link">Quên mật khẩu?</a>
+                            <a className="btn btn-link">{translate(langConfig.app.ForgetPassword)}?</a>
                         </Link>
                         <Link href="/">
-                            <a className="btn btn-link">Đăng ký</a>
+                            <a className="btn btn-link">{translate(langConfig.app.Register)}</a>
                         </Link>
                     </div>
                 </div>

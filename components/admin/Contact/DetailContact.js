@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import types from '../../../redux/types';
-import { MODE } from '../../../utils/helper';
+import langConfig from '../../../lang.config';
+import { translate } from '../../../utils/language'
 
 
 class DetailContact extends Component {
@@ -22,27 +22,27 @@ class DetailContact extends Component {
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" onClick={handleClose}>×</button>
-                            Chi tiết tin nhắn
+                            {translate(langConfig.app.MessageDetails)}
                         </div>
                         <div className="modal-body contact-detail">
                             <table className="table no-border">
                                 <tbody>
                                     <tr>
-                                        <th className="text-right">Name:</th>
+                                        <th className="text-right">{translate(langConfig.app.Name)}:</th>
                                         <td style={{ width: '85%' }}>{onView?.name}</td>
                                     </tr>
                                     <tr>
-                                        <th className="text-right">Email:</th>
+                                        <th className="text-right">{translate(langConfig.app.Email)}:</th>
                                         <td style={{ width: '85%' }}>
-                                            <a href={"mailto:" + onView?.email} target="_blank" title="Gửi email">{onView?.email}</a>
+                                            <a href={"mailto:" + onView?.email} target="_blank" title={translate(langConfig.app.SendEmail)}>{onView?.email}</a>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th className="text-right">Chủ đề: </th>
+                                        <th className="text-right">{translate(langConfig.app.Subject)}: </th>
                                         <td style={{ width: '85%' }}>{onView?.title}</td>
                                     </tr>
                                     <tr>
-                                        <th className="text-right">Nội dung</th>
+                                        <th className="text-right">{translate(langConfig.app.Content)}</th>
                                         <td style={{ width: '85%' }}>{onView?.message}</td>
                                     </tr>
                                 </tbody>

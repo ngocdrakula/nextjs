@@ -20,7 +20,7 @@ class UpdateVisitor extends Component {
         this.state = { ...this.defaultState };
     }
     componentDidUpdate(prevProps) {
-        if (!prevProps.onEdit && this.props.onEdit?._id) { 
+        if (!prevProps.onEdit && this.props.onEdit?._id) {
             this.setState({
                 ...this.props.onEdit,
                 selected: this.props.onEdit.industry[0]?._id,
@@ -41,7 +41,7 @@ class UpdateVisitor extends Component {
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
         if (fieldError) {
-            this.setState({ fieldError, message: 'Vui lòng điền đầy đủ thông tin' })
+            this.setState({ fieldError, message: translate(langConfig.message.error.infomation) })
         }
         else {
             const { dispatch, handleClose } = this.props;
@@ -55,7 +55,7 @@ class UpdateVisitor extends Component {
                 data.image = true;
                 filesTotal.push(files[0])
             }
-            if (filesTotal.length) data.files = filesTotal; 
+            if (filesTotal.length) data.files = filesTotal;
             const formData = createFormData(data);
 
             dispatch({
@@ -79,7 +79,7 @@ class UpdateVisitor extends Component {
                     else if (res?.data) {
                         this.setState({
                             fieldError: res.data.field,
-                            message: res.data.message || "Vui lòng điền đầy đủ thông tin"
+                            message: translate(res.data.messages || langConfig.message.error.infomation)
                         })
                     }
                 }
@@ -102,7 +102,7 @@ class UpdateVisitor extends Component {
         const { onEdit, handleClose, industries } = this.props;
         const { dropActive, email, password, name, phone, product, introduce, contact, enabled,
             selected, dropIndustry, fieldError, message, filesAvatar, files } = this.state;
-        const industrySelected = industries.find(i => i._id === selected) || industries[0] || {}; 
+        const industrySelected = industries.find(i => i._id === selected) || industries[0] || {};
         return (
             <div id="vis-edit-myDynamicModal" className={"modal-create modal fade" + (onEdit ? " in" : "")} style={{ display: onEdit ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">
@@ -272,10 +272,12 @@ class UpdateVisitor extends Component {
                                     <div className="col-md-6 nopadding-right">
                                         <div className="form-group">
                                             <label htmlFor="vis-edit-uploadBtn" className="with-help">Ảnh đại diện khách thăm quan</label>
-                                            <label htmlFor="vis-edit-uploadBtn">
-                                                {onEdit?.avatar ?
-                                                    <img src={"/api/images/" + onEdit?.avatar} alt="Ảnh đại diện khách thăm quan" style={{ width: 'auto', maxWidth: 100, height: 'auto', maxHeight: 100 }} />
-                                                    : "Chưa có avatar"}
+                                            <label htmlFor="vis-edit-uploadBtn" style={{ height: 100, display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                                                <img
+                                                    src={onEdit?.avatar ? ("/api/images/" + onEdit.avatar) : "/images/no-logo.png"}
+                                                    alt={onEdit?.avatar ? "Ảnh đại diện khách thăm quan" : "Chưa có avatar"}
+                                                    style={{ width: 'auto', maxWidth: "100%", height: 'auto', maxHeight: "100%" }}
+                                                />
                                             </label>
                                             <div className="row">
                                                 <div className="col-md-9 nopadding-right">
@@ -294,10 +296,12 @@ class UpdateVisitor extends Component {
                                     <div className="col-md-6 nopadding-left">
                                         <div className="form-group">
                                             <label htmlFor="vis-edit-uploadBtn1" className="with-help">Banner</label>
-                                            <label htmlFor="vis-edit-uploadBtn1">
-                                                {onEdit?.image ?
-                                                    <img src={"/api/images/" + onEdit?.image} alt="Banner khách thăm quan" style={{ width: 'auto', maxWidth: 400, height: 'auto', maxHeight: 100 }} />
-                                                    : "Chưa có banner"}
+                                            <label htmlFor="vis-edit-uploadBtn1" style={{ height: 100, display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                                                <img
+                                                    src={onEdit?.image ? ("/api/images/" + onEdit.image) : "/images/no-banner.png"}
+                                                    alt={onEdit?.image ? "Banner khách thăm quan" : "Chưa có banner"}
+                                                    style={{ width: 'auto', maxWidth: "100%", height: 'auto', maxHeight: "100%" }}
+                                                />
                                             </label>
                                             <div className="row">
                                                 <div className="col-md-9 nopadding-right">

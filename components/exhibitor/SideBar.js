@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig from '../../lang.config';
 import types from '../../redux/types';
+import { translate } from '../../utils/language';
 
 class SideBar extends Component {
     constructor(props) {
@@ -16,32 +18,32 @@ class SideBar extends Component {
                     <ul className="sidebar-menu">
                         <li className={active === 0 ? "active" : ""}>
                             <a href="#" onClick={() => handleActive(0)}>
-                                <i className="fa fa-dashboard" /> <span>Tổng quan</span>
+                                <i className="fa fa-dashboard" /> <span>{translate(langConfig.app.Overview)}</span>
                             </a>
                         </li>
                         <li className={active === 4 ? "active" : ""}>
                             <a href="#" onClick={() => handleActive(4)}>
-                                <i className="fa fa-calendar" /> <span>Lịch giao thương</span>
+                                <i className="fa fa-calendar" /> <span>{translate(langConfig.app.TradeCalendar)}</span>
                             </a>
                         </li>
                         <li className={active === 1 ? "active" : ""}>
                             <a href="#" onClick={() => handleActive(1)}>
-                                <i className="fa fa-map-marker" /> <span> Danh sách chuyên mục</span>
+                                <i className="fa fa-map-marker" /> <span>{translate(langConfig.resources.categoryList)}</span>
                             </a>
                         </li>
                         <li className={active === 2 ? "active" : ""}>
                             <a href="#" onClick={() => handleActive(2)}>
-                                <i className="fa fa-user-secret" /> <span>Danh sách sản phẩm</span>
+                                <i className="fa fa-user-secret" /> <span>{translate(langConfig.resources.productList)}</span>
                             </a>
                         </li>
                         <li className={active === 5 ? "active" : ""}>
                             <a href="#" onClick={() => handleActive(5)}>
-                                <i className="fa fa-user-secret" /> <span>Danh sách livestream</span>
+                                <i className="fa fa-user-secret" /> <span>{translate(langConfig.resources.livestreamList)}</span>
                             </a>
                         </li>
                         <li className={active === 3 ? "active" : ""}>
                             <a href="#" onClick={() => handleActive(3)}>
-                                <i className="fa fa-wechat" /> <span>Chat{newMessage ? ` (${newMessage})` : ""}</span>
+                                <i className="fa fa-wechat" /> <span>{translate(langConfig.app.Chat)}{newMessage ? ` (${newMessage})` : ""}</span>
                             </a>
                         </li>
                     </ul>

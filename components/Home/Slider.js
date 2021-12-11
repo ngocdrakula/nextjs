@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import { getLocale } from '../../utils/language';
 
 class Slider extends Component {
     render() {
-        const { setting } = this.props;
+        const setting = this.props.setting[getLocale()] || {};
         const { bannerStatus, bannerSubTitle, bannerTitle, bannerStartTime, bannerEndTime, bannerLocation,
             bannerSlogan, bannerDescription, bannerBackground, bannerUpdated, bannerLogoThumb } = setting;
         if (!bannerStatus) return null;

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import Link from 'next/link';
 import types from '../../redux/types';
 import { getTime } from '../../utils/helper';
+import { getLocale } from '../../utils/language';
 
 const pageSize = 10;
 
@@ -49,7 +50,8 @@ class Header extends Component {
 
     render() {
         const { active } = this.state;
-        const { setting, handleToggle, handleActiveMessage, handleActiveVisitor, handleActiveUser, user, newMessage, newNoti, notis } = this.props;
+        const { handleToggle, handleActiveMessage, handleActiveVisitor, handleActiveUser, user, newMessage, newNoti, notis } = this.props;
+        const setting = this.props.setting[getLocale()];
         return (
 
             <header className="main-header">

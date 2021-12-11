@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import types from '../../../redux/types';
+import langConfig from '../../../lang.config';
+import { translate } from '../../../utils/language';
 
 class ContactForm extends Component {
     constructor(props) {
@@ -33,21 +35,21 @@ class ContactForm extends Component {
         return (
             <div className="form contact-form">
                 <div className="form-group">
-                    <input type="text" className="form-control" name="name" placeholder="Họ và tên" value={name} onChange={this.handleChange} />
+                    <input type="text" className="form-control" name="name" placeholder={translate(langConfig.app.FullName)} value={name} onChange={this.handleChange} />
                 </div>
                 <div className="form-group">
-                    <input type="email" className="form-control" name="email" placeholder="Email" value={email} onChange={this.handleChange} />
+                    <input type="email" className="form-control" name="email" placeholder={translate(langConfig.app.Email)} value={email} onChange={this.handleChange} />
                 </div>
                 <div className="form-group">
-                    <input type="text" className="form-control" name="title" placeholder="Chủ đề" value={title} onChange={this.handleChange} />
+                    <input type="text" className="form-control" name="title" placeholder={translate(langConfig.app.Subject)} value={title} onChange={this.handleChange} />
                 </div>
                 <div className="form-group">
-                    <textarea className="form-control" name="message" placeholder="Tin nhắn" rows={5} value={message} onChange={this.handleChange} />
+                    <textarea className="form-control" name="message" placeholder={translate(langConfig.app.Messages)} rows={5} value={message} onChange={this.handleChange} />
                 </div>
                 {success ?
-                    <p>Gửi tin nhắn thành công!</p>
+                    <p>{translate(langConfig.app.SendMessageSuccess)}!</p>
                     : ""}
-                <button type="submit" className={"contact-submit" + (email && name && title && message ? "" : " disabled-btn")} onClick={this.handleSubmit}>Gửi</button>
+                <button type="submit" className={"contact-submit" + (email && name && title && message ? "" : " disabled-btn")} onClick={this.handleSubmit}>{translate(langConfig.app.Send)}</button>
             </div>
         )
     }
@@ -56,4 +58,4 @@ class ContactForm extends Component {
 
 
 
-export default connect(({ admin: { setting } }) => ({ setting }))(ContactForm)
+export default connect(({ }) => ({}))(ContactForm)

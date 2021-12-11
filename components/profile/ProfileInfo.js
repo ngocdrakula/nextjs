@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import langConfig, { langConcat } from '../../lang.config';
 import types from '../../redux/types'
 import { createFormData, MODE } from '../../utils/helper';
+import { translate } from '../../utils/language';
 
 
 class ProfileInfo extends Component {
@@ -63,7 +65,7 @@ class ProfileInfo extends Component {
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
         if (fieldError) {
-            this.setState({ fieldError, message: 'Vui lòng điền đầy đủ thông tin' })
+            this.setState({ fieldError, message: translate(langConfig.message.error.infomation) })
         }
         else {
             const data = {
@@ -89,7 +91,7 @@ class ProfileInfo extends Component {
                     if (res?.success) {
                         this.setState({
                             success: true,
-                            message: res.data.message || "Cập nhật thành công",
+                            message: translate(res.data.messages),
                             onEdit: false,
                             loading: false
                         })
@@ -97,7 +99,7 @@ class ProfileInfo extends Component {
                     else if (res?.data) {
                         this.setState({
                             fieldError: res.data.field,
-                            message: res.data.message || "Vui lòng điền đầy đủ thông tin",
+                            message: translate(res.data.messages || langConfig.message.error.infomation),
                             loading: false
                         })
                     }
@@ -138,55 +140,55 @@ class ProfileInfo extends Component {
             <div className="profile-content" style={{ display: active ? 'block' : 'none' }}>
                 <form className="profile-update form-horizontal" onSubmit={this.handleSubmit}>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="representative">Họ và Tên: </label>
+                        <label className="col-sm-2 col-form-label" htmlFor="representative">{translate(langConfig.app.FullName)}: </label>
                         <div className="col-sm-10">
-                            <input type="text" className="form-control" placeholder="Nhập tên bạn" name="representative" value={representative} required readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
+                            <input type="text" className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.FullName))} name="representative" value={representative} required readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="name">Tên công ty: </label>
+                        <label className="col-sm-2 col-form-label" htmlFor="name">{translate(langConfig.app.CompanyName)}: </label>
                         <div className="col-sm-10">
-                            <input type="text" className="form-control" placeholder="Nhập tên công ty" name="name" value={name} required readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
+                            <input type="text" className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.CompanyName))} name="name" value={name} required readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="address">Địa chỉ: </label>
+                        <label className="col-sm-2 col-form-label" htmlFor="address">{translate(langConfig.app.Address)}: </label>
                         <div className="col-sm-10">
-                            <input type="text" className="form-control" placeholder="Nhập địa chỉ công ty" name="address" value={address} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
+                            <input type="text" className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Address))} name="address" value={address} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="phone">Điện thoại: </label>
+                        <label className="col-sm-2 col-form-label" htmlFor="phone">{translate(langConfig.app.Phone)}: </label>
                         <div className="col-sm-10">
-                            <input type="text" className="form-control" placeholder="Nhập số điện thoại công ty" name="phone" value={phone} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
+                            <input type="text" className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Phone))} name="phone" value={phone} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="mobile">Di động: </label>
+                        <label className="col-sm-2 col-form-label" htmlFor="mobile">{translate(langConfig.app.Mobile)}: </label>
                         <div className="col-sm-10">
-                            <input type="text" className="form-control" placeholder="Nhập số điện thoại cá nhân" name="mobile" value={mobile} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
+                            <input type="text" className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Mobile))} name="mobile" value={mobile} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="website">Website: </label>
+                        <label className="col-sm-2 col-form-label" htmlFor="website">{translate(langConfig.app.Website)}: </label>
                         <div className="col-sm-10">
-                            <input type="text" className="form-control" placeholder="Nhập website công ty (phân cách bằng dấu phẩy ',')" name="website" value={website} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
+                            <input type="text" className="form-control" placeholder={translate(langConfig.app.EnterWebsite)} name="website" value={website} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="position">Chức vụ: </label>
+                        <label className="col-sm-2 col-form-label" htmlFor="position">{translate(langConfig.app.Position)}: </label>
                         <div className="col-sm-10">
-                            <input type="text" className="form-control" placeholder="Nhập chức vụ của bạn trong công ty" name="position" value={position} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
+                            <input type="text" className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Position))} name="position" value={position} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="product">Sản phẩm: </label>
+                        <label className="col-sm-2 col-form-label" htmlFor="product">{translate(langConfig.app.Product)}: </label>
                         <div className="col-sm-10">
-                            <input type="text" className="form-control" placeholder="Nhập sản phẩm mà bạn muốn mua (nếu có)" name="product" value={product} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
+                            <input type="text" className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.ProductsBuy))} name="product" value={product} readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row industry">
-                        <label className="col-sm-2 col-form-label" htmlFor="industry">Ngành nghề: </label>
+                        <label className="col-sm-2 col-form-label" htmlFor="industry">{translate(langConfig.resources.industry)}: </label>
                         <div className="col-sm-10">
                             <div className={"industry-select" + (dropIndustry ? " open" : "")}>
                                 <div
@@ -217,32 +219,32 @@ class ProfileInfo extends Component {
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label" htmlFor="email">Email:</label>
+                        <label className="col-sm-2 col-form-label" htmlFor="email">{translate(langConfig.app.Email)}:</label>
                         <div className="col-sm-10">
-                            <input type="text" className="form-control" placeholder="Nhập email công ty" name="email" value={email} required readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
+                            <input type="text" className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Email))} name="email" value={email} required readOnly={!onEdit} onChange={onEdit ? this.handleChange : undefined} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label">Ảnh đại diện:</label>
+                        <label className="col-sm-2 col-form-label">{translate(langConfig.app.Avatar)}:</label>
                         <div className="col-sm-10">
                             <div className="user-avatar-preview">
                                 <img src={preview} />
                             </div>
                             <input type="file" id="avatar" className="hidden" onChange={this.handleChooseFiles} />
                             {onEdit ?
-                                <label className="custom-file-label" htmlFor="avatar">{local ? "Đã chon một ảnh" : "Chọn ảnh đại diện"}</label>
+                                <label className="custom-file-label" htmlFor="avatar">{translate(local ? langConfig.app.OneFileSelected : langConfig.app.UploadAvatar)}</label>
                                 : ""}
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-2 col-form-label">Ảnh bìa:</label>
+                        <label className="col-sm-2 col-form-label">{translate(langConfig.app.Banner)}:</label>
                         <div className="col-sm-10">
                             <div className="user-image-preview">
                                 <img src={previewImage} />
                             </div>
                             <input type="file" id="image" className="hidden" onChange={this.handleChooseFilesImage} />
                             {onEdit ?
-                                <label className="custom-file-label" htmlFor="image">{local ? "Đã chon một ảnh" : "Chọn ảnh bìa"}</label>
+                                <label className="custom-file-label" htmlFor="image">{translate(localImage ? langConfig.app.OneFileSelected : langConfig.app.UploadBanner)}</label>
                                 : ""}
                         </div>
                     </div>
@@ -252,15 +254,15 @@ class ProfileInfo extends Component {
                                 <>
                                     <div>
                                         {fieldError ? <div className="fieldError">{message}</div> : ""}
-                                        <button type="submit" className="btn btn-primary" disabled={loading}>Lưu lại</button>
+                                        <button type="submit" className="btn btn-primary" disabled={loading}>{translate(langConfig.app.Save)}</button>
                                         {"  "}
-                                        <button type="button" className="btn btn-danger" onClick={this.handleRefresh}>Cancel</button>
+                                        <button type="button" className="btn btn-danger" onClick={this.handleRefresh}>{translate(langConfig.app.Cancel)}</button>
                                     </div>
                                 </>
                                 :
                                 <>
-                                    {success ? <div className="success">Cập nhật thành công</div> : ""}
-                                    <button type="button" className="edit-but btn btn-primary" onClick={() => this.setState({ onEdit: true, success: false })}>Chỉnh sửa</button>
+                                    {success ? <div className="success">{translate(langConfig.message.success.updated)}</div> : ""}
+                                    <button type="button" className="edit-but btn btn-primary" onClick={() => this.setState({ onEdit: true, success: false })}>{translate(langConfig.app.Edit)}</button>
                                 </>
                             }
                         </div>

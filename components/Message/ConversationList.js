@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import langConfig from '../../lang.config';
 import types from '../../redux/types';
 import { MODE } from '../../utils/helper';
+import { translate } from '../../utils/language';
 
 const pageSize = 10;
 
@@ -110,9 +112,9 @@ class ConversationList extends Component {
             <img src="/images/user2.png" />
           </div>
           {user?.mode !== MODE.admin ?
-            <span>Nhắn tin với {admin?.name || "Admin"}</span>
+            <span>{translate(langConfig.app.ChatWith)} {admin?.name || "Admin"}</span>
             :
-            <span>Cuộc hội thoại</span>
+            <span>{translate(langConfig.app.Conversation)}</span>
           }
         </div>
         <div className={"messageList" + (openList ? "" : " hidden")} onScroll={this.handleScroll}>
@@ -120,7 +122,7 @@ class ConversationList extends Component {
             const toUser = conversation.leader.user._id === user._id ? conversation.member.user : conversation.leader.user;
             const from = conversation.leader.user._id === user._id ? conversation.leader : conversation.member;
             const lastMessage = conversation.messages?.[0];
-            const author = lastMessage?.author === toUser._id ? toUser.name : "Bạn";
+            const author = lastMessage?.author === toUser._id ? toUser.name : translate(langConfig.app.You);
             const inboxNew = !from.seen ? " inboxNew" : "";
             return (
               <div key={index} className={"inboxLine" + inboxNew} onClick={() => this.handleSelect(conversation._id)}  >

@@ -3,9 +3,7 @@ import { connect } from 'react-redux';
 import types from '../../../redux/types';
 import { createFormData } from '../../../utils/helper';
 
-const status = [{ value: true, label: 'Hoạt động' }, { value: false, label: 'Không hoạt động' }]
-
-class Overview extends Component {
+class Setting extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -32,16 +30,16 @@ class Overview extends Component {
             fieldError: null,
             message: '',
             footer: '',
-            onEdit: false
+            onEdit: false,
+            lang: 'vn'
         }
     }
     componentDidMount() {
-        const { dispatch } = this.props;
-        dispatch({ type: types.ADMIN_GET_SETTING });
+        this.handleRefresh();
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.setting.timestamp !== this.props.setting.timestamp) {
+        if (prevProps.setting !== this.props.setting) {
             this.handleRefresh();
         }
     }
@@ -57,7 +55,7 @@ class Overview extends Component {
             countDown,
             exhibitorTitle, exhibitorDescription, visitorTitle, visitorDescription,
             facebook, zalo, spyke, youtube,
-            footer
+            footer, lang
         } = this.state;
         const data = {
             title, logoStatus,
@@ -67,7 +65,7 @@ class Overview extends Component {
             countDown,
             exhibitorTitle, exhibitorDescription, visitorTitle, visitorDescription,
             facebook, zalo, spyke, youtube,
-            footer
+            footer, lang
         }
         if (!(new Date(countDown)).getTime()) {
             this.setState({
@@ -115,14 +113,14 @@ class Overview extends Component {
                         payload: {
                             type: 'error',
                             title: 'Cập nhật thất bại',
-                            message: res.data.message || "Vui lòng điền đầy đủ thông tin",
+                            message: translate(res.data.messages || langConfig.message.error.infomation),
                             confirm: 'Chấp nhận',
                             cancel: 'Đóng'
                         },
                     });
                     this.setState({
                         fieldError: res.data.field,
-                        message: res.data.message || "Vui lòng điền đầy đủ thông tin",
+                        message: translate(res.data.messages || langConfig.message.error.infomation),
                         loading: false
                     })
                 }
@@ -135,7 +133,7 @@ class Overview extends Component {
     handleDropdownFeature = () => this.setState({ dropFeature: !this.state.dropFeature })
 
     handleRefresh = () => this.setState({
-        ...this.props.setting,
+        ...this.props.setting[this.state.lang],
         filesLogo: null,
         filesFavicon: null,
         filesBanner: null,
@@ -196,8 +194,22 @@ class Overview extends Component {
     handleChangeTime = e => {
         this.setState({ [e.target.name]: e.target.value, fieldError: null })
     }
+
+    handleSelectLang = (lang) => {
+        if (lang !== this.state.lang) {
+            this.setState({ lang }, () => {
+                const { dispatch } = this.props;
+                dispatch({
+                    type: types.ADMIN_GET_SETTING,
+                    payload: { lang },
+                })
+            })
+        }
+    }
+
     render() {
-        const { setting, active } = this.props;
+        const { active } = this.props;
+        const setting = this.props.setting[this.state.lang];
         const {
             title, logoStatus, logoLocal, faviconLocal, bannerLocal, countDown,
             bannerStatus, bannerSubTitle, bannerTitle, bannerStartTime, bannerEndTime,
@@ -207,7 +219,7 @@ class Overview extends Component {
             onEdit, fieldError, message, loading,
             dropLogo, dropBanner, dropFeature,
             facebook, zalo, spyke, youtube,
-            footer
+            footer, lang
         } = this.state;
         if (!active || !setting) return null;
         const logo = logoLocal || `${setting.logoUpdated ? "/api" : ""}/images/${setting.logo}`;
@@ -219,6 +231,24 @@ class Overview extends Component {
                     <div className="row" style={{ padding: '0 20px 20px 20px' }}>
                         <div className="col">
                             <div className="card">
+                                <div className="form-group row">
+                                    <label htmlFor="setting-lang" className="col-sm-3 col-form-label">Ngôn ngữ hiển thị: </label>
+                                    <div className="col-sm-9">
+                                        <button
+                                            type="button"
+                                            disabled={lang === "vn"}
+                                            className={"btn" + (lang !== "vn" ? "  btn-primary" : "")}
+                                            onClick={() => this.handleSelectLang('vn')}
+                                        >{lang === "vn" ? "Tiếng Việt (Đang chọn)" : "Đổi sang Tiếng Việt"}</button>
+                                        <button
+                                            type="button"
+                                            disabled={lang === "en"}
+                                            style={{ marginLeft: 10 }}
+                                            className={"btn" + (lang !== "en" ? "  btn-primary" : "")}
+                                            onClick={() => this.handleSelectLang('en')}
+                                        >{lang === "en" ? "Tiếng Anh (Đang chọn)" : "Đổi sang Tiếng Anh"}</button>
+                                    </div>
+                                </div>
                                 <div className="form-group row">
                                     <label htmlFor="setting-title" className="col-sm-3 col-form-label">Tiêu đề trang web: </label>
                                     <div className="col-sm-9">
@@ -822,4 +852,4 @@ class Overview extends Component {
     }
 }
 
-export default connect(({ admin: { setting } }) => ({ setting }))(Overview)
+export default connect(({ admin: { setting } }) => ({ setting }))(Setting)

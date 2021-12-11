@@ -18,6 +18,7 @@ class EditorCustom extends Component {
         const { value } = this.props;
         const contentBlock = value && htmlToDraft(value);
         if (contentBlock) {
+            console.log(value)
             const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
             const editorState = EditorState.createWithContent(contentState);
             this.setState({ editorState })
@@ -32,6 +33,7 @@ class EditorCustom extends Component {
         if (prevProps.key != key) {
             const contentBlock = value && htmlToDraft(value);
             if (contentBlock) {
+                console.log(value)
                 const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
                 const editorState = EditorState.createWithContent(contentState);
                 this.setState({ editorState })
@@ -49,12 +51,12 @@ class EditorCustom extends Component {
     };
     render() {
         const { editorState } = this.state
-        const { className, placeholder, id, readOnly } = this.props
+        const { className, placeholder, key, readOnly } = this.props;
         const editorStyle = {};
         if (readOnly) editorStyle.backgroundColor = '#eee';
         return (
             <Editor
-                key={id || this.randomKey}
+                key={key || this.randomKey}
                 editorState={editorState}
                 wrapperClassName="wrapperClassName"
                 toolbarStyle={{ borderColor: '#d2d6de', display: readOnly ? 'none' : 'flex' }}

@@ -6,6 +6,10 @@ import Link from 'next/link';
 import { wrapper } from '../redux/store';
 import types from '../redux/types'
 import { getQuery } from '../utils/helper';
+import { translate } from '../utils/language';
+import langConfig from '../lang.config';
+const Header = dynamic(() => import('../components/Header'));
+const Footer = dynamic(() => import('../components/Footer'));
 
 class Verify extends Component {
   constructor(props) {
@@ -20,8 +24,8 @@ class Verify extends Component {
         type: types.VERIFY_ACCOUNT,
         payload: { token: query.token },
         callback: res => {
-          if (res?.success) this.setState({ verify: true, message: res.message })
-          else this.setState({ message: res?.data?.message || 'Mã xác thực tài khoản không chính xác hoặc đã hết hạn' });
+          if (res?.success) this.setState({ verify: true, message: translate(res.messages) })
+          else this.setState({ message: translate(res?.data?.messages || langConfig.message.error.code) });
         }
       });
     }
@@ -40,12 +44,12 @@ class Verify extends Component {
                 <span className={`verify-icon icon ${verify ? "verify" : "failed"}`} />
                 <span className="verify-message">{message}</span>
               </p>
-              <p><Link href="/"><a className="verify-back">Quay lại trang chủ</a></Link></p>
+              <p><Link href="/"><a className="verify-back">{translate(langConfig.app.BackHome)}</a></Link></p>
             </div>
             :
             <div className="verify-loading">
               <span className="verify-icon icon loading" />
-              <span className="verify-message">Loading...</span></div>
+              <span className="verify-message">{translate(langConfig.app.Loading)}...</span></div>
           }
         </div >
       </div >

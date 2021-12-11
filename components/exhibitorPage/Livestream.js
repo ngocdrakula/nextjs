@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig from '../../lang.config';
 import types from '../../redux/types';
+import { translate } from '../../utils/language';
 import Pagination from '../pagination/Pagination';
 
 const pageSize = 6;
@@ -97,7 +99,7 @@ class Livestream extends Component {
                                     </div>
                                 );
                             })}
-                            {!livestreams.length ? <h5>Danh sách livestream trống</h5> : ""}
+                            {!livestreams.length ? <h5>{translate(langConfig.app.LivestreamListEmpty)}</h5> : ""}
                         </div>
                         <Pagination gotoPage={this.gotoPage} {...{ currentPage, pageSize, total }} />
                     </div>

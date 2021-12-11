@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import types from '../../../redux/types';
 import { createFormData, MODE } from '../../../utils/helper';
 import TextEditor from '../../TextEditor';
+import { translate } from '../../../utils/language';
+import langConfig, { langConcat } from '../../../lang.config';
 
 
 class UpdateProduct extends Component {
@@ -12,6 +14,9 @@ class UpdateProduct extends Component {
             name: '',
             description: '',
             enabled: true,
+            files: null,
+            fieldError: null,
+            message: ''
         }
         this.state = { ...this.defaultState };
     }
@@ -19,9 +24,12 @@ class UpdateProduct extends Component {
         if (!prevProps.onEdit && this.props.onEdit?._id) {
             this.setState({
                 ...this.props.onEdit,
-                files: null,
-                fieldError: null,
-                message: ''
+            })
+        }
+        else if (prevProps.onEdit && !this.props.onEdit?._id) {
+            this.setState({
+                ...this.defaultState,
+                _id: "empty"
             })
         }
     }
@@ -32,11 +40,11 @@ class UpdateProduct extends Component {
         const { categories } = this.props;
         const categoryId = categories.find(c => c._id === category) ? category : categories[0]?._id;
         if (!name) {
-            this.setState({ fieldError: 'name', message: 'Tên không được để trống' })
+            this.setState({ fieldError: 'name', message: translate(langConcat(langConfig.resources.productName, langConfig.message.error.validation.required)) })
         } else if (!categoryId) {
-            this.setState({ fieldError: 'category', message: 'Vui lòng thêm một chuyên mục trước' })
+            this.setState({ fieldError: 'category', message: translate(langConfig.app.PleaseAddCategory) })
         } else if (!description) {
-            this.setState({ fieldError: 'description', message: 'Vui lòng thêm mô tả cho sản phẩm' })
+            this.setState({ fieldError: 'description', message: translate(langConcat(langConfig.resources.description, langConfig.message.error.validation.required)) })
         } else {
             const { dispatch, handleClose } = this.props;
             const data = { _id, name, categoryId, description, enabled }
@@ -51,10 +59,10 @@ class UpdateProduct extends Component {
                             type: types.SET_TOOLTIP,
                             payload: {
                                 type: 'success',
-                                title: 'Sửa sản phẩm thành công',
-                                message: 'Sửa sản phẩm thành công',
-                                confirm: 'Chấp nhận',
-                                cancel: 'Đóng',
+                                title: translate(langConfig.message.success.updated),
+                                message: translate(langConfig.app.Updated),
+                                confirm: translate(langConfig.app.Accept),
+                                cancel: translate(langConfig.app.Close),
                                 handleConfirm: handleClose,
                                 handleCancel: handleClose
                             },
@@ -63,7 +71,7 @@ class UpdateProduct extends Component {
                     else if (res?.data) {
                         this.setState({
                             fieldError: res.data.field,
-                            message: res.data.message || "Vui lòng điền đầy đủ thông tin"
+                            message: translate(res.data.messages || langConfig.message.error.infomation)
                         })
                     }
                 }
@@ -81,8 +89,9 @@ class UpdateProduct extends Component {
 
     render() {
         const { onEdit, handleClose, categories } = this.props;
-        const { dropActive, name, description, enabled, category, image, dropCategory, fieldError, message, files } = this.state;
+        const { dropActive, name, description, enabled, category, image, dropCategory, fieldError, message, files, _id } = this.state;
         const categorySelected = categories.find(i => i._id === category) || categories[0] || {};
+        console.log(description, _id)
         return (
             <div id="edit-pro-myDynamicModal" className={"modal-create modal fade" + (onEdit ? " in" : "")} style={{ display: onEdit ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">
@@ -90,14 +99,14 @@ class UpdateProduct extends Component {
                         <form method="POST" action="/" id="edit-pro-form" onSubmit={this.handleSubmit} >
                             <div className="modal-header">
                                 <button type="button" className="close" onClick={handleClose}>×</button>
-                                Sửa sản phẩm
+                                {translate(langConcat(langConfig.app.Edit, langConfig.app.Product))}
                             </div>
                             <div className="modal-body">
                                 <div className="row">
                                     <div className="col-md-8 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'name' ? " has-error" : "")}>
-                                            <label htmlFor="edit-pro-name">Tên sản phẩm*</label>
-                                            <input className="form-control" placeholder="Nhập tên sản phẩm" required value={name} id="edit-pro-name" name="name" type="text" onChange={this.handleChange} />
+                                            <label htmlFor="edit-pro-name">{translate(langConfig.resources.productName)}*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Edit, langConfig.resources.productName))} required value={name} id="edit-pro-name" name="name" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
                                                 {fieldError === 'name' && message ?
                                                     <ul className="list-unstyled">
@@ -109,11 +118,13 @@ class UpdateProduct extends Component {
                                     </div>
                                     <div className="col-md-4 nopadding-left">
                                         <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
-                                            <label htmlFor="edit-pro-active">Trạng thái*</label>
+                                            <label htmlFor="edit-pro-active">{translate(langConfig.app.Status)}*</label>
                                             <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
                                                 <span className="selection" onClick={this.handleDropdown}>
                                                     <span className="select2-selection select2-selection--single"  >
-                                                        <span className="select2-selection__rendered" id="edit-pro-select2-active-container" title={enabled ? "Hoạt động" : "Không hoạt động"}>{enabled ? "Hoạt động" : "Không hoạt động"}</span>
+                                                        <span className="select2-selection__rendered" id="edit-pro-select2-active-container" title={translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}>
+                                                            {translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}
+                                                        </span>
                                                         <span className="select2-selection__arrow" role="presentation">
                                                             <b role="presentation" />
                                                         </span>
@@ -123,11 +134,11 @@ class UpdateProduct extends Component {
                                                     <div
                                                         className={"select-option-active" + (enabled ? " active" : "")}
                                                         onClick={this.handleSelectEnable}
-                                                    >Hoạt động</div>
+                                                    >{translate(langConfig.app.Active)}</div>
                                                     <div
                                                         className={"select-option-active" + (!enabled ? " active" : "")}
                                                         onClick={this.handleSelectDisable}
-                                                    >Không hoạt động</div>
+                                                    >{translate(langConfig.app.Inactive)}</div>
                                                 </div>
                                             </span>
                                             <div className="help-block with-errors" >
@@ -143,7 +154,7 @@ class UpdateProduct extends Component {
                                 <div className="row">
                                     <div className="col-md-6 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'category' ? " has-error" : "")}>
-                                            <label htmlFor="edit-pro-active">Chuyên mục*</label>
+                                            <label htmlFor="edit-pro-active">{translate(langConfig.resources.category)}*</label>
                                             <span className={"select2 select2-container select2-container--default" + (dropCategory ? " select2-container--open" : "")} style={{ width: '100%' }}>
                                                 <span className="selection" onClick={this.handleDropdownCategory}>
                                                     <span className="select2-selection select2-selection--single"  >
@@ -175,10 +186,11 @@ class UpdateProduct extends Component {
                                     </div>
                                 </div>
                                 <div className={"form-group" + (fieldError === 'description' ? " has-error" : "")}>
-                                    <label htmlFor="edit-pro-description">Mô tả</label>
+                                    <label htmlFor="edit-pro-description">{translate(langConfig.resources.description)}</label>
                                     <TextEditor
+                                        key={_id}
                                         className="form-control summernote"
-                                        placeholder="Mô tả sơ lược về sản phẩm"
+                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.description))}
                                         value={description}
                                         name="description"
                                         id="edit-pro-description"
@@ -195,22 +207,22 @@ class UpdateProduct extends Component {
                                 <div className="row">
                                     <div className="col-md-12">
                                         <div className={"form-group" + (fieldError === 'files' ? " has-error" : "")}>
-                                            <label htmlFor="edit-pro-uploadBtn" className="with-help">Ảnh sản phẩm</label>
+                                            <label htmlFor="edit-pro-uploadBtn" className="with-help">{translate(langConfig.resources.productImage)}</label>
                                             <label htmlFor="vis-edit-uploadBtn">
                                                 {image ?
-                                                    <img src={"/api/images/" + image} alt="Ảnh sản phẩm" style={{ width: 'auto', maxWidth: 100, height: 'auto', maxHeight: 100 }} />
+                                                    <img src={"/api/images/" + image} alt={translate(langConfig.resources.productImage)} style={{ width: 'auto', maxWidth: 100, height: 'auto', maxHeight: 100 }} />
                                                     :
-                                                    <img src="/images/no-avatar.png" alt="Ảnh sản phẩm" style={{ width: 'auto', maxWidth: 100, height: 'auto', maxHeight: 100 }} />
+                                                    <img src="/images/no-avatar.png" alt={translate(langConfig.resources.productImage)} style={{ width: 'auto', maxWidth: 100, height: 'auto', maxHeight: 100 }} />
                                                 }
                                             </label>
                                             <div className="row">
                                                 <div className="col-md-9 nopadding-right">
-                                                    <input id="edit-pro-uploadFile" placeholder={files?.length ? "Đã chọn 1 ảnh" : "Ảnh sản phẩm"} className="form-control" style={{ height: 28 }} disabled="disabled" />
-                                                    <div className="help-block with-errors">Kích thước nhỏ nhất 300 x 300px</div>
+                                                    <input id="edit-pro-uploadFile" placeholder={translate(files?.length ? langConfig.app.OneFileSelected : langConfig.resources.productImage)} className="form-control" style={{ height: 28 }} disabled="disabled" />
+                                                    <div className="help-block with-errors">{translate(langConfig.app.MinSize300X300)}</div>
                                                 </div>
                                                 <div className="col-md-3 nopadding-left">
                                                     <div className="fileUpload btn btn-primary btn-block btn-flat">
-                                                        <span>Tải lên</span>
+                                                        <span>{translate(langConfig.app.Upload)}</span>
                                                         <input type="file" name="ex-avatar" id="edit-pro-uploadBtn" className="upload" onChange={this.handleChooseFiles} />
                                                     </div>
                                                 </div>
@@ -227,7 +239,7 @@ class UpdateProduct extends Component {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <input className="btn btn-flat btn-new" type="submit" value="Lưu" />
+                                <input className="btn btn-flat btn-new" type="submit" value={translate(langConfig.app.Save)} />
                             </div>
                         </form>
                     </div>

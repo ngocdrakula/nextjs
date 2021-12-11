@@ -109,8 +109,8 @@ export const admin_createContactCSVRequest = async (params) => {
     return axios.get('contact/createCSV?' + stringify(params))
 }
 
-export const admin_getSettingRequest = async () => {
-    return axios.get('setting');
+export const admin_getSettingRequest = async (params) => {
+    return axios.get('setting?' + stringify(params));
 }
 export const admin_updateSettingRequest = async (request) => {
     return axios.post('setting', request);

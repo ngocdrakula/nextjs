@@ -31,7 +31,7 @@ const handler = async (req, res) => {
                     success: false,
                     validation: false,
                     field: 'email',
-                    message: "Tên đăng nhập không được để trống",
+                    message: "Email không được để trống",
                     messages: langConcat(lang?.resources?.email, lang?.message?.error?.validation?.required),
                 });
             }
@@ -48,7 +48,7 @@ const handler = async (req, res) => {
                 return res.status(400).send({
                     success: false,
                     loged: false,
-                    message: "Tên đăng nhập hoặc mật khẩu không chính xác",
+                    message: "Email hoặc mật khẩu không chính xác",
                     messages: langConcat(lang?.resources?.emailOrPassword, lang?.message?.error?.validation?.incorrect),
                 });
             }
@@ -58,6 +58,7 @@ const handler = async (req, res) => {
                     loged: false,
                     field: 'mode',
                     message: "Vui lòng đăng nhập ở khu vực người mua",
+                    messages: lang?.message?.error?.loginVisitor,
                 });
             }
             if (e.path == 'exhibitor') {
@@ -66,6 +67,7 @@ const handler = async (req, res) => {
                     loged: false,
                     field: 'mode',
                     message: "Vui lòng đăng nhập ở khu vực nhà trưng bày",
+                    messages: lang?.message?.error?.loginExhibitor,
                 });
             }
             return res.status(500).send({
