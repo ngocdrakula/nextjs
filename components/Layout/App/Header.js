@@ -17,6 +17,7 @@ import TradeForm from './TradeForm';
 import ResetPassword from './ResetPassword';
 import { getLocale, translate } from '../../../utils/language';
 import langConfig from '../../../lang.config';
+import Logo from '../Logo';
 
 class Header extends Component {
     constructor(props) {
@@ -97,9 +98,7 @@ class Header extends Component {
     }
     render() {
         const { name, selected, visibleLang } = this.state;
-        const { user, setting } = this.props;
-        const { logo, logoUpdated, title, logoStatus } = setting;
-        const image = `${logoUpdated ? "/api" : ""}/images/${logo}`;
+        const { user } = this.props;
         return (
             <>
                 <Head />
@@ -127,13 +126,7 @@ class Header extends Component {
                                 <div className="row">
                                     <div className="col-5 col-md-3">
                                         <div className="logo">
-                                            <Link href="/">
-                                                <a>
-                                                    {logoStatus ?
-                                                        <img src={image} alt={title} />
-                                                        : ""}
-                                                </a>
-                                            </Link>
+                                            <Link href="/"><a><Logo /></a></Link>
                                         </div>
                                     </div>
                                     <div className="col-7 col-md-9 choose-login">
@@ -205,4 +198,4 @@ class Header extends Component {
     }
 }
 
-export default connect(({ app: { user, setting } }) => ({ user, setting }))(Header)
+export default connect(({ app: { user } }) => ({ user }))(Header)
