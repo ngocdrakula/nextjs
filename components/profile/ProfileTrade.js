@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import types from '../../redux/types'
 import { formatTime } from '../../utils/helper';
-import Pagination from '../pagination/Pagination'; 
+import Pagination from '../pagination/Pagination';
 import { translate } from '../../utils/language';
 import langConfig, { langConcat } from '../../lang.config';
 
@@ -59,7 +59,7 @@ class ProfileTrade extends Component {
         return (
             <div className="profile-trade" style={{ display: active ? 'block' : 'none' }}>
                 <div className="profile-trade-header">
-                    <h3 className="profile-trade-title">Lịch Giao Thương</h3>
+                    <h3 className="profile-trade-title">{translate(langConfig.app.TradeCalendar)}</h3>
                 </div>
                 <div className="profile-trade-body">
                     <table id="example2" className="table table-bordered table-hover dataTable no-footer">
