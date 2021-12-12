@@ -22,9 +22,7 @@ function* admin_LoginLocal({ callback }) {
     }
 }
 function* admin_Login({ payload, callback }) {
-    console.log(payload)
     try {
-        console.log(payload)
         const res = yield call(requests.admin_LoginRequest, payload);
         if (res?.data?.success) {
             localStorage.setItem('token', res.data.token);
@@ -37,7 +35,6 @@ function* admin_Login({ payload, callback }) {
         }
         if (typeof callback === 'function') callback(res.data);
     } catch (e) {
-        console.log(e)
         yield put({ type: types.ADMIN_LOGIN_FAILED, payload: e?.response?.data });
         if (typeof callback === 'function') callback(e?.response?.data);
     }

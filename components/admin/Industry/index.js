@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig, { langConcat } from '../../../lang.config';
 import types from '../../../redux/types';
+import { translate } from '../../../utils/language';
 import Pagination from '../../pagination/PaginationAdmin';
 import AddIndustry from './AddIndustry';
 import UpdateIndustry from './UpdateIndustry';
@@ -35,11 +37,11 @@ class Industry extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận ${industry.enabled ? 'tắt' : 'bật'} ngành nghề này`,
-                message: `Bạn có chắc chắn ${industry.enabled ? 'tắt' : 'bật'} ngành nghề này không?`,
-                confirm: `${industry.enabled ? 'Tắt' : 'Bật'} ngành nghề này`,
+                title: translate(industry.enabled ? langConfig.app.ConfirmDisableIndustry : langConfig.app.ConfirmEnableIndustry),
+                message: translate(industry.enabled ? langConfig.app.AreYouSureDisableIndustry : langConfig.app.AreYouSureEnableIndustry),
+                confirm: translate(industry.enabled ? langConfig.app.DisableIndustry : langConfig.app.EnableIndustry),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => this.handleConfirm(industry),
-                cancel: 'Hủy',
             }
         })
     }
@@ -48,9 +50,10 @@ class Industry extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa ngành nghề`,
-                message: `Bạn có chắc chắn muốn xóa ngành nghề này không?`,
-                confirm: `Xóa`,
+                title: translate(langConfig.app.ConfirmDeleteIndustry),
+                message: translate(langConfig.app.AreYouSureDeleteIndustry),
+                confirm: translate(langConfig.app.DeleteIndustry),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => {
                     dispatch({
                         type: types.ADMIN_DELETE_INDUSTRY,
@@ -63,7 +66,6 @@ class Industry extends Component {
                         }
                     });
                 },
-                cancel: 'Hủy',
             }
         })
     }
@@ -74,9 +76,9 @@ class Industry extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa nhiều ngành nghề`,
-                message: `Bạn có chắc chắn muốn xóa ${selecteds.length} ngành nghề không?`,
-                confirm: `Xóa ngành nghề này`,
+                title: translate(langConfig.app.ConfirmDeleteMultiIndustry),
+                message: `${translate(langConfig.app.AreYouSureDelete)} ${selecteds.length} ${translate(langConfig.app.Industry)}?`,
+                confirm: translate(langConfig.app.DeleteIndustry),
                 handleConfirm: () => {
                     dispatch({
                         type: types.ADMIN_DELETE_MULTI_INDUSTRY,
@@ -89,7 +91,6 @@ class Industry extends Component {
                         }
                     });
                 },
-                cancel: 'Hủy',
             }
         })
     }
@@ -134,9 +135,11 @@ class Industry extends Component {
             <section className="content">
                 <div className="box">
                     <div className="box-header with-border">
-                        <h3 className="box-title">Danh sách ngành nghề</h3>
+                        <h3 className="box-title">{translate(langConfig.app.IndustryList)}</h3>
                         <div className="box-tools pull-right">
-                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>Thêm ngành nghề</a>
+                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>
+                                {translate(langConcat(langConfig.app.Add, langConfig.app.Industry))}
+                            </a>
                         </div>
                     </div>
                     <div className="box-body">
@@ -144,13 +147,13 @@ class Industry extends Component {
                             <div className="dt-buttons btn-group">
                                 {selecteds.length ?
                                     <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={this.handleDeleteAll}>
-                                        <span>Xóa {selecteds.length} mục đã chọn</span>
+                                        <span>{translate(langConfig.app.Delete)} {selecteds.length} {translate(langConfig.app.selectedItem)}</span>
                                     </button>
                                     : ""}
                             </div>
                             <div id="DataTables_Table_1_filter" className="dataTables_filter">
                                 <label>
-                                    <input type="search" className={"form-control input-sm" + (name ? " active" : "")} value={name} onChange={this.handleChange} placeholder="Tìm kiếm" />
+                                    <input type="search" className={"form-control input-sm" + (name ? " active" : "")} value={name} onChange={this.handleChange} placeholder={translate(langConfig.app.Search)} />
                                 </label>
                             </div>
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" >
@@ -163,10 +166,10 @@ class Industry extends Component {
                                                 </button>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>STT</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '55%' }}>Tên ngành nghề</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Trạng thái</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Hành động</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Index)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '55%' }}>{translate(langConfig.resources.industryName)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.app.Status)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Actions)}</th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
@@ -187,16 +190,16 @@ class Industry extends Component {
                                                 <td title={industry.name}>
                                                     {industry.name}
                                                     <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={e => { e.preventDefault(); this.handleDisable(industry) }}>
-                                                        <i className={"fa fa-heart" + (industry.enabled ? "-o" : "")} title={industry.enabled ? "Bật" : "Tắt"} />
+                                                        <i className={"fa fa-heart" + (industry.enabled ? "-o" : "")} title={translate(industry.enabled ? langConfig.app.Inactive : langConfig.app.Active)} />
                                                     </a>
                                                 </td>
-                                                <td>{industry.enabled ? "Hoạt động" : "Không hoạt động"}</td>
+                                                <td>{translate(industry.enabled ? langConfig.app.Active : langConfig.app.Inactive)}</td>
                                                 <td className="row-options">
                                                     <a onClick={() => this.setState({ onEdit: industry })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i title="Chỉnh sửa" className="fa fa-edit" />
+                                                        <i title={translate(langConfig.app.Edit)} className="fa fa-edit" />
                                                     </a>&nbsp;&nbsp;
                                                     <a onClick={() => this.handleDelete(industry)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i className="fa fa-trash-o" title="Xóa" />
+                                                        <i className="fa fa-trash-o" title={translate(langConfig.app.Delete)} />
                                                     </a>&nbsp;&nbsp;
                                                 </td>
                                             </tr>

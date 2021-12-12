@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig, { langConcat } from '../../../lang.config';
 import types from '../../../redux/types';
 import { createFormData } from '../../../utils/helper';
+import { translate } from '../../../utils/language';
 import Pagination from '../../pagination/PaginationAdmin';
 import AddVisitor from './AddVisitor';
 import UpdateVisitor from './UpdateVisitor';
@@ -45,11 +47,11 @@ class Visitor extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận ${visitor.enabled ? 'khóa' : 'hủy khóa'} tài khoản`,
-                message: `Bạn có chắc chắn ${visitor.enabled ? 'khóa' : 'hủy khóa'} tài khoản của ${visitor.name} không?`,
-                confirm: `${visitor.enabled ? 'Khóa' : 'Hủy khóa'} tài khoản`,
+                title: translate(visitor.enabled ? langConfig.app.ConfirmDisableUser : langConfig.app.ConfirmEnableUser),
+                message: translate(visitor.enabled ? langConfig.app.AreYouSureDisableUser : langConfig.app.AreYouSureEnableUser),
+                confirm: translate(visitor.enabled ? langConfig.app.DisableUser : langConfig.app.EnableUser),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => this.handleConfirm(visitor),
-                cancel: 'Hủy',
             }
         })
     }
@@ -58,9 +60,10 @@ class Visitor extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa tài khoản`,
-                message: `Bạn có chắc chắn muốn xóa tài khoản của ${visitor.name} không?`,
-                confirm: `Xóa tài khoản`,
+                title: translate(langConfig.app.ConfirmDeleteUser),
+                message: translate(langConfig.app.AreYouSureDeleteUser),
+                confirm: translate(langConfig.app.DeleteUser),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => {
                     dispatch({
                         type: types.ADMIN_DELETE_USER,
@@ -73,7 +76,6 @@ class Visitor extends Component {
                         }
                     });
                 },
-                cancel: 'Hủy',
             }
         })
     }
@@ -84,9 +86,10 @@ class Visitor extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa nhiều tài khoản`,
-                message: `Bạn có chắc chắn muốn xóa ${selecteds.length} tài khoản không?`,
-                confirm: `Xóa tài khoản`,
+                title: translate(langConfig.app.ConfirmDeleteMultiUser),
+                message: `${translate(langConfig.app.AreYouSureDelete)} ${selecteds.length} ${translate(langConfig.resources.user)}?`,
+                confirm: translate(langConfig.app.DeleteUser),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => {
                     dispatch({
                         type: types.ADMIN_DELETE_MULTI_USER,
@@ -100,7 +103,6 @@ class Visitor extends Component {
                         }
                     });
                 },
-                cancel: 'Hủy',
             }
         })
     }
@@ -146,9 +148,11 @@ class Visitor extends Component {
             <section className="content">
                 <div className="box">
                     <div className="box-header with-border">
-                        <h3 className="box-title">Khách thăm quan</h3>
+                        <h3 className="box-title">{translate(langConfig.app.Visitor)}</h3>
                         <div className="box-tools pull-right">
-                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>Thêm khách thăm quan</a>
+                            <a onClick={this.handleOpenForm} className="ajax-modal-btn btn btn-new btn-flat" style={{ cursor: 'pointer' }}>
+                                {translate(langConcat(langConfig.app.Add, langConfig.app.Visitor))}
+                            </a>
                         </div>
                     </div>
                     <div className="box-body">
@@ -156,13 +160,13 @@ class Visitor extends Component {
                             <div className="dt-buttons btn-group">
                                 {selecteds.length ?
                                     <button className="btn btn-default buttons-copy buttons-html5 btn-sm" onClick={this.handleDeleteAll}>
-                                        <span>Xóa {selecteds.length} đã chọn</span>
+                                        <span>{translate(langConfig.app.Delete)} {selecteds.length} {translate(langConfig.app.selectedItem)}</span>
                                     </button>
                                     : ""}
                             </div>
                             <div id="DataTables_Table_1_filter" className="dataTables_filter">
                                 <label>
-                                    <input type="search" className={"form-control input-sm" + (name ? " active" : "")} value={name} onChange={this.handleChange} placeholder="Tìm kiếm" />
+                                    <input type="search" className={"form-control input-sm" + (name ? " active" : "")} value={name} onChange={this.handleChange} placeholder={translate(langConfig.app.Search)} />
                                 </label>
                             </div>
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" >
@@ -175,12 +179,14 @@ class Visitor extends Component {
                                                 </button>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: "10%" }}>Ảnh đại diện</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>Tên khách hàng</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>Email</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>Lĩnh vực</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>Trạng thái</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%', textAlign: 'center!important' }} >Hành động</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Avatar)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>{translate(langConfig.app.Name)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>{translate(langConfig.app.Email)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.resources.industry)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Status)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%', textAlign: 'center!important' }} >
+                                            {translate(langConfig.app.Actions)}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
@@ -199,26 +205,26 @@ class Visitor extends Component {
                                                 </td>
                                                 <td>
                                                     {visitor.avatar ?
-                                                        <img src={"/api/images/" + visitor.avatar} className="img-circle img-sm" alt="Ảnh đại diện" />
+                                                        <img src={"/api/images/" + visitor.avatar} className="img-circle img-sm" alt={translate(langConfig.app.Avatar)} />
                                                         :
-                                                        <img src="/images/no-avatar.png" className="img-circle img-sm" alt="Ảnh đại diện" />
+                                                        <img src="/images/no-avatar.png" className="img-circle img-sm" alt={translate(langConfig.app.Avatar)} />
                                                     }
                                                 </td>
                                                 <td title={visitor.name}>
                                                     {visitor.name?.split(0, 15)}
                                                     <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={() => { this.handleDisable(visitor) }}>
-                                                        <i className={"fa fa-heart" + (visitor.enabled ? "-o" : "")} title={visitor.enabled ? "Khóa" : "Hủy khóa"} />
+                                                        <i className={"fa fa-heart" + (visitor.enabled ? "-o" : "")} title={translate(visitor.enabled ? langConfig.app.EnableUser : langConfig.app.DisableUser)} />
                                                     </a>
                                                 </td>
                                                 <td>{visitor.email}</td>
-                                                <td>{visitor.industry?.map(i => i.name).join(',') || 'Chưa cập nhật'}</td>
-                                                <td>{visitor.enabled ? "Hoạt động" : "Không hoạt động"}</td>
+                                                <td>{visitor.industry?.map(i => i.name).join(',') || translate(langConfig.app.NotUpdate)}</td>
+                                                <td>{translate(visitor.enabled ? langConfig.app.Active : langConfig.app.Inactive)}</td>
                                                 <td className="row-options">
                                                     <a onClick={() => this.setState({ onEdit: visitor })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i title="Chỉnh sửa" className="fa fa-edit" />
+                                                        <i title={translate(langConfig.app.Edit)} className="fa fa-edit" />
                                                     </a>&nbsp;&nbsp;
                                                     <a onClick={() => this.handleDelete(visitor)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
-                                                        <i className="fa fa-trash-o" title="Xóa" />
+                                                        <i className="fa fa-trash-o" title={translate(langConfig.app.Delete)} />
                                                     </a>&nbsp;&nbsp;
                                                 </td>
                                             </tr>

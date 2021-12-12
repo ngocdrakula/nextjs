@@ -4,6 +4,7 @@ import langConfig, { langConcat } from '../../../lang.config';
 import types from '../../../redux/types';
 import { createFormData } from '../../../utils/helper';
 import { translate } from '../../../utils/language';
+import CautionAdmin from '../../Layout/Admin/CautionAdmin';
 import TextEditor from '../../TextEditor';
 
 class Overview extends Component {
@@ -123,6 +124,7 @@ class Overview extends Component {
         if (!active) return null;
         return (
             <section className="content">
+                <CautionAdmin />
                 <div className="row" style={{ padding: '0 20px 20px 20px' }}>
                     <div className="col-md-3">
                         <div className="card card-primary card-outline">

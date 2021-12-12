@@ -4,6 +4,8 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import types from '../../../redux/types';
 import { formatTime } from '../../../utils/helper';
+import { translate } from '../../../utils/language';
+import langConfig from '../../../lang.config';
 
 const pageSize = 10;
 const numMonth = 4;
@@ -28,26 +30,28 @@ class Overview extends Component {
         const lastYear = formatTime(new Date(year - 1, 1, 1), "YYYY-01-01");
         const thisYear = formatTime(now, "YYYY-01-01");
         counts.push(`${lastYear}.${thisYear}`);
-        labels.push(`Năm ${year - 1}`);
+        labels.push(`${year - 1}`);
         const nextYear = formatTime(new Date(year + 1, 1, 1), "YYYY-01-01");
         counts.push(`${thisYear}.${nextYear}`);
-        labels.push(`Năm ${year}`);
+        labels.push(`${year}`);
 
         new Array(month).fill(0).map((item, index) => {
             if (index > month - numMonth - 1) {
                 const thisMonth = formatTime(new Date(year, index + 2), "YYYY-MM-01");
                 const lastMonth = formatTime(new Date(year, index + 1), "YYYY-MM-01");
                 counts.push(`${lastMonth}.${thisMonth}`);
-                labels.push(`Tháng ${index + 2}`);
+                labels.push(translate(langConfig.app[`Month${index + 2}`]));
             }
         });
         new Array(3).fill(0).map((item, index) => {
             const thisDay = formatTime(new Date(year, month, date + index - numDate + 2), "YYYY-MM-DD");
             const lastDay = formatTime(new Date(year, month, date + index - numDate + 1), "YYYY-MM-DD");
             counts.push(`${lastDay}.${thisDay}`);
-            labels.push(formatTime(new Date(year, month, date + index - numDate + 1), "Week"));
+            const week = (new Date(year, month, date + index - numDate + 1)).getDay()
+            labels.push(translate(langConfig.app[`Week${week + 1}`]));
+            // labels.push(formatTime(new Date(year, month, date + index - numDate + 1), "Week"));
         });
-        labels[labels.length - 1] = "Hôm nay";
+        labels[labels.length - 1] = translate(langConfig.app.Today);
         this.setState({ counts, labels });
         dispatch({
             type: types.ADMIN_GET_VISITS,
@@ -93,15 +97,15 @@ class Overview extends Component {
                 backgroundColor: '#FFFFFF'
             },
             xAxis: { categories: labels },
-            yAxis: { title: { text: 'Lượt truy cập' } },
-            tooltip: { shared: true, valueSuffix: ' lượt ' },
+            yAxis: { title: { text: translate(langConfig.app.TheNumberOfHits) } },
+            tooltip: { shared: true, valueSuffix: " " + translate(langConfig.app.hits) },
             credits: { enabled: false },
             plotOptions: { areaspline: { fillOpacity: 0.5 } },
             series: [{
-                name: 'Lượt xem trang',
+                name: translate(langConfig.app.PageViews),
                 data: views
             }, {
-                name: 'Lượt tải trang',
+                name: translate(langConfig.app.PageLoads),
                 data: hits
             }]
         };
@@ -112,11 +116,11 @@ class Overview extends Component {
                         <div className="info-box">
                             <span className="info-box-icon bg-yellow"><i className="icon ion-md-people" /></span>
                             <div className="info-box-content">
-                                <span className="info-box-text">Khách thăm quan</span>
+                                <span className="info-box-text">{translate(langConfig.app.Visitor)}</span>
                                 <span className="info-box-number">{totalVisitor}</span>
                                 <div className="progress" style={{ background: 'transparent' }} />
                                 <span className="progress-description text-muted">
-                                    <i className="icon ion-md-add" /> {visitorNew} Khách thăm quan trong 30 ngày
+                                    <i className="icon ion-md-add" /> {visitorNew} {translate(langConfig.app.VisitorIn30Days)}
                                 </span>
                             </div>
                         </div>
@@ -125,11 +129,11 @@ class Overview extends Component {
                         <div className="info-box">
                             <span className="info-box-icon bg-aqua"><i className="icon ion-md-contacts" /></span>
                             <div className="info-box-content">
-                                <span className="info-box-text">Nhà trưng bày</span>
+                                <span className="info-box-text">{translate(langConfig.app.Exhibitor)}</span>
                                 <span className="info-box-number">{totalExhibitor}</span>
                                 <div className="progress" style={{ background: 'transparent' }} />
                                 <span className="progress-description text-muted">
-                                    <i className="icon ion-md-add" /> {exhibitorNew} Nhà trưng bày trong 30 ngày
+                                    <i className="icon ion-md-add" /> {exhibitorNew} {translate(langConfig.app.ExhibitorIn30Days)}
                                 </span>
                             </div>
                         </div>
@@ -141,14 +145,14 @@ class Overview extends Component {
                                 <i className="icon ion-md-heart" />
                             </span>
                             <div className="info-box-content">
-                                <span className="info-box-text">Truy cập hôm nay</span>
+                                <span className="info-box-text">{translate(langConfig.app.VisitToday)}</span>
                                 <span className="info-box-number">{todayView}</span>
                                 <div className="progress">
                                     <div className="progress-bar progress-bar-info" style={{ width: `${percent}%` }} />
                                 </div>
                                 <span className="progress-description text-muted">
                                     <i className={"icon ion-md-arrow-" + (rate >= 0 ? "up" : "down")} />
-                                    {rate >= 0 ? "  Tăng" : " Giảm"} {percent}% so với hôm qua
+                                    {translate(rate >= 0 ? langConfig.app.Increase : langConfig.app.Decrease)} {percent}% {translate(langConfig.app.FromYesterday)}
                                 </span>
                             </div>
                         </div>
@@ -160,7 +164,7 @@ class Overview extends Component {
                             <div className="nav-tabs-custom">
                                 <ul className="nav nav-tabs nav-justified">
                                     <li className="active">
-                                        <a><i className="icon ion-md-pulse hidden-sm" />  Biểu đồ khách</a>
+                                        <a><i className="icon ion-md-pulse hidden-sm" />  {translate(langConfig.app.GuestChart)}</a>
                                     </li>
                                 </ul>
                                 <div className="tab-content">

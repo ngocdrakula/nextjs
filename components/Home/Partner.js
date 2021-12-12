@@ -45,13 +45,14 @@ class Partner extends Component {
                             </div>
                         </div>
                         <div className="col-md-6 mt-56">
-                            <p>{translate(langConfig.app.CoordinationUnit)}:</p>
-                            <img src="/images/support1.png" alt="" style={{ display: 'block', margin: '0 auto 15px' }} />
-                            <img src="/images/support2.png" alt="" />
+                            <p className='partner-title'>{translate(langConfig.app.CoordinationUnit)}:</p>
+                            {/* <img src="/images/support1.png" alt="" style={{ display: 'block', margin: '0 auto 15px' }} />
+                            <img src="/images/support2.png" alt="" /> */}
+                            <img src="/images/anh-doc-1.png" alt="" />
                         </div>
                         <div className="col-md-6 mt-56">
-                            <p>{translate(langConfig.app.InformationSupport)}:</p>
-                            <img src="/images/support3.png" alt="" />
+                            <p className='partner-title partner-right'>{translate(langConfig.app.InformationSupport)}:</p>
+                            <img src="/images/Logo BTTT-03.png" alt="" />
                         </div>
                     </div>
                 </div>

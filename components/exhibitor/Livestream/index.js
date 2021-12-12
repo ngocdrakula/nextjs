@@ -6,6 +6,7 @@ import Pagination from '../../pagination/PaginationAdmin';
 import { translate } from '../../../utils/language';
 import AddLivestream from './AddLivestream';
 import UpdateLivestream from './UpdateLivestream';
+import CautionAdmin from '../../Layout/Admin/CautionAdmin';
 
 const pageSize = 10;
 
@@ -140,6 +141,7 @@ class Livestream extends Component {
         if (!active) return null;
         return (
             <section className="content">
+                <CautionAdmin />
                 <div className="box">
                     <div className="box-header with-border">
                         <h3 className="box-title">{translate(langConfig.app.Livestream)}</h3>

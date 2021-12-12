@@ -6,6 +6,7 @@ import PaginationAdmin from '../../pagination/PaginationAdmin';
 import { translate } from '../../../utils/language';
 import AddCategory from './AddCategory';
 import UpdateCategory from './UpdateCategory';
+import CautionAdmin from '../../Layout/Admin/CautionAdmin';
 
 const pageSize = 100;
 
@@ -139,6 +140,7 @@ class Category extends Component {
         if (!active) return null;
         return (
             <section className="content">
+                <CautionAdmin />
                 <div className="box">
                     <div className="box-header with-border">
                         <h3 className="box-title">{translate(langConfig.resources.categoryList)}</h3>

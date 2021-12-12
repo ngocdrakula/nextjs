@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig, { langConcat } from '../../../lang.config';
 import types from '../../../redux/types';
 import { createFormData } from '../../../utils/helper';
+import { translate } from '../../../utils/language';
 
 class Setting extends Component {
     constructor(props) {
@@ -70,7 +72,7 @@ class Setting extends Component {
         if (!(new Date(countDown)).getTime()) {
             this.setState({
                 fieldError: 'countDown',
-                message: "Countdown không được để trống",
+                message: translate(langConcat(langConfig.app.CoundownTime, langConfig.message.error.validation.required)),
             })
             return;
         }
@@ -100,10 +102,10 @@ class Setting extends Component {
                         type: types.SET_TOOLTIP,
                         payload: {
                             type: 'success',
-                            title: 'Cập nhật thành công',
-                            message: 'Cập nhật thông tin thành công?',
-                            confirm: 'Chấp nhận',
-                            cancel: 'Đóng'
+                            title: translate(langConfig.message.success.updated),
+                            message: translate(langConfig.app.UpdateInformationSuccess),
+                            confirm: translate(langConfig.app.Accept),
+                            cancel: translate(langConfig.app.Close)
                         },
                     });
                 }
@@ -112,10 +114,10 @@ class Setting extends Component {
                         type: types.SET_TOOLTIP,
                         payload: {
                             type: 'error',
-                            title: 'Cập nhật thất bại',
+                            title: translate(langConfig.message.error.updated_failed),
                             message: translate(res.data.messages || langConfig.message.error.infomation),
-                            confirm: 'Chấp nhận',
-                            cancel: 'Đóng'
+                            confirm: translate(langConfig.app.Accept),
+                            cancel: translate(langConfig.app.Close)
                         },
                     });
                     this.setState({
@@ -201,7 +203,6 @@ class Setting extends Component {
                 const { dispatch } = this.props;
                 dispatch({
                     type: types.ADMIN_GET_SETTING,
-                    payload: { lang },
                 })
             })
         }
@@ -232,31 +233,34 @@ class Setting extends Component {
                         <div className="col">
                             <div className="card">
                                 <div className="form-group row">
-                                    <label htmlFor="setting-lang" className="col-sm-3 col-form-label">Ngôn ngữ hiển thị: </label>
+                                    <label htmlFor="setting-lang" className="col-sm-3 col-form-label">{translate(langConfig.app.DisplayLanguage)}: </label>
                                     <div className="col-sm-9">
                                         <button
                                             type="button"
                                             disabled={lang === "vn"}
                                             className={"btn" + (lang !== "vn" ? "  btn-primary" : "")}
                                             onClick={() => this.handleSelectLang('vn')}
-                                        >{lang === "vn" ? "Tiếng Việt (Đang chọn)" : "Đổi sang Tiếng Việt"}</button>
+                                        >{lang === "vn" ?
+                                            "Tiếng Việt (Đang chọn)"
+                                            :
+                                            "Đổi sang Tiếng Việt"}</button>
                                         <button
                                             type="button"
                                             disabled={lang === "en"}
                                             style={{ marginLeft: 10 }}
                                             className={"btn" + (lang !== "en" ? "  btn-primary" : "")}
                                             onClick={() => this.handleSelectLang('en')}
-                                        >{lang === "en" ? "Tiếng Anh (Đang chọn)" : "Đổi sang Tiếng Anh"}</button>
+                                        >{lang === "en" ? "English (Selected)" : "Switch to English"}</button>
                                     </div>
                                 </div>
                                 <div className="form-group row">
-                                    <label htmlFor="setting-title" className="col-sm-3 col-form-label">Tiêu đề trang web: </label>
+                                    <label htmlFor="setting-title" className="col-sm-3 col-form-label">{translate(langConfig.app.SiteTitle)}: </label>
                                     <div className="col-sm-9">
                                         <input
                                             type="text"
                                             className="form-control"
                                             id="setting-title"
-                                            placeholder="Nhập tiêu đề trang web"
+                                            placeholder={translate(langConfig.app.EnterSiteTitle)}
                                             value={title}
                                             onChange={this.handleChange}
                                             name="title"
@@ -270,10 +274,10 @@ class Setting extends Component {
                                             <div className="col-md-12">
                                                 <div className="row">
                                                     {onEdit ? <input id="favicon-upload" type="file" className="hide" onChange={this.handleChooseFilesFavicon} /> : ""}
-                                                    <label htmlFor="favicon-upload" className="col-sm-6 col-form-label">Favicon: </label>
+                                                    <label htmlFor="favicon-upload" className="col-sm-6 col-form-label">{translate(langConfig.app.Favicon)}: </label>
                                                     {onEdit ?
-                                                        <label htmlFor="favicon-upload" className="col-sm-6" title="Thay đổi Favicon">
-                                                            <div className="upload-button">Thay đổi</div>
+                                                        <label htmlFor="favicon-upload" className="col-sm-6" title={translate(langConfig.app.ChangeFavicon)}>
+                                                            <div className="upload-button">{translate(langConfig.app.Change)}</div>
                                                         </label>
                                                         : ""}
                                                 </div>
@@ -292,10 +296,10 @@ class Setting extends Component {
                                             <div className="col-md-12">
                                                 <div className="row">
                                                     {onEdit ? <input id="logo-upload" type="file" className="hide" onChange={this.handleChooseFilesLogo} /> : ""}
-                                                    <label htmlFor="logo-upload" className="col-sm-4 col-form-label">Logo: </label>
+                                                    <label htmlFor="logo-upload" className="col-sm-4 col-form-label">{translate(langConfig.app.Logo)}: </label>
                                                     <label htmlFor="logo-upload" className="col-sm-4">
                                                         {onEdit ?
-                                                            <div className="upload-button" title="Thay đổi Favicon">Thay đổi</div>
+                                                            <div className="upload-button" title={translate(langConfig.app.ChangeLogo)}>{translate(langConfig.app.Change)}</div>
                                                             : ""}
                                                     </label>
                                                     <div className="col-sm-4">
@@ -305,7 +309,9 @@ class Setting extends Component {
                                                                     <span
                                                                         className="select2-selection__rendered"
                                                                         id="ex-edit-select2-active-container"
-                                                                        title={logoStatus ? 'Hiển thị' : 'Ẩn Logo'}>{logoStatus ? 'Hiển thị' : 'Ẩn Logo'}</span>
+                                                                        title={translate(logoStatus ? langConfig.app.DisplayLogo : langConfig.app.HideLogo)}>
+                                                                        {translate(logoStatus ? langConfig.app.DisplayLogo : langConfig.app.HideLogo)}
+                                                                    </span>
                                                                     {onEdit ?
                                                                         <span className="select2-selection__arrow" role="presentation">
                                                                             <b role="presentation" />
@@ -317,11 +323,11 @@ class Setting extends Component {
                                                                 <div
                                                                     className={"select-option-active" + (logoStatus ? " active" : "")}
                                                                     onClick={() => this.setState({ logoStatus: true, dropLogo: false })}
-                                                                >Hiển thị</div>
+                                                                >{translate(langConfig.app.Display)}</div>
                                                                 <div
                                                                     className={"select-option-active" + (!logoStatus ? " active" : "")}
                                                                     onClick={() => this.setState({ logoStatus: false, dropLogo: false })}
-                                                                >Ẩn Logo</div>
+                                                                >{translate(langConfig.app.HideLogo)}</div>
                                                             </div>
                                                         </span>
                                                     </div>
@@ -348,7 +354,7 @@ class Setting extends Component {
                                                             <span
                                                                 className="select2-selection__rendered"
                                                                 id="ex-edit-select2-active-container"
-                                                                title={bannerStatus ? 'Hiển thị' : 'Ẩn Banner'}>{bannerStatus ? 'Hiển thị' : 'Ẩn Banner'}</span>
+                                                                title={translate(bannerStatus ? langConfig.app.DisplayBanner : langConfig.app.HideBanner)}>{translate(bannerStatus ? langConfig.app.DisplayBanner : langConfig.app.HideBanner)}</span>
                                                             {onEdit ?
                                                                 <span className="select2-selection__arrow" role="presentation">
                                                                     <b role="presentation" />
@@ -360,11 +366,11 @@ class Setting extends Component {
                                                         <div
                                                             className={"select-option-active" + (bannerStatus ? " active" : "")}
                                                             onClick={() => this.setState({ bannerStatus: true, dropBanner: false })}
-                                                        >Hiển thị</div>
+                                                        >{translate(langConfig.app.Display)}</div>
                                                         <div
                                                             className={"select-option-active" + (!bannerStatus ? " active" : "")}
                                                             onClick={() => this.setState({ bannerStatus: false, dropBanner: false })}
-                                                        >Ẩn Banner</div>
+                                                        >{translate(langConfig.app.HideBanner)}</div>
                                                     </div>
                                                 </span>
                                             </div>
@@ -373,10 +379,10 @@ class Setting extends Component {
                                                     <div className="col-sm-12">
                                                         <div className="row">
                                                             {onEdit ? <input id="banner-upload" type="file" className="hide" onChange={this.handleChooseFilesBanner} /> : ""}
-                                                            <label htmlFor="banner-upload" className="col-sm-6 col-form-label">Hình ảnh: </label>
+                                                            <label htmlFor="banner-upload" className="col-sm-6 col-form-label">{translate(langConfig.app.Image)}: </label>
                                                             {onEdit ?
-                                                                <label htmlFor="banner-upload" className="col-sm-6" title="Thay đổi Banner">
-                                                                    <div className="upload-button">Thay đổi</div>
+                                                                <label htmlFor="banner-upload" className="col-sm-6" title={translate(langConfig.app.ChangeBanner)}>
+                                                                    <div className="upload-button">{translate(langConfig.app.Change)}</div>
                                                                 </label>
                                                                 : ""}
                                                         </div>
@@ -396,13 +402,13 @@ class Setting extends Component {
                                         {bannerStatus ?
                                             <>
                                                 <div className="form-group row">
-                                                    <label htmlFor="setting-bannerSubTitle" className="col-sm-3 col-form-label">Sub-title Banner:</label>
+                                                    <label htmlFor="setting-bannerSubTitle" className="col-sm-3 col-form-label">{translate(langConfig.app.BannerSubTitle)}:</label>
                                                     <div className="col-sm-9">
                                                         <input
                                                             type="text"
                                                             className="form-control"
                                                             id="setting-bannerSubTitle"
-                                                            placeholder="Nhập Sub-title Banner"
+                                                            placeholder={translate(langConfig.app.EnterSubTitleBanner)}
                                                             value={bannerSubTitle}
                                                             onChange={this.handleChange}
                                                             name="bannerSubTitle"
@@ -411,13 +417,13 @@ class Setting extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="form-group row">
-                                                    <label htmlFor="setting-bannerTitle" className="col-sm-3 col-form-label">Tiêu đề Banner:</label>
+                                                    <label htmlFor="setting-bannerTitle" className="col-sm-3 col-form-label">{translate(langConfig.app.BannerTitle)}:</label>
                                                     <div className="col-sm-9">
                                                         <input
                                                             type="text"
                                                             className="form-control"
                                                             id="setting-bannerTitle"
-                                                            placeholder="Nhập tiêu đề Banner"
+                                                            placeholder={translate(langConfig.app.EnterBannerTitle)}
                                                             value={bannerTitle}
                                                             onChange={this.handleChange}
                                                             name="bannerTitle"
@@ -426,13 +432,13 @@ class Setting extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="form-group row">
-                                                    <label htmlFor="setting-bannerStartTime" className="col-sm-3 col-form-label">Thời gian bắt đầu:</label>
+                                                    <label htmlFor="setting-bannerStartTime" className="col-sm-3 col-form-label">{translate(langConfig.app.StartTime)}:</label>
                                                     <div className="col-sm-9">
                                                         <input
                                                             type="text"
                                                             className="form-control"
                                                             id="setting-bannerStartTime"
-                                                            placeholder="Nhập thời gian bắt đầu"
+                                                            placeholder={translate(langConfig.app.EnterStartTime)}
                                                             value={bannerStartTime}
                                                             onChange={this.handleChange}
                                                             name="bannerStartTime"
@@ -441,13 +447,13 @@ class Setting extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="form-group row">
-                                                    <label htmlFor="setting-bannerEndTime" className="col-sm-3 col-form-label">Thời gian kết thúc:</label>
+                                                    <label htmlFor="setting-bannerEndTime" className="col-sm-3 col-form-label">{translate(langConfig.app.EndTime)}:</label>
                                                     <div className="col-sm-9">
                                                         <input
                                                             type="text"
                                                             className="form-control"
                                                             id="setting-bannerEndTime"
-                                                            placeholder="Nhập thời gian kết thúc"
+                                                            placeholder={translate(langConfig.app.EnterEndTime)}
                                                             value={bannerEndTime}
                                                             onChange={this.handleChange}
                                                             name="bannerEndTime"
@@ -456,7 +462,7 @@ class Setting extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="form-group row">
-                                                    <label htmlFor="setting-bannerLocation" className="col-sm-3 col-form-label">Địa điểm:</label>
+                                                    <label htmlFor="setting-bannerLocation" className="col-sm-3 col-form-label">{translate(langConfig.app.Location)}:</label>
                                                     <div className="col-sm-9">
                                                         <textarea
                                                             type="text"
@@ -464,7 +470,7 @@ class Setting extends Component {
                                                             className="form-control summernote"
                                                             rows={2}
                                                             cols={50}
-                                                            placeholder="Nhập mô tả ngắn"
+                                                            placeholder={translate(langConfig.app.EnterLocation)}
                                                             value={bannerLocation}
                                                             name="bannerLocation"
                                                             onChange={this.handleChange}
@@ -473,13 +479,13 @@ class Setting extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="form-group row">
-                                                    <label htmlFor="setting-bannerSlogan" className="col-sm-3 col-form-label">Khẩu hiệu:</label>
+                                                    <label htmlFor="setting-bannerSlogan" className="col-sm-3 col-form-label">{translate(langConfig.app.Slogan)}:</label>
                                                     <div className="col-sm-9">
                                                         <input
                                                             type="text"
                                                             className="form-control"
                                                             id="setting-bannerSlogan"
-                                                            placeholder="Nhập khẩu hiệu"
+                                                            placeholder={translate(langConfig.app.EnterSlogan)}
                                                             value={bannerSlogan}
                                                             onChange={this.handleChange}
                                                             name="bannerSlogan"
@@ -488,7 +494,7 @@ class Setting extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="form-group row">
-                                                    <label htmlFor="setting-bannerDescription" className="col-sm-3 col-form-label">Mô tả ngắn:</label>
+                                                    <label htmlFor="setting-bannerDescription" className="col-sm-3 col-form-label">{translate(langConfig.app.Description)}:</label>
                                                     <div className="col-sm-9">
                                                         <textarea
                                                             type="text"
@@ -496,7 +502,7 @@ class Setting extends Component {
                                                             className="form-control summernote"
                                                             rows={3}
                                                             cols={50}
-                                                            placeholder="Nhập mô tả ngắn"
+                                                            placeholder={translate(langConfig.app.EnterDescription)}
                                                             value={bannerDescription}
                                                             name="bannerDescription"
                                                             onChange={this.handleChange}
@@ -505,13 +511,13 @@ class Setting extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="form-group row">
-                                                    <label htmlFor="setting-bannerBackground" className="col-sm-3 col-form-label">Màu nền banner:</label>
+                                                    <label htmlFor="setting-bannerBackground" className="col-sm-3 col-form-label">{translate(langConfig.app.BannerBackgroundColor)}:</label>
                                                     <div className="col-sm-9">
                                                         <input
                                                             type="text"
                                                             className="form-control"
                                                             id="setting-bannerBackground"
-                                                            placeholder="Nhập màu nền banner"
+                                                            placeholder={translate(langConfig.app.EnterBannerBackgroundColor)}
                                                             value={bannerBackground}
                                                             onChange={this.handleChange}
                                                             name="bannerBackground"
@@ -527,7 +533,7 @@ class Setting extends Component {
                                 <div className="form-group row devider">
                                     <div className="col-md-3">
                                         <div className="row">
-                                            <label htmlFor="setting-featureStatus" className="col-sm-6 col-form-label">Tính năng:</label>
+                                            <label htmlFor="setting-featureStatus" className="col-sm-6 col-form-label">{translate(langConfig.app.Feature)}:</label>
                                             <div className="col-sm-6">
                                                 <span className={"text-center select2 select2-container select2-container--default" + (dropFeature ? " select2-container--open" : "")} style={{ width: '100%' }}>
                                                     <span className="selection" onClick={onEdit ? this.handleDropdownFeature : undefined}>
@@ -535,7 +541,9 @@ class Setting extends Component {
                                                             <span
                                                                 className="select2-selection__rendered"
                                                                 id="ex-edit-select2-active-container"
-                                                                title={featureStatus ? 'Hiển thị' : 'Ẩn Feature'}>{featureStatus ? 'Hiển thị' : 'Ẩn Feature'}</span>
+                                                                title={translate(featureStatus ? langConfig.app.DisplayFeature : langConfig.app.HideFeature)}>
+                                                                {translate(featureStatus ? langConfig.app.DisplayFeature : langConfig.app.HideFeature)}
+                                                            </span>
                                                             {onEdit ?
                                                                 <span className="select2-selection__arrow" role="presentation">
                                                                     <b role="presentation" />
@@ -547,11 +555,11 @@ class Setting extends Component {
                                                         <div
                                                             className={"select-option-active" + (featureStatus ? " active" : "")}
                                                             onClick={() => this.setState({ featureStatus: true, dropFeature: false })}
-                                                        >Hiển thị</div>
+                                                        >{translate(langConfig.app.Display)}</div>
                                                         <div
                                                             className={"select-option-active" + (!featureStatus ? " active" : "")}
                                                             onClick={() => this.setState({ featureStatus: false, dropFeature: false })}
-                                                        >Ẩn Feature</div>
+                                                        >{translate(langConfig.app.HideFeature)}</div>
                                                     </div>
                                                 </span>
                                             </div>
@@ -561,13 +569,13 @@ class Setting extends Component {
                                         {featureStatus ?
                                             <>
                                                 <div className="form-group row">
-                                                    <label htmlFor="setting-featuresTitle" className="col-sm-3 col-form-label">Tiêu đề tính năng:</label>
+                                                    <label htmlFor="setting-featuresTitle" className="col-sm-3 col-form-label">{translate(langConfig.app.FeatureTitle)}:</label>
                                                     <div className="col-sm-9">
                                                         <input
                                                             type="text"
                                                             className="form-control"
                                                             id="setting-featuresTitle"
-                                                            placeholder="Nhập tiêu đề tính năng"
+                                                            placeholder={translate(langConfig.app.EnterFeatureTitle)}
                                                             value={featuresTitle}
                                                             onChange={this.handleChange}
                                                             name="featuresTitle"
@@ -576,35 +584,35 @@ class Setting extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="form-group row">
-                                                    <label className="col-md-3 col-form-label">Danh sách tính năng:</label>
-                                                    <label className="col-md-9 col-form-label">{features.length} tính năng</label>
+                                                    <label className="col-md-3 col-form-label">{translate(langConfig.app.FeatureList)}:</label>
+                                                    <label className="col-md-9 col-form-label">{features.length} {translate(langConfig.app.feature)}</label>
                                                 </div>
                                                 {features.map((feature, index) => {
                                                     return (
                                                         <div key={index} className="form-group row devider">
                                                             <div className="col-md-3">
                                                                 <div className="row">
-                                                                    <label htmlFor={"setting-feature-title-" + index} className="col-md-12 col-form-label">Tính năng {index + 1}:</label>
+                                                                    <label htmlFor={"setting-feature-title-" + index} className="col-md-12 col-form-label">{translate(langConfig.app.Feature)} {index + 1}:</label>
                                                                 </div>
                                                                 {onEdit ?
                                                                     <>
                                                                         <div className="col-md-6">
-                                                                            <div className="control-button add" onClick={() => this.handleAdd(index)}>Thêm</div>
+                                                                            <div className="control-button add" onClick={() => this.handleAdd(index)}>{translate(langConfig.app.Add)}</div>
                                                                         </div>
                                                                         <div className="col-md-6">
-                                                                            <div className="control-button del" onClick={() => this.handleDelete(index)}>Xóa</div>
+                                                                            <div className="control-button del" onClick={() => this.handleDelete(index)}>{translate(langConfig.app.Delete)}</div>
                                                                         </div>
                                                                     </>
                                                                     : ""}
                                                             </div>
                                                             <div className="col-md-9">
                                                                 <div className="form-group row">
-                                                                    <label htmlFor={"setting-feature-title-" + index} className="col-md-12 col-form-label">Tiêu đề:</label>
+                                                                    <label htmlFor={"setting-feature-title-" + index} className="col-md-12 col-form-label">{translate(langConfig.app.Title)}:</label>
                                                                     <input
                                                                         type="text"
                                                                         className="form-control"
                                                                         id={"setting-feature-title-" + index}
-                                                                        placeholder={"Nhập tiêu đề tính năng " + (index + 1)}
+                                                                        placeholder={translate(langConfig.app.EnterFeatureTitle) + " " + (index + 1)}
                                                                         value={feature.title}
                                                                         onChange={e => this.handleChangeTitle(e, index)}
                                                                         name="feature"
@@ -619,7 +627,7 @@ class Setting extends Component {
                                                                         className="form-control summernote"
                                                                         rows={2}
                                                                         cols={50}
-                                                                        placeholder={"Nhập nội dung tính năng " + (index + 1)}
+                                                                        placeholder={translate(langConfig.app.EnterFeatureContent) + " " + (index + 1)}
                                                                         value={feature.content}
                                                                         name="bannerDescription"
                                                                         onChange={e => this.handleChangeContent(e, index)}
@@ -633,7 +641,7 @@ class Setting extends Component {
                                                 {onEdit ?
                                                     <div className="form-group row">
                                                         <div className="col-md-12">
-                                                            <div className="control-button add" onClick={() => this.handleAdd(features.length)}>Thêm tính năng</div>
+                                                            <div className="control-button add" onClick={() => this.handleAdd(features.length)}>{translate(langConfig.app.AddFeature)}</div>
                                                         </div>
                                                     </div>
                                                     : ""}
@@ -644,13 +652,13 @@ class Setting extends Component {
                                 <div className="form-group row devider">
                                     <div className="col-sm-12">
                                         <div className="form-group row">
-                                            <label htmlFor="setting-countDown" className="col-sm-3 col-form-label">Thời gian countDown: </label>
+                                            <label htmlFor="setting-countDown" className="col-sm-3 col-form-label">{translate(langConfig.app.CoundownTime)}: </label>
                                             <div className="col-sm-9">
                                                 <input
                                                     type="date"
                                                     className="form-control"
                                                     id="setting-countDown"
-                                                    placeholder="Nhập thời gian countDown"
+                                                    placeholder={translate(langConfig.app.EnterCoundownTime)}
                                                     value={countDown}
                                                     onChange={this.handleChangeTime}
                                                     name="countDown"
@@ -662,13 +670,13 @@ class Setting extends Component {
                                     </div>
                                 </div>
                                 <div className="form-group row">
-                                    <label htmlFor="setting-exhibitorTitle" className="col-sm-3 col-form-label">Tiêu đề danh sách nhà trưng bày: </label>
+                                    <label htmlFor="setting-exhibitorTitle" className="col-sm-3 col-form-label">{translate(langConfig.app.ExhibitorListTitle)}: </label>
                                     <div className="col-sm-9">
                                         <input
                                             type="text"
                                             className="form-control"
                                             id="setting-exhibitorTitle"
-                                            placeholder="Nhập tiêu đề danh sách nhà trưng bày"
+                                            placeholder={translate(langConfig.app.EnterExhibitorListTitle)}
                                             value={exhibitorTitle}
                                             onChange={this.handleChange}
                                             name="exhibitorTitle"
@@ -679,7 +687,7 @@ class Setting extends Component {
                                 <div className="form-group row devider">
                                     <div className="col-sm-12">
                                         <div className="form-group row">
-                                            <label htmlFor="setting-exhibitorTitle" className="col-sm-3 col-form-label">Mô tả ngắn danh sách nhà trưng bày: </label>
+                                            <label htmlFor="setting-exhibitorTitle" className="col-sm-3 col-form-label">{translate(langConfig.app.ExhibitorListDescription)}: </label>
                                             <div className="col-sm-9">
                                                 <textarea
                                                     type="text"
@@ -687,7 +695,7 @@ class Setting extends Component {
                                                     className="form-control summernote"
                                                     rows={2}
                                                     cols={50}
-                                                    placeholder="Nhập mô tả ngắn danh sách nhà trưng bày"
+                                                    placeholder={translate(langConfig.app.EnterExhibitorListDescription)}
                                                     value={exhibitorDescription}
                                                     name="exhibitorDescription"
                                                     onChange={this.handleChange}
@@ -698,13 +706,13 @@ class Setting extends Component {
                                     </div>
                                 </div>
                                 <div className="form-group row">
-                                    <label htmlFor="setting-visitorTitle" className="col-sm-3 col-form-label">Tiêu đề danh sách người mua: </label>
+                                    <label htmlFor="setting-visitorTitle" className="col-sm-3 col-form-label">{translate(langConfig.app.VisitorListTitle)}: </label>
                                     <div className="col-sm-9">
                                         <input
                                             type="text"
                                             className="form-control"
                                             id="setting-visitorTitle"
-                                            placeholder="Nhập tiêu đề danh sách người mua"
+                                            placeholder={translate(langConfig.app.EnterVisitorListTitle)}
                                             value={visitorTitle}
                                             onChange={this.handleChange}
                                             name="visitorTitle"
@@ -715,7 +723,7 @@ class Setting extends Component {
                                 <div className="form-group row devider">
                                     <div className="col-sm-12">
                                         <div className="form-group row">
-                                            <label htmlFor="setting-visitorDescription" className="col-sm-3 col-form-label">Mô tả ngắn danh sách người mua: </label>
+                                            <label htmlFor="setting-visitorDescription" className="col-sm-3 col-form-label">{translate(langConfig.app.VisitorListDescription)}: </label>
                                             <div className="col-sm-9">
                                                 <textarea
                                                     type="text"
@@ -723,7 +731,7 @@ class Setting extends Component {
                                                     className="form-control summernote"
                                                     rows={2}
                                                     cols={50}
-                                                    placeholder="Nhập mô tả ngắn danh sách người mua"
+                                                    placeholder={translate(langConfig.app.EnterVisitorListDescription)}
                                                     value={visitorDescription}
                                                     name="visitorDescription"
                                                     onChange={this.handleChange}
@@ -734,16 +742,16 @@ class Setting extends Component {
                                     </div>
                                 </div>
                                 <div className="form-group row devider">
-                                    <label className="col-md-3 col-form-label">Liên kết MXH:</label>
+                                    <label className="col-md-3 col-form-label">{translate(langConfig.app.SocialNetwork)}:</label>
                                     <div className="col-md-9">
                                         <div className="form-group row">
-                                            <label htmlFor="setting-facebook" className="col-sm-3 col-form-label">Facebook:</label>
+                                            <label htmlFor="setting-facebook" className="col-sm-3 col-form-label">{translate(langConfig.app.Facebook)}:</label>
                                             <div className="col-sm-9">
                                                 <input
                                                     type="text"
                                                     className="form-control"
                                                     id="setting-facebook"
-                                                    placeholder="Nhập liên kết Facebook"
+                                                    placeholder={translate(langConfig.app.EnterFacebookLink)}
                                                     value={facebook}
                                                     onChange={this.handleChange}
                                                     name="facebook"
@@ -752,13 +760,13 @@ class Setting extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group row">
-                                            <label htmlFor="setting-zalo" className="col-sm-3 col-form-label">Zalo:</label>
+                                            <label htmlFor="setting-zalo" className="col-sm-3 col-form-label">{translate(langConfig.app.Zalo)}:</label>
                                             <div className="col-sm-9">
                                                 <input
                                                     type="text"
                                                     className="form-control"
                                                     id="setting-zalo"
-                                                    placeholder="Nhập liên kết Zalo"
+                                                    placeholder={translate(langConfig.app.Zalo)}
                                                     value={zalo}
                                                     onChange={this.handleChange}
                                                     name="zalo"
@@ -767,13 +775,13 @@ class Setting extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group row">
-                                            <label htmlFor="setting-spyke" className="col-sm-3 col-form-label">Spyke:</label>
+                                            <label htmlFor="setting-spyke" className="col-sm-3 col-form-label">{translate(langConfig.app.Spyke)}:</label>
                                             <div className="col-sm-9">
                                                 <input
                                                     type="text"
                                                     className="form-control"
                                                     id="setting-spyke"
-                                                    placeholder="Nhập liên kết Spyke"
+                                                    placeholder={translate(langConfig.app.EnterSpykeLink)}
                                                     value={spyke}
                                                     onChange={this.handleChange}
                                                     name="spyke"
@@ -782,13 +790,13 @@ class Setting extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group row">
-                                            <label htmlFor="setting-youtube" className="col-sm-3 col-form-label">Youtube:</label>
+                                            <label htmlFor="setting-youtube" className="col-sm-3 col-form-label">{translate(langConfig.app.Youtube)}:</label>
                                             <div className="col-sm-9">
                                                 <input
                                                     type="text"
                                                     className="form-control"
                                                     id="setting-youtube"
-                                                    placeholder="Nhập liên kết Youtube"
+                                                    placeholder={translate(langConfig.app.EnterYoutubeLink)}
                                                     value={youtube}
                                                     onChange={this.handleChange}
                                                     name="youtube"
@@ -799,7 +807,7 @@ class Setting extends Component {
                                     </div>
                                 </div>
                                 <div className="form-group row devider">
-                                    <label className="col-md-3 col-form-label" htmlFor="setting-footer">Mã nhúng:</label>
+                                    <label className="col-md-3 col-form-label" htmlFor="setting-footer">{translate(langConfig.app.EmbedCode)}:</label>
                                     <div className="col-md-9">
                                         <textarea
                                             type="text"
@@ -807,7 +815,7 @@ class Setting extends Component {
                                             className="form-control summernote"
                                             rows={3}
                                             cols={50}
-                                            placeholder="Thêm mã nhúng cho trang web"
+                                            placeholder={translate(langConfig.app.EnterEmbedCode)}
                                             value={footer}
                                             name="footer"
                                             onChange={this.handleChange}
@@ -828,10 +836,10 @@ class Setting extends Component {
                                         <div className="offset-sm-3 col-sm-9" >
                                             <div className="col d-flex">
                                                 <div className="form-group" id="btnSubmitData" style={{ marginRight: 10 }}>
-                                                    <button type="submit" className="btn btn-primary" disabled={loading}>Lưu</button>
+                                                    <button type="submit" className="btn btn-primary" disabled={loading}>{translate(langConfig.app.Save)}</button>
                                                 </div>
                                                 <div className="form-group" id="btnCancel" style={{ marginLeft: 10 }}>
-                                                    <button type="button" className="btn btn-danger" onClick={this.handleRefresh}>Hủy</button>
+                                                    <button type="button" className="btn btn-danger" onClick={this.handleRefresh}>{translate(langConfig.app.Cancel)}</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -839,7 +847,7 @@ class Setting extends Component {
                                     :
                                     <div className="form-group row" id="btnEditData">
                                         <div className="offset-sm-3 col-sm-9">
-                                            <button type="button" className="btn btn-primary" onClick={() => this.setState({ onEdit: true })}>Chỉnh sửa</button>
+                                            <button type="button" className="btn btn-primary" onClick={() => this.setState({ onEdit: true })}>{translate(langConfig.app.Edit)}</button>
                                         </div>
                                     </div>
                                 }
