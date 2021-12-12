@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import langConfig from '../../lang.config';
+import { translate } from '../../utils/language';
 
 class Pagination extends Component {
     constructor(props) {
@@ -14,7 +16,7 @@ class Pagination extends Component {
         const totalPage = Math.ceil(total / pageSize) || 1;
         return (
             <>
-                <div className="dataTables_info" id="DataTables_Table_1_info">{pageSize * currentPage + 1} to {pageSize * (currentPage + 1)} của tổng {total} mục</div>
+                <div className="dataTables_info" id="DataTables_Table_1_info">{pageSize * currentPage + 1} to {pageSize * (currentPage + 1)} {translate(langConfig.app.ofTotal)} {total} {translate(langConfig.app.item)}</div>
                 <div className="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
                     <ul className="pagination">
                         <li

@@ -7,6 +7,7 @@ import PaginationAdmin from '../pagination/PaginationAdmin';
 import { translate } from '../../utils/language';
 import AddTrade from './AddTrade';
 import UpdateTrade from './UpdateTrade';
+import CautionAdmin from '../Layout/Admin/CautionAdmin';
 
 const pageSize = 10;
 
@@ -46,9 +47,10 @@ class Trade extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa lịch giao thương`,
-                message: `Bạn có chắc chắn muốn xóa lịch giao thương này không?`,
-                confirm: `Xóa`,
+                title: translate(langConfig.app.ConfirmDeleteTrade),
+                message: translate(langConfig.app.AreYouSureDeleteTrade),
+                confirm: translate(langConfig.app.DeleteTrade),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => {
                     dispatch({
                         type: types.ADMIN_DELETE_TRADE,
@@ -61,7 +63,6 @@ class Trade extends Component {
                         }
                     });
                 },
-                cancel: 'Hủy',
             }
         })
     }
@@ -72,9 +73,10 @@ class Trade extends Component {
         dispatch({
             type: types.SET_TOOLTIP,
             payload: {
-                title: `Xác nhận xóa nhiều lịch giao thương`,
-                message: `Bạn có chắc chắn muốn xóa ${selecteds.length} lịch giao thương không?`,
-                confirm: `Xóa lịch giao thương này`,
+                title: translate(langConfig.app.ConfirmDeleteMultiTrade),
+                message: `${translate(langConfig.app.AreYouSureDelete)} ${selecteds.length} ${translate(langConfig.app.Trade)}?`,
+                confirm: translate(langConfig.app.DeleteTrade),
+                cancel: translate(langConfig.app.Cancel),
                 handleConfirm: () => {
                     dispatch({
                         type: types.ADMIN_DELETE_MULTI_TRADE,
@@ -87,7 +89,6 @@ class Trade extends Component {
                         }
                     });
                 },
-                cancel: 'Hủy',
             }
         })
     }
@@ -140,6 +141,7 @@ class Trade extends Component {
         const fromUser = exUser || user;
         return (
             <section className="content">
+                <CautionAdmin />
                 <div className="box">
                     <div className="box-header with-border">
                         <h3 className="box-title">{translate(langConfig.app.TradeList)}</h3>

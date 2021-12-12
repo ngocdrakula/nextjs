@@ -7,6 +7,7 @@ import Pagination from '../../pagination/PaginationAdmin';
 import { translate } from '../../../utils/language';
 import AddProduct from './AddProduct';
 import UpdateProduct from './UpdateProduct';
+import CautionAdmin from '../../Layout/Admin/CautionAdmin';
 
 const pageSize = 10;
 
@@ -142,6 +143,7 @@ class Product extends Component {
         if (!active) return null;
         return (
             <section className="content">
+                <CautionAdmin />
                 <div className="box">
                     <div className="box-header with-border">
                         <h3 className="box-title">{translate(langConfig.app.Product)}</h3>
@@ -178,7 +180,7 @@ class Product extends Component {
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%', minWidth: 100 }}>{translate(langConfig.resources.productImage)}</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '30%' }}>{translate(langConfig.resources.productName)}</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>{translate(langConfig.resources.category)}</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Standard)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Status)}</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ textAlign: 'center !important', }}>
                                             {translate(langConfig.app.Actions)}
                                         </th>

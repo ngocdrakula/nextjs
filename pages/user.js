@@ -12,7 +12,7 @@ import langConfig from '../lang.config';
 
 const pageSize = 12;
 const sorts = [
-  { label: langConfig.app.Highlights, value: 'feature' },
+  { label: langConfig.app.Feature, value: 'feature' },
   { label: langConfig.app.NameAZ, value: 'name' },
   { label: langConfig.app.NameZA, value: 'namereverse' }
 ]

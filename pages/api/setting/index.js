@@ -96,18 +96,18 @@ const handler = async (req, res) => {
             }
             const data = lang == "en" ? dataEN : dataVN;
             if (title != undefined) data.title = title;
-            if (logoStatus) data.logoStatus = !(logoStatus = 'false');
-            if (bannerStatus) data.bannerStatus = !(bannerStatus = 'false');
+            if (logoStatus) { dataVN.logoStatus = !(logoStatus = 'false'); dataEN.logoStatus = !(logoStatus = 'false'); }
+            if (bannerStatus) { dataVN.bannerStatus = !(bannerStatus = 'false'); dataEN.bannerStatus = !(bannerStatus = 'false'); }
             if (bannerSubTitle != undefined) data.bannerSubTitle = bannerSubTitle;
             if (bannerTitle != undefined) data.bannerTitle = bannerTitle;
-            if (bannerStartTime != undefined) data.bannerStartTime = bannerStartTime;
-            if (bannerEndTime != undefined) data.bannerEndTime = bannerEndTime;
+            if (bannerStartTime != undefined) { dataVN.bannerStartTime = bannerStartTime; dataEN.bannerStartTime = bannerStartTime; }
+            if (bannerEndTime != undefined) { dataVN.bannerEndTime = bannerEndTime; dataEN.bannerEndTime = bannerEndTime; }
             if (bannerLocation != undefined) data.bannerLocation = bannerLocation;
             if (bannerSlogan != undefined) data.bannerSlogan = bannerSlogan;
             if (bannerDescription != undefined) data.bannerDescription = bannerDescription;
-            if (bannerBackground != undefined) data.bannerBackground = bannerBackground;
-            if (countDown != undefined) data.countDown = countDown;
-            if (featureStatus) data.featureStatus = !(featureStatus = 'false');
+            if (bannerBackground != undefined) { dataVN.bannerBackground = bannerBackground; dataEN.bannerBackground = bannerBackground; }
+            if (countDown != undefined) { dataVN.countDown = countDown; dataEN.countDown = countDown; }
+            if (featureStatus) { dataVN.featureStatus = !(featureStatus = 'false'); dataEN.featureStatus = !(featureStatus = 'false'); }
             if (featuresTitle != undefined) data.featuresTitle = featuresTitle;
             if (features) {
                 try {
@@ -123,11 +123,11 @@ const handler = async (req, res) => {
             if (exhibitorDescription != undefined) data.exhibitorDescription = exhibitorDescription;
             if (visitorTitle != undefined) data.visitorTitle = visitorTitle;
             if (visitorDescription != undefined) data.visitorDescription = visitorDescription;
-            if (facebook != undefined) data.facebook = facebook;
-            if (zalo != undefined) data.zalo = zalo;
-            if (spyke != undefined) data.spyke = spyke;
-            if (youtube != undefined) data.youtube = youtube;
-            if (footer != undefined) data.footer = footer;
+            if (facebook != undefined) { dataVN.facebook = facebook; dataEN.facebook = facebook; }
+            if (zalo != undefined) { dataVN.zalo = zalo; dataEN.zalo = zalo; }
+            if (spyke != undefined) { dataVN.spyke = spyke; dataEN.spyke = spyke; }
+            if (youtube != undefined) { dataVN.youtube = youtube; dataEN.youtube = youtube; }
+            if (footer != undefined) { dataVN.footer = footer; dataEN.footer = footer; }
             data.timestamp = Date.now();
             if (lang == "en") {
                 fs.writeFileSync(settingNameVN, JSON.stringify(dataVN));

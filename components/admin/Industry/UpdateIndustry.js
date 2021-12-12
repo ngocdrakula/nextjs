@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig, { langConcat } from '../../../lang.config';
 import types from '../../../redux/types';
 import { createFormData, MODE } from '../../../utils/helper';
+import { translate } from '../../../utils/language';
 
 
 class UpdateIndustry extends Component {
@@ -44,10 +46,10 @@ class UpdateIndustry extends Component {
                             type: types.SET_TOOLTIP,
                             payload: {
                                 type: 'success',
-                                title: 'Sửa ngành nghề thành công',
-                                message: 'Sửa ngành nghề thành công',
-                                confirm: 'Chấp nhận',
-                                cancel: 'Đóng',
+                                title: translate(langConfig.message.success.updated),
+                                message: translate(langConfig.app.Updated),
+                                confirm: translate(langConfig.app.Accept),
+                                cancel: translate(langConfig.app.Close),
                                 handleConfirm: handleClose,
                                 handleCancel: handleClose
                             },
@@ -68,7 +70,7 @@ class UpdateIndustry extends Component {
     handleSelectDisable = () => this.setState({ enabled: false, dropActive: false })
     render() {
         const { onEdit, handleClose } = this.props;
-        const { dropActive, name, enabled, fieldError,message } = this.state;
+        const { dropActive, name, enabled, fieldError, message } = this.state;
         return (
             <div id="vis-edit-myDynamicModal" className={"modal-create modal fade" + (onEdit ? " in" : "")} style={{ display: onEdit ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">
@@ -76,13 +78,13 @@ class UpdateIndustry extends Component {
                         <form method="POST" action="/" id="vis-edit-form" onSubmit={this.handleSubmit} >
                             <div className="modal-header">
                                 <button type="button" className="close" onClick={handleClose}>×</button>
-                                Sửa ngành nghề
+                                {translate(langConcat(langConfig.app.Edit, langConfig.app.Industry))}
                             </div>
                             <div className="modal-body">
                                 <div className="row">
                                     <div className="col-md-8 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'name' ? " has-error" : "")}>
-                                            <label htmlFor="vis-edit-name">Tên ngành nghề*</label>
+                                            <label htmlFor="vis-edit-name">{translate(langConfig.resources.industryName)}*</label>
                                             <input className="form-control" placeholder="Enter Full Name" required value={name} id="vis-edit-name" name="name" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
                                                 {fieldError === 'name' && message ?
@@ -95,11 +97,13 @@ class UpdateIndustry extends Component {
                                     </div>
                                     <div className="col-md-4 nopadding-left">
                                         <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
-                                            <label htmlFor="vis-edit-active">Trạng thái*</label>
+                                            <label htmlFor="vis-edit-active">{translate(langConfig.app.Status)}*</label>
                                             <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
                                                 <span className="selection" onClick={this.handleDropdown}>
                                                     <span className="select2-selection select2-selection--single"  >
-                                                        <span className="select2-selection__rendered" id="vis-edit-select2-active-container" title={enabled ? "Hoạt động" : "Không hoạt động"}>{enabled ? "Hoạt động" : "Không hoạt động"}</span>
+                                                        <span className="select2-selection__rendered" id="vis-edit-select2-active-container" title={translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}>
+                                                            {translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}
+                                                        </span>
                                                         <span className="select2-selection__arrow" role="presentation">
                                                             <b role="presentation" />
                                                         </span>
@@ -109,11 +113,11 @@ class UpdateIndustry extends Component {
                                                     <div
                                                         className={"select-option-active" + (enabled ? " active" : "")}
                                                         onClick={this.handleSelectEnable}
-                                                    >Hoạt động</div>
+                                                    >{translate(langConfig.app.Active)}</div>
                                                     <div
                                                         className={"select-option-active" + (!enabled ? " active" : "")}
                                                         onClick={this.handleSelectDisable}
-                                                    >Không hoạt động</div>
+                                                    >{translate(langConfig.app.Inactive)}</div>
                                                 </div>
                                             </span>
                                             <div className="help-block with-errors" >
@@ -128,7 +132,7 @@ class UpdateIndustry extends Component {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <input className="btn btn-flat btn-new" type="submit" value="Lưu" />
+                                <input className="btn btn-flat btn-new" type="submit" value={translate(langConfig.app.Save)} />
                             </div>
                         </form>
                     </div>

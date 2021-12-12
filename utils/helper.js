@@ -1,3 +1,5 @@
+import { getLocale } from "./language";
+
 export const PI = Math.PI;
 export const deg = (a) => a * PI / 180;
 export const sin = Math.sin;
@@ -6,7 +8,9 @@ export const cos = Math.cos;
 export const cosD = (a) => Math.cos(deg(a));
 export const tan = Math.tan;
 export const tanD = (a) => Math.tan(deg(a));
-export const weekday = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
+export const weekdayVN = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
+export const weekdayEN = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+export const monthEN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", " November", "December"];
 
 export const createFormData = (data) => {
     const { files = [], imageType, ...body } = data;
@@ -51,7 +55,7 @@ export const FORM = {
     exhibitor: 1,
     admin: 2
 }
-export const getTime = (timeString) => {
+export const getTimeVN = (timeString) => {
     const now = new Date();
     const nY = now.getFullYear();
     const nM = now.getMonth();
@@ -80,7 +84,7 @@ export const getTime = (timeString) => {
             }
             else {
                 if (nD > tD + 1) {
-                    At[0] = `${weekday[tDay]}`;
+                    At[0] = `${weekdayVN[tDay]}`;
                 }
                 else {
                     if (nD > tD) {
@@ -135,7 +139,7 @@ export const getTime = (timeString) => {
             }
         }
     }
-    At[2] = `${weekday[tDay]}, ${tD < 10 ? "0" + tD : tD} tháng ${(tM + 1) < 10 ? "0" + (tM + 1) : tM + 1} năm ${tY} lúc ${tH < 10 ? "0" + tH : tH}:${tP < 10 ? "0" + tP : tP}:${tS < 10 ? "0" + tS : tS}`
+    At[2] = `${weekdayVN[tDay]}, ${tD < 10 ? "0" + tD : tD} tháng ${(tM + 1) < 10 ? "0" + (tM + 1) : tM + 1} năm ${tY} lúc ${tH < 10 ? "0" + tH : tH}:${tP < 10 ? "0" + tP : tP}:${tS < 10 ? "0" + tS : tS}`
     At[3] = `${tH < 10 ? "0" + tH : tH}:${tP < 10 ? "0" + tP : tP}${((tD - nD) || (tM - nM) || (tY - nY)) ? ", " + (tD < 10 ? "0" + tD : tD) + "/" + ((tM + 1) < 10 ? "0" + (tM + 1) : (tM + 1)) : ""}${(tY - nY) ? "/" + tY : ""}`;
     At[4] = {
         Year: tY,
@@ -144,9 +148,114 @@ export const getTime = (timeString) => {
         Hour: tH < 10 ? "0" + tH : tH,
         Minute: tP < 10 ? "0" + tP : tP,
         Second: tS < 10 ? "0" + tS : tS,
-        Week: weekday[tDay]
+        Week: weekdayVN[tDay]
     }
     return (At);
+}
+export const getTimeEN = (timeString) => {
+    const now = new Date();
+    const nY = now.getFullYear();
+    const nM = now.getMonth();
+    const nD = now.getDate();
+    const nH = now.getHours();
+    const nP = now.getMinutes();
+    const time = new Date(timeString);
+    const tY = time.getFullYear();
+    const tM = time.getMonth();
+    const tD = time.getDate();
+    const tDay = time.getDay();
+    const tH = time.getHours();
+    const tP = time.getMinutes();
+    const tS = time.getSeconds();
+    const At = [];
+    if (nY > tY) {
+        At[0] = `${tD < 10 ? "0" + tD : tD} ${monthEN[tM]} ${tY}`;
+    }
+    else {
+        if (nM > tM) {
+            At[0] = `${tD < 10 ? "0" + tD : tD} ${monthEN[tM]}`;
+        }
+        else {
+            if (nD > tD + 6) {
+                At[0] = `${tD < 10 ? "0" + tD : tD}  ${monthEN[tM]}, at ${tH < 10 ? "0" + tH : tH}:${tP < 10 ? "0" + tP : tP}`;
+            }
+            else {
+                if (nD > tD + 1) {
+                    At[0] = `${weekdayEN[tDay]}`;
+                }
+                else {
+                    if (nD > tD) {
+                        At[0] = `Yesterday`;
+                    }
+                    else {
+                        if (nH > tH) {
+                            At[0] = `${nH - tH} hours`;
+                        }
+                        else {
+                            if (nP > tP) {
+                                At[0] = `${nP - tP} minutes`;
+                            }
+                            else {
+                                At[0] = `Now`;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    let thickness = (Date.parse(now) - Date.parse(time)) / 1000;
+    if (thickness < 60) {
+        At[1] = 'Now';
+    }
+    else {
+        thickness = thickness / 60;
+        if (thickness < 60) {
+            At[1] = Math.floor(thickness) + ' minutes ago';
+        }
+        else {
+            thickness = thickness / 60;
+            if (thickness < 24) {
+                At[1] = Math.floor(thickness) + ' hours ago';
+            }
+            else {
+                thickness = thickness / 24;
+                if (thickness < 30) {
+                    At[1] = Math.floor(thickness) + ' days ago';
+                }
+                else {
+                    thickness = thickness / 30;
+                    if (thickness < 12) {
+                        At[1] = Math.floor(thickness) + ' months ago';
+                    }
+                    else {
+                        thickness = thickness * 30 / 365;
+                        At[1] = Math.floor(thickness) + ' years ago';
+                    }
+                }
+            }
+        }
+    }
+    At[2] = `${weekdayEN[tDay]}, ${tD < 10 ? "0" + tD : tD} ${monthEN[tM]} ${tY}, at ${tH < 10 ? "0" + tH : tH}:${tP < 10 ? "0" + tP : tP}:${tS < 10 ? "0" + tS : tS}`
+    At[3] = `${tH < 10 ? "0" + tH : tH}:${tP < 10 ? "0" + tP : tP}${((tD - nD) || (tM - nM) || (tY - nY)) ? ", " + (tD < 10 ? "0" + tD : tD) + "/" + ((tM + 1) < 10 ? "0" + (tM + 1) : (tM + 1)) : ""}${(tY - nY) ? "/" + tY : ""}`;
+    At[4] = {
+        Year: tY,
+        Month: (tM + 1) < 10 ? "0" + (tM + 1) : tM + 1,
+        Day: tD < 10 ? "0" + tD : tD,
+        Hour: tH < 10 ? "0" + tH : tH,
+        Minute: tP < 10 ? "0" + tP : tP,
+        Second: tS < 10 ? "0" + tS : tS,
+        Week: weekdayEN[tDay]
+    }
+    return (At);
+}
+
+export const getTime = (timeString) => {
+    const lang = getLocale();
+    if (lang === "en") {
+        return getTimeEN(timeString);
+    }
+    return getTimeVN(timeString);
 }
 export const formatTime = (timeString, format) => {
     if (timeString) {

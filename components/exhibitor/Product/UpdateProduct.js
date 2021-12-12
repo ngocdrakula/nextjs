@@ -91,7 +91,6 @@ class UpdateProduct extends Component {
         const { onEdit, handleClose, categories } = this.props;
         const { dropActive, name, description, enabled, category, image, dropCategory, fieldError, message, files, _id } = this.state;
         const categorySelected = categories.find(i => i._id === category) || categories[0] || {};
-        console.log(description, _id)
         return (
             <div id="edit-pro-myDynamicModal" className={"modal-create modal fade" + (onEdit ? " in" : "")} style={{ display: onEdit ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">

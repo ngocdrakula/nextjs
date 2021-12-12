@@ -18,7 +18,6 @@ class EditorCustom extends Component {
         const { value } = this.props;
         const contentBlock = value && htmlToDraft(value);
         if (contentBlock) {
-            console.log(value)
             const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
             const editorState = EditorState.createWithContent(contentState);
             this.setState({ editorState })
@@ -33,7 +32,6 @@ class EditorCustom extends Component {
         if (prevProps.key != key) {
             const contentBlock = value && htmlToDraft(value);
             if (contentBlock) {
-                console.log(value)
                 const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
                 const editorState = EditorState.createWithContent(contentState);
                 this.setState({ editorState })

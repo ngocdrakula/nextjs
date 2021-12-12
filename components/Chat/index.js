@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import langConfig from '../../lang.config';
 import types from '../../redux/types';
 import { MODE } from '../../utils/helper';
+import { translate } from '../../utils/language';
 import SocketIO from '../../utils/SocketIO';
+import CautionAdmin from '../Layout/Admin/CautionAdmin';
 import ConversationList from './ConversationList';
 import MessageBox from './MessageBox';
 
@@ -57,27 +60,17 @@ class Chat extends Component {
         if (!active || !currentUser._id) return null;
         return (
             <section className="content">
-                {user.mode === MODE.admin && exUser ?
-                    <div className="callout callout-info">
-                        <p>
-                            <strong><i className="icon ion-md-nuclear" /> Chú ý! </strong>
-                            Bạn đang đăng nhập tài khoản của <b>{currentUser?.name}</b>. Hãy cẩn thận khi xem hoặc gửi tin nhắn từ tài khoản này.
-                            <a href="#" className="nav-link pull-right" onClick={this.handleLogout}>
-                                <i className="fa fa-sign-out" title="Log out" />
-                            </a>
-                        </p>
-                    </div>
-                    : ""}
-                <div id="chatbox" style={user.mode === MODE.admin && exUser ? { height: 'calc(100% - 115px)' } : {}}>
+                <CautionAdmin />
+                < div id="chatbox" style={user.mode === MODE.admin && exUser ? { height: 'calc(100% - 115px)' } : {}}>
                     <div className="row chatContent">
                         <ConversationList />
                         <MessageBox />
                     </div>
                 </div>
-            </section>
+            </section >
 
         )
     }
 }
 
-export default connect(({ admin: { currentUser, user, exUser } }) => ({ currentUser, user, exUser }))(Chat)
+export default connect(({ admin: { user, exUser } }) => ({ user, exUser }))(Chat)

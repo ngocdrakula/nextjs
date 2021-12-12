@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import Link from 'next/link';
 import types from '../../redux/types';
 import { getTime } from '../../utils/helper';
-import { getLocale } from '../../utils/language';
+import { getLocale, translate } from '../../utils/language';
+import langConfig from '../../lang.config';
 
 const pageSize = 10;
 
@@ -76,12 +77,12 @@ class Header extends Component {
                                     <i className="fa fa-envelope-o" />
                                 </a>
                                 <ul className="dropdown-menu">
-                                    <li className="header">Bạn có {newMessage} tin nhắn mới</li>
+                                    <li className="header">{translate(langConfig.app.YouHave)} {newMessage} {translate(langConfig.app.newMesssage)}</li>
                                     <li>
                                         <ul className="menu">
                                         </ul>
                                     </li>
-                                    <li className="footer"><a href="#" onClick={handleActiveMessage}>Xem tất cả tin nhắn</a></li>
+                                    <li className="footer"><a href="#" onClick={handleActiveMessage}>{translate(langConfig.app.ViewAllMessage)}</a></li>
                                 </ul>
                             </li>
                             <li
@@ -93,7 +94,7 @@ class Header extends Component {
                                     <i className="fa fa-bell-o" />
                                 </a>
                                 <ul className="dropdown-menu">
-                                    <li className="header">Bạn có {newNoti} thông báo mới</li>
+                                    <li className="header">{translate(langConfig.app.YouHave)} {newNoti} {translate(langConfig.app.notification)}</li>
                                     <li>
                                         <ul className="menu">
                                             {notis.map(noti => {
@@ -105,7 +106,7 @@ class Header extends Component {
                                             })}
                                         </ul>
                                     </li>
-                                    <li className="footer"><a href="#" onClick={handleActiveVisitor}>Xem tất cả khách thăm quan mới</a></li>
+                                    <li className="footer"><a href="#" onClick={handleActiveVisitor}>{translate(langConfig.app.ViewAllVisitor)}</a></li>
                                 </ul>
                             </li>
                             <li
@@ -131,15 +132,15 @@ class Header extends Component {
                                         <h4>{user.name}</h4>
                                         <p>
                                             {user.name}
-                                            <small>Đã tạo từ {getTime(user.createdAt)[1]}</small>
+                                            <small>{translate(langConfig.app.CreateForm)} {getTime(user.createdAt)[1]}</small>
                                         </p>
                                     </li>
                                     <li className="user-footer">
                                         <div className="pull-left">
-                                            <a href="#" onClick={handleActiveUser} className="btn btn-default btn-flat"><i className="fa fa-user" /> Tài khoản</a>
+                                            <a href="#" onClick={handleActiveUser} className="btn btn-default btn-flat"><i className="fa fa-user" /> {translate(langConfig.app.Account)}</a>
                                         </div>
                                         <div className="pull-right" onClick={this.handleLogout}>
-                                            <a href="#" className="btn btn-default btn-flat"><i className="fa fa-sign-out" /> Đăng xuất</a>
+                                            <a href="#" className="btn btn-default btn-flat"><i className="fa fa-sign-out" /> {translate(langConfig.app.Logout)}</a>
                                         </div>
                                     </li>
                                 </ul>
