@@ -60,6 +60,11 @@ class SideBar extends Component {
                                 <i className="fa fa-support" /> <span>{translate(langConfig.app.PageSetting)}</span>
                             </a>
                         </li>
+                        <li className={active === 9 ? "active" : ""}>
+                            <a href="#" onClick={() => handleActive(9)}>
+                                <i className="fa fa-support" /> <span>{translate(langConfig.app.ChangePassword)}</span>
+                            </a>
+                        </li>
                     </ul>
                 </section>
             </aside>

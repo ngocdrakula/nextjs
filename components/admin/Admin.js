@@ -11,6 +11,7 @@ import Setting from './Setting';
 import Chat from '../Chat';
 import Trade from '../Trade';
 import AdminInfo from './AdminInfo';
+import ChangePassword from '../ChangePassword';
 
 
 class Admin extends Component {
@@ -44,6 +45,7 @@ class Admin extends Component {
                     <Setting active={active === 6} />
                     <Trade active={active === 7} />
                     <AdminInfo active={active === 8} />
+                    <ChangePassword active={active === 9} />
                 </div>
                 <footer className="main-footer">
                 </footer>

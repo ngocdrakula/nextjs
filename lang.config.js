@@ -497,6 +497,7 @@ const langConfig = {
         Type: { vn: 'Loại', en: 'Type' },
         Action: { vn: 'Tùy chọn', en: 'Action' },
         PasswordMustBeOnMoreThan8Character: { vn: 'Mật khẩu phải trên 8 kí tự', en: 'Password must be more than 8 characters' },
+        NewPasswordMustBeOnMoreThan8Character: { vn: 'Mật khẩu mới phải trên 8 kí tự', en: 'New password must be more than 8 characters' },
         WrongConfirmationPassword: { vn: 'Mật khẩu xác nhận sai', en: 'Wrong confirmation password' },
         TheEmailAddressHasBeenUsed: { vn: 'Địa chỉ email đã được sử dụng', en: 'The email address has been used' },
         ConfirmPassword: { vn: 'Nhập lại', en: 'Re-enter' },
@@ -718,8 +719,16 @@ const langConfig = {
         CreateForm: { vn: 'Đã tạo từ', en: 'Create from' },
         Caution: { vn: 'Chú ý', en: 'Caution' },
         YouAreLoggedInto: { vn: 'Bạn đang đăng nhập tài khoản của', en: 'You are logged into' },
-        BeCarefulƯhenTakingActionFromThisAccount: { vn: ' Hãy cẩn thận khi thực hiện hành động từ tài khoản này', en: "'s account .Be careful when taking action from this account" },
-        AAAA: { vn: 'aaaaaaa', en: 'AAAA' },
+        BeCarefulWhenTakingActionFromThisAccount: { vn: ' Hãy cẩn thận khi thực hiện hành động từ tài khoản này', en: "'s account .Be careful when taking action from this account" },
+        PleaseEnterOldPassword: { vn: 'Vui lòng nhập mật khẩu hiện tại', en: 'Please enter current password' },
+        PleaseEnterNewPassword: { vn: 'Vui lòng nhập mật khẩu mới', en: 'Please enter new password' },
+        PleaseEnterConfirmPassword: { vn: 'Vui lòng nhập mật khẩu xác nhận', en: 'Please enter confirm password' },
+        OldPassword: { vn: 'Mật khẩu cũ', en: 'Old password' },
+        EnterOldPassword: { vn: 'Nhập mật khẩu cũ', en: 'Enter old password' },
+        NewPassword: { vn: 'Mật khẩu mới', en: 'New password' },
+        EnterNewPassword: { vn: 'Nhập mật khẩu mới', en: 'Enter new password' },
+        EnterConfirmPassword: { vn: 'Nhập lại mật khẩu mới', en: 'Re-enter new password' },
+        NewPasswordMustBeDifferentFromOldPassword: { vn: 'Mật khẩu mới phải khác mật khẩu cũ', en: 'The new password must be different from the old password' },
     }
 }
 export const langConcat = (...langs) => {
