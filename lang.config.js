@@ -521,7 +521,7 @@ const langConfig = {
         ConnectExhibitors: { vn: 'Kết nối với Nhà trưng bày', en: 'Connect with the Exhibitors' },
         DirectingAgency: { vn: 'Cơ quan chỉ đạo', en: 'Directing agency' },
         MINISTRYOFINDUSTRYANDTRADE: { vn: 'BỘ CÔNG THƯƠNG', en: 'MINISTRY OF INDUSTRY AND TRADE' },
-        TheHostInstitution: { vn: 'Đơn vị trủ chì', en: 'The host institution' },
+        TheHostInstitution: { vn: 'Đơn vị trủ trì', en: 'The host institution' },
         DepartmentIndustry: { vn: 'Cục Công nghiệp (Bộ Công Thương)', en: 'Department of Industry (Ministry of Industry and Trade)' },
         IndustrialDevelopment: { vn: 'Trung tâm Hỗ trợ phát triển công nghiệp (IDC)', en: 'Industrial Development Support Center (IDC)' },
         OrganizationalUnits: { vn: 'Đơn vị tổ chức', en: 'Organizational units' },
@@ -729,6 +729,11 @@ const langConfig = {
         EnterNewPassword: { vn: 'Nhập mật khẩu mới', en: 'Enter new password' },
         EnterConfirmPassword: { vn: 'Nhập lại mật khẩu mới', en: 'Re-enter new password' },
         NewPasswordMustBeDifferentFromOldPassword: { vn: 'Mật khẩu mới phải khác mật khẩu cũ', en: 'The new password must be different from the old password' },
+        C_I_S_VIETNAM_ADVERTISING___EXHIBITION_JOINT_STOCK_COMPANY: { vn: 'CÔNG TY CỔ PHẦN QUẢNG CÁO & HỘI CHỢ TRIỂN LÃM C.I.S VIỆT NAM', en: 'C.I.S VIETNAM ADVERTISING & EXHIBITION JOINT STOCK COMPANY' },
+        Head_Office_112__A3_Dam_Trau_Bach_Dang_Ward_Hai_Ba_Trung_District_Hanoi: { vn: 'Trụ sở: Số 112 - A3 Đầm Trấu, P. Bạch Đằng, Quận Hai Bà Trưng, Hà Nội', en: 'Head Office: 112 - A3 Dam Trau, Bach Dang Ward, Hai Ba Trung District, Hanoi' },
+        Ho_Chi_Minh_Branch_10_02_Lot_A_SATRA_Building_163_Phan_Dang_Luu_Phu_Nhuan_Dist_HCMC: { vn: 'Chi nhánh Tp. Hồ Chí Minh: Số 10.02 lô A, tòa nhà SATRA, 163 Phan Đăng Lưu, Q. Phú Nhuận, TP.HCM', en: 'Ho Chi Minh Branch: 10.02 Lot A, SATRA Building, 163 Phan Dang Luu, Phu Nhuan Dist., HCMC' },
+        INDUSTRIALDEVELOPMENTSUPPORTCENTERINDUSTRYDEVELOPMENT: { vn: 'TRUNG TÂM HỖ TRỢ PHÁT TRIỂN CÔNG NGHIỆP - CỤC CÔNG NGHIỆP', en: 'INDUSTRIAL DEVELOPMENT SUPPORT CENTER - INDUSTRY DEVELOPMENT' },
+        S_655_Pham_Van_Dong_street_Co_Nhue_1_ward_Bac_Tu_Liem_district_Hanoicity: { vn: '655 Phạm Văn Đồng, Cổ Nhuế 1, Bắc Từ Liêm, Hà Nội', en: '655 Pham Van Dong, Co Nhue 1 Ward, Bac Tu Liem District, Hanoi' },
     }
 }
 export const langConcat = (...langs) => {
