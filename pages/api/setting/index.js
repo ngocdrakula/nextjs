@@ -10,7 +10,7 @@ const settingNameVN = process.env.FOLDER_UPLOAD + '/setting.json';
 const settingNameEN = process.env.FOLDER_UPLOAD + '/setting.en.json';
 
 const handler = async (req, res) => {
-    if (req.method = 'GET') {
+    if (req.method == 'GET') {
         try {
             if (!fs.existsSync(settingNameVN)) fs.writeFileSync(settingNameVN, "{}");
             const dataBufferVN = fs.readFileSync(settingNameVN);
@@ -33,7 +33,7 @@ const handler = async (req, res) => {
                 error: e,
             });
         }
-    } else if (req.method = 'POST') {
+    } else if (req.method == 'POST') {
         try {
             const contentType = req.headers['content-type'];
             const bearerToken = req.headers['authorization'];
@@ -96,8 +96,8 @@ const handler = async (req, res) => {
             }
             const data = lang == "en" ? dataEN : dataVN;
             if (title != undefined) data.title = title;
-            if (logoStatus) { dataVN.logoStatus = !(logoStatus = 'false'); dataEN.logoStatus = !(logoStatus = 'false'); }
-            if (bannerStatus) { dataVN.bannerStatus = !(bannerStatus = 'false'); dataEN.bannerStatus = !(bannerStatus = 'false'); }
+            if (logoStatus) { dataVN.logoStatus = !(logoStatus == 'false'); dataEN.logoStatus = !(logoStatus == 'false'); }
+            if (bannerStatus) { dataVN.bannerStatus = !(bannerStatus == 'false'); dataEN.bannerStatus = !(bannerStatus == 'false'); }
             if (bannerSubTitle != undefined) data.bannerSubTitle = bannerSubTitle;
             if (bannerTitle != undefined) data.bannerTitle = bannerTitle;
             if (bannerStartTime != undefined) { dataVN.bannerStartTime = bannerStartTime; dataEN.bannerStartTime = bannerStartTime; }
@@ -107,7 +107,7 @@ const handler = async (req, res) => {
             if (bannerDescription != undefined) data.bannerDescription = bannerDescription;
             if (bannerBackground != undefined) { dataVN.bannerBackground = bannerBackground; dataEN.bannerBackground = bannerBackground; }
             if (countDown != undefined) { dataVN.countDown = countDown; dataEN.countDown = countDown; }
-            if (featureStatus) { dataVN.featureStatus = !(featureStatus = 'false'); dataEN.featureStatus = !(featureStatus = 'false'); }
+            if (featureStatus) { dataVN.featureStatus = !(featureStatus == 'false'); dataEN.featureStatus = !(featureStatus == 'false'); }
             if (featuresTitle != undefined) data.featuresTitle = featuresTitle;
             if (features) {
                 try {
@@ -146,8 +146,9 @@ const handler = async (req, res) => {
             });
 
         } catch (e) {
+            console.log(e)
             if (e.files) await cleanFiles(e.files);
-            if (e.path = 'token') {
+            if (e.path == 'token') {
                 if (!e.token) {
                     return res.status(401).send({
                         success: false,
@@ -159,11 +160,11 @@ const handler = async (req, res) => {
                 return res.status(400).send({
                     success: false,
                     name: e.name,
-                    message: e.name = 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
-                    messages: e.name = 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
+                    message: e.name == 'TokenExpiredError' ? 'Token hết hạn' : 'Token sai định dạng',
+                    messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
                 });
             }
-            if (e.path = 'content-type') {
+            if (e.path == 'content-type') {
                 return res.status(400).send({
                     success: false,
                     headerContentType: false,
@@ -173,7 +174,7 @@ const handler = async (req, res) => {
                     messages: lang?.message?.error?.header_not_acepted
                 });
             }
-            if (e.path = 'files') {
+            if (e.path =='files') {
                 return res.status(400).send({
                     success: false,
                     upload: false,
@@ -182,7 +183,7 @@ const handler = async (req, res) => {
                     messages: lang?.message?.error?.upload_failed,
                 });
             }
-            if (e.path = 'features') {
+            if (e.path == 'features') {
                 return res.status(400).send({
                     success: false,
                     field: e.path,

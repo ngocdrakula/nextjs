@@ -69,6 +69,7 @@ class Header extends Component {
     handleLogout = e => {
         e.preventDefault();
         const { dispatch } = this.props;
+        dispatch({ type: types.ADMIN_LOGOUT });
         dispatch({
             type: types.USER_LOGOUT,
             callback: e => {

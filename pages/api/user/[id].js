@@ -66,9 +66,10 @@ const handler = async (req, res) => {
             currentUser.image = files[0];
           }
         }
-        if (password && newpassword && password != newpassword) {
+        if (password) {
+          if (!newpassword || password == newpassword || newpassword.length < 8) throw ({ path: 'newpassword' })
           const loged = await bcrypt.compare(password, currentUser.password);
-          if (loged || user.mode === MODE.admin) {
+          if (loged || user.mode == MODE.admin) {
             const hash = await bcrypt.create(newpassword);
             currentUser.password = hash;
           }
@@ -108,7 +109,7 @@ const handler = async (req, res) => {
         let token = null;
         if (user._id = id && (email || name)) {
           const { _id, email, name, createdAt, mode } = userUpdated;
-          token = jwt.create({ _id, email, name, createdAt, mode }); 
+          token = jwt.create({ _id, email, name, createdAt, mode });
         }
         return res.status(200).send({
           success: true,
@@ -228,6 +229,24 @@ const handler = async (req, res) => {
           field: e.path,
           message: "Email người đại diện là bắt buộc",
           messages: langConcat(lang?.resources?.re_email, lang?.message?.error?.validation?.required),
+        });
+      }
+      if (e.path == 'password') {
+        return res.status(400).send({
+          success: false,
+          require: true,
+          field: e.path,
+          message: "Mật khẩu hiện tại không chính xác",
+          messages: langConcat(lang?.resources?.password, lang?.message?.error?.validation.incorrect),
+        });
+      }
+      if (e.path == 'newpassword') {
+        return res.status(400).send({
+          success: false,
+          require: true,
+          field: e.path,
+          message: "Mật khẩu mới không đúng định dạng",
+          messages: langConcat(lang?.resources?.password, lang?.message?.error?.validation.format),
         });
       }
       return res.status(500).send({

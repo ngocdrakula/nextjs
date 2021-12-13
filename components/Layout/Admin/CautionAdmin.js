@@ -23,7 +23,7 @@ class CautionAdmin extends Component {
                 <div className="callout callout-info">
                     <p>
                         <strong><i className="icon ion-md-nuclear" /> {translate(langConfig.app.Caution)}! </strong>
-                        {translate(langConfig.app.YouAreLoggedInto)} <b>{currentUser?.name}</b>{translate(langConfig.app.BeCarefulƯhenTakingActionFromThisAccount)}.
+                        {translate(langConfig.app.YouAreLoggedInto)} <b>{currentUser?.name}</b>{translate(langConfig.app.BeCarefulWhenTakingActionFromThisAccount)}.
                         <a href="#" className="nav-link pull-right logout-link" onClick={this.handleLogout}>
                             <i className="fa fa-sign-out" title={translate(langConfig.app.Logout)} />
                         </a>

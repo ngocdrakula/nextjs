@@ -8,6 +8,7 @@ import Category from './Category';
 import Chat from '../Chat';
 import Trade from '../Trade';
 import Livestream from './Livestream';
+import ChangePassword from '../ChangePassword';
 
 
 class Exhibitor extends Component {
@@ -39,6 +40,7 @@ class Exhibitor extends Component {
                     <Chat active={active === 3} />
                     <Trade active={active === 4} />
                     <Livestream active={active === 5} />
+                    <ChangePassword active={active === 6} />
                 </div>
             </div >
         )

@@ -9,6 +9,7 @@ import ProfileInfo from '../components/profile/ProfileInfo';
 import ProfileTrade from '../components/profile/ProfileTrade';
 import { translate } from '../utils/language';
 import langConfig from '../lang.config';
+import ChangePassword from '../components/profile/ChangePassword';
 
 class Profile extends Component {
   constructor(props) {
@@ -67,11 +68,15 @@ class Profile extends Component {
                   <div className={"profile-select-item" + (active === 1 ? " active" : "")} onClick={e => this.setState({ active: 1 })}>
                     <span>{translate(langConfig.app.TradeCalendar)}</span>
                   </div>
+                  <div className={"profile-select-item" + (active === 2 ? " active" : "")} onClick={e => this.setState({ active: 2 })}>
+                    <span>{translate(langConfig.app.ChangePassword)}</span>
+                  </div>
                 </div>
               </div>
               <div className="col-sm-9">
                 <ProfileInfo active={active === 0} />
                 <ProfileTrade active={active === 1} />
+                <ChangePassword active={active === 2} />
               </div>
             </div>
           }

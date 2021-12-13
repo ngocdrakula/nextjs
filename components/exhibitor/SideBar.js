@@ -46,6 +46,11 @@ class SideBar extends Component {
                                 <i className="fa fa-wechat" /> <span>{translate(langConfig.app.Chat)}{newMessage ? ` (${newMessage})` : ""}</span>
                             </a>
                         </li>
+                        <li className={active === 6 ? "active" : ""}>
+                            <a href="#" onClick={() => handleActive(6)}>
+                                <i className="fa fa-support" /> <span>{translate(langConfig.app.ChangePassword)}</span>
+                            </a>
+                        </li>
                     </ul>
                 </section>
             </aside>

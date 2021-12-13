@@ -43,6 +43,7 @@ class Header extends Component {
         e.preventDefault();
         const { dispatch, mode } = this.props;
         dispatch({ type: mode === MODE.admin ? types.ADMIN_EXHIBITOR_LOGOUT : types.ADMIN_LOGOUT });
+        if (mode !== MODE.admin) dispatch({ type: types.USER_LOGOUT });
     }
 
     handleToggle = (active) => this.setState({ active: active !== this.state.active ? active : null })
