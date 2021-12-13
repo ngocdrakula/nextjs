@@ -8,8 +8,6 @@ import types from '../redux/types'
 import { getQuery } from '../utils/helper';
 import { translate } from '../utils/language';
 import langConfig from '../lang.config';
-const Header = dynamic(() => import('../components/Header'));
-const Footer = dynamic(() => import('../components/Footer'));
 
 class Verify extends Component {
   constructor(props) {
