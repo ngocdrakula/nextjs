@@ -16,16 +16,22 @@ const user = new Schema({
         required: true
     },
     names: {
-        vn: String,
-        en: String
+        type: Schema.Types.Mixed,
+        default: {
+            vn: "",
+            en: ""
+        }
     },
     search: {
         type: String,
         required: true
     },
     searchs: {
-        vn: String,
-        en: String
+        type: Schema.Types.Mixed,
+        default: {
+            vn: "",
+            en: ""
+        }
     },
     avatar: {
         type: String,
@@ -40,8 +46,11 @@ const user = new Schema({
         required: false,
     },
     addresss: {
-        vn: String,
-        en: String
+        type: Schema.Types.Mixed,
+        default: {
+            vn: "",
+            en: ""
+        }
     },
     phone: {
         type: String,
@@ -60,16 +69,22 @@ const user = new Schema({
         required: false,
     },
     representatives: {
-        vn: String,
-        en: String
+        type: Schema.Types.Mixed,
+        default: {
+            vn: "",
+            en: ""
+        }
     },
     position: {
         type: String,
         required: false,
     },
     positions: {
-        vn: String,
-        en: String
+        type: Schema.Types.Mixed,
+        default: {
+            vn: "",
+            en: ""
+        }
     },
     mobile: {
         type: String,
@@ -88,24 +103,33 @@ const user = new Schema({
         required: false,
     },
     introduces: {
-        vn: String,
-        en: String
+        type: Schema.Types.Mixed,
+        default: {
+            vn: "",
+            en: ""
+        }
     },
     product: {
         type: String,
         required: false,
     },
     products: {
-        vn: String,
-        en: String
+        type: Schema.Types.Mixed,
+        default: {
+            vn: "",
+            en: ""
+        }
     },
     contact: {
         type: String,
         required: false,
     },
     contacts: {
-        vn: String,
-        en: String
+        type: Schema.Types.Mixed,
+        default: {
+            vn: "",
+            en: ""
+        }
     },
     mode: {
         type: Number,

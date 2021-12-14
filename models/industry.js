@@ -11,8 +11,11 @@ const design = new Schema({
         default: true
     },
     names: {
-        vn: String,
-        en: String
+        type: Schema.Types.Mixed,
+        default: {
+            vn: "",
+            en: ""
+        }
     }
 }, {
     timestamps: { createdAt: 'createdAt' }
