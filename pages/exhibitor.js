@@ -185,7 +185,7 @@ class Exhibitor extends Component {
                       </li>
                     </ul>
                     <Link href={"/user?filter=" + MODE.exhibitor}>
-                      <a className="right"><img src="/images/icon-list.png" alt="" />{translate(langConfig.app.List)}</a>
+                      <a className="right"><img src="/images/icon-list.png" alt="" />{translate(langConfig.app.Exhibitors)}</a>
                     </Link>
                   </div>
                 </div>

@@ -163,11 +163,11 @@ class User extends Component {
       <div id="content" className="site-content">
         <div id="list">
           <div className="main-title hd-bg-orange">
-            <h2 className="heading">{translate(langConfig.app.List)}</h2>
+            <h2 className="heading">{translate(filter === MODE.visitor ? langConfig.app.VisitorList : langConfig.app.ExhibitorList)}</h2>
             <ul className="breadcrumb">
               <li><a href="/">{translate(langConfig.app.Home)} »</a></li>
               <li><a href="#">{translate(langConfig.app.OnlineExhibition)} »</a></li>
-              <li><a href="#">{translate(langConfig.app.List)}</a></li>
+              <li><a href="#">{translate(filter === MODE.visitor ? langConfig.app.VisitorList : langConfig.app.ExhibitorList)}</a></li>
             </ul>
           </div>
           <div className="list-menu" id="menu-list" name="menu-list">

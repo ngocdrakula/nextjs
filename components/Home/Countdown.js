@@ -56,7 +56,7 @@ class Countdown extends Component {
                     </div>
                     <div className="register-guest">
                         <a href="https://vimexpo.com.vn/khach-tham-quan/dang-ky-tham-quan/" target="_blank">
-                            <img src="/images/icon-register-guest.png" alt="" />{translate(langConfig.app.Register)} <span>{translate(langConfig.app.Visitor)}</span>
+                            <img src="/images/icon-register-guest.png" alt="" />{translate(langConfig.app.RegisterGuest1)} <span>{translate(langConfig.app.RegisterGuest2)}</span>
                         </a>
                     </div>
                 </div>

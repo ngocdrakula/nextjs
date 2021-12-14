@@ -64,7 +64,7 @@ class Footer extends Component {
                     </div>
                 </footer>
                 <div className="copyright">
-                    Copyright 2020. CISDESIGN. All rights reserved
+                    Copyright 2021. CISDESIGN. All rights reserved
                     <div className="scroll-top" onClick={this.scrollTop}>
                         <img src="images/icon-top.png" alt="" />
                     </div>

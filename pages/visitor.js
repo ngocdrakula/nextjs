@@ -129,7 +129,7 @@ class Visitor extends Component {
                       <li className={active === 1 ? "active" : ""}><a href="#" onClick={e => { e.preventDefault(); this.setState({ active: 1, toggle: !toggle }) }}>{translate(langConfig.app.Contact)}</a></li>
                     </ul>
                     <Link href={"/user?filter=" + MODE.visitor}>
-                      <a className="right"><img src="/images/icon-list.png" alt="" />{translate(langConfig.app.List)}</a>
+                      <a className="right"><img src="/images/icon-list.png" alt="" />{translate(langConfig.app.Visitors)}</a>
                     </Link>
                   </div>
                 </div>

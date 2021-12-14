@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
     env: {
         HOST_NAME: 'production',
-        HOST_NAME: 'localhost',
+        // HOST_NAME: 'localhost',
 
         MONGODB_URL_LOCAL: 'mongodb://localhost:27017/vimexpo',
         MONGODB_URL: 'mongodb://localhost:27017/vimexpo',
