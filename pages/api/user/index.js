@@ -128,7 +128,6 @@ const handler = async (req, res) => {
                 messages: lang?.message?.success?.created
             });
         } catch (e) {
-            console.log(e)
             if (e.path == 'token') {
                 if (!e.token) {
                     return res.status(401).send({

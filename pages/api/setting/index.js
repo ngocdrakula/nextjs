@@ -146,7 +146,6 @@ const handler = async (req, res) => {
             });
 
         } catch (e) {
-            console.log(e)
             if (e.files) await cleanFiles(e.files);
             if (e.path == 'token') {
                 if (!e.token) {

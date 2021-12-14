@@ -106,7 +106,7 @@ class Exhibitor extends Component {
                                                     </div>
                                                     <div className="col-lg-8">
                                                         <div className="entry-title">
-                                                            <h3>{console.log(exhibitor, exhibitor.introduces, translate(exhibitor.introduces))}
+                                                            <h3>
                                                                 <Link href={"/exhibitor?id=" + exhibitor._id}>
                                                                     <a >{translate(exhibitor.names) || exhibitor.name}</a>
                                                                 </Link>
