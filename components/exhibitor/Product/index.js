@@ -125,8 +125,8 @@ class Product extends Component {
     handleSelectAll = () => {
         const { selecteds } = this.state;
         const { products } = this.props;
-        if (selecteds.length < products.length) {
-            this.setState({ selecteds: products.map(e => e._id) });
+        if (selecteds.length < products?.length) {
+            this.setState({ selecteds: products?.map(e => e._id) });
         }
         else {
             this.setState({ selecteds: [] })
@@ -187,7 +187,7 @@ class Product extends Component {
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
-                                    {products.map((product, index) => {
+                                    {products?.map((product, index) => {
                                         const checked = (selecteds.indexOf(product._id) + 1) ? "checked" : "";
                                         const category = categories.find(c => c._id === product.category) || {};
                                         return (
