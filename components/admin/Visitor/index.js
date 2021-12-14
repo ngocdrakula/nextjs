@@ -172,16 +172,17 @@ class Visitor extends Component {
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1" >
                                 <thead>
                                     <tr role="row">
-                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>
+                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '5%' }}>
                                             <div className="btn-group ">
                                                 <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
                                                     <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
                                                 </button>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Avatar)}</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>{translate(langConfig.app.Name)}</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>{translate(langConfig.app.Email)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.app.Avatar)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.app.Name)} (VN)</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.app.Name)} (EN)</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.app.Email)}</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.resources.industry)}</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Status)}</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%', textAlign: 'center!important' }} >
@@ -212,12 +213,15 @@ class Visitor extends Component {
                                                 </td>
                                                 <td title={visitor.name}>
                                                     {visitor.name?.split(0, 15)}
+                                                </td>
+                                                <td title={visitor.name}>
+                                                    {visitor.names.en?.split(0, 15)}
                                                     <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={() => { this.handleDisable(visitor) }}>
                                                         <i className={"fa fa-heart" + (visitor.enabled ? "-o" : "")} title={translate(visitor.enabled ? langConfig.app.EnableUser : langConfig.app.DisableUser)} />
                                                     </a>
                                                 </td>
                                                 <td>{visitor.email}</td>
-                                                <td>{visitor.industry?.map(i => i.name).join(',') || translate(langConfig.app.NotUpdate)}</td>
+                                                <td>{visitor.industry?.map(i => translate(i.names) || i.name).join(',') || translate(langConfig.app.NotUpdate)}</td>
                                                 <td>{translate(visitor.enabled ? langConfig.app.Active : langConfig.app.Inactive)}</td>
                                                 <td className="row-options">
                                                     <a onClick={() => this.setState({ onEdit: visitor })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>

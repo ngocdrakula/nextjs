@@ -11,6 +11,7 @@ class AdminInfo extends Component {
         this.state = {
             email: '',
             name: '',
+            nameEN: '',
             fieldError: null,
             message: '',
         }
@@ -22,8 +23,8 @@ class AdminInfo extends Component {
             payload: user._id,
             callback: res => {
                 if (res?.success) {
-                    const { name, email } = res.data;
-                    this.setState({ name, email })
+                    const { name, email, names } = res.data;
+                    this.setState({ name, email, nameEN: names.en })
                 }
             }
         });
@@ -33,15 +34,15 @@ class AdminInfo extends Component {
     handleSubmit = e => {
         e.preventDefault();
         const { dispatch, user } = this.props;
-        const { email, name, filesAvatar } = this.state;
-        const dataRequied = { email, name }
+        const { email, name, nameEN, filesAvatar } = this.state;
+        const dataRequied = { email, name, nameEN }
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
         if (fieldError) {
             this.setState({ fieldError, message: translate(langConfig.message.error.infomation) })
         }
         else {
-            const data = { email, name }
+            const data = { email, name, nameEN }
             const filesTotal = [];
             if (filesAvatar?.length) {
                 data.avatar = true;
@@ -81,6 +82,7 @@ class AdminInfo extends Component {
     handleCancel = () => this.setState({
         email: this.props.user.email,
         name: this.props.user.name,
+        nameEN: this.props.user.names.en,
         files: null,
         filesAvatar: null,
         fieldError: null,
@@ -93,7 +95,7 @@ class AdminInfo extends Component {
     }
     render() {
         const { active, user } = this.props;
-        const { email, name, fieldError, message, onEdit, filesAvatar } = this.state;
+        const { email, name, nameEN, fieldError, message, onEdit, filesAvatar } = this.state;
         if (!active) return null;
         return (
             <section className="content">
@@ -127,12 +129,12 @@ class AdminInfo extends Component {
                                     <div className="active tab-pane" id="InfoCompany">
                                         <form className="form-horizontal" method="post" action="/" onSubmit={this.handleSubmit}>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-name" className="col-sm-3 col-form-label">{translate(langConfig.app.Name)}:</label>
+                                                <label htmlFor="admin-name" className="col-sm-3 col-form-label">{translate(langConfig.app.Name)} (VN):</label>
                                                 <div className="col-sm-9">
                                                     <input
                                                         type="text"
                                                         className="form-control"
-                                                        id="ex-up-name"
+                                                        id="admin-name"
                                                         placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Name))}
                                                         value={name}
                                                         onChange={this.handleChange}
@@ -142,12 +144,27 @@ class AdminInfo extends Component {
                                                 </div>
                                             </div>
                                             <div className="form-group row">
-                                                <label htmlFor="ex-up-email" className="col-sm-3 col-form-label">{translate(langConfig.app.Email)}:</label>
+                                                <label htmlFor="admin-nameEN" className="col-sm-3 col-form-label">{translate(langConfig.app.Name)} (EN):</label>
                                                 <div className="col-sm-9">
                                                     <input
                                                         type="text"
                                                         className="form-control"
-                                                        id="ex-up-email"
+                                                        id="admin-nameEN"
+                                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Name))}
+                                                        value={nameEN}
+                                                        onChange={this.handleChange}
+                                                        name="nameEN"
+                                                        readOnly={!onEdit}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="form-group row">
+                                                <label htmlFor="admin-email" className="col-sm-3 col-form-label">{translate(langConfig.app.Email)}:</label>
+                                                <div className="col-sm-9">
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        id="admin-email"
                                                         placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Email))}
                                                         value={email}
                                                         onChange={this.handleChange}

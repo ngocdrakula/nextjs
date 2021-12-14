@@ -10,7 +10,8 @@ class AddIndustry extends Component {
     constructor(props) {
         super(props);
         this.defaultState = {
-            name: '',
+            nameVN: '',
+            nameEN: '',
             enabled: true,
             fieldError: null,
             message: ''
@@ -25,9 +26,9 @@ class AddIndustry extends Component {
     handleChange = e => this.setState({ [e.target.name]: e.target.value, fieldError: false })
     handleSubmit = e => {
         e.preventDefault();
-        const { name, enabled } = this.state;
-        const data = { name, enabled }
-        const dataRequied = { name }
+        const { nameVN, nameEN, enabled } = this.state;
+        const data = { nameVN, nameEN, enabled }
+        const dataRequied = { nameVN, nameEN, name: nameVN }
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
         if (fieldError) {
@@ -70,7 +71,7 @@ class AddIndustry extends Component {
 
     render() {
         const { onAdd, handleClose } = this.props;
-        const { dropActive, name, enabled, fieldError, message } = this.state;
+        const { dropActive, nameVN, nameEN, enabled, fieldError, message } = this.state;
         return (
             <div id="add-vis-myDynamicModal" className={"modal-create modal fade" + (onAdd ? " in" : "")} style={{ display: onAdd ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">
@@ -82,12 +83,12 @@ class AddIndustry extends Component {
                             </div>
                             <div className="modal-body">
                                 <div className="row">
-                                    <div className="col-md-8 nopadding-right">
-                                        <div className={"form-group" + (fieldError === 'name' ? " has-error" : "")}>
-                                            <label htmlFor="add-vis-name">{translate(langConfig.resources.industryName)}*</label>
-                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.industryName))} required value={name} id="add-vis-name" name="name" type="text" onChange={this.handleChange} />
+                                    <div className="col-md-6 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'nameVN' ? " has-error" : "")}>
+                                            <label htmlFor="add-vis-name">{translate(langConfig.resources.industryName)}(VN)*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.industryName))} required value={nameVN} id="add-vis-nameVN" name="nameVN" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
-                                                {fieldError === 'name' && message ?
+                                                {fieldError === 'nameVN' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>
@@ -95,7 +96,22 @@ class AddIndustry extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-4 nopadding-left">
+                                    <div className="col-md-6 nopadding-left">
+                                        <div className={"form-group" + (fieldError === 'nameEN' ? " has-error" : "")}>
+                                            <label htmlFor="add-vis-nameEN">{translate(langConfig.resources.industryName)}(EN)*</label>
+                                            <input className="form-control" placeholder={translate(nameVN || langConcat(langConfig.app.Enter, langConfig.resources.industryName))} required value={nameEN} id="add-vis-nameEN" name="nameEN" type="text" onChange={this.handleChange} />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'nameEN' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
                                             <label htmlFor="add-vis-active">{translate(langConfig.app.Status)}*</label>
                                             <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
@@ -113,11 +129,11 @@ class AddIndustry extends Component {
                                                     <div
                                                         className={"select-option-active" + (enabled ? " active" : "")}
                                                         onClick={this.handleSelectEnable}
-                                                        >{translate(langConfig.app.Active)}</div>
+                                                    >{translate(langConfig.app.Active)}</div>
                                                     <div
                                                         className={"select-option-active" + (!enabled ? " active" : "")}
                                                         onClick={this.handleSelectDisable}
-                                                        >{translate(langConfig.app.Inactive)}</div>
+                                                    >{translate(langConfig.app.Inactive)}</div>
                                                 </div>
                                             </span>
                                             <div className="help-block with-errors" >
@@ -130,8 +146,9 @@ class AddIndustry extends Component {
                                         </div>
                                     </div>
                                 </div>
-                            </div><div className="modal-footer">
-                                <input className="btn btn-flat btn-new" type="submit" value={translate(langConfig.app.Add)}  />
+                            </div>
+                            <div className="modal-footer">
+                                <input className="btn btn-flat btn-new" type="submit" value={translate(langConfig.app.Add)} />
                             </div>
                         </form>
                     </div>

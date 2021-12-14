@@ -170,16 +170,17 @@ class Exhibitor extends Component {
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1">
                                 <thead>
                                     <tr role="row">
-                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>
+                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '5%' }}>
                                             <div className="btn-group ">
                                                 <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
                                                     <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title={translate(langConfig.app.SelectAll)} />
                                                 </button>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Logo)}</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>{translate(langConfig.app.Name)}</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>{translate(langConfig.app.Email)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '5%' }}>{translate(langConfig.app.Logo)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>{translate(langConfig.app.Name)} (VN)</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>{translate(langConfig.app.Name)} (EN)</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.app.Email)}</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.resources.industry)}</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Status)}</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%', textAlign: 'center !important', }}>
@@ -210,12 +211,15 @@ class Exhibitor extends Component {
                                                 </td>
                                                 <td title={exhibitor.name}>
                                                     {exhibitor.name?.split(0, 15)}
+                                                </td>
+                                                <td title={exhibitor.name}>
+                                                    {exhibitor.names.en?.split(0, 15)}
                                                     <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={e => { e.preventDefault(); this.handleDisable(exhibitor) }}>
                                                         <i className={"fa fa-heart" + (exhibitor.enabled ? "-o" : "")} title={translate(exhibitor.enabled ? langConfig.app.EnableUser : langConfig.app.DisableUser)} />
                                                     </a>
                                                 </td>
                                                 <td>{exhibitor.email}</td>
-                                                <td>{exhibitor.industry?.map(i => i.name).join(',') || ''}</td>
+                                                <td>{exhibitor.industry?.map(i => translate(i.names) || i.name).join(',') || ''}</td>
                                                 <td>{translate(exhibitor.enabled ? langConfig.app.Active : langConfig.app.Inactive)}</td>
                                                 <td className="row-options">
                                                     <a href="#" onClick={() => this.handleSwitch(exhibitor)}>

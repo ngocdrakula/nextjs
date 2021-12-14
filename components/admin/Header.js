@@ -121,7 +121,7 @@ class Header extends Component {
                                         :
                                         <img src="/images/no-avatar.png" className="user-image" alt="Avatar" />
                                     }
-                                    <span className="hidden-xs">{user.name}</span>
+                                    <span className="hidden-xs">{translate(user.names || user.name)}</span>
                                 </a>
                                 <ul className="dropdown-menu">
                                     <li className="user-header">
@@ -130,9 +130,9 @@ class Header extends Component {
                                             :
                                             <img src="/images/no-avatar.png" className="user-image" alt="Avatar" />
                                         }
-                                        <h4>{user.name}</h4>
+                                        <h4>{translate(user.names) || user.name}</h4>
                                         <p>
-                                            {user.name}
+                                            {translate(user.names) || user.name}
                                             <small>{translate(langConfig.app.CreateForm)} {getTime(user.createdAt)[1]}</small>
                                         </p>
                                     </li>

@@ -160,7 +160,7 @@ class Exhibitor extends Component {
                     <img src="/images/no-logo.png" alt="" />
                   }
                 </div>
-                <span>{exhibitor.name || ""}</span>
+                <span>{translate(exhibitor.names) || exhibitor.name || ""}</span>
               </h3>
             </div>
             <div className="navbar navbar-expand-lg">
@@ -217,7 +217,7 @@ class Exhibitor extends Component {
                   </div>
                   <div className="sidebar sidebar-left">
                     <h3>{translate(langConfig.app.Contact)}</h3>
-                    <p>{(exhibitor.contact || "")?.split('\n').map((d, i) => <React.Fragment key={i}>{i ? <br /> : ""}{d}</React.Fragment>)}</p>
+                    <p>{(translate(exhibitor.contacts) || exhibitor.contact || "")?.split('\n').map((d, i) => <React.Fragment key={i}>{i ? <br /> : ""}{d}</React.Fragment>)}</p>
                     <h3>{translate(langConfig.app.SendMessage)}</h3>
                     <form onSubmit={this.handleSubmit}>
                       <div className="form-group">
@@ -246,7 +246,7 @@ class Exhibitor extends Component {
                       <div className="row">
                         <div className="col-lg-5">
                           <h3>{translate(langConfig.app.AboutExhibitor)}</h3>
-                          <p>{exhibitor.introduce || ""}</p>
+                          <p>{translate(exhibitor.introduces) || exhibitor.introduce || ""}</p>
                         </div>
                         <div className="col-lg-7">
                           {livestream?.data?.[0] ?
@@ -322,7 +322,7 @@ class Exhibitor extends Component {
                 </div>
                 <div className="sidebar sidebar-left">
                   <h3>{translate(langConfig.app.Contact)}</h3>
-                  <p>{(exhibitor.contact || "")?.split('\n').map((d, i) => <React.Fragment key={i}>{i ? <br /> : ""}{d}</React.Fragment>)}</p>
+                  <p>{(translate(exhibitor.contacts) || exhibitor.contact || "")?.split('\n').map((d, i) => <React.Fragment key={i}>{i ? <br /> : ""}{d}</React.Fragment>)}</p>
                   <h3>{translate(langConfig.app.SendMessage)}</h3>
                   <form onSubmit={this.handleSubmit}>
                     <div className="form-group">
@@ -407,8 +407,8 @@ class Exhibitor extends Component {
                         <div className="col-md-6">
                           <div className="exhibitor-detail">
                             <div className="list-info">
-                              <span>{translate(langConfig.app.Representative)}: {user ? exhibitor.representative : ""}</span>
-                              <span>{translate(langConfig.app.Position)}: {user ? exhibitor.position : ""}</span>
+                              <span>{translate(langConfig.app.Representative)}: {user ? (translate(exhibitor.representatives) || exhibitor.representative) : ""}</span>
+                              <span>{translate(langConfig.app.Position)}: {user ? (translate(exhibitor.positions) || exhibitor.position) : ""}</span>
                               <span>{translate(langConfig.app.Mobile)}: {user ? exhibitor.mobile : ""}</span>
                               <span>{translate(langConfig.app.Email)}: {user ? exhibitor.re_email : ""}</span>
                             </div>

@@ -11,7 +11,7 @@ class UpdateExhibitor extends Component {
         super(props);
         this.defaultState = {
             email: '',
-            password: '',
+            newpassword: '',
             name: '',
             address: '',
             phone: '',
@@ -24,6 +24,12 @@ class UpdateExhibitor extends Component {
             website: '',
             introduce: '',
             contact: '',
+            nameEN: '',
+            positionEN: '',
+            representativeEN: '',
+            addressEN: '',
+            introduceEN: '',
+            contactEN: '',
             enabled: true,
         }
         this.state = { ...this.defaultState };
@@ -32,6 +38,12 @@ class UpdateExhibitor extends Component {
         if (!prevProps.onEdit && this.props.onEdit?._id) {
             this.setState({
                 ...this.props.onEdit,
+                nameEN: this.props.onEdit.names.en,
+                positionEN: this.props.onEdit.positions.en,
+                representativeEN: this.props.onEdit.representatives.en,
+                addressEN: this.props.onEdit.addresss.en,
+                introduceEN: this.props.onEdit.introduces.en,
+                contactEN: this.props.onEdit.contacts.en,
                 selected: this.props.onEdit.industry[0]?._id,
                 files: null,
                 filesAvatar: null,
@@ -43,11 +55,12 @@ class UpdateExhibitor extends Component {
     handleChange = e => this.setState({ [e.target.name]: e.target.value, fieldError: false })
     handleSubmit = e => {
         e.preventDefault();
-        const { _id, email, password, name, address, phone, hotline, fax, representative, position,
-            mobile, re_email, website, introduce, contact, enabled, selected, files, filesAvatar } = this.state;
+        const { _id, email, newpassword, name, address, phone, hotline, fax, representative, position,
+            mobile, re_email, website, introduce, contact, enabled, selected, files, filesAvatar,
+            nameEN, positionEN, representativeEN, addressEN, introduceEN, contactEN } = this.state;
         const { industries } = this.props;
         const industry = selected || industries[0]?._id;
-        const dataRequied = { email, password, name, address, phone, representative, position, mobile, re_email, industry }
+        const dataRequied = { email, name, address, phone, representative, position, mobile, re_email, industry }
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
         if (fieldError) {
@@ -56,8 +69,9 @@ class UpdateExhibitor extends Component {
         else {
             const { dispatch, handleClose } = this.props;
             const data = {
-                _id, email, password, name, address, phone, hotline, fax, representative,
+                _id, email, newpassword, name, address, phone, hotline, fax, representative,
                 position, mobile, re_email, website, introduce, contact, enabled, mode: MODE.exhibitor, industry,
+                nameEN, positionEN, representativeEN, addressEN, introduceEN, contactEN
             }
             const filesTotal = [];
             if (filesAvatar?.length) {
@@ -113,9 +127,11 @@ class UpdateExhibitor extends Component {
 
     render() {
         const { onEdit, handleClose, industries } = this.props;
-        const { dropActive, email, password, name, address, phone, hotline, fax, representative,
+        const { dropActive, email, newpassword, name, address, phone, hotline, fax, representative,
             position, mobile, re_email, website, introduce, contact, enabled,
-            selected, dropIndustry, fieldError, message, filesAvatar, files } = this.state;
+            selected, dropIndustry, fieldError, message, filesAvatar, files,
+            nameEN, positionEN, representativeEN, addressEN, introduceEN, contactEN
+        } = this.state;
         const industrySelected = industries.find(i => i._id === selected) || industries[0] || {};
         return (
             <div id="ex-edit-myDynamicModal" className={"modal-create modal fade" + (onEdit ? " in" : "")} style={{ display: onEdit ? 'block' : 'none' }}>
@@ -128,10 +144,10 @@ class UpdateExhibitor extends Component {
                             </div>
                             <div className="modal-body">
                                 <div className="row">
-                                    <div className="col-md-8 nopadding-right">
+                                    <div className="col-md-6 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'name' ? " has-error" : "")}>
-                                            <label htmlFor="ex-edit-name">{translate(langConfig.app.ExhibitorName)}*</label>
-                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.ExhibitorName))} required value={name} id="ex-edit-name" name="name" type="text" onChange={this.handleChange} />
+                                            <label htmlFor="ex-edit-name">{translate(langConfig.app.ExhibitorName)} (VN)*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.ExhibitorName))} required value={name} id="name" name="name" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
                                                 {fieldError === 'name' && message ?
                                                     <ul className="list-unstyled">
@@ -141,33 +157,12 @@ class UpdateExhibitor extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-4 nopadding-left">
-                                        <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
-                                            <label htmlFor="ex-edit-active">{translate(langConfig.app.Status)}*</label>
-                                            <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
-                                                <span className="selection" onClick={this.handleDropdown}>
-                                                    <span className="select2-selection select2-selection--single"  >
-                                                        <span className="select2-selection__rendered" id="ex-edit-select2-active-container" title={translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}>
-                                                            {translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}
-                                                        </span>
-                                                        <span className="select2-selection__arrow" role="presentation">
-                                                            <b role="presentation" />
-                                                        </span>
-                                                    </span>
-                                                </span>
-                                                <div className={"dropdown-select" + (dropActive ? " active" : "")}>
-                                                    <div
-                                                        className={"select-option-active" + (enabled ? " active" : "")}
-                                                        onClick={this.handleSelectEnable}
-                                                    >{translate(langConfig.app.Active)}</div>
-                                                    <div
-                                                        className={"select-option-active" + (!enabled ? " active" : "")}
-                                                        onClick={this.handleSelectDisable}
-                                                    >{translate(langConfig.app.Inactive)}</div>
-                                                </div>
-                                            </span>
-                                            <div className="help-block with-errors" >
-                                                {fieldError === 'enabled' && message ?
+                                    <div className="col-md-6 nopadding-left">
+                                        <div className={"form-group" + (fieldError === 'nameEN' ? " has-error" : "")}>
+                                            <label htmlFor="ex-edit-nameEN">{translate(langConfig.app.ExhibitorName)} (EN)*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.ExhibitorName))} required value={nameEN} id="nameEN" name="nameEN" type="text" onChange={this.handleChange} />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'nameEN' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>
@@ -191,11 +186,11 @@ class UpdateExhibitor extends Component {
                                         </div>
                                     </div>
                                     <div className="col-md-6 nopadding-left">
-                                        <div className={"form-group" + (fieldError === 'password' ? " has-error" : "")}>
-                                            <label htmlFor="ex-edit-password">{translate(langConfig.app.Password)}*</label>
-                                            <input className="form-control" id="ex-edit-password" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Password))} required value={password} name="password" type="password" onChange={this.handleChange} />
+                                        <div className={"form-group" + (fieldError === 'newpassword' ? " has-error" : "")}>
+                                            <label htmlFor="ex-edit-newpassword">{translate(langConfig.app.Password)}*</label>
+                                            <input className="form-control" autoComplete="new-password" id="ex-edit-newpassword" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Password))} value={newpassword} name="newpassword" type="newpassword" onChange={this.handleChange} />
                                             <div className="help-block with-errors" >
-                                                {fieldError === 'password' && message ?
+                                                {fieldError === 'newpassword' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>
@@ -207,7 +202,7 @@ class UpdateExhibitor extends Component {
                                 <div className="row">
                                     <div className="col-md-6 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'address' ? " has-error" : "")}>
-                                            <label htmlFor="ex-edit-address">{translate(langConfig.app.Address)}*</label>
+                                            <label htmlFor="ex-edit-address">{translate(langConfig.app.Address)} (VN)*</label>
                                             <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Address))} required id="ex-edit-address" value={address} name="address" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
                                                 {fieldError === 'address' && message ?
@@ -219,30 +214,11 @@ class UpdateExhibitor extends Component {
                                         </div>
                                     </div>
                                     <div className="col-md-6 nopadding-left">
-                                        <div className={"form-group" + (fieldError === 'industry' ? " has-error" : "")}>
-                                            <label htmlFor="ex-edit-active">{translate(langConfig.resources.industry)}*</label>
-                                            <span className={"select2 select2-container select2-container--default" + (dropIndustry ? " select2-container--open" : "")} style={{ width: '100%' }}>
-                                                <span className="selection" onClick={this.handleDropdownIndustry}>
-                                                    <span className="select2-selection select2-selection--single"  >
-                                                        <span className="select2-selection__rendered" id="ex-edit-select2-active-container" title={industrySelected.name}>{industrySelected.name}</span>
-                                                        <span className="select2-selection__arrow" role="presentation">
-                                                            <b role="presentation" />
-                                                        </span>
-                                                    </span>
-                                                </span>
-                                                <div className={"dropdown-select" + (dropIndustry ? " active" : "")}>
-                                                    {industries.map(industry => {
-                                                        return (
-                                                            <div key={industry._id}
-                                                                className={"select-option-active" + (selected === industry._id ? " active" : "")}
-                                                                onClick={() => this.setState({ selected: industry._id, dropIndustry: false })}
-                                                            >{industry.name}</div>
-                                                        )
-                                                    })}
-                                                </div>
-                                            </span>
+                                        <div className={"form-group" + (fieldError === 'addressEN' ? " has-error" : "")}>
+                                            <label htmlFor="ex-edit-addressEN">{translate(langConfig.app.Address)} (EN)*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Address))} required id="ex-edit-addressEN" value={addressEN} name="addressEN" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
-                                                {fieldError === 'industry' && message ?
+                                                {fieldError === 'addressEN' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>
@@ -310,8 +286,8 @@ class UpdateExhibitor extends Component {
                                 <div className="row">
                                     <div className="col-md-6 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'representative' ? " has-error" : "")}>
-                                            <label htmlFor="ex-edit-representative">{translate(langConfig.app.Representative)}</label>
-                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.RepresentativeName))} required id="ex-edit-representative" value={representative} name="representative" type="text" onChange={this.handleChange} />
+                                            <label htmlFor="ex-editrepresentative">{translate(langConfig.app.Representative)} (VN)</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.RepresentativeName))} required id="ex-editrepresentative" value={representative} name="representative" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
                                                 {fieldError === 'representative' && message ?
                                                     <ul className="list-unstyled">
@@ -322,11 +298,39 @@ class UpdateExhibitor extends Component {
                                         </div>
                                     </div>
                                     <div className="col-md-6 nopadding-left">
+                                        <div className={"form-group" + (fieldError === 'representativeEN' ? " has-error" : "")}>
+                                            <label htmlFor="ex-editrepresentativeEN">{translate(langConfig.app.Representative)} (EN)</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.RepresentativeName))} required id="ex-editrepresentativeEN" value={representativeEN} name="representativeEN" type="text" onChange={this.handleChange} />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'representativeEN' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'position' ? " has-error" : "")}>
-                                            <label htmlFor="ex-edit-position">{translate(langConfig.app.Position)}</label>
+                                            <label htmlFor="ex-edit-position">{translate(langConfig.app.Position)} (VN)</label>
                                             <input className="form-control" id="ex-edit-position" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Position))} required value={position} name="position" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
                                                 {fieldError === 'position' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6 nopadding-left">
+                                        <div className={"form-group" + (fieldError === 'positionEN' ? " has-error" : "")}>
+                                            <label htmlFor="ex-edit-positionEN">{translate(langConfig.app.Position)} (EN)</label>
+                                            <input className="form-control" id="ex-edit-positionEN" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Position))} required value={positionEN} name="positionEN" type="text" onChange={this.handleChange} />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'positionEN' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>
@@ -374,6 +378,17 @@ class UpdateExhibitor extends Component {
                                             : ""}
                                     </div>
                                 </div>
+                                <div className={"form-group" + (fieldError === 'introduceEN' ? " has-error" : "")}>
+                                    <label htmlFor="ex-edit-introduceEN">{translate(langConfig.app.Introduce)} (EN)</label>
+                                    <textarea className="form-control summernote" id="ex-edit-introduceEN" rows={2} placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.AboutExhibitor))} value={introduceEN} name="introduceEN" cols={50} onChange={this.handleChange} />
+                                    <div className="help-block with-errors">
+                                        {fieldError === 'introduceEN' && message ?
+                                            <ul className="list-unstyled">
+                                                <li>{message}.</li>
+                                            </ul>
+                                            : ""}
+                                    </div>
+                                </div>
                                 <div className={"form-group" + (fieldError === 'contact' ? " has-error" : "")}>
                                     <label htmlFor="ex-edit-contact">{translate(langConfig.app.Contact)}</label>
                                     <textarea className="form-control summernote" rows={2} placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Contact))} value={contact} name="contact" cols={50} maxLength={40} id="ex-edit-contact" onChange={this.handleChange} />
@@ -383,6 +398,87 @@ class UpdateExhibitor extends Component {
                                                 <li>{message}.</li>
                                             </ul>
                                             : ""}
+                                    </div>
+                                </div>
+                                <div className={"form-group" + (fieldError === 'contactEN' ? " has-error" : "")}>
+                                    <label htmlFor="ex-editcontactEN">{translate(langConfig.app.Contact)} (EN)</label>
+                                    <textarea className="form-control summernote" id="ex-editcontactEN" rows={2} placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Contact))} value={contactEN} name="contactEN" cols={50} maxLength={40} onChange={this.handleChange} />
+                                    <div className="help-block with-errors">
+                                        {fieldError === 'contactEN' && message ?
+                                            <ul className="list-unstyled">
+                                                <li>{message}.</li>
+                                            </ul>
+                                            : ""}
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-8 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'industry' ? " has-error" : "")}>
+                                            <label htmlFor="ex-edit-active">{translate(langConfig.resources.industry)}*</label>
+                                            <span className={"select2 select2-container select2-container--default" + (dropIndustry ? " select2-container--open" : "")} style={{ width: '100%' }}>
+                                                <span className="selection" onClick={this.handleDropdownIndustry}>
+                                                    <span className="select2-selection select2-selection--single"  >
+                                                        <span className="select2-selection__rendered" id="select2-active-container" title={translate(industrySelected.names) || industrySelected.name}>
+                                                            {translate(industrySelected.names) || industrySelected.name}
+                                                        </span>
+                                                        <span className="select2-selection__arrow" role="presentation">
+                                                            <b role="presentation" />
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                                <div className={"dropdown-select" + (dropIndustry ? " active" : "")}>
+                                                    {industries.map(industry => {
+                                                        return (
+                                                            <div key={industry._id}
+                                                                className={"select-option-active" + (selected === industry._id ? " active" : "")}
+                                                                onClick={() => this.setState({ selected: industry._id, dropIndustry: false })}
+                                                            >{translate(industry.names) || industry.name}</div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            </span>
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'industry' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-4 nopadding-left">
+                                        <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
+                                            <label htmlFor="ex-edit-active">{translate(langConfig.app.Status)}*</label>
+                                            <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
+                                                <span className="selection" onClick={this.handleDropdown}>
+                                                    <span className="select2-selection select2-selection--single"  >
+                                                        <span className="select2-selection__rendered" id="select2-ex-edit--container" title={translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}>
+                                                            {translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}
+                                                        </span>
+                                                        <span className="select2-selection__arrow" role="presentation">
+                                                            <b role="presentation" />
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                                <div className={"dropdown-select" + (dropActive ? " active" : "")}>
+                                                    <div
+                                                        className={"select-option-active" + (enabled ? " active" : "")}
+                                                        onClick={this.handleSelectEnable}
+                                                    >{translate(langConfig.app.Active)}</div>
+                                                    <div
+                                                        className={"select-option-active" + (!enabled ? " active" : "")}
+                                                        onClick={this.handleSelectDisable}
+                                                    >{translate(langConfig.app.Inactive)}</div>
+                                                </div>
+                                            </span>
+                                            <div className="help-block with-errors" >
+                                                {fieldError === 'enabled' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="row">
@@ -403,7 +499,7 @@ class UpdateExhibitor extends Component {
                                                 </div>
                                                 <div className="col-md-4 nopadding-left">
                                                     <div className="fileUpload btn btn-primary btn-block btn-flat">
-                                                        <span>{translate(langConfig.app.UploadAvatar)}</span>
+                                                        <span>{translate(langConfig.app.Upload)}</span>
                                                         <input type="file" name="ex-avatar" id="ex-edit-uploadBtn" className="upload" onChange={this.handleChooseFilesAvatar} />
                                                     </div>
                                                 </div>
@@ -427,7 +523,7 @@ class UpdateExhibitor extends Component {
                                                 </div>
                                                 <div className="col-md-4 nopadding-left">
                                                     <div className="fileUpload btn btn-primary btn-block btn-flat">
-                                                        <span>{translate(langConfig.app.UploadBanner)}</span>
+                                                        <span>{translate(langConfig.app.Upload)}</span>
                                                         <input type="file" name="ex-image" id="ex-edit-uploadBtn1" className="upload" onChange={this.handleChooseFiles} />
                                                     </div>
                                                 </div>

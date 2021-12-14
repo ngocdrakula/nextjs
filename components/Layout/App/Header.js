@@ -147,7 +147,7 @@ class Header extends Component {
                                             <div className="login-guest">
                                                 <Link href={`/${user.mode === MODE.visitor ? 'profile' : user.mode === MODE.exhibitor ? 'dashboard' : 'admin'}`}>
                                                     <a>
-                                                        <span style={{ textTransform: 'uppercase' }}>{user.name || user.email?.split('@')[0]?.slice(0, 10)}</span>
+                                                        <span style={{ textTransform: 'uppercase' }}>{translate(user.names) || user.name || user.email?.split('@')[0]?.slice(0, 10)}</span>
                                                     </a>
                                                 </Link>
                                             </div>

@@ -31,8 +31,8 @@ const handler = async (req, res) => {
                 user.code = 0;
                 user.password = await bcrypt.create(password);
                 await user.save();
-                const { _id, createdAt, name, mode } = user;
-                const token = jwt.create({ email, _id, createdAt, name, mode });
+                const { _id, createdAt, name, names, mode } = user;
+                const token = jwt.create({ email, _id, createdAt, name, names, mode });
                 return res.status(200).send({
                     success: true,
                     message: 'Đặt lại mật khẩu thành công',

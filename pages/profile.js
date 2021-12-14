@@ -58,7 +58,7 @@ class Profile extends Component {
                     }
                   </div>
                   <div className="profile-name">
-                    {user.name}
+                    {translate(user.names) || user.name}
                   </div>
                 </div>
                 <div className="profile-list-select">

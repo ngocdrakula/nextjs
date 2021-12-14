@@ -10,7 +10,8 @@ class UpdateIndustry extends Component {
     constructor(props) {
         super(props);
         this.defaultState = {
-            name: '',
+            nameVN: '',
+            nameEN: '',
             enabled: true,
         }
         this.state = { ...this.defaultState };
@@ -18,7 +19,10 @@ class UpdateIndustry extends Component {
     componentDidUpdate(prevProps) {
         if (!prevProps.onEdit && this.props.onEdit?._id) {
             this.setState({
-                ...this.props.onEdit,
+                _id: this.props.onEdit._id,
+                nameVN: this.props.onEdit.names.vn || this.props.onEdit.name,
+                nameEN: this.props.onEdit.names.en || this.props.onEdit.name,
+                enabled: this.props.onEdit.enabled,
                 fieldError: null,
                 message: ''
             })
@@ -27,8 +31,8 @@ class UpdateIndustry extends Component {
     handleChange = e => this.setState({ [e.target.name]: e.target.value, fieldError: false })
     handleSubmit = e => {
         e.preventDefault();
-        const { _id, name, enabled } = this.state;
-        const dataRequied = { name }
+        const { _id, nameVN, nameEN, enabled } = this.state;
+        const dataRequied = { nameVN, nameEN }
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
         if (fieldError) {
@@ -36,7 +40,7 @@ class UpdateIndustry extends Component {
         }
         else {
             const { dispatch, handleClose } = this.props;
-            const data = { _id, name, enabled }
+            const data = { _id, nameVN, nameEN, enabled }
             dispatch({
                 type: types.ADMIN_UPDATE_INDUSTRY,
                 payload: data,
@@ -70,7 +74,7 @@ class UpdateIndustry extends Component {
     handleSelectDisable = () => this.setState({ enabled: false, dropActive: false })
     render() {
         const { onEdit, handleClose } = this.props;
-        const { dropActive, name, enabled, fieldError, message } = this.state;
+        const { dropActive, nameVN, nameEN, enabled, fieldError, message } = this.state;
         return (
             <div id="vis-edit-myDynamicModal" className={"modal-create modal fade" + (onEdit ? " in" : "")} style={{ display: onEdit ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">
@@ -82,12 +86,12 @@ class UpdateIndustry extends Component {
                             </div>
                             <div className="modal-body">
                                 <div className="row">
-                                    <div className="col-md-8 nopadding-right">
-                                        <div className={"form-group" + (fieldError === 'name' ? " has-error" : "")}>
-                                            <label htmlFor="vis-edit-name">{translate(langConfig.resources.industryName)}*</label>
-                                            <input className="form-control" placeholder="Enter Full Name" required value={name} id="vis-edit-name" name="name" type="text" onChange={this.handleChange} />
+                                    <div className="col-md-6 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'nameVN' ? " has-error" : "")}>
+                                            <label htmlFor="vis-edit-nameVN">{translate(langConfig.resources.industryName)}(VN)*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.industryName))} required value={nameVN} id="vis-edit-nameVN" name="nameVN" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
-                                                {fieldError === 'name' && message ?
+                                                {fieldError === 'nameVN' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>
@@ -95,7 +99,22 @@ class UpdateIndustry extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-4 nopadding-left">
+                                    <div className="col-md-6 nopadding-left">
+                                        <div className={"form-group" + (fieldError === 'nameEN' ? " has-error" : "")}>
+                                            <label htmlFor="vis-edit-nameEN">{translate(langConfig.resources.industryName)}(EN)*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.industryName))} required value={nameEN} id="vis-edit-nameEN" name="nameEN" type="text" onChange={this.handleChange} />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'nameEN' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
                                             <label htmlFor="vis-edit-active">{translate(langConfig.app.Status)}*</label>
                                             <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>

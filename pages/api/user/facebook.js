@@ -21,8 +21,8 @@ const handler = async (req, res) => {
             const user = await userController.find({ $or: [{ email }, { id }] });
             if (user) {
                 if (!user.enabled) throw ({ path: 'enabled' })
-                const { _id, email, name, createdAt, mode } = user;
-                const token = jwt.create({ _id, email, name, createdAt, mode });
+                const { _id, email, name, names, createdAt, mode } = user;
+                const token = jwt.create({ _id, email, name, names, createdAt, mode });
                 return res.status(200).send({
                     success: true,
                     token,
@@ -33,12 +33,14 @@ const handler = async (req, res) => {
             const password = await bcrypt.create(`${Math.random() * 1000000}`);
             const avatar = picture && (await downloadImageFromUrl(picture))
             const userCreated = await userController.create({
-                name, email, avatar, password, mode: MODE.visitor, id, search: nonAccentVietnamese(name)
+                name, names: { vn: name, en: name },
+                search, searchs: { vn: nonAccentVietnamese(name), en: nonAccentVietnamese(name) },
+                email, avatar, password, mode: MODE.visitor, id,
             });
             if (email?.includes('@')) await registerSocialSuccess({ email, social: 'Facebook' });
             await registerNotification({ email, name, social: 'Facebook' });
             await notificationController.create({ title: 'register', message: `${email} vừa đăng ký thành viên` })
-            const token = jwt.create({ _id: userCreated._id, email, name, createdAt: userCreated.createdAt, mode: MODE.visitor });
+            const token = jwt.create({ _id: userCreated._id, email, name, names: userCreated.names, createdAt: userCreated.createdAt, mode: MODE.visitor });
             return res.status(200).send({
                 success: true,
                 token,

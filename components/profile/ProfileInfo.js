@@ -194,9 +194,9 @@ class ProfileInfo extends Component {
                                 <div
                                     className={"form-control industry-placeholder" + (!onEdit ? " disabled" : "")}
                                     onClick={onEdit ? this.handleDropdownIndustry : undefined}
-                                    title={industrySelected.name}
+                                    title={translate(industrySelected.names) || industrySelected.name}
                                 >
-                                    {industrySelected.name}
+                                    {translate(industrySelected.names) || industrySelected.name}
                                 </div>
                                 <div className={"dropdown-select" + (dropIndustry ? " active" : "")}>
                                     {industries.map(industry => {
@@ -204,7 +204,7 @@ class ProfileInfo extends Component {
                                             <div key={industry._id}
                                                 className={"industry-option" + (selected === industry._id ? " active" : "")}
                                                 onClick={() => this.setState({ selected: industry._id, dropIndustry: false })}
-                                            >{industry.name}</div>
+                                            >{translate(industry.names) || industry.name}</div>
                                         )
                                     })}
                                 </div>

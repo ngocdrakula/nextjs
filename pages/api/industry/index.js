@@ -7,10 +7,17 @@ import { MODE } from '../../../utils/helper';
 const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
-      const { page, pageSize = 100, enabled, name } = req.query;
+      const { page, pageSize = 100, enabled, name, lang } = req.query;
       const query = {};
       if (enabled) query.enabled = !(enabled == "false");
-      if (name) query.name = new RegExp(name, "i");
+      if (name) {
+        if (lang) {
+          query["names." + (lang == "en" ? "en" : "vn")] = new RegExp(name, "i");
+        }
+        else {
+          query.name = new RegExp(name, "i");
+        }
+      }
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
       const total = await industryController.getlist(query).countDocuments();
@@ -36,16 +43,17 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
       if (user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
-      const { name } = req.body;
-      if (!name) throw ({ path: 'name', required: true });
+      const { nameVN, nameEN } = req.body;
+      if (!nameVN) throw ({ path: 'nameVN', required: true });
+      if (!nameEN) throw ({ path: 'nameEN', required: true });
       try {
-        const matchIndustry = await industryController.find({ name });
-        if (matchIndustry) throw ({ path: 'industry', matchIndustry });
+        const matchIndustry = await industryController.find({ $or: [{ 'names.vn': nameVN }, { 'names.en': nameEN }] });
+        if (matchIndustry) throw ({ path: 'industry', matchIndustry, field: matchIndustry.names.vn == nameVN ? 'nameVN' : 'nameEN' });
       }
       catch (e) {
-        if (e.path == 'industry') throw ({})
+        if (e.path == 'industry') throw (e)
       }
-      const industryCreated = await industryController.create({ name });
+      const industryCreated = await industryController.create({ name: nameVN, names: { nameVN, nameEN } });
       return res.status(201).send({
         success: true,
         data: industryCreated,
@@ -69,12 +77,20 @@ const handler = async (req, res) => {
           messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path == 'name') {
+      if (e.path == 'nameVN') {
         return res.status(400).send({
           success: false,
-          exist: true,
-          current: e.matchIndustry,
-          field: 'name',
+          required: true,
+          field: 'nameVN',
+          message: "Tên ngành nghề không được để trống",
+          messages: langConcat(lang?.resources?.industryName, lang?.message?.error?.validation?.required),
+        });
+      }
+      if (e.path == 'nameEN') {
+        return res.status(400).send({
+          success: false,
+          required: true,
+          field: 'nameEN',
           message: "Tên ngành nghề không được để trống",
           messages: langConcat(lang?.resources?.industryName, lang?.message?.error?.validation?.required),
         });
@@ -83,7 +99,7 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: true,
-          field: 'name',
+          field: e.field,
           current: e.matchIndustry,
           message: "Ngành nghề đã tồn tại",
           messages: langConcat(lang?.resources?.industry, lang?.message?.error?.validation?.exist),

@@ -5,7 +5,7 @@ import lang, { langConcat } from '../../../lang.config';
 import uploader, { cleanFiles } from '../../../middleware/multer';
 import jwt from '../../../middleware/jwt';
 import bcrypt from '../../../middleware/bcrypt';
-import { MODE } from '../../../utils/helper';
+import { MODE, nonAccentVietnamese } from '../../../utils/helper';
 
 const handler = async (req, res) => {
   if (req.method == 'GET') {
@@ -46,7 +46,8 @@ const handler = async (req, res) => {
         body: {
           email, password, newpassword, name, phone, industry, address,
           hotline, fax, representative, position, mobile, re_email, website, introduce,
-          product, contact, enabled, avatar, image
+          product, contact, enabled, avatar, image,
+          nameEN, positionEN, representativeEN, addressEN, introduceEN, contactEN, productEN,
         },
         files, err } = await uploader(req);
       if (err) throw ({ path: 'files' });
@@ -69,7 +70,7 @@ const handler = async (req, res) => {
         if (password) {
           if (!newpassword || password == newpassword || newpassword.length < 8) throw ({ path: 'newpassword' })
           const loged = await bcrypt.compare(password, currentUser.password);
-          if (loged || user.mode == MODE.admin) {
+          if (loged || (user.mode == MODE.admin && currentUser.mode != MODE.admin)) {
             const hash = await bcrypt.create(newpassword);
             currentUser.password = hash;
           }
@@ -84,18 +85,35 @@ const handler = async (req, res) => {
           currentUser.email = email;
         }
         if (name) currentUser.name = name;
+        if (name) currentUser.names.vn = name;
+        if (name) currentUser.search = nonAccentVietnamese(name);
+        if (name) currentUser.searchs.vn = nonAccentVietnamese(name);
+        if (nameEN) currentUser.names.en = nameEN;
+        if (nameEN) currentUser.searchs.en = nonAccentVietnamese(nameEN);
         if (phone) currentUser.phone = phone;
         if (hotline) currentUser.hotline = hotline;
         if (fax) currentUser.fax = fax;
         if (representative) currentUser.representative = representative;
+        if (representative) currentUser.representatives.vn = representative;
+        if (representativeEN) currentUser.representatives.en = representativeEN;
         if (position) currentUser.position = position;
+        if (position) currentUser.positions.vn = position;
+        if (positionEN) currentUser.positions.en = positionEN;
         if (mobile) currentUser.mobile = mobile;
         if (re_email) currentUser.re_email = re_email;
         if (website) currentUser.website = website;
         if (introduce) currentUser.introduce = introduce;
+        if (introduce) currentUser.introduces.vn = introduce;
+        if (introduceEN) currentUser.introduces.en = introduceEN;
         if (product) currentUser.product = product;
+        if (product) currentUser.products.vn = product;
+        if (productEN) currentUser.products.en = productEN;
         if (address) currentUser.address = address;
+        if (address) currentUser.addresss.vn = address;
+        if (addressEN) currentUser.addresss.en = addressEN;
         if (contact) currentUser.contact = contact;
+        if (contact) currentUser.contacts.vn = contact;
+        if (contactEN) currentUser.contacts.en = contactEN;
         if (enabled) currentUser.enabled = !(enabled == 'false');
         if (industry) {
           try {
@@ -108,8 +126,8 @@ const handler = async (req, res) => {
         const userUpdated = await (await currentUser.save()).populate('industry').execPopulate();
         let token = null;
         if (user._id = id && (email || name)) {
-          const { _id, email, name, createdAt, mode } = userUpdated;
-          token = jwt.create({ _id, email, name, createdAt, mode });
+          const { _id, email, name, names, createdAt, mode } = userUpdated;
+          token = jwt.create({ _id, email, name, names, createdAt, mode });
         }
         return res.status(200).send({
           success: true,
@@ -122,7 +140,7 @@ const handler = async (req, res) => {
         if (error.path == "_id") throw ({ path: 'user', files });
         throw error
       }
-    } catch (e) {
+    } catch (e) { 
       if (e.files) await cleanFiles(e.files);
       if (e.path == 'token') {
         if (!e.token) {

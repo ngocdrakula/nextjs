@@ -149,7 +149,7 @@ class Visitor extends Component {
                 <div className="col-lg-3">
                   <div className="sidebar sidebar-left">
                     <h3>{translate(langConfig.app.Contact)}</h3>
-                    <p>{visitor.contact || ""}</p>
+                    <p>{translate(visitor.contacts) || visitor.contact || ""}</p>
                     <h3>{translate(langConfig.app.SendMessage)}</h3>
                     <form onSubmit={this.handleSubmit}>
                       <div className="form-group">
@@ -179,7 +179,7 @@ class Visitor extends Component {
                       <div className="row">
                         <div className="col-lg-5">
                           <h3>{translate(langConfig.app.AboutBuyer)}</h3>
-                          <p>{visitor.introduce || ""}</p>
+                          <p>{translate(visitor.introduces) || visitor.introduce || ""}</p>
                         </div>
                         <div className="col-lg-7">
                           <div className="video">
@@ -196,7 +196,7 @@ class Visitor extends Component {
                       <h3>{translate(langConfig.app.ProductsBuy)}</h3>
                       <p className="ft-semibold">{visitor.productBold || ""}</p>
                       <p>
-                        {visitor.product || ""}
+                        {translate(visitor.products) || visitor.product || ""}
                       </p>
                     </div>
                   </div>
@@ -213,7 +213,7 @@ class Visitor extends Component {
                       <h3>{translate(langConfig.app.ContactBuyer)}</h3>
                       <p className="address">
                         <span>{translate(langConfig.app.Address)}:</span>
-                        <span>{visitor.address}</span>
+                        <span>{translate(visitor.addresss) || visitor.address}</span>
                       </p>
                       <div className="exhibitor-info">
                         <div className="row">
@@ -234,8 +234,8 @@ class Visitor extends Component {
                           <div className="col-md-6">
                             <div className="exhibitor-detail">
                               <div className="list-info">
-                                <span>{translate(langConfig.app.Representative)}: {user ? visitor.representative : ""}</span>
-                                <span>{translate(langConfig.app.Position)}: {user ? visitor.position : ""}</span>
+                                <span>{translate(langConfig.app.Representative)}: {user ? (translate(visitor.representatives) || visitor.representative) : ""}</span>
+                                <span>{translate(langConfig.app.Position)}: {user ? (translate(visitor.positions) || visitor.position) : ""}</span>
                                 <span>{translate(langConfig.app.Mobile)}: {user ? visitor.mobile : ""}</span>
                                 <span>{translate(langConfig.app.Email)}: {user ? visitor.re_email : ""}</span>
                               </div>

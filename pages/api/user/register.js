@@ -19,8 +19,15 @@ const handler = async (req, res) => {
             if (user) throw ({ path: 'user' });
             const hash = await bcrypt.create(password);
             const userInfo = {
-                password: hash, email, name, phone, mode: MODE.visitor, address, search: nonAccentVietnamese(name),
-                representative, position, mobile, website, product, verify: false
+                password: hash, email,
+                name, names: { vn: name, en: name },
+                search, searchs: { vn: nonAccentVietnamese(name), en: nonAccentVietnamese(name) },
+                address, addresss: { vn: address, en: address },
+                representative, representatives: { vn: representative, en: representative },
+                position, positions: { vn: position, en: position },
+                product, products: { vn: product, en: product },
+                phone, mode: MODE.visitor, mobile, website, verify: false,
+
             };
             const userCreated = await userController.create(userInfo);
             const { createdAt, _id } = userCreated;
@@ -28,11 +35,11 @@ const handler = async (req, res) => {
             await registerSuccess({ email, password, token: tokenVerify });
             await registerNotification({ email, name });
             await notificationController.create({ title: 'register', message: `${email} vừa đăng ký thành viên` })
-            const token = jwt.create({ email, createdAt, _id, name, mode: MODE.visitor });
+            const token = jwt.create({ email, createdAt, _id, name, names, mode: MODE.visitor });
             return res.status(201).send({
                 success: true,
                 token,
-                data: { email, createdAt, _id, name, mode: MODE.visitor },
+                data: { email, createdAt, _id, name, names, mode: MODE.visitor },
                 message: 'Đăng ký thành công',
             });
         } catch (e) {

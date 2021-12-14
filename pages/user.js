@@ -175,7 +175,7 @@ class User extends Component {
               {industries.map((industry, index) => {
                 const active = ((industry._id === industrySelected)) ? " active" : "";
                 return (
-                  <li key={industry._id} className={"menu-item" + active}><a href="#" id={industry._id} onClick={this.handleSelect}>{industry.name}</a></li>
+                  <li key={industry._id} className={"menu-item" + active}><a href="#" id={industry._id} onClick={this.handleSelect}>{translate(industry.names) || industry.name}</a></li>
                 )
               })}
             </ul>
@@ -243,10 +243,10 @@ class User extends Component {
                               <div className="entry-title">
                                 <h3>
                                   <Link href={`/${filter === MODE.exhibitor ? "exhibitor" : "visitor"}?id=${user._id}`}>
-                                    <a>{user.name}</a>
+                                    <a>{translate(user.names) || user.name}</a>
                                   </Link>
                                 </h3>
-                                <p>{user.introduce}</p>
+                                <p>{translate(user.introduces) || user.introduce}</p>
                               </div>
                             </div>
                           </div>

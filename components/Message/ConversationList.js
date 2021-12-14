@@ -112,7 +112,7 @@ class ConversationList extends Component {
             <img src="/images/user2.png" />
           </div>
           {user?.mode !== MODE.admin ?
-            <span>{translate(langConfig.app.ChatWith)} {admin?.name || "Admin"}</span>
+            <span>{translate(langConfig.app.ChatWith)} {translate(admin?.names) || admin?.name || "Admin"}</span>
             :
             <span>{translate(langConfig.app.Conversation)}</span>
           }

@@ -167,9 +167,10 @@ class Industry extends Component {
                                             </div>
                                         </th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Index)}</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '55%' }}>{translate(langConfig.resources.industryName)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>{translate(langConfig.resources.industryName)}(VN)</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>{translate(langConfig.resources.industryName)}(EN)</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.app.Status)}</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Actions)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.app.Actions)}</th>
                                     </tr>
                                 </thead>
                                 <tbody id="massSelectArea">
@@ -187,8 +188,11 @@ class Industry extends Component {
                                                     </div>
                                                 </td>
                                                 <td>{index + 1}</td>
-                                                <td title={industry.name}>
-                                                    {industry.name}
+                                                <td title={industry.names?.vn || industry.name}>
+                                                    {industry.names?.vn || industry.name}
+                                                </td>
+                                                <td title={industry.names?.en || industry.name}>
+                                                    {industry.names?.en || industry.name}
                                                     <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={e => { e.preventDefault(); this.handleDisable(industry) }}>
                                                         <i className={"fa fa-heart" + (industry.enabled ? "-o" : "")} title={translate(industry.enabled ? langConfig.app.Inactive : langConfig.app.Active)} />
                                                     </a>

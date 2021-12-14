@@ -25,7 +25,7 @@ class TradeForm extends Component {
             this.setState({
                 content: '',
                 deadline: '',
-                fromName: user.name,
+                fromName: translate(user.names) || user.name,
                 fromEmail: user.email,
                 toName: onCreate.name,
                 toEmail: onCreate.email,
@@ -134,7 +134,7 @@ class TradeForm extends Component {
                             <button onClick={this.handleClose} className="btnSubmit-dkgt">{translate(langConfig.app.Close)}</button>
                             :
                             <button onClick={this.handleSubmit} disabled={loading} className="btnSubmit-dkgt">
-                                {translate(loading ?  langConfig.app.Creating: langConfig.app.CreateSubmit) }
+                                {translate(loading ? langConfig.app.Creating : langConfig.app.CreateSubmit)}
                             </button>
                         }
                     </div>

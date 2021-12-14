@@ -13,16 +13,16 @@ const handler = async (req, res) => {
             if (!user?._id) throw ({ path: 'token' });
             const currentUser = await userController.get(user._id);
             if (!currentUser || !currentUser.enabled) throw ({ path: 'user' });
-            const { verify, email, name, mode, _id, createdAt } = currentUser;
+            const { verify, email, name, names, mode, _id, createdAt } = currentUser;
             if (verify) throw ({ path: 'token' });
             currentUser.verify = true;
             await currentUser.save();
             await verifySuccess({ email });
-            const tokenLogin = jwt.create({ _id, email, name, createdAt, mode });
+            const tokenLogin = jwt.create({ _id, email, name, names, createdAt, mode });
             return res.status(201).send({
                 success: true,
                 token: tokenLogin,
-                data: { email, createdAt, _id, name, mode },
+                data: { email, createdAt, _id, name, names, mode },
                 message: 'Xác thực tài khoản thành công',
                 messages: lang?.message?.success?.verify,
             });

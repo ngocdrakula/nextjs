@@ -17,6 +17,10 @@ class AddVisitor extends Component {
             introduce: '',
             contact: '',
             product: '',
+            nameEN: '',
+            productEN: '',
+            introduceEN: '',
+            contactEN: '',
             enabled: true,
             fieldError: null,
             message: ''
@@ -31,11 +35,12 @@ class AddVisitor extends Component {
     handleChange = e => this.setState({ [e.target.name]: e.target.value, fieldError: false })
     handleSubmit = e => {
         e.preventDefault();
-        const { email, password, name, phone, introduce, contact, product, enabled, selected } = this.state;
+        const { email, password, name, phone, introduce, contact, product, enabled, selected,
+            nameEN, productEN, introduceEN, contactEN } = this.state;
         const { industries } = this.props;
         const industry = selected || industries[0]?._id;
-        const data = { email, password, name, phone, introduce, contact, product, enabled, mode: MODE.visitor, industry }
-        const dataRequied = { email, password, name, phone, industry }
+        const data = { email, password, name, phone, introduce, contact, product, enabled, mode: MODE.visitor, industry, nameEN, productEN, introduceEN, contactEN }
+        const dataRequied = { email, password, name, phone, industry, nameEN }
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
         if (fieldError) {
@@ -79,7 +84,9 @@ class AddVisitor extends Component {
 
     render() {
         const { onAdd, handleClose, industries } = this.props;
-        const { dropActive, email, password, name, phone, introduce, contact, product, enabled, selected, dropIndustry, fieldError, message } = this.state;
+        const { dropActive, email, password, name, phone, introduce, contact, product, enabled, selected, dropIndustry, fieldError, message,
+            nameEN, productEN, introduceEN, contactEN,
+        } = this.state;
         const industrySelected = industries.find(i => i._id === selected) || industries[0] || {};
         return (
             <div id="add-vis-myDynamicModal" className={"modal-create modal fade" + (onAdd ? " in" : "")} style={{ display: onAdd ? 'block' : 'none' }}>
@@ -92,9 +99,9 @@ class AddVisitor extends Component {
                             </div>
                             <div className="modal-body">
                                 <div className="row">
-                                    <div className="col-md-8 nopadding-right">
+                                    <div className="col-md-6 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'name' ? " has-error" : "")}>
-                                            <label htmlFor="add-vis-name">{translate(langConfig.app.VisitorName)}*</label>
+                                            <label htmlFor="add-vis-name">{translate(langConfig.app.VisitorName)} (VN)*</label>
                                             <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.VisitorName))} required value={name} id="add-vis-name" name="name" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
                                                 {fieldError === 'name' && message ?
@@ -105,33 +112,12 @@ class AddVisitor extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-4 nopadding-left">
-                                        <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
-                                            <label htmlFor="add-vis-active">{translate(langConfig.app.Status)}*</label>
-                                            <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
-                                                <span className="selection" onClick={this.handleDropdown}>
-                                                    <span className="select2-selection select2-selection--single"  >
-                                                        <span className="select2-selection__rendered" id="add-vis-select2-active-container" title={translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}>
-                                                            {translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}
-                                                        </span>
-                                                        <span className="select2-selection__arrow" role="presentation">
-                                                            <b role="presentation" />
-                                                        </span>
-                                                    </span>
-                                                </span>
-                                                <div className={"dropdown-select" + (dropActive ? " active" : "")}>
-                                                    <div
-                                                        className={"select-option-active" + (enabled ? " active" : "")}
-                                                        onClick={this.handleSelectEnable}
-                                                    >{translate(langConfig.app.Active)}</div>
-                                                    <div
-                                                        className={"select-option-active" + (!enabled ? " active" : "")}
-                                                        onClick={this.handleSelectDisable}
-                                                    >{translate(langConfig.app.Inactive)}</div>
-                                                </div>
-                                            </span>
-                                            <div className="help-block with-errors" >
-                                                {fieldError === 'enabled' && message ?
+                                    <div className="col-md-6 nopadding-left">
+                                        <div className={"form-group" + (fieldError === 'nameEN' ? " has-error" : "")}>
+                                            <label htmlFor="add-vis-nameEN">{translate(langConfig.app.VisitorName)} (EN)*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.VisitorName))} required value={nameEN} id="add-vis-nameEN" name="nameEN" type="text" onChange={this.handleChange} />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'nameEN' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>
@@ -188,7 +174,9 @@ class AddVisitor extends Component {
                                             <span className={"select2 select2-container select2-container--default" + (dropIndustry ? " select2-container--open" : "")} style={{ width: '100%' }}>
                                                 <span className="selection" onClick={this.handleDropdownIndustry}>
                                                     <span className="select2-selection select2-selection--single"  >
-                                                        <span className="select2-selection__rendered" id="add-vis-select2-active-container" title={industrySelected.name}>{industrySelected.name}</span>
+                                                        <span className="select2-selection__rendered" id="add-vis-select2-active-container" title={translate(industrySelected.names) || industrySelected.name}>
+                                                            {translate(industrySelected.names) || industrySelected.name}
+                                                        </span>
                                                         <span className="select2-selection__arrow" role="presentation">
                                                             <b role="presentation" />
                                                         </span>
@@ -200,7 +188,7 @@ class AddVisitor extends Component {
                                                             <div key={industry._id}
                                                                 className={"select-option-active" + (selected === industry._id ? " active" : "")}
                                                                 onClick={() => this.setState({ selected: industry._id, dropIndustry: false })}
-                                                            >{industry.name}</div>
+                                                            >{translate(industry.names) || industry.name}</div>
                                                         )
                                                     })}
                                                 </div>
@@ -216,7 +204,7 @@ class AddVisitor extends Component {
                                     </div>
                                 </div>
                                 <div className={"form-group" + (fieldError === 'introduce' ? " has-error" : "")}>
-                                    <label htmlFor="add-vis-introduce">{translate(langConfig.app.Introduce)}</label>
+                                    <label htmlFor="add-vis-introduce">{translate(langConfig.app.Introduce)} (VN)</label>
                                     <textarea className="form-control summernote" rows={2} placeholder={translate(langConfig.app.EnterVisitorIntroduce)} value={introduce} name="introduce" cols={50} id="add-vis-introduce" onChange={this.handleChange} />
                                     <div className="help-block with-errors">
                                         {fieldError === 'introduce' && message ?
@@ -226,8 +214,19 @@ class AddVisitor extends Component {
                                             : ""}
                                     </div>
                                 </div>
+                                <div className={"form-group" + (fieldError === 'introduceEN' ? " has-error" : "")}>
+                                    <label htmlFor="add-vis-introduceEN">{translate(langConfig.app.Introduce)} (EN)</label>
+                                    <textarea className="form-control summernote" rows={2} placeholder={translate(langConfig.app.EnterVisitorIntroduce)} value={introduceEN} name="introduceEN" cols={50} id="add-vis-introduceEN" onChange={this.handleChange} />
+                                    <div className="help-block with-errors">
+                                        {fieldError === 'introduceEN' && message ?
+                                            <ul className="list-unstyled">
+                                                <li>{message}.</li>
+                                            </ul>
+                                            : ""}
+                                    </div>
+                                </div>
                                 <div className={"form-group" + (fieldError === 'contact' ? " has-error" : "")}>
-                                    <label htmlFor="add-vis-contact">{translate(langConfig.app.Contact)}</label>
+                                    <label htmlFor="add-vis-contact">{translate(langConfig.app.Contact)} (VN)</label>
                                     <textarea className="form-control summernote" rows={2} placeholder={translate(langConfig.app.OtherContact)} value={contact} name="contact" cols={50} id="add-vis-contact" onChange={this.handleChange} />
                                     <div className="help-block with-errors">
                                         {fieldError === 'contact' && message ?
@@ -237,8 +236,19 @@ class AddVisitor extends Component {
                                             : ""}
                                     </div>
                                 </div>
+                                <div className={"form-group" + (fieldError === 'contactEN' ? " has-error" : "")}>
+                                    <label htmlFor="add-vis-contactEN">{translate(langConfig.app.Contact)} (EN)</label>
+                                    <textarea className="form-control summernote" rows={2} placeholder={translate(langConfig.app.OtherContact)} value={contactEN} name="contactEN" cols={50} id="add-vis-contactEN" onChange={this.handleChange} />
+                                    <div className="help-block with-errors">
+                                        {fieldError === 'contactEN' && message ?
+                                            <ul className="list-unstyled">
+                                                <li>{message}.</li>
+                                            </ul>
+                                            : ""}
+                                    </div>
+                                </div>
                                 <div className={"form-group" + (fieldError === 'product' ? " has-error" : "")}>
-                                    <label htmlFor="add-vis-product">{translate(langConfig.app.ProductsBuy)}</label>
+                                    <label htmlFor="add-vis-product">{translate(langConfig.app.ProductsBuy)} (VN)</label>
                                     <textarea className="form-control summernote" rows={2} placeholder={translate(langConfig.app.EnterProductBuy)} value={product} name="product" cols={50} id="add-vis-product" onChange={this.handleChange} />
                                     <div className="help-block with-errors">
                                         {fieldError === 'product' && message ?
@@ -248,7 +258,55 @@ class AddVisitor extends Component {
                                             : ""}
                                     </div>
                                 </div>
-                            </div><div className="modal-footer">
+                                <div className={"form-group" + (fieldError === 'productEN' ? " has-error" : "")}>
+                                    <label htmlFor="add-vis-productEN">{translate(langConfig.app.ProductsBuy)} (EN)</label>
+                                    <textarea className="form-control summernote" rows={2} placeholder={translate(langConfig.app.EnterProductBuy)} value={productEN} name="productEN" cols={50} id="add-vis-productEN" onChange={this.handleChange} />
+                                    <div className="help-block with-errors">
+                                        {fieldError === 'productEN' && message ?
+                                            <ul className="list-unstyled">
+                                                <li>{message}.</li>
+                                            </ul>
+                                            : ""}
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-4 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
+                                            <label htmlFor="add-vis-active">{translate(langConfig.app.Status)}*</label>
+                                            <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
+                                                <span className="selection" onClick={this.handleDropdown}>
+                                                    <span className="select2-selection select2-selection--single"  >
+                                                        <span className="select2-selection__rendered" id="add-vis-select2-active-container" title={translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}>
+                                                            {translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}
+                                                        </span>
+                                                        <span className="select2-selection__arrow" role="presentation">
+                                                            <b role="presentation" />
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                                <div className={"dropdown-select" + (dropActive ? " active" : "")}>
+                                                    <div
+                                                        className={"select-option-active" + (enabled ? " active" : "")}
+                                                        onClick={this.handleSelectEnable}
+                                                    >{translate(langConfig.app.Active)}</div>
+                                                    <div
+                                                        className={"select-option-active" + (!enabled ? " active" : "")}
+                                                        onClick={this.handleSelectDisable}
+                                                    >{translate(langConfig.app.Inactive)}</div>
+                                                </div>
+                                            </span>
+                                            <div className="help-block with-errors" >
+                                                {fieldError === 'enabled' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="modal-footer">
                                 <input className="btn btn-flat btn-new" type="submit" value={translate(langConfig.app.Add)} />
                             </div>
                         </form>

@@ -37,17 +37,27 @@ const handler = async (req, res) => {
       const user = jwt.verify(bearerToken);
       if (user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
       const { id } = req.query;
-      const { name, enabled } = req.body;
+      const { nameVN, nameEN, enabled } = req.body;
       const currentIndustry = await industryController.get(id);
       if (!currentIndustry) throw ({ path: '_id', matchIndustry });
-      if (name) {
+      if (nameVN) {
         try {
-          const matchIndustry = await industryController.find({ name });
-          if (matchIndustry && matchIndustry._id != id) throw ({ path: 'industry', matchIndustry })
+          const matchIndustry = await industryController.find({ 'names.vn': nameVN });
+          if (matchIndustry && matchIndustry._id != id) throw ({ path: 'industry', matchIndustry, field: 'nameVN' })
         } catch (e) {
           throw e
         }
-        currentIndustry.name = name;
+        currentIndustry.names.vn = nameVN;
+        currentIndustry.name = nameVN;
+      }
+      if (nameEN) {
+        try {
+          const matchIndustry = await industryController.find({ 'names.en': nameEN });
+          if (matchIndustry && matchIndustry._id != id) throw ({ path: 'industry', matchIndustry, field: 'nameEN' })
+        } catch (e) {
+          throw e
+        }
+        currentIndustry.names.en = nameEN;
       }
       if (enabled != undefined) currentIndustry.enabled = enabled;
       await currentIndustry.save();
@@ -78,7 +88,7 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: true,
-          field: 'name',
+          field: e.field,
           current: e.matchIndustry,
           message: "Ngành nghề đã tồn tại",
           messages: langConcat(lang?.resources?.industry, lang?.message?.error?.validation?.exist),

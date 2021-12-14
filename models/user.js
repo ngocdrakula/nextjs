@@ -15,9 +15,17 @@ const user = new Schema({
         type: String,
         required: true
     },
+    names: {
+        vn: String,
+        en: String
+    },
     search: {
         type: String,
         required: true
+    },
+    searchs: {
+        vn: String,
+        en: String
     },
     avatar: {
         type: String,
@@ -30,6 +38,10 @@ const user = new Schema({
     address: {
         type: String,
         required: false,
+    },
+    addresss: {
+        vn: String,
+        en: String
     },
     phone: {
         type: String,
@@ -47,9 +59,17 @@ const user = new Schema({
         type: String,
         required: false,
     },
+    representatives: {
+        vn: String,
+        en: String
+    },
     position: {
         type: String,
         required: false,
+    },
+    positions: {
+        vn: String,
+        en: String
     },
     mobile: {
         type: String,
@@ -67,13 +87,25 @@ const user = new Schema({
         type: String,
         required: false,
     },
+    introduces: {
+        vn: String,
+        en: String
+    },
     product: {
         type: String,
         required: false,
     },
+    products: {
+        vn: String,
+        en: String
+    },
     contact: {
         type: String,
         required: false,
+    },
+    contacts: {
+        vn: String,
+        en: String
     },
     mode: {
         type: Number,

@@ -10,6 +10,10 @@ const design = new Schema({
         type: Boolean,
         default: true
     },
+    names: {
+        vn: String,
+        en: String
+    }
 }, {
     timestamps: { createdAt: 'createdAt' }
 });

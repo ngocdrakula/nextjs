@@ -55,7 +55,7 @@ class MessageCustomer extends Component {
           </div>
           <div className="mes-admin-status">
             <div className="mes-admin-name">
-              {admin?.name}
+              {translate(admin?.names) || admin?.name}
             </div>
             <div className="mes-admin-onl">
               ({translate(langConfig.app.Online)})

@@ -78,7 +78,7 @@ class Exhibitor extends Component {
                             const active = ((!selected && !index) || (industry._id === selected)) ? " active" : "";
                             return (
                                 <li key={industry._id} className={"menu-item" + active}>
-                                    <a href="#" onClick={e => this.handleSelect(e, industry._id)}>{industry.name}</a>
+                                    <a href="#" onClick={e => this.handleSelect(e, industry._id)}>{translate(industry.names) || industry.name}</a>
                                 </li>
                             )
                         })}
@@ -106,12 +106,12 @@ class Exhibitor extends Component {
                                                     </div>
                                                     <div className="col-lg-8">
                                                         <div className="entry-title">
-                                                            <h3>
+                                                            <h3>{console.log(exhibitor, exhibitor.introduces, translate(exhibitor.introduces))}
                                                                 <Link href={"/exhibitor?id=" + exhibitor._id}>
-                                                                    <a >{exhibitor.name}</a>
+                                                                    <a >{translate(exhibitor.names) || exhibitor.name}</a>
                                                                 </Link>
                                                             </h3>
-                                                            <p>{exhibitor.introduce}</p>
+                                                            <p>{translate(exhibitor.introduces) || exhibitor.introduce}</p>
                                                         </div>
                                                     </div>
                                                 </div>

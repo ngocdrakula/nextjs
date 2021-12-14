@@ -76,7 +76,7 @@ class Buyer extends Component {
                             const active = ((!selected && !index) || (industry._id === selected)) ? " active" : "";
                             return (
                                 <li key={industry._id} className={"menu-item" + active}>
-                                    <a href="#" onClick={e => this.handleSelect(e, industry._id)}>{industry.name}</a>
+                                    <a href="#" onClick={e => this.handleSelect(e, industry._id)}>{translate(industry.names) || industry.name}</a>
                                 </li>
                             )
                         })}

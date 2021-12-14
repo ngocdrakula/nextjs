@@ -17,8 +17,8 @@ const handler = async (req, res) => {
             if (!loged) throw ({ path: 'user' });
             if (mode === MODE.visitor && user.mode === MODE.exhibitor) throw ({ path: 'exhibitor' });
             if (mode === MODE.exhibitor && user.mode === MODE.visitor) throw ({ path: 'visitor' });
-            const { _id, name, createdAt } = user;
-            const token = jwt.create({ _id, email, name, createdAt, mode: user.mode });
+            const { _id, name, names, createdAt } = user;
+            const token = jwt.create({ _id, email, name, names, createdAt, mode: user.mode });
             return res.status(200).send({
                 success: true,
                 token,

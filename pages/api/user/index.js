@@ -13,6 +13,10 @@ const handler = async (req, res) => {
                 const list = await userController.getlist();
                 for (let user of list) {
                     user.search = nonAccentVietnamese(user.name);
+                    user.searchs = {
+                        vn: nonAccentVietnamese(user.names.vn),
+                        en: nonAccentVietnamese(user.names.en)
+                    };
                     await user.save();
                 }
                 return res.status(200).send({
@@ -20,15 +24,28 @@ const handler = async (req, res) => {
                     data: list,
                 });
             }
-            const { page, pageSize = 100, enabled, mode, name, industry, sort } = req.query;
+            const { page, pageSize = 100, enabled, mode, name, industry, sort, lang } = req.query;
             const query = {};
             if (enabled) query.enabled = !(enabled == "false");
             if (mode != undefined) query.mode = Number(mode);
             if (industry) query.industry = { $in: industry.split(',') };
-            if (name) query.search = { $in: nonAccentVietnamese(name).split(" ").filter(i => i).map(i => new RegExp(i, "i")) };
+            if (name) {
+                if (lang == "en") {
+                    query["searchs.en"] = { $in: nonAccentVietnamese(name).split(" ").filter(i => i).map(i => new RegExp(i, "i")) };
+                }
+                else {
+                    query.search = { $in: nonAccentVietnamese(name).split(" ").filter(i => i).map(i => new RegExp(i, "i")) };
+                }
+            }
             const sortObj = {};
-            if (sort == 'name') sortObj.name = 1;
-            else if (sort == 'namereverse') sortObj.name = -1;
+            if (sort == 'name') {
+                if (lang == "en") { sortObj[searchs.en] = 1; }
+                else { sortObj.name = 1; }
+            }
+            else if (sort == 'namereverse') {
+                if (lang == "en") { sortObj[searchs.en] = -1; }
+                else { sortObj.name = -1; }
+            }
             else sortObj.createdAt = -1;
             const skip = Number(page * pageSize) || 0;
             const limit = Number(pageSize) || 0;
@@ -63,7 +80,8 @@ const handler = async (req, res) => {
             const {
                 email, password, name, phone, industry, address,
                 hotline, fax, representative, position, mobile, re_email, website, introduce,
-                product, contact, mode, enabled
+                product, contact, mode, enabled,
+                nameEN, positionEN, representativeEN, addressEN, introduceEN, contactEN, productEN,
             } = req.body;
             if (!email) throw ({ path: 'email', required: true });
             if (!password) throw ({ path: 'password', required: true });
@@ -87,21 +105,30 @@ const handler = async (req, res) => {
             catch (e) { throw ({ path: '_id' }); };
             const userInfo = {
                 password: hash,
-                email, name, phone, mode, address, industry: [industry], search: nonAccentVietnamese(name),
-                hotline, fax, representative, position, mobile, re_email, website, introduce,
-                product, contact, enabled
+                email, phone, mode, industry: [industry],
+                name, names: { vn: name, en: nameEN || name },
+                address, addresss: { vn: address, en: addressEN || address },
+                search: nonAccentVietnamese(name), searchs: { vn: nonAccentVietnamese(name), en: nonAccentVietnamese(nameEN || name) },
+                hotline, fax, mobile, re_email, website,
+                representative, representatives: { vn: representative, en: representativeEN || representative },
+                position, positions: { vn: position, en: positionEN || position },
+                introduce, introduces: { vn: introduce, en: introduceEN || introduce },
+                product, products: { vn: product, en: productEN || product },
+                contact, contacts: { vn: contact, en: contactEN || contact },
+                enabled
             };
             const userCreated = await userController.create(userInfo);
-            const { _id } = userCreated;
-            const token = jwt.create({ email, _id, name, mode });
+            const { _id, names } = userCreated;
+            const token = jwt.create({ email, _id, name, names, mode });
             return res.status(201).send({
                 success: true,
                 token,
-                data: { email, _id, name, mode },
+                data: { email, _id, name, names, mode },
                 message: 'Tạo tài khoản thành công',
                 messages: lang?.message?.success?.created
             });
         } catch (e) {
+            console.log(e)
             if (e.path == 'token') {
                 if (!e.token) {
                     return res.status(401).send({
