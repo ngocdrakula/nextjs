@@ -213,7 +213,7 @@ class Exhibitor extends Component {
                                                     {exhibitor.name?.split(0, 15)}
                                                 </td>
                                                 <td title={exhibitor.name}>
-                                                    {exhibitor.names.en?.split(0, 15)}
+                                                    {exhibitor.names?.en?.split(0, 15)}
                                                     <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={e => { e.preventDefault(); this.handleDisable(exhibitor) }}>
                                                         <i className={"fa fa-heart" + (exhibitor.enabled ? "-o" : "")} title={translate(exhibitor.enabled ? langConfig.app.EnableUser : langConfig.app.DisableUser)} />
                                                     </a>

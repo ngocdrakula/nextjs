@@ -38,7 +38,7 @@ class UpdateExhibitor extends Component {
         if (!prevProps.onEdit && this.props.onEdit?._id) {
             this.setState({
                 ...this.props.onEdit,
-                nameEN: this.props.onEdit.names.en,
+                nameEN: this.props.onEdit.names?.en,
                 positionEN: this.props.onEdit.positions.en,
                 representativeEN: this.props.onEdit.representatives.en,
                 addressEN: this.props.onEdit.addresss.en,

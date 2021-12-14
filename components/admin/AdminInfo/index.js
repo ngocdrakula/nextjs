@@ -24,7 +24,7 @@ class AdminInfo extends Component {
             callback: res => {
                 if (res?.success) {
                     const { name, email, names } = res.data;
-                    this.setState({ name, email, nameEN: names.en })
+                    this.setState({ name, email, nameEN: names?.en })
                 }
             }
         });
@@ -82,7 +82,7 @@ class AdminInfo extends Component {
     handleCancel = () => this.setState({
         email: this.props.user.email,
         name: this.props.user.name,
-        nameEN: this.props.user.names.en,
+        nameEN: this.props.user.names?.en,
         files: null,
         filesAvatar: null,
         fieldError: null,

@@ -30,7 +30,7 @@ class UpdateVisitor extends Component {
             this.setState({
                 ...this.props.onEdit,
                 selected: this.props.onEdit.industry[0]?._id,
-                nameEN: this.props.onEdit.names.en,
+                nameEN: this.props.onEdit.names?.en,
                 productEN: this.props.onEdit.products.en,
                 introduceEN: this.props.onEdit.introduces.en,
                 contactEN: this.props.onEdit.contacts.en,

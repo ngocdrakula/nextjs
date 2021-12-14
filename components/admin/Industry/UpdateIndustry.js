@@ -20,8 +20,8 @@ class UpdateIndustry extends Component {
         if (!prevProps.onEdit && this.props.onEdit?._id) {
             this.setState({
                 _id: this.props.onEdit._id,
-                nameVN: this.props.onEdit.names.vn || this.props.onEdit.name,
-                nameEN: this.props.onEdit.names.en || this.props.onEdit.name,
+                nameVN: this.props.onEdit.names?.vn || this.props.onEdit.name,
+                nameEN: this.props.onEdit.names?.en || this.props.onEdit.name,
                 enabled: this.props.onEdit.enabled,
                 fieldError: null,
                 message: ''

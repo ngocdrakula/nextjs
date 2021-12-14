@@ -215,7 +215,7 @@ class Visitor extends Component {
                                                     {visitor.name?.split(0, 15)}
                                                 </td>
                                                 <td title={visitor.name}>
-                                                    {visitor.names.en?.split(0, 15)}
+                                                    {visitor.names?.en?.split(0, 15)}
                                                     <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={() => { this.handleDisable(visitor) }}>
                                                         <i className={"fa fa-heart" + (visitor.enabled ? "-o" : "")} title={translate(visitor.enabled ? langConfig.app.EnableUser : langConfig.app.DisableUser)} />
                                                     </a>
