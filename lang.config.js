@@ -521,7 +521,7 @@ const langConfig = {
         ConnectExhibitors: { vn: 'Kết nối với Nhà trưng bày', en: 'Connect with the Exhibitors' },
         DirectingAgency: { vn: 'Cơ quan chỉ đạo', en: 'Directing agency' },
         MINISTRYOFINDUSTRYANDTRADE: { vn: 'BỘ CÔNG THƯƠNG', en: 'MINISTRY OF INDUSTRY AND TRADE' },
-        TheHostInstitution: { vn: 'Đơn vị trủ trì', en: 'The host institution' },
+        TheHostInstitution: { vn: 'Đơn vị chủ trì', en: 'The host institution' },
         DepartmentIndustry: { vn: 'Cục Công nghiệp (Bộ Công Thương)', en: 'Department of Industry (Ministry of Industry and Trade)' },
         IndustrialDevelopment: { vn: 'Trung tâm Hỗ trợ phát triển công nghiệp (IDC)', en: 'Industrial Development Support Center (IDC)' },
         OrganizationalUnits: { vn: 'Đơn vị tổ chức', en: 'Organizational units' },
