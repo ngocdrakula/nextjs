@@ -26214,7 +26214,13 @@
   .unread .text-muted {
     color: #000;
   }
-
+  .excerpt {
+    width: 100%;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+  }
   .unread .time-meta,
   .unread .excerpt {
     color: #111;
