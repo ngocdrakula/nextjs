@@ -9,6 +9,22 @@ class Slider extends Component {
             bannerSlogan, bannerDescription, bannerBackground, bannerUpdated, bannerLogoThumb } = setting;
         if (!bannerStatus) return null;
         const image = `${bannerUpdated ? "/api" : ""}/images/${bannerLogoThumb}`;
+        const link = "https://vimexpo.com.vn/slider/";
+        return (
+            <div className="livestream-video" dangerouslySetInnerHTML={{
+                __html:
+                    `<iframe
+                        src="${link}"
+                        width="100%"
+                        height="660px"
+                        style="border:none;overflow:hidden;min-height:660px"
+                        scrolling="no"
+                        frameborder="0"
+                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                        allowfullScreen={true}
+                    ></iframe>`
+            }} />
+        )
         return (
             <div id="slider" style={bannerBackground ? { backgroundColor: bannerBackground } : {}}>
                 <div className="container banner-container" style={{ backgroundImage: `url(${image})` }}>
