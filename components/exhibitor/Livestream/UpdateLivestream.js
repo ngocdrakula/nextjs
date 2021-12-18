@@ -9,8 +9,10 @@ class UpdateLivestream extends Component {
     constructor(props) {
         super(props);
         this.defaultState = {
-            title: '',
-            description: '',
+            titleVN: '',
+            titleEN: '',
+            descriptionVN: '',
+            descriptionEN: '',
             link: '',
             embed: '',
             enabled: true,
@@ -21,6 +23,11 @@ class UpdateLivestream extends Component {
         if (!prevProps.onEdit && this.props.onEdit?._id) {
             this.setState({
                 ...this.props.onEdit,
+                titleVN: this.props.onEdit.titles?.vn || this.props.onEdit.title,
+                titleEN: this.props.onEdit.titles?.en,
+                descriptionVN: this.props.onEdit.descriptions?.vn || this.props.onEdit.description,
+                descriptionEN: this.props.onEdit.descriptions?.en,
+                index: this.props.index,
                 fieldError: null,
                 message: ''
             })
@@ -37,8 +44,8 @@ class UpdateLivestream extends Component {
     }
     handleSubmit = e => {
         e.preventDefault();
-        const { _id, title, description, link, embed, enabled } = this.state;
-        const dataRequied = { title, description };
+        const { _id, titleVN, titleEN, descriptionVN, descriptionEN, link, embed, enabled, index } = this.state;
+        const dataRequied = { titleVN, titleEN, descriptionVN, descriptionEN };
         if (embed) dataRequied.embed = embed;
         else dataRequied.link = link;
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
@@ -47,8 +54,9 @@ class UpdateLivestream extends Component {
             this.setState({ fieldError, message: translate(langConfig.message.error.infomation) })
         }
         else {
-            const { dispatch, handleClose } = this.props;
-            const data = { _id, title, description, link, embed, enabled }
+            const { dispatch, handleClose, onRefresh } = this.props;
+            const data = { _id, titleVN, titleEN, descriptionVN, descriptionEN, link, embed, enabled }
+            if (index !== this.props.index) data.index = Number(index) + (Math.sign(index - this.props.index) - 1) / 2;
             dispatch({
                 type: types.ADMIN_UPDATE_LIVESTREAM,
                 payload: data,
@@ -62,8 +70,8 @@ class UpdateLivestream extends Component {
                                 message: translate(langConfig.app.Updated),
                                 confirm: translate(langConfig.app.Accept),
                                 cancel: translate(langConfig.app.Close),
-                                handleConfirm: handleClose,
-                                handleCancel: handleClose
+                                handleConfirm: () => { if (index !== this.props.index) onRefresh(); handleClose(); },
+                                handleCancel: () => { if (index !== this.props.index) onRefresh(); handleClose(); }
                             },
                         });
                     }
@@ -81,8 +89,8 @@ class UpdateLivestream extends Component {
     handleSelectEnable = () => this.setState({ enabled: true, dropActive: false })
     handleSelectDisable = () => this.setState({ enabled: false, dropActive: false })
     render() {
-        const { onEdit, handleClose } = this.props;
-        const { dropActive, title, description, link, embed, enabled, fieldError, message } = this.state;
+        const { onEdit, handleClose, total } = this.props;
+        const { dropActive, titleVN, titleEN, descriptionVN, descriptionEN, link, embed, enabled, fieldError, message, index } = this.state;
         return (
             <div id="vis-edit-myDynamicModal" className={"modal-create modal fade" + (onEdit ? " in" : "")} style={{ display: onEdit ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">
@@ -94,12 +102,12 @@ class UpdateLivestream extends Component {
                             </div>
                             <div className="modal-body">
                                 <div className="row">
-                                    <div className="col-md-8 nopadding-right">
-                                        <div className={"form-group" + (fieldError === 'title' ? " has-error" : "")}>
-                                            <label htmlFor="update-live-title">{translate(langConfig.app.Title)}*</label>
-                                            <input className="form-control" placeholder="Nhập tên livestream" required value={title} id="update-live-title" name="title" type="text" onChange={this.handleChange} />
+                                    <div className="col-md-6 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'titleVN' ? " has-error" : "")}>
+                                            <label htmlFor="edit-live-titleVN">{translate(langConfig.app.LivestreamTitle)} (VN)*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.LivestreamTitle))} required value={titleVN} id="edit-live-titleVN" name="titleVN" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
-                                                {fieldError === 'title' && message ?
+                                                {fieldError === 'titleVN' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>
@@ -107,13 +115,74 @@ class UpdateLivestream extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-4 nopadding-left">
+                                    <div className="col-md-6 nopadding-left">
+                                        <div className={"form-group" + (fieldError === 'titleEN' ? " has-error" : "")}>
+                                            <label htmlFor="edit-live-titleEN">{translate(langConfig.app.LivestreamTitle)} (EN)*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.LivestreamTitle))} required value={titleEN} id="edit-live-titleEN" name="titleEN" type="text" onChange={this.handleChange} />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'titleEN' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={"form-group" + (fieldError === 'descriptionVN' ? " has-error" : "")}>
+                                    <label htmlFor="edit-live-descriptionVN">{translate(langConfig.resources.description)}* (VN)</label>
+                                    <textarea className="form-control summernote" required rows={2} placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.description))} value={descriptionVN} name="descriptionVN" cols={50} id="edit-live-descriptionVN" onChange={this.handleChange} />
+                                    <div className="help-block with-errors">
+                                        {fieldError === 'descriptionVN' && message ?
+                                            <ul className="list-unstyled">
+                                                <li>{message}.</li>
+                                            </ul>
+                                            : ""}
+                                    </div>
+                                </div>
+                                <div className={"form-group" + (fieldError === 'descriptionEN' ? " has-error" : "")}>
+                                    <label htmlFor="edit-live-descriptionEN">{translate(langConfig.resources.description)}* (EN)</label>
+                                    <textarea className="form-control summernote" required rows={2} placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.description))} value={descriptionEN} name="descriptionEN" cols={50} id="edit-live-descriptionEN" onChange={this.handleChange} />
+                                    <div className="help-block with-errors">
+                                        {fieldError === 'descriptionEN' && message ?
+                                            <ul className="list-unstyled">
+                                                <li>{message}.</li>
+                                            </ul>
+                                            : ""}
+                                    </div>
+                                </div>
+                                <div className={"form-group" + (fieldError === 'embed' ? " has-error" : "")}>
+                                    <label htmlFor="edit-live-embed">{translate(langConfig.app.EmbedCode)}</label>
+                                    <textarea className="form-control summernote" rows={3} placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.EmbedCode))} value={embed} name="embed" cols={50} id="edit-live-embed" onChange={this.handleChange} />
+                                    <div className="help-block with-errors">
+                                        {fieldError === 'embed' && message ?
+                                            <ul className="list-unstyled">
+                                                <li>{message}.</li>
+                                            </ul>
+                                            : ""}
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'link' ? " has-error" : "")}>
+                                            <label htmlFor="edit-live-link">{translate(langConfig.resources.link)}</label>
+                                            <input className="form-control" placeholder={translate(langConfig.app.EmptyWithEmbedCode)} required value={link} id="edit-live-link" name="link" type="text" disabled={!!embed} onChange={this.handleChange} />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'link' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6 nopadding-left">
                                         <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
-                                            <label htmlFor="update-live-active">{translate(langConfig.app.Status)}*</label>
+                                            <label htmlFor="edit-live-active">{translate(langConfig.app.Status)}*</label>
                                             <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
                                                 <span className="selection" onClick={this.handleDropdown}>
                                                     <span className="select2-selection select2-selection--single"  >
-                                                        <span className="select2-selection__rendered" id="update-live-select2-active-container" title={translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}>
+                                                        <span className="select2-selection__rendered" id="edit-live-select2-active-container" title={translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}>
                                                             {translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}
                                                         </span>
                                                         <span className="select2-selection__arrow" role="presentation">
@@ -142,35 +211,24 @@ class UpdateLivestream extends Component {
                                         </div>
                                     </div>
                                 </div>
-                                <div className={"form-group" + (fieldError === 'description' ? " has-error" : "")}>
-                                    <label htmlFor="update-live-description">{translate(langConfig.resources.description)}</label>
-                                    <textarea className="form-control summernote" required rows={2} placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.description))} value={description} name="description" cols={50} id="update-live-description" onChange={this.handleChange} />
-                                    <div className="help-block with-errors">
-                                        {fieldError === 'description' && message ?
-                                            <ul className="list-unstyled">
-                                                <li>{message}.</li>
-                                            </ul>
-                                            : ""}
-                                    </div>
-                                </div>
-                                <div className={"form-group" + (fieldError === 'embed' ? " has-error" : "")}>
-                                    <label htmlFor="update-live-embed">{translate(langConfig.app.EmbedCode)}</label>
-                                    <textarea className="form-control summernote" rows={3} placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.EmbedCode))} value={description} value={embed} name="embed" cols={50} id="update-live-embed" onChange={this.handleChange} />
-                                    <div className="help-block with-errors">
-                                        {fieldError === 'embed' && message ?
-                                            <ul className="list-unstyled">
-                                                <li>{message}.</li>
-                                            </ul>
-                                            : ""}
-                                    </div>
-                                </div>
                                 <div className="row">
-                                    <div className="col-md-12">
-                                        <div className={"form-group" + (fieldError === 'link' ? " has-error" : "")}>
-                                            <label htmlFor="update-live-link">{translate(langConfig.resources.link)}</label>
-                                            <input className="form-control" placeholder={translate(langConfig.app.EmptyWithEmbedCode)} required value={link} id="update-live-link" name="link" type="text" disabled={!!embed} onChange={this.handleChange} />
+                                    <div className="col-md-6 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'index' ? " has-error" : "")}>
+                                            <label htmlFor="edit-live-index">{translate(langConfig.app.Index)}*</label>
+                                            <input
+                                                className="form-control"
+                                                placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Index))}
+                                                required
+                                                value={index}
+                                                id="edit-live-index"
+                                                name="index"
+                                                type="number"
+                                                min={1}
+                                                max={(total || 0) + 1}
+                                                onChange={this.handleChange}
+                                            />
                                             <div className="help-block with-errors">
-                                                {fieldError === 'link' && message ?
+                                                {fieldError === 'index' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>

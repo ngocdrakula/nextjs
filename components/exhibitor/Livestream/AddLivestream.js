@@ -9,10 +9,13 @@ class AddLivestream extends Component {
     constructor(props) {
         super(props);
         this.defaultState = {
-            title: '',
-            description: '',
+            titleVN: '',
+            titleEN: '',
+            descriptionVN: '',
+            descriptionEN: '',
             link: '',
             embed: '',
+            index: 1,
             enabled: true,
             fieldError: null,
             message: ''
@@ -21,7 +24,7 @@ class AddLivestream extends Component {
     }
     componentDidUpdate(prevProps) {
         if (!prevProps.onAdd && this.props.onAdd) {
-            this.setState({ ...this.defaultState })
+            this.setState({ ...this.defaultState, index: 1 })
         }
     }
     handleChange = e => {
@@ -36,9 +39,9 @@ class AddLivestream extends Component {
     handleSubmit = e => {
         const { dispatch, onAdded, exUser } = this.props;
         e.preventDefault();
-        const { title, description, link, embed, enabled } = this.state;
-        const data = { title, description, link, embed, enabled, author: exUser?._id }
-        const dataRequied = { title, description };
+        const { titleVN, titleEN, descriptionVN, descriptionEN, link, embed, enabled, index } = this.state;
+        const data = { titleVN, titleEN, descriptionVN, descriptionEN, link, embed, enabled, author: exUser?._id, index: Number(index) - 1 || 0 }
+        const dataRequied = { titleVN, titleEN, descriptionVN, descriptionEN };
         if (embed) dataRequied.embed = embed;
         else dataRequied.link = link;
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
@@ -81,8 +84,8 @@ class AddLivestream extends Component {
 
 
     render() {
-        const { onAdd, handleClose } = this.props;
-        const { dropActive, title, description, link, embed, enabled, fieldError, message } = this.state;
+        const { onAdd, handleClose, total } = this.props;
+        const { dropActive, titleVN, titleEN, descriptionVN, descriptionEN, link, embed, enabled, fieldError, message, index } = this.state;
         return (
             <div id="add-live-myDynamicModal" className={"modal-create modal fade" + (onAdd ? " in" : "")} style={{ display: onAdd ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">
@@ -94,12 +97,12 @@ class AddLivestream extends Component {
                             </div>
                             <div className="modal-body">
                                 <div className="row">
-                                    <div className="col-md-8 nopadding-right">
-                                        <div className={"form-group" + (fieldError === 'title' ? " has-error" : "")}>
-                                            <label htmlFor="add-live-title">{translate(langConfig.app.LivestreamTitle)}*</label>
-                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.LivestreamTitle))} required value={title} id="add-live-title" name="title" type="text" onChange={this.handleChange} />
+                                    <div className="col-md-6 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'titleVN' ? " has-error" : "")}>
+                                            <label htmlFor="add-live-titleVN">{translate(langConfig.app.LivestreamTitle)} (VN)*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.LivestreamTitle))} required value={titleVN} id="add-live-titleVN" name="titleVN" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
-                                                {fieldError === 'title' && message ?
+                                                {fieldError === 'titleVN' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>
@@ -107,7 +110,68 @@ class AddLivestream extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-4 nopadding-left">
+                                    <div className="col-md-6 nopadding-left">
+                                        <div className={"form-group" + (fieldError === 'titleEN' ? " has-error" : "")}>
+                                            <label htmlFor="add-live-titleEN">{translate(langConfig.app.LivestreamTitle)} (EN)*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.LivestreamTitle))} required value={titleEN} id="add-live-titleEN" name="titleEN" type="text" onChange={this.handleChange} />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'titleEN' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={"form-group" + (fieldError === 'descriptionVN' ? " has-error" : "")}>
+                                    <label htmlFor="add-live-descriptionVN">{translate(langConfig.resources.description)}* (VN)</label>
+                                    <textarea className="form-control summernote" required rows={2} placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.description))} value={descriptionVN} name="descriptionVN" cols={50} id="add-live-descriptionVN" onChange={this.handleChange} />
+                                    <div className="help-block with-errors">
+                                        {fieldError === 'descriptionVN' && message ?
+                                            <ul className="list-unstyled">
+                                                <li>{message}.</li>
+                                            </ul>
+                                            : ""}
+                                    </div>
+                                </div>
+                                <div className={"form-group" + (fieldError === 'descriptionEN' ? " has-error" : "")}>
+                                    <label htmlFor="add-live-descriptionEN">{translate(langConfig.resources.description)}* (EN)</label>
+                                    <textarea className="form-control summernote" required rows={2} placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.description))} value={descriptionEN} name="descriptionEN" cols={50} id="add-live-descriptionEN" onChange={this.handleChange} />
+                                    <div className="help-block with-errors">
+                                        {fieldError === 'descriptionEN' && message ?
+                                            <ul className="list-unstyled">
+                                                <li>{message}.</li>
+                                            </ul>
+                                            : ""}
+                                    </div>
+                                </div>
+                                <div className={"form-group" + (fieldError === 'embed' ? " has-error" : "")}>
+                                    <label htmlFor="add-live-embed">{translate(langConfig.app.EmbedCode)}</label>
+                                    <textarea className="form-control summernote" rows={3} placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.EmbedCode))} value={embed} name="embed" cols={50} id="add-live-embed" onChange={this.handleChange} />
+                                    <div className="help-block with-errors">
+                                        {fieldError === 'embed' && message ?
+                                            <ul className="list-unstyled">
+                                                <li>{message}.</li>
+                                            </ul>
+                                            : ""}
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'link' ? " has-error" : "")}>
+                                            <label htmlFor="add-live-link">{translate(langConfig.resources.link)}</label>
+                                            <input className="form-control" placeholder={translate(langConfig.app.EmptyWithEmbedCode)} required value={link} id="add-live-link" name="link" type="text" disabled={!!embed} onChange={this.handleChange} />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'link' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6 nopadding-left">
                                         <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
                                             <label htmlFor="add-live-active">{translate(langConfig.app.Status)}*</label>
                                             <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
@@ -142,35 +206,24 @@ class AddLivestream extends Component {
                                         </div>
                                     </div>
                                 </div>
-                                <div className={"form-group" + (fieldError === 'description' ? " has-error" : "")}>
-                                    <label htmlFor="add-live-description">{translate(langConfig.resources.description)}</label>
-                                    <textarea className="form-control summernote" required rows={2} placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.description))} value={description} name="description" cols={50} id="add-live-description" onChange={this.handleChange} />
-                                    <div className="help-block with-errors">
-                                        {fieldError === 'description' && message ?
-                                            <ul className="list-unstyled">
-                                                <li>{message}.</li>
-                                            </ul>
-                                            : ""}
-                                    </div>
-                                </div>
-                                <div className={"form-group" + (fieldError === 'embed' ? " has-error" : "")}>
-                                    <label htmlFor="add-live-embed">{translate(langConfig.app.EmbedCode)}</label>
-                                    <textarea className="form-control summernote" rows={3} placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.EmbedCode))} value={embed} name="embed" cols={50} id="add-live-embed" onChange={this.handleChange} />
-                                    <div className="help-block with-errors">
-                                        {fieldError === 'embed' && message ?
-                                            <ul className="list-unstyled">
-                                                <li>{message}.</li>
-                                            </ul>
-                                            : ""}
-                                    </div>
-                                </div>
                                 <div className="row">
-                                    <div className="col-md-12">
-                                        <div className={"form-group" + (fieldError === 'link' ? " has-error" : "")}>
-                                            <label htmlFor="add-live-link">{translate(langConfig.resources.link)}</label>
-                                            <input className="form-control" placeholder={translate(langConfig.app.EmptyWithEmbedCode)} required value={link} id="add-live-link" name="link" type="text" disabled={!!embed} onChange={this.handleChange} />
+                                    <div className="col-md-6 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'index' ? " has-error" : "")}>
+                                            <label htmlFor="add-live-index">{translate(langConfig.app.Index)}*</label>
+                                            <input
+                                                className="form-control"
+                                                placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Index))}
+                                                required
+                                                value={index}
+                                                id="add-live-index"
+                                                name="index"
+                                                type="number"
+                                                min={1}
+                                                max={(total || 0) + 1}
+                                                onChange={this.handleChange}
+                                            />
                                             <div className="help-block with-errors">
-                                                {fieldError === 'link' && message ?
+                                                {fieldError === 'index' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>

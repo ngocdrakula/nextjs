@@ -6,6 +6,13 @@ const product = new Schema({
         type: String,
         required: true
     },
+    names: {
+        type: Schema.Types.Mixed,
+        default: {
+            vn: "",
+            en: ""
+        }
+    },
     image: {
         type: String,
         required: true
@@ -13,6 +20,13 @@ const product = new Schema({
     description: {
         type: String,
         required: true
+    },
+    descriptions: {
+        type: Schema.Types.Mixed,
+        default: {
+            vn: "",
+            en: ""
+        }
     },
     exhibitor: {
         type: mongoose.Schema.Types.ObjectId,
@@ -27,6 +41,10 @@ const product = new Schema({
         type: Boolean,
         default: true
     },
+    index: {
+        type: Number,
+        default: 0
+    }
 }, {
     timestamps: { createdAt: 'createdAt' }
 });

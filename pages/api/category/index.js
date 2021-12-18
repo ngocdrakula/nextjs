@@ -7,7 +7,20 @@ import { MODE } from '../../../utils/helper';
 const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
-      const { page, pageSize = 100, enabled, exhibitor, name } = req.query;
+      const { page, pageSize = 100, enabled, exhibitor, name, setIndex } = req.query;
+      if (setIndex) {
+        const list = await categoryController.getlist({});
+        let i = 1;
+        for (let category of list) {
+          category.index = i;
+          await category.save();
+          i++;
+        }
+        return res.status(200).send({
+          success: true,
+          total: i - 1,
+        });
+      }
       const query = {};
       if (name) query.name = new RegExp(name, "i");
       if (exhibitor) query.exhibitor = exhibitor;
@@ -15,7 +28,7 @@ const handler = async (req, res) => {
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
       const total = await categoryController.getlist(query).countDocuments();
-      const list = await categoryController.getlist(query).skip(skip).limit(limit);
+      const list = await categoryController.getlist(query).skip(skip).limit(limit).sort({ index: -1 });
       return res.status(200).send({
         success: true,
         data: list,
@@ -26,7 +39,7 @@ const handler = async (req, res) => {
     } catch (error) {
       return res.status(500).send({
         success: false,
-        message: error.message,
+        message: error?.message,
         messages: lang?.message?.error?.server,
         error: error,
       });
@@ -36,16 +49,44 @@ const handler = async (req, res) => {
       const bearerToken = req.headers['authorization'];
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
-      if (user?.mode != MODE.exhibitor && user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
-      const { name, enabled, exhibitor } = req.body;
-      if (!name) throw ({ path: 'name' })
+      if (!user || (user.mode != MODE.exhibitor && user.mode != MODE.admin)) throw ({ ...user, path: 'token' });
+      const { nameVN, nameEN, enabled, exhibitor = user._id, index } = req.body;
+      if (user.mode == MODE.exhibitor && exhibitor != user._id) throw ({ ...user, path: 'token' });
+      if (!nameVN) throw ({ path: 'nameVN' });
+      if (!nameEN) throw ({ path: 'nameEN' });
       try {
-        const matchFront = await categoryController.find({ name, exhibitor: exhibitor || user._id });
-        if (matchFront) throw ({ path: 'category', matchFront });
+        const matchCategory = await categoryController.find({ name: nameVN, exhibitor: exhibitor || user._id });
+        if (matchCategory) throw ({ path: 'category', matchCategory });
       } catch (error) {
         throw error
       }
-      const categoryCreated = await categoryController.create({ name, enabled, exhibitor: exhibitor || user._id });
+      let newIndex = 0;
+      if (index >= 0) {
+        if (index == 0) {
+          try {
+            const lastItem = await categoryController.find({ exhibitor: exhibitor || user._id }).sort({ index: -1 });
+            newIndex = lastItem.index + 1;
+          } catch (e) {
+            newIndex = 1;
+          }
+        }
+        else {
+          try {
+            const list = await categoryController.getlist({ exhibitor: exhibitor || user._id }).skip(index - 1).limit(2).sort({ index: -1 });
+            const beforeIndex = list[0]?.index || 1;
+            const afterIndex = list[1]?.index || 0;
+            newIndex = (beforeIndex + afterIndex) / 2;
+          } catch { }
+        }
+      }
+      else {
+        try {
+          const lastItem = await categoryController.find({ exhibitor: exhibitor || user._id }).sort({ index: -1 });
+          newIndex = (lastItem?.index || 0) + 1;
+        }
+        catch { };
+      }
+      const categoryCreated = await categoryController.create({ name: nameVN, names: { vn: nameVN, en: nameEN }, enabled, exhibitor: exhibitor || user._id, index: newIndex });
       return res.status(201).send({
         success: true,
         data: categoryCreated,
@@ -69,11 +110,11 @@ const handler = async (req, res) => {
           messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path == 'name') {
+      if (e.path == 'nameVN' || e.path == 'nameEN') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'name',
+          field: e.path,
           message: 'Tên chuyên mục không được để trống',
           messages: langConcat(lang?.resources?.categoryName, lang?.message?.error?.validation?.required),
         });
@@ -82,8 +123,8 @@ const handler = async (req, res) => {
         return res.status(400).send({
           success: false,
           exist: true,
-          current: e.matchFront,
-          field: 'name',
+          current: e.matchCategory,
+          field: 'nameVN',
           message: "Tên chuyên mục đã tồn tại",
           messages: langConcat(lang?.resources?.categoryName, lang?.message?.error?.validation?.exist),
         });

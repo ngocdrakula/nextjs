@@ -59,6 +59,7 @@ const handler = async (req, res) => {
         }
         currentIndustry.names.en = nameEN;
       }
+      currentIndustry.markModified('names');
       if (enabled != undefined) currentIndustry.enabled = enabled;
       await currentIndustry.save();
       return res.status(200).send({

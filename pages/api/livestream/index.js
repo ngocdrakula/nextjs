@@ -8,7 +8,20 @@ import { MODE } from '../../../utils/helper';
 const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
-      const { page, pageSize = 100, title, author, enabled } = req.query;
+      const { page, pageSize = 100, title, author, enabled, setIndex } = req.query;
+      if (setIndex) {
+        const list = await livestreamController.getlist({});
+        let i = 1;
+        for (let livestream of list) {
+          livestream.index = i;
+          await livestream.save();
+          i++;
+        }
+        return res.status(200).send({
+          success: true,
+          total: i - 1,
+        });
+      }
       const query = {};
       if (title) query.title = new RegExp(title, "i");
       if (author) query.author = author;
@@ -16,7 +29,7 @@ const handler = async (req, res) => {
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
       const total = await livestreamController.getlist(query).countDocuments();
-      const data = await livestreamController.getlist(query).skip(skip).limit(limit);
+      const data = await livestreamController.getlist(query).skip(skip).limit(limit).sort({ index: -1 });
       return res.status(200).send({
         success: true,
         data,
@@ -39,9 +52,12 @@ const handler = async (req, res) => {
       if (!bearerToken) throw ({ path: 'token' })
       const user = jwt.verify(bearerToken);
       if (user?.mode != MODE.admin && user?.mode != MODE.exhibitor) throw ({ ...user, path: 'token' });
-      const { author, description, link, title, embed } = req.body;
+      const { author, titleVN, titleEN, descriptionVN, descriptionEN, link, embed, index } = req.body;
       if (!link) throw ({ path: 'link' });
-      if (!description) throw ({ path: 'description' });
+      if (!titleVN) throw ({ path: 'titleVN' });
+      if (!titleEN) throw ({ path: 'titleEN' });
+      if (!descriptionVN) throw ({ path: 'descriptionVN' });
+      if (!descriptionEN) throw ({ path: 'descriptionEN' });
       if (user.mode == MODE.admin) {
         if (!author) throw ({ path: 'author' })
         try {
@@ -52,9 +68,37 @@ const handler = async (req, res) => {
           throw ({ path: 'author' })
         }
       }
+      let newIndex = 0;
+      if (index >= 0) {
+        if (index == 0) {
+          try {
+            const lastItem = await livestreamController.find({ author: user.mode == MODE.admin ? author : user._id }).sort({ index: -1 });
+            newIndex = lastItem.index + 1;
+          } catch (e) {
+            newIndex = 1;
+          }
+        }
+        else {
+          try {
+            const list = await livestreamController.getlist({ author: user.mode == MODE.admin ? author : user._id }).skip(index - 1).limit(2).sort({ index: -1 });
+            const beforeIndex = list[0]?.index || 1;
+            const afterIndex = list[1]?.index || 0;
+            newIndex = (beforeIndex + afterIndex) / 2;
+          } catch { }
+        }
+      }
+      else {
+        try {
+          const lastItem = await livestreamController.find({ author: user.mode == MODE.admin ? author : user._id }).sort({ index: -1 });
+          newIndex = (lastItem?.index || 0) + 1;
+        }
+        catch { };
+      }
       const livestreamCreated = await livestreamController.create({
         author: user.mode == MODE.admin ? author : user._id,
-        description, link, title, embed
+        title: titleVN, titles: { vn: titleVN, en: titleEN },
+        description: descriptionVN, descriptions: { vn: descriptionVN, en: descriptionEN },
+        link, embed, index: newIndex
       })
       return res.status(201).send({
         success: true,
@@ -97,13 +141,22 @@ const handler = async (req, res) => {
           messages: langConcat(lang?.resources?.user, lang?.message?.error?.validation?.not_exist),
         });
       }
-      if (e.path == 'description') {
+      if (e.path == 'titleVN' || e.path == 'titleEN') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'description',
+          field: e.path,
+          message: 'Tiêu đề không được để trống',
+          messages: langConcat(lang?.resources?.title, lang?.message?.error?.validation?.required),
+        });
+      }
+      if (e.path == 'descriptionVN' || e.path == 'descriptionEN') {
+        return res.status(400).send({
+          success: false,
+          validation: false,
+          field: e.path,
           message: 'Mô tả không được để trống',
-          messages: langConcat(lang?.resources?.description, lang?.message?.error?.validation?.not_exist),
+          messages: langConcat(lang?.resources?.description, lang?.message?.error?.validation?.required),
         });
       }
       return res.status(500).send({

@@ -123,7 +123,16 @@ const handler = async (req, res) => {
           }
           catch (e) { throw ({ path: 'industry' }); };
         }
+        currentUser.markModified('names');
+        currentUser.markModified('searchs');
+        currentUser.markModified('representatives');
+        currentUser.markModified('positions');
+        currentUser.markModified('introduces');
+        currentUser.markModified('products');
+        currentUser.markModified('addresss');
+        currentUser.markModified('contacts');
         const userUpdated = await (await currentUser.save()).populate('industry').execPopulate();
+        const xUser = await userController.get(id);
         let token = null;
         if (user._id = id && (email || name)) {
           const { _id, email, name, names, createdAt, mode } = userUpdated;
@@ -132,6 +141,7 @@ const handler = async (req, res) => {
         return res.status(200).send({
           success: true,
           data: userUpdated,
+          xUser,
           token,
           message: 'Cập nhật thành công',
           messages: lang?.message?.success?.updated
@@ -140,7 +150,7 @@ const handler = async (req, res) => {
         if (error.path == "_id") throw ({ path: 'user', files });
         throw error
       }
-    } catch (e) { 
+    } catch (e) {
       if (e.files) await cleanFiles(e.files);
       if (e.path == 'token') {
         if (!e.token) {

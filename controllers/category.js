@@ -16,7 +16,7 @@ function remove(categoryId) {
     return (categoryData.findByIdAndRemove(categoryId));
 }
 function getlist(query) {
-    return (categoryData.find(query).sort({ createdAt: -1 }));
+    return (categoryData.find(query))
 }
 function removeMany(query) {
     return (categoryData.deleteMany(query));

@@ -10,20 +10,30 @@ import { MODE } from '../../../utils/helper'
 const handler = async (req, res) => {
   if (req.method == 'GET') {
     try {
-      const { page, pageSize = 100, name, description, categoryId, exhibitorId, enabled, sort } = req.query;
+      const { page, pageSize = 100, name, description, categoryId, exhibitorId, enabled, setIndex } = req.query;
+      if (setIndex) {
+        const list = await productController.getlist({});
+        let i = 1;
+        for (let product of list) {
+          product.index = i;
+          await product.save();
+          i++;
+        }
+        return res.status(200).send({
+          success: true,
+          total: i - 1,
+        });
+      }
       const query = {};
       const skip = Number(page * pageSize) || 0;
       const limit = Number(pageSize) || 0;
-      const sortObj = {};
-      if (sort == 'name') sortObj.name = 1;
-      if (sort == 'namereverse') sortObj.name = -1;
       if (name) query.name = new RegExp(name, "i");
       if (enabled) query.enabled = !(enabled == "false");
       if (description) query.description = new RegExp(description, "i");
       if (categoryId) query.category = categoryId;
       if (exhibitorId) query.exhibitor = exhibitorId;
       const total = await productController.getlist(query).countDocuments();
-      const list = await productController.getlist(query).skip(skip).limit(limit).sort(sortObj);
+      const list = await productController.getlist(query).skip(skip).limit(limit).sort({ index: -1 });
       return res.status(200).send({
         success: true,
         data: list,
@@ -48,13 +58,15 @@ const handler = async (req, res) => {
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
       if (user?.mode != MODE.exhibitor && user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
-      const { body: { name, categoryId, exhibitorId = user._id, enabled, description }, files, err } = await uploader(req);
+      const { body: { nameVN, nameEN, categoryId, exhibitorId = user._id, enabled, descriptionVN, descriptionEN, index }, files, err } = await uploader(req);
       if (err || !files.length) throw ({ path: 'files' });
 
-      if (!name || !categoryId || !description) {
-        if (!name) throw ({ path: 'name', files })
+      if (!nameVN || !nameEN || !categoryId || !descriptionVN || !descriptionEN) {
+        if (!nameVN) throw ({ path: 'nameVN', files })
+        if (!nameEN) throw ({ path: 'nameEN', files })
         if (!categoryId) throw ({ path: 'categoryId', files })
-        throw ({ path: 'description', files })
+        if (!descriptionVN) throw ({ path: 'descriptionVN', files })
+        throw ({ path: 'descriptionEN', files })
       }
       if (user.mode == MODE.admin) {
         try {
@@ -73,15 +85,45 @@ const handler = async (req, res) => {
         if (err.path == '_id') throw ({ path: 'category', files });
         throw ({ err, files })
       }
-      const matchProduct = await productController.find({ name, exhibitor: exhibitorId, category: categoryId });
+      const matchProduct = await productController.find({ name: nameVN, exhibitor: exhibitorId, category: categoryId });
       if (matchProduct) throw ({ path: 'product', files, matchProduct });
+      let newIndex = 0;
+      if (index >= 0) {
+        if (index == 0) {
+          try {
+            const lastItem = await productController.find({ exhibitor: exhibitorId }).sort({ index: -1 });
+            newIndex = lastItem.index + 1;
+          } catch {
+            newIndex = 1;
+          }
+        }
+        else {
+          try {
+            const list = await productController.getlist({ exhibitor: exhibitorId }).skip(index - 1).limit(2).sort({ index: -1 });
+            const beforeIndex = list[0]?.index || 1;
+            const afterIndex = list[1]?.index || 0;
+            newIndex = (beforeIndex + afterIndex) / 2;
+          } catch {
+          }
+        }
+      }
+      else {
+        try {
+          const lastItem = await productController.find({ exhibitor: exhibitorId }).sort({ index: -1 });
+          newIndex = (lastItem?.index || 0) + 1;
+        }
+        catch { };
+      }
       const productCreated = await (await productController.create({
-        name,
+        name: nameVN,
+        names: { vn: nameVN, en: nameEN },
         image: files[0],
-        description,
+        description: descriptionVN,
+        descriptions: { vn: descriptionVN, en: descriptionEN },
         exhibitor: exhibitorId,
         category: categoryId,
-        enabled: !(enabled == 'false')
+        enabled: !(enabled == 'false'),
+        index: newIndex
       })).execPopulate();
       return res.status(201).send({
         success: true,
@@ -126,13 +168,22 @@ const handler = async (req, res) => {
           messages: lang?.message?.error?.upload_failed,
         });
       }
-      if (e.path == 'name') {
+      if (e.path == 'nameVN' || e.path == 'nameEN') {
         return res.status(400).send({
           success: false,
           validation: false,
-          field: 'name',
+          field: e.path,
           message: 'Tên sản phẩm không được để trống',
           messages: langConcat(lang?.resources?.productName, lang?.message?.error?.validation?.required)
+        });
+      }
+      if (e.path == 'descriptionVN' || e.path == 'descriptionEN') {
+        return res.status(400).send({
+          success: false,
+          validation: false,
+          field: e.path,
+          message: 'Mô tả sản phẩm không được để trống',
+          messages: langConcat(lang?.resources?.description, lang?.message?.error?.validation?.required)
         });
       }
       if (e.path == 'categoryId') {

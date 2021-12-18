@@ -209,7 +209,7 @@ class Exhibitor extends Component {
                         const active = ((!index && !categorySelected) || categorySelected === cate._id)
                         return (
                           <li key={cate._id} className={active ? "active" : ""}>
-                            <a href="#" onClick={e => this.handleSelect(e, cate._id)} style={active ? { fontWeight: '500' } : {}}>{cate.name}</a>
+                            <a href="#" onClick={e => this.handleSelect(e, cate._id)} style={active ? { fontWeight: '500' } : {}}>{translate(cate.names) || cate.name}</a>
                           </li>
                         );
                       })}
@@ -282,8 +282,8 @@ class Exhibitor extends Component {
                                       <img src={"/api/images/" + product.image} alt="" style={{ width: 'auto', height: 'auto' }} />
                                     </div>
                                     <div className="item-description">
-                                      <p><strong>{product.name}</strong></p>
-                                      <div className="dangerously" dangerouslySetInnerHTML={{ __html: product.description }} />
+                                      <p><strong>{translate(product.names) || product.name}</strong></p>
+                                      <div className="dangerously" dangerouslySetInnerHTML={{ __html: translate(product.descriptions) || product.description }} />
                                     </div>
                                   </div>
                                 </div>
@@ -314,7 +314,7 @@ class Exhibitor extends Component {
                       const active = ((!index && !categorySelected) || categorySelected === cate._id)
                       return (
                         <li key={cate._id} className={active ? "active" : ""}>
-                          <a href="#" onClick={e => this.handleSelect(e, cate._id)} style={active ? { fontWeight: '500' } : {}}>{cate.name}</a>
+                          <a href="#" onClick={e => this.handleSelect(e, cate._id)} style={active ? { fontWeight: '500' } : {}}>{translate(cate.names) || cate.name}</a>
                         </li>
                       );
                     })}

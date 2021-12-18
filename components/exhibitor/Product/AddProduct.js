@@ -11,11 +11,14 @@ class AddProduct extends Component {
     constructor(props) {
         super(props);
         this.defaultState = {
-            name: '',
+            nameVN: '',
+            nameEN: '',
             enabled: true,
+            index: 1,
             fieldError: null,
             message: '',
-            description: '',
+            descriptionVN: '',
+            descriptionEN: '',
             key: 0,
             files: null
         }
@@ -23,26 +26,26 @@ class AddProduct extends Component {
     }
     componentDidUpdate(prevProps) {
         if (!prevProps.onAdd && this.props.onAdd) {
-            this.setState({ ...this.defaultState, key: this.state.key + 1 })
+            this.setState({ ...this.defaultState, key: this.state.key + 1, index: 1 })
         }
     }
     handleChange = e => this.setState({ [e.target.name]: e.target.value, fieldError: false })
     handleSubmit = e => {
         e.preventDefault();
-        const { name, enabled, selected, files, description } = this.state;
+        const { nameVN, nameEN, enabled, selected, files, descriptionVN, descriptionEN, index } = this.state;
         const { categories, user, exUser } = this.props;
         const categoryId = selected || categories[0]?._id;
-        if (!name) {
-            this.setState({ fieldError: 'name', message: translate(langConcat(langConfig.resources.productName, langConfig.message.error.validation.required)) })
+        if (!nameVN || !nameEN) {
+            this.setState({ fieldError: !nameVN ? 'nameVN' : 'nameEN', message: translate(langConcat(langConfig.resources.productName, langConfig.message.error.validation.required)) })
         } else if (!categoryId) {
             this.setState({ fieldError: 'category', message: translate(langConfig.app.PleaseAddCategory) })
-        } else if (!description) {
-            this.setState({ fieldError: 'description', message: translate(langConcat(langConfig.resources.description, langConfig.message.error.validation.required)) })
+        } else if (!descriptionVN || !descriptionEN) {
+            this.setState({ fieldError: !descriptionVN ? 'descriptionVN' : 'descriptionEN', message: translate(langConcat(langConfig.resources.description, langConfig.message.error.validation.required)) })
         } else if (!files?.length) {
             this.setState({ fieldError: 'files', message: translate(langConcat(langConfig.resources.productImage, langConfig.message.error.validation.required)) })
         } else {
             const { dispatch, onAdded } = this.props;
-            const data = { name, enabled, categoryId, files, description };
+            const data = { nameVN, nameEN, enabled, categoryId, files, descriptionVN, descriptionEN, index: Number(index) - 1 || 0 };
             if (user.mode === MODE.admin) data.exhibitorId = exUser?._id;
             const formData = createFormData(data);
             dispatch({
@@ -84,8 +87,8 @@ class AddProduct extends Component {
 
 
     render() {
-        const { onAdd, handleClose, categories } = this.props;
-        const { dropActive, name, description, enabled, selected, dropCategory, fieldError, message, files, key } = this.state;
+        const { onAdd, handleClose, categories, total } = this.props;
+        const { dropActive, nameVN, nameEN, descriptionVN, descriptionEN, enabled, selected, dropCategory, fieldError, message, files, key, index } = this.state;
         const categorySelected = categories.find(i => i._id === selected) || categories[0] || {};
         return (
             <div id="add-pro-myDynamicModal" className={"modal-create modal fade" + (onAdd ? " in" : "")} style={{ display: onAdd ? 'block' : 'none' }}>
@@ -98,12 +101,12 @@ class AddProduct extends Component {
                             </div>
                             <div className="modal-body">
                                 <div className="row">
-                                    <div className="col-md-8 nopadding-right">
-                                        <div className={"form-group" + (fieldError === 'name' ? " has-error" : "")}>
-                                            <label htmlFor="add-pro-name">{translate(langConfig.resources.productName)}*</label>
-                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.productName))} required value={name} id="add-pro-name" name="name" type="text" onChange={this.handleChange} />
+                                    <div className="col-md-6 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'nameVN' ? " has-error" : "")}>
+                                            <label htmlFor="add-pro-nameVN">{translate(langConfig.resources.productName)} (VN)*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.productName))} required value={nameVN} id="add-pro-nameVN" name="nameVN" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
-                                                {fieldError === 'name' && message ?
+                                                {fieldError === 'nameVN' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>
@@ -111,33 +114,12 @@ class AddProduct extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-4 nopadding-left">
-                                        <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
-                                            <label htmlFor="add-pro-active">{translate(langConfig.app.Status)}*</label>
-                                            <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
-                                                <span className="selection" onClick={this.handleDropdown}>
-                                                    <span className="select2-selection select2-selection--single"  >
-                                                        <span className="select2-selection__rendered" id="add-pro-select2-active-container" title={translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}>
-                                                            {translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}
-                                                        </span>
-                                                        <span className="select2-selection__arrow" role="presentation">
-                                                            <b role="presentation" />
-                                                        </span>
-                                                    </span>
-                                                </span>
-                                                <div className={"dropdown-select" + (dropActive ? " active" : "")}>
-                                                    <div
-                                                        className={"select-option-active" + (enabled ? " active" : "")}
-                                                        onClick={this.handleSelectEnable}
-                                                    >{translate(langConfig.app.Active)}</div>
-                                                    <div
-                                                        className={"select-option-active" + (!enabled ? " active" : "")}
-                                                        onClick={this.handleSelectDisable}
-                                                    >{translate(langConfig.app.Inactive)}</div>
-                                                </div>
-                                            </span>
-                                            <div className="help-block with-errors" >
-                                                {fieldError === 'enabled' && message ?
+                                    <div className="col-md-6 nopadding-left">
+                                        <div className={"form-group" + (fieldError === 'nameEN' ? " has-error" : "")}>
+                                            <label htmlFor="add-pro-nameEN">{translate(langConfig.resources.productName)} (EN)*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.productName))} required value={nameEN} id="add-pro-nameEN" name="nameEN" type="text" onChange={this.handleChange} />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'nameEN' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>
@@ -179,20 +161,74 @@ class AddProduct extends Component {
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="col-md-6 nopadding-left">
+                                        <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
+                                            <label htmlFor="add-pro-active">{translate(langConfig.app.Status)}*</label>
+                                            <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
+                                                <span className="selection" onClick={this.handleDropdown}>
+                                                    <span className="select2-selection select2-selection--single"  >
+                                                        <span className="select2-selection__rendered" id="add-pro-select2-active-container" title={translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}>
+                                                            {translate(enabled ? langConfig.app.Active : langConfig.app.Inactive)}
+                                                        </span>
+                                                        <span className="select2-selection__arrow" role="presentation">
+                                                            <b role="presentation" />
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                                <div className={"dropdown-select" + (dropActive ? " active" : "")}>
+                                                    <div
+                                                        className={"select-option-active" + (enabled ? " active" : "")}
+                                                        onClick={this.handleSelectEnable}
+                                                    >{translate(langConfig.app.Active)}</div>
+                                                    <div
+                                                        className={"select-option-active" + (!enabled ? " active" : "")}
+                                                        onClick={this.handleSelectDisable}
+                                                    >{translate(langConfig.app.Inactive)}</div>
+                                                </div>
+                                            </span>
+                                            <div className="help-block with-errors" >
+                                                {fieldError === 'enabled' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className={"form-group" + (fieldError === 'description' ? " has-error" : "")}>
-                                    <label htmlFor="add-pro-description">{translate(langConfig.resources.description)}</label>
+                                <div className={"form-group" + (fieldError === 'descriptionVN' ? " has-error" : "")}>
+                                    <label htmlFor="add-pro-descriptionVN">{translate(langConfig.resources.description)} (VN)</label>
                                     <TextEditor
-                                        key={key}
+                                        key={"descriptionVN" + key}
                                         className="form-control summernote"
-                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.description))}
-                                        value={description}
-                                        name="description"
-                                        id="add-pro-description"
+                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.description)) + " (VN)"}
+                                        value={descriptionVN}
+                                        name="descriptionVN"
+                                        id="add-pro-descriptionVN"
                                         onChange={this.handleChange}
                                     />
                                     <div className="help-block with-errors">
-                                        {fieldError === 'description' && message ?
+                                        {fieldError === 'descriptionVN' && message ?
+                                            <ul className="list-unstyled">
+                                                <li>{message}.</li>
+                                            </ul>
+                                            : ""}
+                                    </div>
+                                </div>
+                                <div className={"form-group" + (fieldError === 'descriptionEN' ? " has-error" : "")}>
+                                    <label htmlFor="add-pro-descriptionEN">{translate(langConfig.resources.description)} (EN)</label>
+                                    <TextEditor
+                                        key={"descriptionEN" + key}
+                                        className="form-control summernote"
+                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.description)) + " (EN)"}
+                                        value={descriptionEN}
+                                        name="descriptionEN"
+                                        id="add-pro-descriptionEN"
+                                        onChange={this.handleChange}
+                                        row
+                                    />
+                                    <div className="help-block with-errors">
+                                        {fieldError === 'descriptionEN' && message ?
                                             <ul className="list-unstyled">
                                                 <li>{message}.</li>
                                             </ul>
@@ -217,6 +253,32 @@ class AddProduct extends Component {
                                             </div>
                                             <div className="help-block with-errors">
                                                 {fieldError === 'files' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'index' ? " has-error" : "")}>
+                                            <label htmlFor="add-pro-index">{translate(langConfig.app.Index)}*</label>
+                                            <input
+                                                className="form-control"
+                                                placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Index))}
+                                                required
+                                                value={index}
+                                                id="add-pro-index"
+                                                name="index"
+                                                type="number"
+                                                min={1}
+                                                max={(total || 0) + 1}
+                                                onChange={this.handleChange}
+                                            />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'index' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>

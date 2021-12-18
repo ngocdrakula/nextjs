@@ -42,7 +42,7 @@ const handler = async (req, res) => {
         throw ({ path: 'content-type', contentType });
       const user = jwt.verify(bearerToken);
       if (user?.mode != MODE.exhibitor && user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
-      const { body: { name, categoryId, industry, description, enabled }, files, err } = await uploader(req);
+      const { body: { nameVN, nameEN, categoryId, descriptionVN, descriptionEN, enabled, index }, files, err } = await uploader(req);
       if (err) throw ({ path: 'files' });
       try {
         const currentProduct = await productController.get(id);
@@ -57,23 +57,20 @@ const handler = async (req, res) => {
             if (err.path == '_id') throw ({ path: 'category', files });
             throw ({ err, files })
           }
-        } if (industry) {
-          try {
-            const category = await categoryController.get(industry);
-            if (!category) throw ({ path: '_id' })
-            currentProduct.industry = industry;
-          } catch (err) {
-            if (err.path == '_id') throw ({ path: 'category', files });
-            throw ({ err, files })
-          }
         }
-        if (name) {
-          const matchProduct = await productController.find({ name, exhibitor: currentProduct.exhibitor, category: currentProduct.category });
+        if (nameVN) {
+          const matchProduct = await productController.find({ name: nameVN, exhibitor: currentProduct.exhibitor, category: currentProduct.category });
           if (matchProduct && matchProduct._id.toString() != id) throw ({ path: 'name', files });
-          else currentProduct.name = name;
+          currentProduct.name = nameVN;
+          currentProduct.names.vn = nameVN;
         }
-        if (description) {
-          currentProduct.description = description;
+        if (nameEN) {
+          currentProduct.names.en = nameEN;
+        }
+        if (descriptionVN) {
+          currentProduct.description = descriptionVN;
+          currentProduct.descriptions.vn = descriptionVN;
+          currentProduct.descriptions.en = descriptionEN;
         }
         if (enabled != undefined) {
           currentProduct.enabled = !(enabled == "false");
@@ -82,7 +79,28 @@ const handler = async (req, res) => {
           await cleanFiles([currentProduct.image]);
           currentProduct.image = files[0];
         }
-        const productUpdated = await (await currentProduct.save()).populate('category').populate('exhibitor').populate('industry').execPopulate();
+
+        if (index >= 0) {
+          if (index == 0) {
+            try {
+              const lastItem = await productController.find({ exhibitor: currentProduct.exhibitor }).sort({ index: -1 });
+              currentProduct.index = lastItem.index + 1;
+            } catch (e) {
+              currentProduct.index = 1;
+            }
+          }
+          else {
+            try {
+              const list = await productController.getlist({ exhibitor: currentProduct.exhibitor }).skip(index - 1).limit(2).sort({ index: -1 });
+              const bigger = list[0];
+              const smaller = list[1];
+              currentProduct.index = ((bigger?.index || 1) + (smaller?.index || 0)) / 2;
+            } catch { }
+          }
+        }
+        currentProduct.markModified('names');
+        currentProduct.markModified('descriptions');
+        const productUpdated = await (await currentProduct.save()).populate('category').populate('exhibitor').execPopulate();
         return res.status(200).send({
           success: true,
           data: productUpdated,

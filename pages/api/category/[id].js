@@ -36,22 +36,44 @@ const handler = async (req, res) => {
       const user = jwt.verify(bearerToken);
       if (user?.mode != MODE.exhibitor && user?.mode != MODE.admin) throw ({ ...user, path: 'token' });
       const { id } = req.query;
-      const { name, exhibitor, enabled } = req.body;
+      const { nameVN, nameEN, exhibitor = user._id, enabled, index } = req.body;
       const currentCategory = await categoryController.get(id);
-      if (name) {
+      if ((user.mode != MODE.admin && exhibitor != currentCategory.exhibitor)) throw ({ ...user, path: 'token' })
+      if (nameVN) {
         try {
-          const matchCategory = await categoryController.find({ name, exhibitor: exhibitor || user._id });
-          if (matchCategory) throw ({ path: 'name', matchCategory });
+          const matchCategory = await categoryController.find({ name: nameVN, exhibitor: exhibitor || user._id });
+          if (matchCategory && matchCategory._id != id) throw ({ path: 'nameVN', matchCategory });
         } catch (e) {
           throw e
         }
-        currentCategory.name = name;
+        currentCategory.name = nameVN;
+        currentCategory.names.vn = nameVN;
       }
+      if (nameEN) currentCategory.names.en = nameEN;
       if (enabled != undefined) currentCategory.enabled = enabled;
-      await currentCategory.save();
+      if (index >= 0) {
+        if (index == 0) {
+          try {
+            const lastItem = await categoryController.find({ exhibitor }).sort({ index: -1 });
+            currentCategory.index = lastItem.index + 1;
+          } catch (e) {
+            currentCategory.index = 1;
+          }
+        }
+        else {
+          try {
+            const list = await categoryController.getlist({ exhibitor }).skip(index - 1).limit(2).sort({ index: -1 });
+            const bigger = list[0];
+            const smaller = list[1];
+            currentCategory.index = ((bigger?.index || 1) + (smaller?.index || 0)) / 2;
+          } catch { }
+        }
+      }
+      currentCategory.markModified('names');
+      const categoryUpdated = await currentCategory.save()
       return res.status(200).send({
         success: true,
-        data: currentCategory,
+        data: categoryUpdated,
         message: 'Cập nhật thành công',
         messages: lang?.message?.success?.updated
       });
@@ -72,11 +94,11 @@ const handler = async (req, res) => {
           messages: e.name == 'TokenExpiredError' ? lang?.message?.error?.tokenExpired : lang?.message?.error?.tokenError
         });
       }
-      if (e.path == 'name') {
+      if (e.path == 'nameVN' || e.path == 'nameEN') {
         return res.status(400).send({
           success: false,
           exist: true,
-          field: 'name',
+          field: e.path,
           current: e.matchCategory,
           message: "Tên chuyên mục đã tồn tại",
           messages: langConcat(lang?.resources?.categoryName, lang?.message?.error?.validation?.exist),

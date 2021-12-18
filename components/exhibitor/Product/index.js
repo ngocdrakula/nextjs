@@ -17,7 +17,8 @@ class Product extends Component {
         this.state = {
             onAdd: false,
             selecteds: [],
-            name: ''
+            name: '',
+            currentIndex: 0
         }
     }
     componentDidMount() {
@@ -137,9 +138,36 @@ class Product extends Component {
         clearTimeout(this.timeout);
         this.timeout = setTimeout(this.gotoPage, 1000);
     }
+    handleDrag = (_id) => {
+        this.dataTransfer = _id;
+    }
+    handleDragOver = (e, _id, index) => {
+        e.preventDefault();
+        if (this.target !== _id) {
+            document.getElementById(this.target)?.classList?.remove?.("drag-over");
+            this.target = _id;
+            document.getElementById(this.target)?.classList?.add?.("drag-over");
+            this.index = index;
+        }
+    }
+    handleDrop = (_id) => {
+        document.getElementById(this.target)?.classList?.remove?.("drag-over");
+        if (this.dataTransfer !== this.target) {
+            this.handleUpdateIndex();
+        }
+    }
+    handleUpdateIndex = () => {
+        const { dispatch } = this.props;
+        const formData = createFormData({ index: this.index });
+        dispatch({
+            type: types.ADMIN_UPDATE_PRODUCT,
+            payload: { _id: this.dataTransfer, formData },
+            callback: () => { this.gotoPage(this.props.page) }
+        })
+    }
     render() {
         const { active, products, page, total, categories } = this.props;
-        const { onAdd, onEdit, selecteds, name } = this.state;
+        const { onAdd, onEdit, selecteds, name, currentIndex } = this.state;
         if (!active) return null;
         return (
             <section className="content">
@@ -177,9 +205,11 @@ class Product extends Component {
                                                 </button>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%', minWidth: 100 }}>{translate(langConfig.resources.productImage)}</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '30%' }}>{translate(langConfig.resources.productName)}</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>{translate(langConfig.resources.category)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '5%' }}>{translate(langConfig.app.Index)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%', minWidth: 100 }}>{translate(langConfig.resources.productImage)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>{translate(langConfig.resources.productName)} (VN)</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>{translate(langConfig.resources.productName)} (EN)</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.resources.category)}</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Status)}</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ textAlign: 'center !important', }}>
                                             {translate(langConfig.app.Actions)}
@@ -191,7 +221,17 @@ class Product extends Component {
                                         const checked = (selecteds.indexOf(product._id) + 1) ? "checked" : "";
                                         const category = categories.find(c => c._id === product.category) || {};
                                         return (
-                                            <tr key={product._id} className={index % 2 ? "odd" : "even"} role="row">
+                                            <tr
+                                                id={product._id}
+                                                key={product._id}
+                                                className={index % 2 ? "odd" : "even"}
+                                                role="row"
+                                                draggable={true}
+                                                onDragStart={e => this.handleDrag(product._id)}
+                                                onDragOver={e => this.handleDragOver(e, product._id, page * pageSize + index)}
+                                                onDrop={e => this.handleDrop(product._id)}
+                                                className="allow-drag"
+                                            >
                                                 <td>
                                                     <div className={checked ? "icheckbox_minimal-blue checked" : "icheckbox_minimal-blue"} aria-checked="false" aria-disabled="false" style={{ position: 'relative' }}>
                                                         <ins
@@ -201,15 +241,19 @@ class Product extends Component {
                                                         />
                                                     </div>
                                                 </td>
+                                                <td>{page * pageSize + index + 1}</td>
                                                 <td>
                                                     {product.image ?
-                                                        <img src={"/api/images/" + product.image} style={{ width: 'auto', maxWidth: 100, height: 'auto', maxHeight: 100 }} alt="Ảnh sản phẩm" />
+                                                        <img src={"/api/images/" + product.image} style={{ width: 'auto', maxWidth: 100, height: 'auto', maxHeight: 100 }} alt="Ảnh sản phẩm" draggable={false} />
                                                         :
-                                                        <img src="/images/no-avatar.png" style={{ width: 'auto', maxWidth: 100, height: 'auto', maxHeight: 100 }} alt="Ảnh sản phẩm" />
+                                                        <img src="/images/no-avatar.png" style={{ width: 'auto', maxWidth: 100, height: 'auto', maxHeight: 100 }} alt="Ảnh sản phẩm" draggable={false} />
                                                     }
                                                 </td>
-                                                <td title={product.name}>
-                                                    {product.name?.split(0, 15)}
+                                                <td title={product.names?.vn || product.name}>
+                                                    {product.names?.vn || product.name}
+                                                </td>
+                                                <td title={product.names?.en || product.name}>
+                                                    {product.names?.en || product.name}
                                                     <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={e => { e.preventDefault(); this.handleDisable(product) }}>
                                                         <i className={"fa fa-heart" + (product.enabled ? "-o" : "")} title={translate(product.enabled ? langConfig.app.EnableProduct : langConfig.app.DisableProduct)} />
                                                     </a>
@@ -217,7 +261,7 @@ class Product extends Component {
                                                 <td>{category.name}</td>
                                                 <td>{translate(product.enabled ? langConfig.app.Active : langConfig.app.Inactive)}</td>
                                                 <td className="row-options">
-                                                    <a onClick={() => this.setState({ onEdit: product })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
+                                                    <a onClick={() => this.setState({ onEdit: product, currentIndex: page * pageSize + index })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
                                                         <i title={translate(langConfig.app.Edit)} className="fa fa-edit" />
                                                     </a>&nbsp;&nbsp;
                                                     <a onClick={() => this.handleDelete(product)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
@@ -233,8 +277,19 @@ class Product extends Component {
                         </div>
                     </div>
                 </div>
-                <AddProduct onAdd={onAdd} handleClose={this.handleOpenForm} onAdded={this.gotoPage} />
-                <UpdateProduct onEdit={onEdit} handleClose={() => this.setState({ onEdit: null })} />
+                <AddProduct
+                    onAdd={onAdd}
+                    handleClose={this.handleOpenForm}
+                    onAdded={this.gotoPage}
+                    total={total}
+                />
+                <UpdateProduct
+                    onEdit={onEdit}
+                    handleClose={() => this.setState({ onEdit: null })}
+                    onRefresh={() => this.gotoPage(page)}
+                    index={currentIndex + 1}
+                    total={total}
+                />
             </section >
         )
     }

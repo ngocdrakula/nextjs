@@ -63,7 +63,7 @@ class Livestream extends Component {
                             }} />
                             <div className="row">
                                 <div className="col-lg-12">
-                                    <p className="ft-semibold">{firstLive.description}</p>
+                                    <p className="ft-semibold">{translate(firstLive.descriptions) || firstLive.description}</p>
                                 </div>
                             </div>
                         </div>
@@ -91,8 +91,8 @@ class Livestream extends Component {
                                                     }} />
                                                 </div>
                                                 <div className="col-lg-7">
-                                                    <h6>{livestream.title}</h6>
-                                                    <p>{livestream.description}</p>
+                                                    <h6>{translate(livestream.titles) || livestream.title}</h6>
+                                                    <p>{translate(livestream.descriptions) || livestream.description}</p>
                                                 </div>
                                             </div>
                                         </div>

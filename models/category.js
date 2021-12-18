@@ -6,6 +6,13 @@ const category = new Schema({
         type: String,
         required: true,
     },
+    names: {
+        type: Schema.Types.Mixed,
+        default: {
+            vn: "",
+            en: ""
+        }
+    },
     exhibitor: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -15,6 +22,10 @@ const category = new Schema({
         type: Boolean,
         default: true
     },
+    index: {
+        type: Number,
+        default: 0
+    }
 }, {
     timestamps: { createdAt: 'createdAt' }
 });

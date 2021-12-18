@@ -9,7 +9,9 @@ class UpdateCategory extends Component {
     constructor(props) {
         super(props);
         this.defaultState = {
-            name: '',
+            nameVN: '',
+            nameEN: '',
+            index: 1,
             enabled: true,
         }
         this.state = { ...this.defaultState };
@@ -18,6 +20,9 @@ class UpdateCategory extends Component {
         if (!prevProps.onEdit && this.props.onEdit?._id) {
             this.setState({
                 ...this.props.onEdit,
+                nameVN: this.props.onEdit.names?.vn || this.props.onEdit.name,
+                nameEN: this.props.onEdit.names?.en,
+                index: this.props.index,
                 fieldError: null,
                 message: ''
             })
@@ -26,16 +31,17 @@ class UpdateCategory extends Component {
     handleChange = e => this.setState({ [e.target.name]: e.target.value, fieldError: false })
     handleSubmit = e => {
         e.preventDefault();
-        const { _id, name, enabled } = this.state;
-        const dataRequied = { name }
+        const { _id, nameVN, nameEN, enabled, index } = this.state;
+        const dataRequied = { nameVN, nameEN, index }
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
         if (fieldError) {
             this.setState({ fieldError, message: translate(langConfig.message.error.infomation) })
         }
         else {
-            const { dispatch, handleClose } = this.props;
-            const data = { _id, name, enabled }
+            const { dispatch, handleClose, onRefresh } = this.props;
+            const data = { _id, nameVN, nameEN, enabled };
+            if (index !== this.props.index) data.index = Number(index) + (Math.sign(index - this.props.index) - 1) / 2;
             dispatch({
                 type: types.ADMIN_UPDATE_CATEGORY,
                 payload: data,
@@ -49,8 +55,8 @@ class UpdateCategory extends Component {
                                 message: translate(langConfig.app.Updated),
                                 confirm: translate(langConfig.app.Accept),
                                 cancel: translate(langConfig.app.Close),
-                                handleConfirm: handleClose,
-                                handleCancel: handleClose
+                                handleConfirm: () => { if (index !== this.props.index) onRefresh(); handleClose(); },
+                                handleCancel: () => { if (index !== this.props.index) onRefresh(); handleClose(); }
                             },
                         });
                     }
@@ -68,8 +74,8 @@ class UpdateCategory extends Component {
     handleSelectEnable = () => this.setState({ enabled: true, dropActive: false })
     handleSelectDisable = () => this.setState({ enabled: false, dropActive: false })
     render() {
-        const { onEdit, handleClose } = this.props;
-        const { dropActive, name, enabled, fieldError, message } = this.state;
+        const { onEdit, handleClose, total } = this.props;
+        const { dropActive, nameVN, nameEN, enabled, fieldError, message, index } = this.state;
         return (
             <div id="vis-edit-myDynamicModal" className={"modal-create modal fade" + (onEdit ? " in" : "")} style={{ display: onEdit ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">
@@ -81,10 +87,19 @@ class UpdateCategory extends Component {
                             </div>
                             <div className="modal-body">
                                 <div className="row">
-                                    <div className="col-md-8 nopadding-right">
-                                        <div className={"form-group" + (fieldError === 'name' ? " has-error" : "")}>
-                                            <label htmlFor="vis-edit-name">{translate(langConfig.resources.categoryName)}*</label>
-                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.categoryName))} required value={name} id="vis-edit-name" name="name" type="text" onChange={this.handleChange} />
+                                    <div className="col-md-6 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'nameVN' ? " has-error" : "")}>
+                                            <label htmlFor="vis-edit-nameVN">{translate(langConfig.resources.categoryName)} (VN)*</label>
+                                            <input
+                                                className="form-control"
+                                                placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.categoryName))}
+                                                required
+                                                value={nameVN}
+                                                id="vis-edit-nameVN"
+                                                name="nameVN"
+                                                type="text"
+                                                onChange={this.handleChange}
+                                            />
                                             <div className="help-block with-errors">
                                                 {fieldError === 'name' && message ?
                                                     <ul className="list-unstyled">
@@ -94,7 +109,31 @@ class UpdateCategory extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-4 nopadding-left">
+                                    <div className="col-md-6 nopadding-left">
+                                        <div className={"form-group" + (fieldError === 'nameEN' ? " has-error" : "")}>
+                                            <label htmlFor="vis-edit-nameEN">{translate(langConfig.resources.categoryName)} (EN)*</label>
+                                            <input
+                                                className="form-control"
+                                                placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.categoryName))}
+                                                required
+                                                value={nameEN}
+                                                id="vis-edit-nameEN"
+                                                name="nameEN"
+                                                type="text"
+                                                onChange={this.handleChange}
+                                            />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'name' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
                                             <label htmlFor="vis-edit-active">{translate(langConfig.app.Status)}*</label>
                                             <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
@@ -121,6 +160,30 @@ class UpdateCategory extends Component {
                                             </span>
                                             <div className="help-block with-errors" >
                                                 {fieldError === 'enabled' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6 nopadding-left">
+                                        <div className={"form-group" + (fieldError === 'index' ? " has-error" : "")}>
+                                            <label htmlFor="vis-edit-index">{translate(langConfig.app.Index)}*</label>
+                                            <input
+                                                className="form-control"
+                                                placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Index))}
+                                                required
+                                                value={index}
+                                                id="vis-edit-index"
+                                                name="index"
+                                                type="number"
+                                                min={1}
+                                                max={(total || 1)}
+                                                onChange={this.handleChange}
+                                            />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'name' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>

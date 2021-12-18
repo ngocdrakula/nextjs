@@ -11,8 +11,11 @@ class UpdateProduct extends Component {
     constructor(props) {
         super(props);
         this.defaultState = {
-            name: '',
-            description: '',
+            nameVN: '',
+            nameEN: '',
+            descriptionVN: '',
+            descriptionEN: '',
+            index: 1,
             enabled: true,
             files: null,
             fieldError: null,
@@ -24,6 +27,14 @@ class UpdateProduct extends Component {
         if (!prevProps.onEdit && this.props.onEdit?._id) {
             this.setState({
                 ...this.props.onEdit,
+                nameVN: this.props.onEdit.names?.vn || this.props.onEdit.name,
+                nameEN: this.props.onEdit.names?.en,
+                descriptionVN: this.props.onEdit.descriptions?.vn || this.props.onEdit.description,
+                descriptionEN: this.props.onEdit.descriptions?.en,
+                selected: this.props.onEdit.category,
+                index: this.props.index,
+                fieldError: null,
+                message: ''
             })
         }
         else if (prevProps.onEdit && !this.props.onEdit?._id) {
@@ -36,18 +47,19 @@ class UpdateProduct extends Component {
     handleChange = e => this.setState({ [e.target.name]: e.target.value, fieldError: false })
     handleSubmit = e => {
         e.preventDefault();
-        const { _id, name, description, enabled, category, files } = this.state;
+        const { _id, nameVN, nameEN, descriptionVN, descriptionEN, enabled, category, files, index } = this.state;
         const { categories } = this.props;
         const categoryId = categories.find(c => c._id === category) ? category : categories[0]?._id;
-        if (!name) {
-            this.setState({ fieldError: 'name', message: translate(langConcat(langConfig.resources.productName, langConfig.message.error.validation.required)) })
+        if (!nameVN || !nameEN) {
+            this.setState({ fieldError: !nameVN ? 'nameVN' : 'nameEN', message: translate(langConcat(langConfig.resources.productName, langConfig.message.error.validation.required)) })
         } else if (!categoryId) {
             this.setState({ fieldError: 'category', message: translate(langConfig.app.PleaseAddCategory) })
-        } else if (!description) {
-            this.setState({ fieldError: 'description', message: translate(langConcat(langConfig.resources.description, langConfig.message.error.validation.required)) })
+        } else if (!descriptionVN || !descriptionEN) {
+            this.setState({ fieldError: !descriptionVN ? 'descriptionVN' : 'descriptionEN', message: translate(langConcat(langConfig.resources.description, langConfig.message.error.validation.required)) })
         } else {
-            const { dispatch, handleClose } = this.props;
-            const data = { _id, name, categoryId, description, enabled }
+            const { dispatch, handleClose, onRefresh } = this.props;
+            const data = { _id, nameVN, nameEN, descriptionVN, descriptionEN, categoryId, enabled }
+            if (index !== this.props.index) data.index = Number(index) + (Math.sign(index - this.props.index) - 1) / 2;
             if (files?.length) data.files = files;
             const formData = createFormData(data);
             dispatch({
@@ -63,8 +75,8 @@ class UpdateProduct extends Component {
                                 message: translate(langConfig.app.Updated),
                                 confirm: translate(langConfig.app.Accept),
                                 cancel: translate(langConfig.app.Close),
-                                handleConfirm: handleClose,
-                                handleCancel: handleClose
+                                handleConfirm: () => { if (index !== this.props.index) onRefresh(); handleClose(); },
+                                handleCancel: () => { if (index !== this.props.index) onRefresh(); handleClose(); }
                             },
                         });
                     }
@@ -88,9 +100,9 @@ class UpdateProduct extends Component {
     }
 
     render() {
-        const { onEdit, handleClose, categories } = this.props;
-        const { dropActive, name, description, enabled, category, image, dropCategory, fieldError, message, files, _id } = this.state;
-        const categorySelected = categories.find(i => i._id === category) || categories[0] || {};
+        const { onEdit, handleClose, total, categories } = this.props;
+        const { dropActive, nameVN, nameEN, descriptionVN, descriptionEN, enabled, selected, image, dropCategory, fieldError, message, files, _id, index } = this.state;
+        const categorySelected = categories.find(i => i._id === selected) || categories[0] || {};
         return (
             <div id="edit-pro-myDynamicModal" className={"modal-create modal fade" + (onEdit ? " in" : "")} style={{ display: onEdit ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">
@@ -102,12 +114,12 @@ class UpdateProduct extends Component {
                             </div>
                             <div className="modal-body">
                                 <div className="row">
-                                    <div className="col-md-8 nopadding-right">
-                                        <div className={"form-group" + (fieldError === 'name' ? " has-error" : "")}>
-                                            <label htmlFor="edit-pro-name">{translate(langConfig.resources.productName)}*</label>
-                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Edit, langConfig.resources.productName))} required value={name} id="edit-pro-name" name="name" type="text" onChange={this.handleChange} />
+                                    <div className="col-md-6 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'nameVN' ? " has-error" : "")}>
+                                            <label htmlFor="edit-pro-nameVN">{translate(langConfig.resources.productName)} (VN)*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.productName))} required value={nameVN} id="edit-pro-nameVN" name="nameVN" type="text" onChange={this.handleChange} />
                                             <div className="help-block with-errors">
-                                                {fieldError === 'name' && message ?
+                                                {fieldError === 'nameVN' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>
@@ -115,7 +127,54 @@ class UpdateProduct extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-4 nopadding-left">
+                                    <div className="col-md-6 nopadding-left">
+                                        <div className={"form-group" + (fieldError === 'nameEN' ? " has-error" : "")}>
+                                            <label htmlFor="edit-pro-nameEN">{translate(langConfig.resources.productName)} (EN)*</label>
+                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.productName))} required value={nameEN} id="edit-pro-nameEN" name="nameEN" type="text" onChange={this.handleChange} />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'nameEN' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'category' ? " has-error" : "")}>
+                                            <label htmlFor="edit-pro-active">{translate(langConfig.resources.category)}*</label>
+                                            <span className={"select2 select2-container select2-container--default" + (dropCategory ? " select2-container--open" : "")} style={{ width: '100%' }}>
+                                                <span className="selection" onClick={this.handleDropdownCategory}>
+                                                    <span className="select2-selection select2-selection--single"  >
+                                                        <span className="select2-selection__rendered" id="edit-pro-select2-active-container" title={categorySelected.name}>{categorySelected.name}</span>
+                                                        <span className="select2-selection__arrow" role="presentation">
+                                                            <b role="presentation" />
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                                <div className={"dropdown-select" + (dropCategory ? " active" : "")}>
+                                                    {categories.map(category => {
+                                                        return (
+                                                            <div key={category._id}
+                                                                className={"select-option-active" + (selected === category._id ? " active" : "")}
+                                                                onClick={() => this.setState({ selected: category._id, dropCategory: false })}
+                                                            >{category.name}</div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            </span>
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'category' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6 nopadding-left">
                                         <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
                                             <label htmlFor="edit-pro-active">{translate(langConfig.app.Status)}*</label>
                                             <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
@@ -150,53 +209,39 @@ class UpdateProduct extends Component {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="row">
-                                    <div className="col-md-6 nopadding-right">
-                                        <div className={"form-group" + (fieldError === 'category' ? " has-error" : "")}>
-                                            <label htmlFor="edit-pro-active">{translate(langConfig.resources.category)}*</label>
-                                            <span className={"select2 select2-container select2-container--default" + (dropCategory ? " select2-container--open" : "")} style={{ width: '100%' }}>
-                                                <span className="selection" onClick={this.handleDropdownCategory}>
-                                                    <span className="select2-selection select2-selection--single"  >
-                                                        <span className="select2-selection__rendered" id="edit-pro-select2-active-container" title={categorySelected.name}>{categorySelected.name}</span>
-                                                        <span className="select2-selection__arrow" role="presentation">
-                                                            <b role="presentation" />
-                                                        </span>
-                                                    </span>
-                                                </span>
-                                                <div className={"dropdown-select" + (dropCategory ? " active" : "")}>
-                                                    {categories.map(category => {
-                                                        return (
-                                                            <div key={category._id}
-                                                                className={"select-option-active" + (category === category._id ? " active" : "")}
-                                                                onClick={() => this.setState({ category: category._id, dropCategory: false })}
-                                                            >{category.name}</div>
-                                                        )
-                                                    })}
-                                                </div>
-                                            </span>
-                                            <div className="help-block with-errors">
-                                                {fieldError === 'category' && message ?
-                                                    <ul className="list-unstyled">
-                                                        <li>{message}.</li>
-                                                    </ul>
-                                                    : ""}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className={"form-group" + (fieldError === 'description' ? " has-error" : "")}>
-                                    <label htmlFor="edit-pro-description">{translate(langConfig.resources.description)}</label>
+                                <div className={"form-group" + (fieldError === 'descriptionVN' ? " has-error" : "")}>
+                                    <label htmlFor="edit-pro-descriptionVN">{translate(langConfig.resources.description)} (VN)</label>
                                     <TextEditor
-                                        key={_id}
+                                        key={"descriptionVN" + _id}
                                         className="form-control summernote"
-                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.description))}
-                                        value={description}
-                                        name="description"
-                                        id="edit-pro-description"
+                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.description)) + " (VN)"}
+                                        value={descriptionVN}
+                                        name="descriptionVN"
+                                        id="edit-pro-descriptionVN"
                                         onChange={this.handleChange}
                                     />
                                     <div className="help-block with-errors">
-                                        {fieldError === 'description' && message ?
+                                        {fieldError === 'descriptionVN' && message ?
+                                            <ul className="list-unstyled">
+                                                <li>{message}.</li>
+                                            </ul>
+                                            : ""}
+                                    </div>
+                                </div>
+                                <div className={"form-group" + (fieldError === 'descriptionEN' ? " has-error" : "")}>
+                                    <label htmlFor="edit-pro-descriptionEN">{translate(langConfig.resources.description)} (EN)</label>
+                                    <TextEditor
+                                        key={"descriptionEN" + _id}
+                                        className="form-control summernote"
+                                        placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.description)) + " (EN)"}
+                                        value={descriptionEN}
+                                        name="descriptionEN"
+                                        id="edit-pro-descriptionEN"
+                                        onChange={this.handleChange}
+                                        row
+                                    />
+                                    <div className="help-block with-errors">
+                                        {fieldError === 'descriptionEN' && message ?
                                             <ul className="list-unstyled">
                                                 <li>{message}.</li>
                                             </ul>
@@ -228,6 +273,32 @@ class UpdateProduct extends Component {
                                             </div>
                                             <div className="help-block with-errors">
                                                 {fieldError === 'files' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'index' ? " has-error" : "")}>
+                                            <label htmlFor="edit-pro-index">{translate(langConfig.app.Index)}*</label>
+                                            <input
+                                                className="form-control"
+                                                placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Index))}
+                                                required
+                                                value={index}
+                                                id="edit-pro-index"
+                                                name="index"
+                                                type="number"
+                                                min={1}
+                                                max={(total || 0) + 1}
+                                                onChange={this.handleChange}
+                                            />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'index' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>

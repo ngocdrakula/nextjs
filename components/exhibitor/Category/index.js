@@ -16,7 +16,8 @@ class Category extends Component {
         this.state = {
             onAdd: false,
             selecteds: [],
-            name: ''
+            name: '',
+            currentIndex: 0
         }
     }
     componentDidMount() {
@@ -134,9 +135,35 @@ class Category extends Component {
         clearTimeout(this.timeout);
         this.timeout = setTimeout(this.gotoPage, 1000);
     }
+    handleDrag = (_id) => {
+        this.dataTransfer = _id;
+    }
+    handleDragOver = (e, _id, index) => {
+        e.preventDefault();
+        if (this.target !== _id) {
+            document.getElementById(this.target)?.classList?.remove?.("drag-over");
+            this.target = _id;
+            document.getElementById(this.target)?.classList?.add?.("drag-over");
+            this.index = index;
+        }
+    }
+    handleDrop = (_id) => {
+        document.getElementById(this.target)?.classList?.remove?.("drag-over");
+        if (this.dataTransfer !== this.target) {
+            this.handleUpdateIndex();
+        }
+    }
+    handleUpdateIndex = () => {
+        const { dispatch } = this.props;
+        dispatch({
+            type: types.ADMIN_UPDATE_CATEGORY,
+            payload: { _id: this.dataTransfer, index: this.index },
+            callback: this.gotoPage
+        })
+    }
     render() {
         const { active, categories } = this.props;
-        const { onAdd, onEdit, selecteds, name } = this.state;
+        const { onAdd, onEdit, selecteds, name, currentIndex } = this.state;
         if (!active) return null;
         return (
             <section className="content">
@@ -175,9 +202,10 @@ class Category extends Component {
                                             </div>
                                         </th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Index)}</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '55%' }}>{translate(langConfig.resources.categoryName)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>{translate(langConfig.resources.categoryName)} (VN)</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '25%' }}>{translate(langConfig.resources.categoryName)} (EN)</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.app.Status)}</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }} >
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }} >
                                             {translate(langConfig.app.Actions)}
                                         </th>
                                     </tr>
@@ -186,7 +214,17 @@ class Category extends Component {
                                     {categories.map((category, index) => {
                                         const checked = (selecteds.indexOf(category._id) + 1) ? "checked" : "";
                                         return (
-                                            <tr key={category._id} className={index % 2 ? "odd" : "even"} role="row">
+                                            <tr
+                                                id={category._id}
+                                                key={category._id}
+                                                className={index % 2 ? "odd" : "even"}
+                                                role="row"
+                                                draggable={true}
+                                                onDragStart={e => this.handleDrag(category._id)}
+                                                onDragOver={e => this.handleDragOver(e, category._id, index)}
+                                                onDrop={e => this.handleDrop(category._id)}
+                                                className="allow-drag"
+                                            >
                                                 <td>
                                                     <div className={checked ? "icheckbox_minimal-blue checked" : "icheckbox_minimal-blue"} aria-checked="false" aria-disabled="false" style={{ position: 'relative' }}>
                                                         <ins
@@ -197,15 +235,18 @@ class Category extends Component {
                                                     </div>
                                                 </td>
                                                 <td>{index + 1}</td>
-                                                <td title={category.name}>
-                                                    {category.name}
+                                                <td title={category.names?.vn || category.name}>
+                                                    {category.names?.vn || category.name}
+                                                </td>
+                                                <td title={category.names?.en || ""}>
+                                                    {category.names?.en || ""}
                                                     <a href="#" type="button" className="toggle-widget toggle-confirm pull-right" onClick={e => { e.preventDefault(); this.handleDisable(category) }}>
                                                         <i className={"fa fa-heart" + (category.enabled ? "-o" : "")} title={translate(category.enabled ? langConfig.app.EnableCategory : langConfig.app.DisableCategory)} />
                                                     </a>
                                                 </td>
                                                 <td>{translate(category.enabled ? langConfig.app.Active : langConfig.app.Inactive)}</td>
                                                 <td className="row-options">
-                                                    <a onClick={() => this.setState({ onEdit: category })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
+                                                    <a onClick={() => this.setState({ onEdit: category, currentIndex: index })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
                                                         <i title={translate(langConfig.app.Edit)} className="fa fa-edit" />
                                                     </a>&nbsp;&nbsp;
                                                     <a onClick={() => this.handleDelete(category)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
@@ -221,9 +262,9 @@ class Category extends Component {
                         </div>
                     </div>
                 </div>
-                <AddCategory onAdd={onAdd} handleClose={this.handleOpenForm} onAdded={this.gotoPage} />
-                <UpdateCategory onEdit={onEdit} handleClose={() => this.setState({ onEdit: null })} />
-            </section>
+                <AddCategory onAdd={onAdd} handleClose={this.handleOpenForm} onAdded={this.gotoPage} total={categories.length} />
+                <UpdateCategory onEdit={onEdit} handleClose={() => this.setState({ onEdit: null })} onRefresh={this.gotoPage} index={currentIndex + 1} total={categories.length} />
+            </section >
         )
     }
 }

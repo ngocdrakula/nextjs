@@ -9,7 +9,9 @@ class Category extends Component {
     constructor(props) {
         super(props);
         this.defaultState = {
-            name: '',
+            nameVN: '',
+            nameEN: '',
+            index: 1,
             enabled: true,
             fieldError: null,
             message: ''
@@ -18,16 +20,16 @@ class Category extends Component {
     }
     componentDidUpdate(prevProps) {
         if (!prevProps.onAdd && this.props.onAdd) {
-            this.setState({ ...this.defaultState })
+            this.setState({ ...this.defaultState, index: 1 })
         }
     }
     handleChange = e => this.setState({ [e.target.name]: e.target.value, fieldError: false })
     handleSubmit = e => {
         const { dispatch, onAdded, exUser } = this.props;
         e.preventDefault();
-        const { name, enabled } = this.state;
-        const data = { name, enabled, exhibitor: exUser?._id }
-        const dataRequied = { name }
+        const { nameVN, nameEN, enabled, index } = this.state;
+        const data = { nameVN, nameEN, enabled, exhibitor: exUser?._id, index: Number(index) - 1 || 0 }
+        const dataRequied = { nameVN, nameEN };
         const fieldError = Object.keys(dataRequied).find(field => !dataRequied[field]);
 
         if (fieldError) {
@@ -68,8 +70,8 @@ class Category extends Component {
 
 
     render() {
-        const { onAdd, handleClose } = this.props;
-        const { dropActive, name, enabled, fieldError, message } = this.state;
+        const { onAdd, handleClose, total } = this.props;
+        const { dropActive, nameVN, nameEN, enabled, fieldError, message, index } = this.state;
         return (
             <div id="add-vis-myDynamicModal" className={"modal-create modal fade" + (onAdd ? " in" : "")} style={{ display: onAdd ? 'block' : 'none' }}>
                 <div className="modal-dialog modal-lg">
@@ -81,12 +83,21 @@ class Category extends Component {
                             </div>
                             <div className="modal-body">
                                 <div className="row">
-                                    <div className="col-md-8 nopadding-right">
-                                        <div className={"form-group" + (fieldError === 'name' ? " has-error" : "")}>
-                                            <label htmlFor="add-vis-name">{translate(langConfig.resources.categoryName)}*</label>
-                                            <input className="form-control" placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.categoryName))} required value={name} required value={name} id="add-vis-name" name="name" type="text" onChange={this.handleChange} />
+                                    <div className="col-md-6 nopadding-right">
+                                        <div className={"form-group" + (fieldError === 'nameVN' ? " has-error" : "")}>
+                                            <label htmlFor="add-vis-nameVN">{translate(langConfig.resources.categoryName)}*</label>
+                                            <input
+                                                className="form-control"
+                                                placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.categoryName))}
+                                                required
+                                                value={nameVN}
+                                                id="add-vis-nameVN"
+                                                name="nameVN"
+                                                type="text"
+                                                onChange={this.handleChange}
+                                            />
                                             <div className="help-block with-errors">
-                                                {fieldError === 'name' && message ?
+                                                {fieldError === 'nameVN' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>
@@ -94,7 +105,31 @@ class Category extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-4 nopadding-left">
+                                    <div className="col-md-6 nopadding-left">
+                                        <div className={"form-group" + (fieldError === 'nameEN' ? " has-error" : "")}>
+                                            <label htmlFor="add-vis-nameEN">{translate(langConfig.resources.categoryName)}*</label>
+                                            <input
+                                                className="form-control"
+                                                placeholder={translate(langConcat(langConfig.app.Enter, langConfig.resources.categoryName))}
+                                                required
+                                                value={nameEN}
+                                                id="add-vis-nameEN"
+                                                name="nameEN"
+                                                type="text"
+                                                onChange={this.handleChange}
+                                            />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'nameEN' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6 nopadding-right">
                                         <div className={"form-group" + (fieldError === 'enabled' ? " has-error" : "")}>
                                             <label htmlFor="active">{translate(langConfig.app.Status)}*</label>
                                             <span className={"select2 select2-container select2-container--default" + (dropActive ? " select2-container--open" : "")} style={{ width: '100%' }}>
@@ -121,6 +156,30 @@ class Category extends Component {
                                             </span>
                                             <div className="help-block with-errors" >
                                                 {fieldError === 'enabled' && message ?
+                                                    <ul className="list-unstyled">
+                                                        <li>{message}.</li>
+                                                    </ul>
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6 nopadding-left">
+                                        <div className={"form-group" + (fieldError === 'index' ? " has-error" : "")}>
+                                            <label htmlFor="add-vis-index">{translate(langConfig.app.Index)}*</label>
+                                            <input
+                                                className="form-control"
+                                                placeholder={translate(langConcat(langConfig.app.Enter, langConfig.app.Index))}
+                                                required
+                                                value={index}
+                                                id="add-vis-index"
+                                                name="index"
+                                                type="number"
+                                                min={1}
+                                                max={(total || 0) + 1}
+                                                onChange={this.handleChange}
+                                            />
+                                            <div className="help-block with-errors">
+                                                {fieldError === 'index' && message ?
                                                     <ul className="list-unstyled">
                                                         <li>{message}.</li>
                                                     </ul>

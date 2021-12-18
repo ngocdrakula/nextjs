@@ -16,7 +16,8 @@ class Livestream extends Component {
         this.state = {
             onAdd: false,
             selecteds: [],
-            title: ''
+            title: '',
+            currentIndex: 0
         }
     }
     componentDidMount() {
@@ -135,9 +136,35 @@ class Livestream extends Component {
         clearTimeout(this.timeout);
         this.timeout = setTimeout(this.gotoPage, 1000);
     }
+    handleDrag = (_id) => {
+        this.dataTransfer = _id;
+    }
+    handleDragOver = (e, _id, index) => {
+        e.preventDefault();
+        if (this.target !== _id) {
+            document.getElementById(this.target)?.classList?.remove?.("drag-over");
+            this.target = _id;
+            document.getElementById(this.target)?.classList?.add?.("drag-over");
+            this.index = index;
+        }
+    }
+    handleDrop = (_id) => {
+        document.getElementById(this.target)?.classList?.remove?.("drag-over");
+        if (this.dataTransfer !== this.target) {
+            this.handleUpdateIndex();
+        }
+    }
+    handleUpdateIndex = () => {
+        const { dispatch } = this.props;
+        dispatch({
+            type: types.ADMIN_UPDATE_LIVESTREAM,
+            payload: { _id: this.dataTransfer, index: this.index },
+            callback: () => { this.gotoPage(this.props.page) }
+        })
+    }
     render() {
         const { active, livestreams, page, total } = this.props;
-        const { onAdd, onEdit, selecteds, title } = this.state;
+        const { onAdd, onEdit, selecteds, title, currentIndex } = this.state;
         if (!active) return null;
         return (
             <section className="content">
@@ -168,15 +195,18 @@ class Livestream extends Component {
                             <table className="table table-hover table-2nd-no-sort dataTable no-footer" id="DataTables_Table_1">
                                 <thead>
                                     <tr role="row">
-                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>
+                                        <th className="massActionWrapper sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>
                                             <div className="btn-group ">
                                                 <button type="button" className="btn btn-xs btn-default checkbox-toggle" onClick={this.handleSelectAll}>
                                                     <i className={selecteds.length ? "fa fa-check-square-o" : "fa fa-square-o"} title="Select all" />
                                                 </button>
                                             </div>
                                         </th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%', minWidth: 150 }}>{translate(langConfig.app.Title)}</th>
-                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '30%' }}>{translate(langConfig.resources.description)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '5%' }}>{translate(langConfig.app.Index)}</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Title)} (VN)</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Title)} (EN)</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.resources.description)}(VN)</th>
+                                        <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '15%' }}>{translate(langConfig.resources.description)} (EN)</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '20%' }}>{translate(langConfig.resources.link)}</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ width: '10%' }}>{translate(langConfig.app.Status)}</th>
                                         <th className="sorting_disabled" rowSpan={1} colSpan={1} style={{ textAlign: 'center !important', width: '10%' }} >
@@ -188,7 +218,17 @@ class Livestream extends Component {
                                     {livestreams.map((livestream, index) => {
                                         const checked = (selecteds.indexOf(livestream._id) + 1) ? "checked" : "";
                                         return (
-                                            <tr key={livestream._id} className={index % 2 ? "odd" : "even"} role="row">
+                                            <tr
+                                                id={livestream._id}
+                                                key={livestream._id}
+                                                className={index % 2 ? "odd" : "even"}
+                                                role="row"
+                                                draggable={true}
+                                                onDragStart={e => this.handleDrag(livestream._id)}
+                                                onDragOver={e => this.handleDragOver(e, livestream._id, page * pageSize + index)}
+                                                onDrop={e => this.handleDrop(livestream._id)}
+                                                className="allow-drag"
+                                            >
                                                 <td>
                                                     <div className={checked ? "icheckbox_minimal-blue checked" : "icheckbox_minimal-blue"} aria-checked="false" aria-disabled="false" style={{ position: 'relative' }}>
                                                         <ins
@@ -198,16 +238,23 @@ class Livestream extends Component {
                                                         />
                                                     </div>
                                                 </td>
-                                                <td title={livestream.title}>
-                                                    {livestream.title}
+                                                <td>{page * pageSize + index + 1}</td>
+                                                <td title={livestream.titles?.vn || livestream.title}>
+                                                    {livestream.titles?.vn || livestream.title}
                                                 </td>
-                                                <td title={livestream.description}>
-                                                    {livestream.description}
+                                                <td title={livestream.titles?.en || livestream.title}>
+                                                    {livestream.titles?.en || livestream.title}
+                                                </td>
+                                                <td title={livestream.descriptions?.vn || livestream.description}>
+                                                    {livestream.descriptions?.vn || livestream.description}
+                                                </td>
+                                                <td title={livestream.descriptions?.en || livestream.description}>
+                                                    {livestream.descriptions?.en || livestream.description}
                                                 </td>
                                                 <td className="livestream-link">{livestream.link}</td>
                                                 <td>{translate(livestream.enabled ? langConfig.app.Active : langConfig.app.Inactive)}</td>
                                                 <td className="row-options">
-                                                    <a onClick={() => this.setState({ onEdit: livestream })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
+                                                    <a onClick={() => this.setState({ onEdit: livestream, currentIndex: page * pageSize + index })} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
                                                         <i title={translate(langConfig.app.Edit)} className="fa fa-edit" />
                                                     </a>&nbsp;&nbsp;
                                                     <a onClick={() => this.handleDelete(livestream)} className="ajax-modal-btn" style={{ cursor: 'pointer' }}>
@@ -223,8 +270,19 @@ class Livestream extends Component {
                         </div>
                     </div>
                 </div>
-                <AddLivestream onAdd={onAdd} handleClose={this.handleOpenForm} onAdded={this.gotoPage} />
-                <UpdateLivestream onEdit={onEdit} handleClose={() => this.setState({ onEdit: null })} />
+                <AddLivestream
+                    onAdd={onAdd}
+                    handleClose={this.handleOpenForm}
+                    onAdded={this.gotoPage}
+                    total={total}
+                />
+                <UpdateLivestream
+                    onEdit={onEdit}
+                    handleClose={() => this.setState({ onEdit: null })}
+                    onRefresh={() => this.gotoPage(page)}
+                    index={currentIndex + 1}
+                    total={total}
+                />
             </section >
         )
     }

@@ -16,7 +16,7 @@ function remove(tradeId) {
     return (livestreamData.findByIdAndRemove(tradeId));
 }
 function getlist(query) {
-    return (livestreamData.find(query).sort({ createdAt: -1 }))
+    return (livestreamData.find(query));
 }
 function removeMany(query) {
     return (livestreamData.deleteMany(query));

@@ -15,9 +15,23 @@ const livestream = new Schema({
         type: String,
         default: ''
     },
+    titles: {
+        type: Schema.Types.Mixed,
+        default: {
+            vn: "",
+            en: ""
+        }
+    },
     description: {
         type: String,
         default: ''
+    },
+    descriptions: {
+        type: Schema.Types.Mixed,
+        default: {
+            vn: "",
+            en: ""
+        }
     },
     embed: {
         type: String,
@@ -27,6 +41,10 @@ const livestream = new Schema({
         type: Boolean,
         default: true
     },
+    index: {
+        type: Number,
+        default: 0
+    }
 }, {
     timestamps: { createdAt: 'createdAt' }
 });
