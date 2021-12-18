@@ -100,7 +100,7 @@ const handler = async (req, res) => {
         }
         currentProduct.markModified('names');
         currentProduct.markModified('descriptions');
-        const productUpdated = await (await currentProduct.save()).populate('category').populate('exhibitor').execPopulate();
+        const productUpdated = await currentProduct.save();
         return res.status(200).send({
           success: true,
           data: productUpdated,
