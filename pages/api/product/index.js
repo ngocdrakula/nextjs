@@ -15,9 +15,11 @@ const handler = async (req, res) => {
         const list = await productController.getlist({});
         let i = 1;
         for (let product of list) {
-          product.index = i;
           if (!product.exhibitor) await product.remove();
-          await product.save();
+          else {
+            product.index = i;
+            await product.save();
+          }
           i++;
         }
         return res.status(200).send({
