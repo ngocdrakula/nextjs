@@ -16,6 +16,7 @@ const handler = async (req, res) => {
         let i = 1;
         for (let product of list) {
           product.index = i;
+          if (!product.exhibitor) await product.remove();
           await product.save();
           i++;
         }
