@@ -737,6 +737,14 @@ const langConfig = {
         Ho_Chi_Minh_Branch_10_02_Lot_A_SATRA_Building_163_Phan_Dang_Luu_Phu_Nhuan_Dist_HCMC: { vn: 'Chi nhánh Tp. Hồ Chí Minh: Số 10.02 lô A, tòa nhà SATRA, 163 Phan Đăng Lưu, Q. Phú Nhuận, TP.HCM', en: 'Ho Chi Minh Branch: 10.02 Lot A, SATRA Building, 163 Phan Dang Luu, Phu Nhuan Dist., HCMC' },
         INDUSTRIALDEVELOPMENTSUPPORTCENTERINDUSTRYDEVELOPMENT: { vn: 'TRUNG TÂM HỖ TRỢ PHÁT TRIỂN CÔNG NGHIỆP - CỤC CÔNG NGHIỆP', en: 'INDUSTRIAL DEVELOPMENT SUPPORT CENTER - INDUSTRY DEVELOPMENT' },
         S_655_Pham_Van_Dong_street_Co_Nhue_1_ward_Bac_Tu_Liem_district_Hanoicity: { vn: '655 Phạm Văn Đồng, Cổ Nhuế 1, Bắc Từ Liêm, Hà Nội', en: '655 Pham Van Dong, Co Nhue 1 Ward, Bac Tu Liem District, Hanoi' },
+        Popup: { vn: 'Popup', en: 'Popup' },
+        DisplayPopup: { vn: 'Hiển thị popup', en: 'Display popup' },
+        HidePopup: { vn: 'Ẩn popup', en: 'Hide popup' },
+        ChangePopup: { vn: 'Thay đổi popup', en: 'Change popup' },
+        PopupLink: { vn: 'Liên kết', en: 'Popup link' },
+        EnterPopupLink: { vn: 'Nhập liên kết', en: 'Enter popup link' },
+        PopupTitle: { vn: 'Tiêu đề', en: 'Popup title' },
+        EnterPopupTitle: { vn: 'Nhập tiêu đề', en: 'Enter popup title' },
     }
 }
 export const langConcat = (...langs) => {

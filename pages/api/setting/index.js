@@ -49,16 +49,17 @@ const handler = async (req, res) => {
                     featureStatus, featuresTitle, features,
                     exhibitorTitle, exhibitorDescription, visitorTitle, visitorDescription,
                     facebook, zalo, spyke, youtube,
-                    footer, lang
+                    footer, popupStatus, popupLink, popupTitle, popup, lang
                 },
                 files, err } = await uploader(req);
-            if (err) throw ({ path: 'files' });
+            if (err) throw ({ path: 'files', err });
             if (!fs.existsSync(settingNameVN)) fs.writeFileSync(settingNameVN, "{}");
             const dataBufferVN = fs.readFileSync(settingNameVN);
             const dataVN = JSON.parse(dataBufferVN);
             if (!fs.existsSync(settingNameEN)) fs.writeFileSync(settingNameEN, "{}");
             const dataBufferEN = fs.readFileSync(settingNameEN);
             const dataEN = JSON.parse(dataBufferEN);
+            const data = lang == "en" ? dataEN : dataVN;
             if (files.length) {
                 let index = 0;
                 if (logo) {
@@ -92,9 +93,17 @@ const handler = async (req, res) => {
                     dataVN.bannerUpdated = true;
                     dataEN.bannerLogoThumb = "bannerLogoThumb" + path.extname(files[index]);
                     dataEN.bannerUpdated = true;
+                    index++;
+                }
+                if (popup) {
+                    await cleanFiles([data.popupImage]);
+                    const oldName = "./" + process.env.FOLDER_UPLOAD + "/" + files[index];
+                    const newName = "./" + process.env.FOLDER_UPLOAD + "/popupImage" + path.extname(files[index]);
+                    fs.renameSync(oldName, newName)
+                    dataVN.popupImage = "popupImage" + path.extname(files[index]);
+                    dataEN.popupImage = "popupImage" + path.extname(files[index]);
                 }
             }
-            const data = lang == "en" ? dataEN : dataVN;
             if (title != undefined) data.title = title;
             if (logoStatus) { dataVN.logoStatus = !(logoStatus == 'false'); dataEN.logoStatus = !(logoStatus == 'false'); }
             if (bannerStatus) { dataVN.bannerStatus = !(bannerStatus == 'false'); dataEN.bannerStatus = !(bannerStatus == 'false'); }
@@ -128,6 +137,9 @@ const handler = async (req, res) => {
             if (spyke != undefined) { dataVN.spyke = spyke; dataEN.spyke = spyke; }
             if (youtube != undefined) { dataVN.youtube = youtube; dataEN.youtube = youtube; }
             if (footer != undefined) { dataVN.footer = footer; dataEN.footer = footer; }
+            if (popupStatus != undefined) { dataVN.popupStatus = popupStatus; dataEN.popupStatus = popupStatus; }
+            if (popupLink != undefined) { dataVN.popupLink = popupLink; dataEN.popupLink = popupLink; }
+            if (popupTitle != undefined) { dataVN.popupTitle = popupTitle; dataEN.popupTitle = popupTitle; }
             data.timestamp = Date.now();
             if (lang == "en") {
                 fs.writeFileSync(settingNameVN, JSON.stringify(dataVN));
@@ -146,6 +158,7 @@ const handler = async (req, res) => {
             });
 
         } catch (e) {
+            console.log(e)
             if (e.files) await cleanFiles(e.files);
             if (e.path == 'token') {
                 if (!e.token) {
@@ -173,7 +186,7 @@ const handler = async (req, res) => {
                     messages: lang?.message?.error?.header_not_acepted
                 });
             }
-            if (e.path =='files') {
+            if (e.path == 'files') {
                 return res.status(400).send({
                     success: false,
                     upload: false,

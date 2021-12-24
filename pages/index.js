@@ -14,6 +14,7 @@ const Guide = dynamic(() => import('../components/Home/Guide'));
 const Partner = dynamic(() => import('../components/Home/Partner'));
 const Feature = dynamic(() => import('../components/Home/Feature'));
 const Slider = dynamic(() => import('../components/Home/Slider'));
+const Popup = dynamic(() => import('../components/Home/Popup'));
 
 class Home extends Component {
   constructor(props) {
@@ -23,6 +24,7 @@ class Home extends Component {
   render() {
     return (
       <div id="content" className="site-content">
+        <Popup />
         <Slider />
         <Countdown />
         <Feature />

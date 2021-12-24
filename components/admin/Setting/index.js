@@ -29,9 +29,11 @@ class Setting extends Component {
             zalo: '',
             spyke: '',
             youtube: '',
+            footer: '',
+            popupLink: '',
+            popupTitle: '',
             fieldError: null,
             message: '',
-            footer: '',
             onEdit: false,
             lang: 'vn'
         }
@@ -57,7 +59,7 @@ class Setting extends Component {
             countDown,
             exhibitorTitle, exhibitorDescription, visitorTitle, visitorDescription,
             facebook, zalo, spyke, youtube,
-            footer, lang
+            footer, popupStatus, popupLink, filesPopup, popupTitle, lang
         } = this.state;
         const data = {
             title, logoStatus,
@@ -67,7 +69,7 @@ class Setting extends Component {
             countDown,
             exhibitorTitle, exhibitorDescription, visitorTitle, visitorDescription,
             facebook, zalo, spyke, youtube,
-            footer, lang
+            footer, popupStatus, popupLink, popupTitle, lang
         }
         if (!(new Date(countDown)).getTime()) {
             this.setState({
@@ -88,6 +90,10 @@ class Setting extends Component {
         if (filesBanner) {
             data.banner = true;
             filesTotal.push(filesBanner)
+        }
+        if (filesPopup) {
+            data.popup = true;
+            filesTotal.push(filesPopup)
         }
         if (filesTotal.length) data.files = filesTotal;
         const formData = createFormData(data);
@@ -133,12 +139,14 @@ class Setting extends Component {
     handleDropdownLogo = () => this.setState({ dropLogo: !this.state.dropLogo })
     handleDropdownBanner = () => this.setState({ dropBanner: !this.state.dropBanner })
     handleDropdownFeature = () => this.setState({ dropFeature: !this.state.dropFeature })
+    handleDropdownPopup = () => this.setState({ dropPopup: !this.state.dropPopup })
 
     handleRefresh = () => this.setState({
         ...this.props.setting[this.state.lang],
         filesLogo: null,
         filesFavicon: null,
         filesBanner: null,
+        filesPopup: null,
         fieldError: null,
         logoLocal: null,
         faviconLocal: null,
@@ -171,6 +179,15 @@ class Setting extends Component {
         if (files[0]) {
             const reader = new FileReader();
             reader.onload = () => this.setState({ bannerLocal: reader.result, })
+            reader.readAsDataURL(files[0]);
+        }
+    }
+    handleChooseFilesPopup = e => {
+        const files = e.target.files;
+        this.setState({ filesPopup: files[0], popupLocal: null });
+        if (files[0]) {
+            const reader = new FileReader();
+            reader.onload = () => this.setState({ popupLocal: reader.result, })
             reader.readAsDataURL(files[0]);
         }
     }
@@ -220,12 +237,13 @@ class Setting extends Component {
             onEdit, fieldError, message, loading,
             dropLogo, dropBanner, dropFeature,
             facebook, zalo, spyke, youtube,
-            footer, lang
+            footer, dropPopup, popupStatus, popupLink, popupTitle, popupLocal, lang
         } = this.state;
         if (!active || !setting) return null;
         const logo = logoLocal || `${setting.logoUpdated ? "/api" : ""}/images/${setting.logo}`;
         const favicon = faviconLocal || `${setting.faviconUpdated ? "/api" : ""}/images/${setting.favicon}`;
         const banner = bannerLocal || `${setting.bannerUpdated ? "/api" : ""}/images/${setting.bannerLogoThumb}`;
+        const popup = popupLocal || `/api/images/${setting.popupImage}`;
         return (
             <section className="content">
                 <form className="form-horizontal" method="post" action="/" onSubmit={this.handleSubmit}>
@@ -824,6 +842,98 @@ class Setting extends Component {
                                     </div>
                                 </div>
 
+                                <div className="form-group row devider">
+                                    <div className="col-md-3">
+                                        <div className="row">
+                                            <label htmlFor="setting-popupStatus" className="col-sm-6 col-form-label">{translate(langConfig.app.Popup)}:</label>
+                                            <div className="col-sm-6">
+                                                <span className={"text-center select2 select2-container select2-container--default" + (dropPopup ? " select2-container--open" : "")} style={{ width: '100%' }}>
+                                                    <span className="selection" onClick={onEdit ? this.handleDropdownPopup : undefined}>
+                                                        <span className="select2-selection select2-selection--single" style={{ background: onEdit ? '#FFF' : '#eee', cursor: onEdit ? 'pointer' : 'default' }}  >
+                                                            <span
+                                                                className="select2-selection__rendered"
+                                                                id="ex-edit-select2-active-container"
+                                                                title={translate(popupStatus ? langConfig.app.DisplayPopup : langConfig.app.HidePopup)}>{translate(popupStatus ? langConfig.app.DisplayPopup : langConfig.app.HidePopup)}</span>
+                                                            {onEdit ?
+                                                                <span className="select2-selection__arrow" role="presentation">
+                                                                    <b role="presentation" />
+                                                                </span>
+                                                                : ""}
+                                                        </span>
+                                                    </span>
+                                                    <div className={"dropdown-select" + (dropPopup ? " active" : "")}>
+                                                        <div
+                                                            className={"select-option-active" + (popupStatus ? " active" : "")}
+                                                            onClick={() => this.setState({ popupStatus: true, dropPopup: false })}
+                                                        >{translate(langConfig.app.Display)}</div>
+                                                        <div
+                                                            className={"select-option-active" + (!popupStatus ? " active" : "")}
+                                                            onClick={() => this.setState({ popupStatus: false, dropPopup: false })}
+                                                        >{translate(langConfig.app.HidePopup)}</div>
+                                                    </div>
+                                                </span>
+                                            </div>
+                                            {popupStatus ?
+                                                <>
+                                                    <div className="col-sm-12">
+                                                        <div className="row">
+                                                            {onEdit ? <input id="popup-upload" type="file" className="hide" onChange={this.handleChooseFilesPopup} /> : ""}
+                                                            <label htmlFor="popup-upload" className="col-sm-6 col-form-label">{translate(langConfig.app.Image)}: </label>
+                                                            {onEdit ?
+                                                                <label htmlFor="popup-upload" className="col-sm-6" title={translate(langConfig.app.ChangePopup)}>
+                                                                    <div className="upload-button">{translate(langConfig.app.Change)}</div>
+                                                                </label>
+                                                                : ""}
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-sm-12">
+                                                        <label htmlFor="popup-upload" className="image-container favicon-preview text-center">
+                                                            {popupLocal || setting.popupImage ?
+                                                                <img className="image-preview" src={popup} />
+                                                                : ""}
+                                                        </label>
+                                                    </div>
+                                                </>
+                                                : ""}
+                                        </div>
+                                    </div>
+                                    <div className="col-md-9">
+                                        {popupStatus ?
+                                            <>
+                                                <div className="form-group row">
+                                                    <label htmlFor="setting-popupLink" className="col-sm-3 col-form-label">{translate(langConfig.app.PopupLink)}:</label>
+                                                    <div className="col-sm-9">
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            id="setting-popupLink"
+                                                            placeholder={translate(langConfig.app.EnterPopupLink)}
+                                                            value={popupLink}
+                                                            onChange={this.handleChange}
+                                                            name="popupLink"
+                                                            readOnly={!onEdit}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="form-group row">
+                                                    <label htmlFor="setting-popupTitle" className="col-sm-3 col-form-label">{translate(langConfig.app.PopupTitle)}:</label>
+                                                    <div className="col-sm-9">
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            id="setting-popupTitle"
+                                                            placeholder={translate(langConfig.app.EnterPopupTitle)}
+                                                            value={popupTitle}
+                                                            onChange={this.handleChange}
+                                                            name="popupTitle"
+                                                            readOnly={!onEdit}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </>
+                                            : ""}
+                                    </div>
+                                </div>
                                 {onEdit && fieldError && message ?
                                     <div className="form-group row">
                                         <div className="col-sm-12">
