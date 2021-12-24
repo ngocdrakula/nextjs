@@ -30,7 +30,7 @@ class Popup extends Component {
         if (!popupStatus) return null;
         const { className } = this.state;
         return (
-            <div id="popup" className={className} onClick={e => e.target.id === "popup" ? this.handleClose : undefined}>
+            <div id="popup" className={className} onClick={e => e.target.id === "popup" ? this.handleClose() : undefined}>
                 <div className="popup-container">
                     <a className="popup-link" href={popupLink} target="_blank" title={popupTitle}>
                         <img className="popup-img" src={`/api/images/${popupImage}`} alt={popupTitle} />
