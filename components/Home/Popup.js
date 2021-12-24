@@ -27,6 +27,7 @@ class Popup extends Component {
     render() {
         const setting = this.props.setting[getLocale()] || {};
         const { popupStatus, popupImage, popupLink, popupTitle } = setting;
+        console.log(setting)
         if (!popupStatus) return null;
         const { className } = this.state;
         return (

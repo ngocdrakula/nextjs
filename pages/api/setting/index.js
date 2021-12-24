@@ -137,7 +137,7 @@ const handler = async (req, res) => {
             if (spyke != undefined) { dataVN.spyke = spyke; dataEN.spyke = spyke; }
             if (youtube != undefined) { dataVN.youtube = youtube; dataEN.youtube = youtube; }
             if (footer != undefined) { dataVN.footer = footer; dataEN.footer = footer; }
-            if (popupStatus != undefined) { dataVN.popupStatus = popupStatus; dataEN.popupStatus = popupStatus; }
+            if (popupStatus != undefined) { dataVN.popupStatus = !(popupStatus == 'false');  dataEN.popupStatus = !(popupStatus == 'false');  }
             if (popupLink != undefined) { dataVN.popupLink = popupLink; dataEN.popupLink = popupLink; }
             if (popupTitle != undefined) { dataVN.popupTitle = popupTitle; dataEN.popupTitle = popupTitle; }
             data.timestamp = Date.now();
