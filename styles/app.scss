@@ -3912,11 +3912,10 @@
         width: max-content;
         height: max-content;
         .popup-img {
-          width: 60vw;
+          width: auto;
           height: auto;
-          max-width: 100%;
-          min-width: 120px;
-          max-height: 500px;
+          max-width: 90vw;
+          max-height: 90vh;
         }
       }
       .popup-close {
