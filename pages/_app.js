@@ -6,6 +6,7 @@ import '../styles/admin.scss';
 import '../styles/globals.css';
 import { setLocale } from '../utils/language';
 import dynamic from 'next/dynamic';
+import { END } from 'redux-saga';
 
 const Header = dynamic(() => import('../components/Layout/App/Header'));
 const Footer = dynamic(() => import('../components/Layout/App/Footer'));
@@ -43,7 +44,18 @@ class App extends Component {
 
 
 App.getInitialProps = async (props) => {
-  return ({ lang: props?.ctx?.req?.cookies?.['NEXT_LOCALE'] || 'vn' })
+  if (props?.ctx) {
+    const { store, req: { cookies } } = props.ctx;
+    const LOCALE = cookies?.['NEXT_LOCALE'] || 'vn';
+    if (typeof store?.dispatch === 'function') {
+      store.dispatch({ type: 'SET_LOCALE', payload: LOCALE });
+      store.dispatch(END)
+      console.log('x', LOCALE, store.getState()?.locale.locale)
+      await store.sagaTask.toPromise();
+    }
+    return ({ lang: LOCALE })
+  }
+
 };
 
 export default wrapper.withRedux(App)

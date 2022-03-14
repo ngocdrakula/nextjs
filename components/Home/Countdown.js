@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import langConfig from '../../lang.config';
 import { getLocale, translate } from '../../utils/language';
+import Translation from '../Translation';
 
 class Countdown extends Component {
     constructor(props) {
@@ -35,6 +36,7 @@ class Countdown extends Component {
         const { d, h, m, s } = this.state;
         return (
             <div id="counter">
+                <Translation />
                 <div className="container">
                     <div className="counter-time">
                         <div className="counter-time-item">
